@@ -1,0 +1,17 @@
+# 实验产出（数据与图，不入库）
+results/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+
+# Isaac 侦察脚本的原始运行日志（体积大、含噪声，结论已摘录进 docs/api-findings.md）
+scripts/*.log

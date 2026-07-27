@@ -1,0 +1,5 @@
+# regenerable run outputs
+results/
+# python caches
+__pycache__/
+*.pyc
