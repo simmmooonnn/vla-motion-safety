@@ -1,0 +1,8 @@
+# Treat these as binary: never apply line-ending (CRLF) conversion.
+*.docx binary
+*.pdf  binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.usd  binary
+*.usdc binary

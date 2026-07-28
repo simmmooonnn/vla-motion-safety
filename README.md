@@ -15,8 +15,8 @@ with a *continuous* clearance metric. That intersection is the gap this project 
 - **`docs/vla-safety-literature-review.md`** — a survey of VLA-safety risks and evaluation
   benchmarks (2025–26), the research gap, and the proposed benchmark design (host, scene,
   metrics, eval set), with positioning against the nearest work.
-- **`docs/VLA-safety-review-report.docx` / `docs/VLA-motion-safety-progress-report.docx`** —
-  short written reports (safety risks + existing benchmarks + proposal / progress).
+- **`docs/VLA-safety-summary.docx`** — a concise report (key conclusions + figures):
+  safety risks, existing benchmarks, the gap, and the prototype's results.
 - **`robosafe_prototype/`** — the **current prototype**, on the RoboCasa / robosuite
   (MuJoCo) stack: a Panda carries a knife past a human bystander while the continuous
   carried-hazard-to-human clearance is measured with `mj_geomDistance`; an *aware* (detour)
