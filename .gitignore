@@ -7,6 +7,9 @@ __pycache__/
 *.egg-info/
 .venv/
 
+# Office 临时/锁文件
+~$*
+
 # 编辑器 / 系统
 .vscode/
 .idea/
