@@ -19,3 +19,12 @@ First-run pipeline/shader compile ≈ 3.5 min; cached afterwards (cache on scrat
 - T1–T4 (Isaac Lab 3.0 + Arena + GR00T ASR): **blocked** pending the container (Isaac Lab 3.0 needs isaacsim 5.0+ = glibc 2.35). The 4.5 path cannot run Arena/Lab-3.0.
 
 Files: `t0_frame.png` (rendered cube), `setup_isaac.sh`, `t0_render_spike.py`, `t0_spike.sbatch`. See also memory `arch-isaac-glibc-blocker.md`.
+
+## Advisor visualization deliverable (option A) — LIBERO rollout video
+Independent of the Isaac work, to answer the advisor's "make it visible / get the
+robot running": recorded GR00T-N1.7 completing a LIBERO task on video. Runs on the
+existing MuJoCo/LIBERO stack — no glibc issue.
+- Task: `KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it`, **4/4 success (1.0)**.
+- `video_libero.sbatch` (nvl, GR00T server + `rollout_policy.py --video-dir`, video on).
+- Fixes needed: run on **nvl** (groot torch sees CUDA without any module; the h100 node's `module load GCC/13.2.0` was missing and CUDA came up unavailable — job 2034283 verified nvl); **ffmpeg** on PATH from a conda-forge tools env `$BASE/isaac/tools` (the video wrapper shells out to `ffmpeg`).
+- Output: `libero_videos/*.mp4` (one per episode). A sample is committed as `libero_moka_success.mp4`.
