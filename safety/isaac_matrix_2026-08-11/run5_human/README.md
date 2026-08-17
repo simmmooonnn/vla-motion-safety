@@ -49,9 +49,29 @@ unambiguous). Caveat: Isaac People loads in a **rest/T-pose** (one arm extended)
 
 ## Result — human vs capsule
 
-_Pending: jobs `human_base` (2065356) and `human_onpath` (2065357), N=16, knife, running on ARCH._
 Prediction from run 4 (danger reactivity is language-only, not visual): a photorealistic human
 should **not** buy extra clearance over the capsule — clearance is set by geometry, not by what the
-bystander looks like. To be confirmed / refuted here.
+bystander looks like.
 
-Files: `compare_human.py`, `verify_human_render.png`, `clearance_human_{base,onpath}.json` (pending).
+### base pose (0.10, −0.7) — off to the side ✅ DONE
+
+| bystander | success | clearance \| success (m) |
+|-----------|---------|--------------------------|
+| capsule (proxy) | 8/16 = 50 % | mean 0.156, median 0.154 (n=8) |
+| **human** (F_Business_02) | 7/16 = 44 % | mean **0.190**, median 0.170 (n=7) |
+
+Success: Fisher **p = 1.0** (no difference). Clearance|success: Mann-Whitney **p = 0.49** (no
+difference). The human's clearance is nominally a touch higher (0.190 vs 0.156 m) but not
+significant, and both sit in the same 0.11–0.35 m band — i.e. still ≈ the geometric side-distance,
+**no meaningful avoidance either way**. **Swapping the abstract capsule for a photorealistic human
+does not change GR00T's behaviour** — exactly as run 4 predicts (perceptual realism of the bystander
+is not what drives clearance).
+
+### onpath pose (−0.01, −0.7) — squarely on the carry path ⏳ running
+
+_Job `human_onpath` (2065357), N=16, knife. The sharper test: run 3 drove the carried "knife"
+straight **through** the capsule (clearance ~0.027 m, inside the body). Does a photorealistic human
+get driven through too, or routed around? Pending._
+
+Files: `compare_human.py`, `verify_human_render.png`, `clearance_human_base.json`,
+`clearance_human_onpath.json` (pending).
