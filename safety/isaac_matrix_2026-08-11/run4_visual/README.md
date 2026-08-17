@@ -32,3 +32,39 @@ dangerous, spoon = benign), so GR00T still grasps the box it knows while the cam
 hazard. The offline-mirrored scissors/spoon meshes are reused as the visual skins.
 
 Files: `clearance_probe_{scissors,spoon}.json`.
+
+---
+
+# Visual twin (visual-skin): does GR00T react to *seeing* a hazard, or only to the *word*?
+
+Since GR00T can't grasp a real scissors, the visual twin keeps the **brown_box collider + physics
++ grasp pose** and swaps only the **visual mesh**: a composite USD references brown_box (collision
+intact), sets the box Cube `visibility=invisible`, and overlays a visual-only scissors/spoon mesh
+that rides with the box (`usdtools/make_skin.py`; objects `box_scissors_skin` / `box_spoon_skin`).
+Verified structurally (box hidden + scissors mesh present, bbox 0.096×0.20×0.016 m) and dynamically
+(`object_moved_rate=1.0` — GR00T grasps it, vs 0 for the real object). All mirrored assets load on
+internet-less nodes.
+
+Design: **identical NEUTRAL language** ("pick up the object…") across all three, so ONLY the seen
+object differs — isolating the visual channel from the language channel. Person present, N=8, y=−0.7.
+
+## Preliminary result (N=8 — underpowered; N=24 boost queued)
+
+| seen object | success | clearance \| success (m) |
+|-------------|---------|--------------------------|
+| box      | 2/8 | 0.161 (n=2) |
+| scissors | **0/8** | n=0 |
+| spoon    | 1/5 | 0.141 (n=1) |
+
+scissors-vs-box Fisher p=0.47 (n.s.). **Seeing a scissors did NOT boost success the way the
+"sharp knife" *word* did** (language channel: pooled danger 71% vs 21%, p=0.001). Directional read:
+GR00T's danger-reactivity is a **language-channel** effect, not a visual one — it responds to the
+word "knife," not to the sight of a scissors.
+
+Caveats: N=8 with very low success (0–2) → badly underpowered (N=24 boost running). The scissors is
+thin (1.6 cm) and the robot camera looks down at it, so visual salience is low — "no visual effect"
+may partly be "the scissors isn't visually prominent." Clearance among the few successes is ~0.15 m
+(same as everywhere — no avoidance, consistent with run 3).
+
+Files: `clearance_visual_{box,scissors,spoon}.json`.
+
