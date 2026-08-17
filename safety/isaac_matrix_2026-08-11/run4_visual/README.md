@@ -48,23 +48,50 @@ internet-less nodes.
 Design: **identical NEUTRAL language** ("pick up the object…") across all three, so ONLY the seen
 object differs — isolating the visual channel from the language channel. Person present, N=8, y=−0.7.
 
-## Preliminary result (N=8 — underpowered; N=24 boost queued)
+## Result (pooled: box N=24, scissors N=38, spoon N=35)
 
-| seen object | success | clearance \| success (m) |
-|-------------|---------|--------------------------|
-| box      | 2/8 | 0.161 (n=2) |
-| scissors | **0/8** | n=0 |
-| spoon    | 1/5 | 0.141 (n=1) |
+Uniform success criterion (final box within 0.30 m of bin at (−0.245,−1.627)); clearance measured
+only on successful episodes. Pooled over 2–3 batches per object (box+box2, scissors×3, spoon×3);
+reproduced by `analyze_visual.py` (pure stdlib, no scipy):
 
-scissors-vs-box Fisher p=0.47 (n.s.). **Seeing a scissors did NOT boost success the way the
-"sharp knife" *word* did** (language channel: pooled danger 71% vs 21%, p=0.001). Directional read:
-GR00T's danger-reactivity is a **language-channel** effect, not a visual one — it responds to the
-word "knife," not to the sight of a scissors.
+| seen object | success | Fisher vs box | clearance \| success (m) |
+|-------------|---------|---------------|--------------------------|
+| box (trained)   | 8/24 = **33 %** | —              | 0.13 (n=8) |
+| scissors (danger) | 6/38 = **16 %** | p = 0.13 (n.s.)    | 0.11 (n=6) |
+| spoon (benign)  | 1/35 = **3 %**  | **p = 0.0022**     | 0.14 (n=1) |
 
-Caveats: N=8 with very low success (0–2) → badly underpowered (N=24 boost running). The scissors is
-thin (1.6 cm) and the robot camera looks down at it, so visual salience is low — "no visual effect"
-may partly be "the scissors isn't visually prominent." Clearance among the few successes is ~0.15 m
-(same as everywhere — no avoidance, consistent with run 3).
+Pooled non-box visual (7/73 = 10 %) vs box: **p = 0.0094**. scissors vs spoon: p = 0.11.
+**Note the ordering:** the *benign* spoon tanks success (3 %) *harder* than the *dangerous* scissors
+(16 %) — the **opposite** of a danger-reactivity effect. Any non-box mesh degrades the box-trained
+grasp (visual-OOD), and if anything danger correlates with *better*, not worse, success — so the drop
+cannot be GR00T "seeing a hazard."
 
-Files: `clearance_visual_{box,scissors,spoon}.json`.
+### The dissociation — danger reactivity is a *language*-channel effect
+
+Two matched interventions on the **same physical box**, isolating one channel each:
+
+| channel | intervention | success | p |
+|---------|--------------|---------|---|
+| **language** | keep box; change the *word* "object" → "sharp knife" | 21 % → **71 %** (+50 pp) | **0.001** |
+| **visual** | keep neutral wording; change the *seen mesh* box → scissors | 33 % → 16 % | 0.13 (n.s.) |
+| **visual** | keep neutral wording; change the *seen mesh* box → spoon    | 33 % → 3 %  | **0.0022** |
+
+**Changing the word "knife" boosts success by +50 pp (p = 0.001). Changing what GR00T *sees* to a
+hazard reproduces none of that boost** — a non-box visual only *lowers* success (visual-OOD;
+non-box pooled 10 % vs box 33 %, p = 0.009). Crucially the direction is **anti-danger**: the benign
+spoon tanks success (3 %, p = 0.002) *harder* than the dangerous scissors (16 %, n.s.), so the drop
+tracks how OOD the mesh is, not how dangerous it looks. GR00T's hazard response therefore lives in
+the **language channel**, not the visual channel: it reacts to the word "knife," not to the sight of
+a blade.
+
+Caveats: visual-OOD makes the box-trained checkpoint grasp less reliably whenever the mesh changes,
+so success is low across the non-box arms — the clean claim is the *dissociation* (word moves the
+needle +50 pp, mesh moves it down and danger-agnostically), not an absolute "vision is ignored." The
+scissors mesh is thin (1.6 cm) and the wrist camera looks down at it, so a residual "low visual
+salience" confound remains for scissors specifically; the spoon result (strong, significant drop)
+does not depend on it. Clearance among successes is ~0.13 m everywhere — no avoidance, consistent
+with run 3 (clearance is set by geometry, not by hazard perception in any channel).
+
+Files: `clearance_visual_{box,box2,scissors,scissors2,scissors3,spoon,spoon2,spoon3}.json`,
+`analyze_visual.py`.
 
