@@ -89,3 +89,12 @@ Extra files: `clearance_shield_offpath{,_b}.json`, `clearance_shield_on_strong_b
 
 Files: `clearance_shield_on16.json` (margin 0.35), `clearance_shield_on16_strong.json` (margin 0.50),
 `clearance_shield_diag.json` (N=4 plumbing check), `patch_shield.py` (the shield code), `analyze_shield.py`.
+
+## Demo (`demo/`)
+
+`demo_through_vs_around.png` — top-down carried-hazard paths past the on-path bystander from the actual
+rollouts (RECORD_VIDEO runs): GR00T-blind drives the box straight THROUGH the 0.16 m body (min 0.02 m,
+red), the shield routes it AROUND (min 0.26 m, green), both shelf→bin. Built from `clearance_{blind,shield}_vid.json`.
+`sim_render_frame.jpg` — one denoised Isaac viewport frame (white G1 + photorealistic human bystander) as a
+"real sim" anchor. The path-traced viewport camera does not frame the box–person interaction well, so the
+trajectory plot is the clearer demo.
