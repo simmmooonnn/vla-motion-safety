@@ -18,3 +18,17 @@ desktop.ini
 
 # Isaac 侦察脚本的原始运行日志（体积大、含噪声，结论已摘录进 docs/api-findings.md）
 scripts/*.log
+
+# 内部工作 ledger（SDD 过程笔记，不入库）
+.superpowers/
+
+# 讲稿 / Office 文档（不入库）
+*.docx
+
+# 视频与大二进制产出（红线：不入库）
+*.mp4
+*.mkv
+*.tar.gz
+safety/videos_2026-08-26/
+safety/hardening_2026-08-25/
+safety/isaac_matrix_2026-08-11/report/
