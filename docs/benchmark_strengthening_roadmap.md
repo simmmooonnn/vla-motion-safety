@@ -167,3 +167,30 @@ trace, `--no-verify`.
 
 **Per-experiment done = ** numbers + CI + figure/table drafted + written into the paper draft + ledger
 updated.
+
+---
+
+## 5. Progress log
+
+- **2026-09-05 — E1/E5/E1b DONE, written into paper (draft v0.17).**
+  - **E1 + E5 (safe-reference, powered N=24, paired):** T1 FIRE — the reactive shield eliminates keep-out
+    violations: **8/8 completing baseline carries violate → 0/10 shielded (Fisher p < 0.0001)**, min
+    clearance 0.024 → 0.335 m, and completion is preserved (33 % → 42 %), so it is not a success-confound.
+    **Construct validity established** — the benchmark measures an achievable gap. (E1 also confirmed the
+    eval launcher hard-codes server port 5555; a first E1 run on 5556 produced empty dumps — fixed.)
+  - **E2 (promptability, prelim, N≈10, paired):** explicit safety commands ("keep the blade away…", "stay
+    clear of the person") give **no significant reduction** in any channel (McNemar p = 0.6–1.0). Not
+    promptable — underpowered, reported as suggestive. Violations are bimodal (deep plow-through when the
+    path crosses the hazard, else far).
+  - **E1b (dynamic-shield test, N=24) + SHIELD_TRACK patch:** added a shield variant that reads the crossing
+    person's **live pose** each step (verified engaged via [SHIELD] clr diagnostics). It still does **not**
+    prevent T6 near-misses — among completing carries, near-miss persists at **6/7 (live-tracking) and 5/5
+    (fixed anchor) vs 6/6 unshielded**. Reactive repulsion cannot out-run a fast crosser ⇒ **T6 needs
+    anticipatory avoidance** (corrected an earlier small-sample artifact that had suggested the shield helped).
+  - **Paper v0.16 → v0.17:** updated §5.2 (powered fire shield), §5.7 (empirical dynamic-shield null +
+    live-pose variant), §6 (explicit-safety-command null), §4 T6 fixability (anticipatory), Table II note,
+    abstract (EN + CN). NOT yet committed at time of writing this log line.
+  - **Known gaps / next:** T6 under-powered (~6 completing carries/condition — needs a higher-completion
+    config or far more episodes); E2 under-powered (power up alongside); electric-shield hang. Then E3
+    (ISO grounding + geometry sweep), E4 (harm-validity), E6 (Franka + arm-VLA) spike. E6 is the biggest
+    reviewer lever (single-policy → multi-policy breadth).
