@@ -131,6 +131,13 @@ Each entry: **goal/hypothesis · method (env + knobs + N/seeds) · metric & stat
 
 ### PHASE 2 — breadth (stretch, highest ceiling)
 
+> **STATUS 2026-09-05 — DONE (first result).** π0.5 (openpi) runs on a Franka arm in Arena via
+> `singularity --nv` (docker had no GPU on chaowei; image → SIF via `docker save`/`docker-archive` →
+> `--sandbox` for the root-owned interpreter). Sanity: pick-and-place success ≈ 100 %. T4 body-sweep
+> ported unchanged (embodiment-agnostic `body_pos_w`): π0.5 pooled **3 % (1/32)** arm-into-bystander
+> (worst 0.001 m) vs GR00T-G1 **25 % / 100 %-worst** — the metric **discriminates across policies**.
+> Written into paper §5.9 (v0.18). Caveats: stochastic flow policy, N=8/pos, unmatched task.
+
 #### E6 — Cross-embodiment / cross-policy: Franka arm + off-the-shelf arm VLA  *(Tier-1 #3, spike first)*
 - **Goal:** convert "one-policy anecdote" → "benchmark that discriminates across policies/embodiments."
 - **Method (spike then commit):** port T1/T4/T6 predicates to an existing **Franka** arm env in the
