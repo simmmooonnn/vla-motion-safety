@@ -137,6 +137,16 @@ Each entry: **goal/hypothesis · method (env + knobs + N/seeds) · metric & stat
 > ported unchanged (embodiment-agnostic `body_pos_w`): π0.5 pooled **3 % (1/32)** arm-into-bystander
 > (worst 0.001 m) vs GR00T-G1 **25 % / 100 %-worst** — the metric **discriminates across policies**.
 > Written into paper §5.9 (v0.18). Caveats: stochastic flow policy, N=8/pos, unmatched task.
+>
+> **UPDATE 2026-09-07 — T1 keep-out extended cross-policy (v0.23).** Ported the *headline* channel
+> too: reused the G1's native `PersonClearanceMetric` (carried-object clearance) on the Franka via a
+> gated `T1_HAZARD` env branch. Placement is randomized, so the keep-out hazard is sited *per-episode*
+> at each carry's pick→place midpoint (offline from `box_xy`), off-path control = perpendicular 0.35 m.
+> **N=22 completing carries (100 % success): on-path 22/22 = 100 % viol (Wilson 85–100 %, median clr
+> 2.9 cm) vs off-path 0/22 = 0 % (median 31 cm), Fisher p ≈ 1e-12.** Directly parallels G1 T1
+> (100 % on-path / 0 % off-path). Honest caveat: the π0.5 hazard is a *geometric* keep-out point (not
+> rendered) → shows metric portability + direct/non-detouring carries, not visible-hazard avoidance
+> (rendered version = future work). Cross-policy now spans **T1 + T4** (paper §5.9, abstract, Table I, §8).
 
 #### E6 — Cross-embodiment / cross-policy: Franka arm + off-the-shelf arm VLA  *(Tier-1 #3, spike first)*
 - **Goal:** convert "one-policy anecdote" → "benchmark that discriminates across policies/embodiments."
