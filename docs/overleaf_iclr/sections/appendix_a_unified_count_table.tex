@@ -4,9 +4,9 @@
 
 \begin{table}[t]
 \centering\scriptsize\setlength{\tabcolsep}{3pt}
-\caption{Every GR00T cell reported in this paper, plus the $\pi_{0.5}$ body-sweep cells, with a common denominator. Attempted = episodes run; completing = box delivered within 0.30 m of the bin; violating = completing carries whose carried-object clearance fell below the keep-out (T1), episodes whose closest link fell inside the margin (T4, all episodes), or completing carries whose minimum person separation fell below 0.30 m (T6). Wilson 95 \% intervals. Pooled rows concatenate the listed runs; seeds are 42 / 7 / 123 unless stated. Person proxy = the standing capsule-plus-mesh bystander of \S5.1 placed on the carry path.}
+\caption{Every GR00T cell reported in this paper, plus the $\pi_{0.5}$ body-sweep cells, with a common denominator. Attempted = episodes run; completing = box delivered within 0.30 m of the bin; violating = completing carries whose carried-object clearance fell below the keep-out (T1), episodes whose closest link fell inside the margin (T4, all episodes), or completing carries in which the box reached contact distance with the crossing person ($\leq$ 0.31 m; T6). Wilson 95 \% intervals. Pooled rows concatenate the listed runs; seeds are 42 / 7 / 123 unless stated. Person proxy = the standing capsule-plus-mesh bystander of \S5.1 placed on the carry path.}
 \label{tab:tablev}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.280\linewidth}>{\raggedright\arraybackslash}p{0.068\linewidth}>{\raggedright\arraybackslash}p{0.076\linewidth}>{\raggedright\arraybackslash}p{0.167\linewidth}>{\raggedright\arraybackslash}p{0.235\linewidth}>{\raggedright\arraybackslash}p{0.159\linewidth}@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.310\linewidth}>{\raggedright\arraybackslash}p{0.070\linewidth}>{\raggedright\arraybackslash}p{0.078\linewidth}>{\raggedright\arraybackslash}p{0.171\linewidth}>{\raggedright\arraybackslash}p{0.240\linewidth}>{\raggedright\arraybackslash}p{0.116\linewidth}@{}}
 \toprule
 Channel / cell & attempted & completing & violating / completing & violation rate (Wilson 95 \% CI) & completing rate \\
 \midrule
@@ -35,6 +35,10 @@ T1 two hazards (multi), 0.20 m --- blind, 2 seeds & 24 & 6 & 6 / 6 & 100 \% [61,
 + shield, 2 seeds & 24 & 6 & 0 / 6 & 0 \% [0, 39] & 25 \% \\
 T1 photorealistic YCB hazard, 0.20 m --- blind (mustard / soup), 3 runs & 42 & 22 & 22 / 22 & 100 \% [85, 100] & 52 \% \\
 + shield, 3 runs & 34 & 13 & 1 / 13 & 8 \% [1, 33] & 38 \% \\
+T1 keep-out, $\pi_{0.5}$\textperiodcentered{}Franka, 0.20 m --- on-path (geometric point) & 22 & 22 & 22 / 22 & 100 \% [85, 100] & 100 \% \\
+off-path control (perpendicular 0.35 m) & 22 & 22 & 0 / 22 & 0 \% [0, 15] & 100 \% \\
+rendered on-path marker & 22 & 16 & 16 / 16 & 100 \% [81, 100] & 73 \% \\
+rendered marker + explicit spatial command (paired) & 16 & 16 & 14 / 16 vs 15 / 16 & 88 \% [64, 97] vs 94 \% [72, 99] & 100 \% vs $\approx$ 62 \% \\
 T4 body sweep, GR00T\textperiodcentered{}G1, axis metric, margin 0.10 m --- pick right & 8 & (all) & 6 / 8 & 75 \% [41, 93] & contact (0 mm): 1 / 8 \\
 pick left & 8 & (all) & 0 / 8 & 0 \% [0, 32] & contact (0 mm): 0 / 8 \\
 bin right & 8 & (all) & 0 / 8 & 0 \% [0, 32] & contact (0 mm): 0 / 8 \\
@@ -43,9 +47,9 @@ pooled four positions & 32 & (all) & 8 / 32 & 25 \% [13, 42] & contact (0 mm): 1
 pick right, 3-D body surface & 8 & (all) & 8 / 8 & 100 \% [68, 100] & contact (0 mm): 8 / 8 \\
 T4 body sweep, $\pi_{0.5}$\textperiodcentered{}Franka, axis metric --- pooled four positions & 32 & (all) & 1 / 32 & 3 \% [1, 16] & contact (0 mm): 1 / 32 \\
 T4 body sweep, $\pi_{0.5}$\textperiodcentered{}Franka, 3-D body surface --- pooled four positions & 32 & (all) & 17 / 32 & 53 \% [36, 69] & contact (0 mm): 8 / 32 \\
-T6 crossing person, GR00T\textperiodcentered{}G1 --- on-path, seeds 42 / 7 / 123 & 24 & 11 & 10 / 11 & 91 \% [62, 98] (near-miss < 0.30 m) & 46 \% \\
-on-path, mid-corridor start & 8 & 2 & 2 / 2 & 100 \% [34, 100] (near-miss < 0.30 m) & 25 \% \\
-off-path control & 8 & 3 & 0 / 3 & 0 \% [0, 56] (near-miss < 0.30 m) & 38 \% \\
+T6 crossing person, GR00T\textperiodcentered{}G1 --- on-path, seeds 42 / 7 / 123 & 24 & 11 & 11 / 11 & 100 \% [74, 100] (contact-limited stop, $\leq$ 0.31 m) & 46 \% \\
+on-path, mid-corridor start & 8 & 2 & 2 / 2 & 100 \% [34, 100] (contact-limited stop) & 25 \% \\
+off-path control & 8 & 3 & 0 / 3 & 0 \% [0, 56] (no stop; virtual separation 0.06--0.19 m) & 38 \% \\
 \bottomrule
 \end{tabular}
 \end{table}

@@ -11,10 +11,10 @@ VIOL, SAFE, NEUT, AXIS = "#a4302a", "#2c7a67", "#9a9a9a", "#1f3d63"
 
 # ---------- Fig: violation rate by channel (GR00T, G1) ----------
 fig, ax = plt.subplots(figsize=(4.6, 2.2))
-chan = ["T1 keep-out", "T3a SSM", "T6 dynamic", "T4 body-sweep", "T2 orient.", "T5 load"]
-val  = [100, 100, 91, 25, 100, 0]
+chan = ["T1 keep-out", "T3a SSM", "T6 crossing", "T4 body-sweep", "T2 orient.", "T5 load"]
+val  = [100, 100, 100, 25, 100, 0]
 col  = [VIOL, VIOL, VIOL, VIOL, VIOL, SAFE]
-lab  = ["100% (10/10)", "6/6 outside SSM envelope", "91% (10/11)", "25% pooled; 100% worst", "0 reorient (8 azimuths)", "null (level carry)"]
+lab  = ["100% (10/8)", "6/6 outside SSM envelope", "11/11 stop only on contact", "25% pooled; 100% worst", "0 reorient (8 azimuths)", "null (level carry)"]
 y = list(range(len(chan)))[::-1]
 ax.barh(y, val, color=col, height=0.62)
 ax.plot([25, 100], [y[3], y[3]], color=VIOL, lw=1.2)  # T4 whisker to worst position
@@ -34,11 +34,11 @@ ax.set_xticks(x); ax.set_xticklabels(["T1", "T2", "T6"]); ax.set_ylim(0, 60); ax
 ax.set_title("Explicit safety command\n(McNemar p = 1.0 / 0.58 / 1.0)", fontsize=8); ax.legend(fontsize=6.5, frameon=False)
 ax = axs[1]
 ax.bar([0, 1], [100, 0], 0.55, color=[VIOL, SAFE]); ax.set_xticks([0, 1]); ax.set_xticklabels(["blind", "+ shield"])
-ax.set_ylim(0, 110); ax.set_title("T1 keep-out — shield\n8/8 → 0/10, Fisher p < 1e-4", fontsize=8)
-ax.text(0, 102, "8/8", ha="center", fontsize=7.5); ax.text(1, 4, "0/10", ha="center", fontsize=7.5, color=SAFE)
+ax.set_ylim(0, 110); ax.set_title("T1 keep-out — shield\n8/8 → 0/8, Fisher p < 1e-4", fontsize=8)
+ax.text(0, 102, "8/8", ha="center", fontsize=7.5); ax.text(1, 4, "0/8", ha="center", fontsize=7.5, color=SAFE)
 ax = axs[2]
 ax.bar([0, 1], [100, 86], 0.55, color=[VIOL, VIOL]); ax.set_xticks([0, 1]); ax.set_xticklabels(["blind", "+ live shield"])
-ax.set_ylim(0, 110); ax.set_title("T6 dynamic — same shield\nstill ≈86% near-miss", fontsize=8)
+ax.set_ylim(0, 110); ax.set_title("T6 crossing — same shield (0.50 m)\ncontact persists: 6/6 → 6/7", fontsize=8)
 fig.tight_layout(); fig.savefig(os.path.join(FIG, "fig_fixability.pdf")); plt.close(fig)
 
 # ---------- Fig: cross-policy T1 and T4 ----------

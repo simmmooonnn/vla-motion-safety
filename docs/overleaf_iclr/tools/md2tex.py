@@ -270,7 +270,7 @@ FIGS = r"""
 \centering
 \begin{minipage}{0.49\linewidth}\centering\includegraphics[width=\linewidth]{figures/fig_t4_body.png}\end{minipage}\hfill
 \begin{minipage}{0.49\linewidth}\centering\includegraphics[width=\linewidth]{figures/fig_t6_crossing.png}\end{minipage}
-\caption{\textbf{Left, T4 --- body swept-volume:} reaching for the object, the hand makes 3-D contact with the bystander (0.000\,m, 8/8 right-pick). \textbf{Right, T6 --- dynamic reactivity:} a pedestrian crosses the carry path; the robot carries on without slowing (10/11 completing carries within 0.30\,m).}
+\caption{\textbf{Left, T4 --- body swept-volume:} reaching for the object, the hand makes 3-D contact with the bystander (0.000\,m, 8/8 right-pick). \textbf{Right, T6 --- dynamic reactivity:} a pedestrian crosses the carry path; the robot walks the carried box into the person and stops only on contact (11/11 completing carries).}
 \label{fig:t4t6}
 \end{figure}
 \begin{figure}[t]
@@ -285,7 +285,7 @@ FIGS = r"""
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.9\linewidth]{figures/fig_t1_fire_shield.png}
-\caption{\textbf{T1 with the reactive shield.} The same carry now detours around the zone --- keep-out violations fall from 8/8 completing carries to 0/10 (Fisher $p<10^{-4}$), completion preserved.}
+\caption{\textbf{T1 with the reactive shield.} The same carry now detours around the zone --- keep-out violations fall from 8/8 completing carries to 0/8 (Fisher $p<10^{-4}$), completion preserved.}
 \label{fig:shield}
 \end{figure}
 \begin{figure}[t]
@@ -297,7 +297,7 @@ FIGS = r"""
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_fixability.pdf}
-\caption{\textbf{Fixability.} Left: an explicit safety command does not reduce violations (paired seeds, $N=20$--$24$). Middle: the reactive shield eliminates T1 keep-out violations (8/8 $\rightarrow$ 0/10). Right: the same shield, even reading the crosser's live pose, does not fix T6.}
+\caption{\textbf{Fixability.} Left: an explicit safety command does not reduce violations (paired seeds, $N=20$--$24$). Middle: the reactive shield eliminates T1 keep-out violations (8/8 $\rightarrow$ 0/8). Right: the same shield, even reading the crosser's live pose, does not fix T6.}
 \label{fig:fixability}
 \end{figure}
 \begin{figure}[t]
@@ -327,6 +327,12 @@ FIGS = r"""
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.78\linewidth]{figures/fig_ssm_envelope.pdf}
+\caption{\textbf{T6: the carried box stops only on contact.} Left: carried-box speed around the closest approach for the eleven completing on-path carries (three seeds) and the three off-path controls; on-path the box arrives at contact distance without slowing (0.25--0.37\,m/s one step before), is then held there for 2--3.5\,s in 6/11 carries and brushes past in 5/11; off-path the same corridor is traversed without a stop. Right: box--person separation; every on-path minimum sits at the contact distance (capsule radius 0.16\,m + box half-extent), and the 0.50\,m live-tracking shield (dashed) leaves it there.}
+\label{fig:t6contact}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_t6_contact.pdf}
 \caption{\textbf{T3a against the ISO/TS 15066 speed-and-separation envelope.} Payload speed versus carried-object--person separation for the six completing carries with the bystander present (0.2\,s smoothing), with the allowed speed $v_{\mathrm{allow}}(d)$ under the walking-human, lenient and stationary-human parameterizations and the ISO 10218-1 reduced speed. Every carry runs at 0.2--0.45\,m/s inside $d_0 = 0.94$\,m; none decelerates toward the person.}
 \label{fig:ssm}
 \end{figure}
@@ -351,7 +357,7 @@ for fname, parts in files:
 # abstract
 abs_tex = "\n".join(convert_inline(l) for l in abstract if l.strip())
 
-MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.25).
+MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.27).
 %% Drop the official iclr2027_conference.sty / .bst from the ICLR author kit next to this file.
 \documentclass{article}
 \usepackage{iclr2027_conference,times}

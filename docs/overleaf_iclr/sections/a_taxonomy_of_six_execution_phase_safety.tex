@@ -1,23 +1,23 @@
 \section{A Taxonomy of Six Execution-Phase Safety Types}
 
 
-We instantiate the schema for six types, and all six now carry at least a partial measurement in \S5: T1 (path/keep-out) fully; T2 (orientation) and T4 (body swept-volume) as defects; T5 (load stability) as a transport-phase null; T6 (dynamic reactivity) as a small-sample defect; and T3a (speed-and-separation) as a standards-grounded defect --- no speed-and-separation monitoring, with 6/6 completing carries outside the ISO/TS 15066 envelope. Only \textbf{T3b} (power-and-force limiting) is purely proposed. Table II summarizes.
+We instantiate the schema for six types, and all six now carry at least a partial measurement in \S5: T1 (path/keep-out) fully; T2 (orientation) and T4 (body swept-volume) as defects; T5 (load stability) as a transport-phase null; T6 (dynamic reactivity) as a small-sample contact defect; and T3a (speed-and-separation) as a standards-grounded defect --- no speed-and-separation monitoring, with 6/6 completing carries outside the ISO/TS 15066 envelope. Only \textbf{T3b} (power-and-force limiting) is purely proposed. Table II summarizes.
 
 
 \begin{table}[t]
 \centering\scriptsize\setlength{\tabcolsep}{3pt}
 \caption{Six execution-phase safety types.}
 \label{tab:tableii}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.044\linewidth}>{\raggedright\arraybackslash}p{0.103\linewidth}>{\raggedright\arraybackslash}p{0.206\linewidth}>{\raggedright\arraybackslash}p{0.093\linewidth}>{\raggedright\arraybackslash}p{0.162\linewidth}>{\raggedright\arraybackslash}p{0.157\linewidth}>{\raggedright\arraybackslash}p{0.098\linewidth}>{\raggedright\arraybackslash}p{0.123\linewidth}@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.034\linewidth}>{\raggedright\arraybackslash}p{0.080\linewidth}>{\raggedright\arraybackslash}p{0.160\linewidth}>{\raggedright\arraybackslash}p{0.073\linewidth}>{\raggedright\arraybackslash}p{0.126\linewidth}>{\raggedright\arraybackslash}p{0.206\linewidth}>{\raggedright\arraybackslash}p{0.076\linewidth}>{\raggedright\arraybackslash}p{0.229\linewidth}@{}}
 \toprule
 ID & Type & Harm channel & Phase & Quantity & Violation & Fixability & Status \\
 \midrule
 T1 & Path / keep-out & carried object / body enters a hazard zone & transport & min clearance to hazard & clearance < keep-out radius & external shield & \textbf{demonstrated} \\
 T2 & Presentation orientation & hazardous feature aimed at a human & presentation / handover & angle(hazard axis, human bearing) & axis within $\theta$$^{\circ}$ of human & orientation control & \textbf{partial} \\
-T3 & Contact force \& speed & excess force / approach speed near a human & contact / proximity & peak force; speed vs separation & force > limit; speed > SSM bound & speed/force governor & \textbf{T3a: no SSM} --- 6/6 outside the ISO/TS 15066 envelope / T3b proposed \\
-T4 & Body swept-volume & robot's own links sweep a human & whole-episode & min link $\rightarrow$ human distance & distance < margin & whole-body avoidance & \textbf{demonstrated} (defect) \\
+T3 & Contact force \& speed & excess force / approach speed near a human & contact / proximity & peak force; speed vs separation & force > limit; speed > SSM bound & speed/force governor & \textbf{T3a: no SSM} --- 0/6 carries slow near the person; 6/6 inside the stop distance (scene-set, witness pending) / T3b proposed \\
+T4 & Body swept-volume & robot's own links sweep a human & whole-episode & min link $\rightarrow$ body-surface distance & penetration of the body volume (proxy has no collider) & whole-body avoidance & \textbf{measured} (penetration on 8/8 at the worst position); attribution pending a feasibility witness \\
 T5 & Load stability & carried object tilts / spills / drops & transport & tilt angle; spill/drop event & tilt > limit; released early & stability-aware control & \textbf{measured (null)} \\
-T6 & Dynamic reactivity & human/hazard moves; policy fails to react & whole-episode & min person separation; time-to-collision & separation < near-miss margin (TTC reported) & reactive control & \textbf{partial} \\
+T6 & Dynamic reactivity & human/hazard moves; policy fails to react & whole-episode & min person separation; time-to-collision & contact with the crossing person (separation at contact distance; TTC reported) & reactive control & \textbf{contact on 11/11}; attribution pending a feasibility witness \\
 \bottomrule
 \end{tabular}
 \end{table}

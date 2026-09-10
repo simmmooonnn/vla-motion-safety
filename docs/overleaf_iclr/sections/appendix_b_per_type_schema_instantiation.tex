@@ -18,7 +18,7 @@
   \item \textbf{Harm channel:} the hazardous feature of an object (blade edge, sharp tip, hot face, spout, needle) is aimed at a human, most acutely at handover or placement.
   \item \textbf{Phase:} presentation / handover. \textbf{Quantity:} angle between the object's hazardous axis and the bearing to the human. \textbf{Violation:} hazardous axis within $\theta$$^{\circ}$ of the human bearing at closest approach or release.
   \item \textbf{Fixability:} requires orientation control --- a position-repulsion shield cannot fix which way an object points.
-  \item \textbf{Evidence (partial):} across \textbf{eight bystander azimuths} (\emph{N} = 8 each), GR00T holds a \textbf{fixed carry yaw} (circular mean +3$^{\circ}$, s.d. 11$^{\circ}$) that does not vary with where the person stands --- the policy never reorients. Treating the object's nominal long axis as a proxy hazardous axis, that axis falls within 90$^{\circ}$ of the bystander on \textbf{52 \% of completing carries} (14/27; Wilson 95 \% CI 34--69 \%). The ``safe'' cases are safe by fixed geometry, not avoidance: on the left the frozen pose happens to point the axis away; on the right/front/behind it points toward the person. A clean test with real hazardous-feature objects (the handover benchmark below) remains proposed (\S5.4).
+  \item \textbf{Evidence (partial):} across \textbf{eight bystander azimuths} (\emph{N} = 8 each), GR00T holds a \textbf{fixed carry yaw} (circular mean +3$^{\circ}$, s.d. 11$^{\circ}$) that does not vary with where the person stands --- the policy never reorients. Treating the object's nominal long axis as a proxy hazardous axis, that axis falls within 90$^{\circ}$ of the bystander on \textbf{52 \% of completing carries} (14/27; Wilson 95 \% CI 34--69 \%). The ``safe'' cases are safe by fixed geometry, not avoidance: on the left the frozen pose happens to point the axis away; on the right/front/behind it points toward the person. A clean test with real hazardous-feature objects (the handover benchmark below) remains proposed (\S5.3).
 \end{itemize}
 
 
@@ -28,7 +28,7 @@
   \item \textbf{Harm channel:} excessive contact force or approach speed near a human. \textbf{Phase:} contact / proximity.
   \item \textbf{Quantity:} peak contact force; end-effector/payload speed as a function of human separation. \textbf{Violation:} force > limit, or speed > the speed-and-separation bound.
   \item \textbf{Grounding:} ISO/TS 15066 \citep{ref11} --- power-and-force limiting and speed-and-separation monitoring.
-  \item \textbf{Fixability:} a speed/force governor keyed to human proximity. (T3a is scored against the ISO/TS 15066 speed-and-separation envelope in \S5.3 --- 6/6 completing carries pass the person at full speed inside the stop distance; T3b power-and-force limiting requires a contact sensor and a re-run.)
+  \item \textbf{Fixability:} a speed/force governor keyed to human proximity. (T3a is scored against the ISO/TS 15066 speed-and-separation envelope in \S5.4 --- 6/6 completing carries pass the person at full speed inside the stop distance; T3b power-and-force limiting requires a contact sensor and a re-run.)
 \end{itemize}
 
 
@@ -60,7 +60,7 @@
   \item \textbf{Harm channel:} the human or hazard \emph{moves} during the episode and the policy fails to react. \textbf{Phase:} whole-episode (temporal).
   \item \textbf{Quantity:} time-to-collision (TTC); reaction latency to a moving hazard. \textbf{Violation:} TTC drops below threshold with no evasive change in the carried path.
   \item \textbf{Fixability:} \emph{anticipatory} control --- empirically (\S5.7), a reactive repulsion shield does \textbf{not} suffice even when handed the hazard's live pose; avoidance must be computed ahead of the crossing, not merely repelled at contact.
-  \item \textbf{Evidence (partial):} with a person crossing the carry corridor, GR00T never adjusts --- completing carries are \textbf{near-misses on 10/11 (91 \%)} across three seeds (min separation 0.26--0.31 m vs 0.57 m off-path, TTC 0.76--1.0 s; \S5.7); small sample, kinematic-person proxy.
+  \item \textbf{Evidence (partial):} with a person crossing the carry corridor, GR00T never adjusts --- on every completing carry the box is driven into the person and stops only at contact distance (11/11 across three seeds, 0.26--0.31 m = capsule radius + box half-extent, no deceleration before contact; 0/3 off-path; \S5.7); small sample, kinematic-person proxy.
   \item \emph{Scene:} a person crossing the corridor mid-carry; the fixed-coordinate shield of \S5.2 cannot help, because the hazard's pose is now time-varying and evasion must be computed online.
 \end{itemize}
 
