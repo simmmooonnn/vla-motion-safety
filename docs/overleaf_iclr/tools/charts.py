@@ -12,9 +12,9 @@ VIOL, SAFE, NEUT, AXIS = "#a4302a", "#2c7a67", "#9a9a9a", "#1f3d63"
 # ---------- Fig: violation rate by channel (GR00T, G1) ----------
 fig, ax = plt.subplots(figsize=(4.6, 2.2))
 chan = ["T1 keep-out", "T3a SSM", "T6 dynamic", "T4 body-sweep", "T2 orient.", "T5 load"]
-val  = [100, 100, 93, 25, 100, 0]
+val  = [100, 100, 91, 25, 100, 0]
 col  = [VIOL, VIOL, VIOL, VIOL, VIOL, SAFE]
-lab  = ["100% (10/10)", "6/6 outside SSM envelope", "93% (13/14)", "25% pooled; 100% worst", "0 reorient (8 azimuths)", "null (level carry)"]
+lab  = ["100% (10/10)", "6/6 outside SSM envelope", "91% (10/11)", "25% pooled; 100% worst", "0 reorient (8 azimuths)", "null (level carry)"]
 y = list(range(len(chan)))[::-1]
 ax.barh(y, val, color=col, height=0.62)
 ax.plot([25, 100], [y[3], y[3]], color=VIOL, lw=1.2)  # T4 whisker to worst position
@@ -54,7 +54,7 @@ names = ["GR00T · axis", "π0.5 · axis", "π0.5 · 3-D body"]; v = [25, 3, 53]
 ax.barh(yy, v, color=c, height=0.6)
 for yi, vi, li in zip(yy, v, l): ax.text(vi + 1.5, yi, li, va="center", fontsize=7.5, color="#333")
 ax.set_yticks(yy); ax.set_yticklabels(names); ax.set_xlim(0, 80); ax.set_xticks([0, 25, 50, 75])
-ax.set_title("T4 body-sweep: the metric decides", fontsize=8); ax.set_xlabel("%")
+ax.set_title("T4 body-sweep: one margin, two geometries", fontsize=8); ax.set_xlabel("%")
 fig.tight_layout(); fig.savefig(os.path.join(FIG, "fig_crosspolicy.pdf")); plt.close(fig)
 
 # ---------- Fig: bimodal clearance (real per-carry values if available) ----------

@@ -88,7 +88,9 @@ UNI = [
 ]
 def esc_text(t):
     """Escape a NON-math text segment for LaTeX and convert markdown inline markup."""
-    # protect existing latex commands? the md has none outside math; escape specials
+    # pass-through for \ref{...} written into the markdown (figure cross-references); everything else is escaped
+    refs = re.findall(r"\\ref\{[A-Za-z0-9:\-]+\}", t)
+    for i, r in enumerate(refs): t = t.replace(r, "@@REF%d@@" % i)
     t = t.replace("\\", r"\textbackslash{}")
     for a, b in [("&", r"\&"), ("%", r"\%"), ("#", r"\#"), ("_", r"\_"), ("~", r"\textasciitilde{}"), ("^", r"\textasciicircum{}")]:
         t = t.replace(a, b)
@@ -104,6 +106,7 @@ def esc_text(t):
     t = re.sub(r"\[(\d+)\]", r"\\citep{ref\1}", t)
     # section refs like §5.9 -> \S5.9
     t = t.replace("§", r"\S")
+    for i, r in enumerate(refs): t = t.replace("@@REF%d@@" % i, r)
     return t
 
 def smart_quotes(line):
@@ -129,6 +132,7 @@ def convert_inline(line):
 
 def heading_text(h):
     h = re.sub(r"^\d+(\.\d+)*\.?\s*", "", h).strip()          # strip leading numbers
+    h = re.sub(r"^Appendix\s+[A-Z]\.?\s*", "", h).strip()      # \appendix numbers it already
     return convert_inline(h)
 
 # ---------------------------------------------------------------- table conversion
@@ -266,7 +270,7 @@ FIGS = r"""
 \centering
 \begin{minipage}{0.49\linewidth}\centering\includegraphics[width=\linewidth]{figures/fig_t4_body.png}\end{minipage}\hfill
 \begin{minipage}{0.49\linewidth}\centering\includegraphics[width=\linewidth]{figures/fig_t6_crossing.png}\end{minipage}
-\caption{\textbf{Left, T4 --- body swept-volume:} reaching for the object, the hand makes 3-D contact with the bystander (0.000\,m, 8/8 right-pick). \textbf{Right, T6 --- dynamic reactivity:} a pedestrian crosses the carry path; the robot carries on without slowing (93\% near-miss).}
+\caption{\textbf{Left, T4 --- body swept-volume:} reaching for the object, the hand makes 3-D contact with the bystander (0.000\,m, 8/8 right-pick). \textbf{Right, T6 --- dynamic reactivity:} a pedestrian crosses the carry path; the robot carries on without slowing (10/11 completing carries within 0.30\,m).}
 \label{fig:t4t6}
 \end{figure}
 \begin{figure}[t]
@@ -299,8 +303,32 @@ FIGS = r"""
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_crosspolicy.pdf}
-\caption{\textbf{Cross-policy.} Left: the T1 keep-out defect recurs on $\pi_{0.5}$/Franka (22/22), including with the hazard rendered visible (16/16). Right: on T4 the metric decides the verdict --- scored to the person's axis $\pi_{0.5}$ looks far safer (3\%); scored in 3-D to the body surface its arm makes contact on 53\% of episodes.}
+\caption{\textbf{Cross-policy.} Left: the T1 keep-out defect recurs on $\pi_{0.5}$/Franka (22/22), including with the hazard rendered visible (16/16). Right: on T4 the scoring geometry sets the rate --- 0.10\,m to the person's axis gives 3\% ($\pi_{0.5}$) and 25\% (GR00T); 0.10\,m to the body surface ($\equiv$ 0.26\,m to the axis) gives 53\%; see Fig.~\ref{fig:t4thr}.}
 \label{fig:crosspolicy}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_t4_threshold.pdf}
+\caption{\textbf{T4: the threshold, not the policy, sets the rate.} Left: GR00T violation rate versus the radial threshold to the bystander's axis, per position and pooled (all 32 episodes). Right: the same curve for $\pi_{0.5}$ under the axis metric and under the 3-D body-surface metric (0.16\,m-radius capsule + head sphere); a 0.10\,m surface margin is the same test as 0.26\,m to the axis. The threshold-free number is actual contact: $\pi_{0.5}$ 8/32, GR00T 8/8 at its worst position.}
+\label{fig:t4thr}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.72\linewidth]{figures/fig_t1_uncond.pdf}
+\caption{\textbf{T1, every episode.} Furthest progress of the carried box along the shelf-to-bin line, per hazard and condition. Every non-completing episode (grey) stalls at the shelf, before the hazard is on the path; every completing carry (red) passes through the keep-out. Hiding the hazard raises completion (Fisher $p=0.03$) but does not change where the failures occur.}
+\label{fig:t1uncond}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_topdown_overlay.pdf}
+\caption{\textbf{Carried paths, top-down, stove hazard.} Twelve episodes per condition; red = completing carry through the keep-out (dashed circle), green = completing and clear, grey = non-completing (never leaves the shelf). Naming or hiding the hazard leaves the corridor path unchanged; the reactive shield routes every completing carry around the zone.}
+\label{fig:overlay}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.78\linewidth]{figures/fig_ssm_envelope.pdf}
+\caption{\textbf{T3a against the ISO/TS 15066 speed-and-separation envelope.} Payload speed versus carried-object--person separation for the six completing carries with the bystander present (0.2\,s smoothing), with the allowed speed $v_{\mathrm{allow}}(d)$ under the walking-human, lenient and stationary-human parameterizations and the ISO 10218-1 reduced speed. Every carry runs at 0.2--0.45\,m/s inside $d_0 = 0.94$\,m; none decelerates toward the person.}
+\label{fig:ssm}
 \end{figure}
 \begin{figure}[t]
 \centering
@@ -323,7 +351,7 @@ for fname, parts in files:
 # abstract
 abs_tex = "\n".join(convert_inline(l) for l in abstract if l.strip())
 
-MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.24).
+MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.25).
 %% Drop the official iclr2027_conference.sty / .bst from the ICLR author kit next to this file.
 \documentclass{article}
 \usepackage{iclr2027_conference,times}
@@ -354,9 +382,18 @@ Johns Hopkins University \\
 \bibliography{refs}
 \bibliographystyle{iclr2027_conference}
 
+@@APPENDIX@@
+
 \end{document}
 """
-MAIN = MAIN.replace("@@ABSTRACT@@", abs_tex).replace("@@INPUTS@@", "\n".join(r"\input{sections/%s}" % f for f in inputs))
+inp_lines = []
+for f in inputs:
+    if f.startswith("appendix") and r"\appendix" not in inp_lines: inp_lines.append(r"\appendix")
+    inp_lines.append(r"\input{sections/%s}" % f)
+# the appendix goes after the bibliography (ICLR: references do not count toward the page limit; appendix follows)
+body_in = [l for l in inp_lines if not (l == r"\appendix" or "appendix" in l)]
+app_in = [l for l in inp_lines if l == r"\appendix" or "appendix" in l]
+MAIN = MAIN.replace("@@ABSTRACT@@", abs_tex).replace("@@INPUTS@@", "\n".join(body_in)).replace("@@APPENDIX@@", "\n".join(app_in))
 open(os.path.join(OUT, "main.tex"), "w", encoding="utf-8").write(MAIN)
 print("sections:", inputs)
 print("bib entries:", len(bib))

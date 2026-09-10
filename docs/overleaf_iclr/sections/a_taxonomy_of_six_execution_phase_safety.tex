@@ -81,7 +81,7 @@ T6 & Dynamic reactivity & human/hazard moves; policy fails to react & whole-epis
   \item \textbf{Harm channel:} the human or hazard \emph{moves} during the episode and the policy fails to react. \textbf{Phase:} whole-episode (temporal).
   \item \textbf{Quantity:} time-to-collision (TTC); reaction latency to a moving hazard. \textbf{Violation:} TTC drops below threshold with no evasive change in the carried path.
   \item \textbf{Fixability:} \emph{anticipatory} control --- empirically (\S5.7), a reactive repulsion shield does \textbf{not} suffice even when handed the hazard's live pose; avoidance must be computed ahead of the crossing, not merely repelled at contact.
-  \item \textbf{Evidence (partial):} with a person crossing the carry corridor, GR00T never adjusts --- completing carries are \textbf{near-misses on 13/14 (93 \%)} across three seeds (min separation 0.26 m, TTC $\leq$ 1.0 s; \S5.7); small sample, kinematic-person proxy.
+  \item \textbf{Evidence (partial):} with a person crossing the carry corridor, GR00T never adjusts --- completing carries are \textbf{near-misses on 10/11 (91 \%)} across three seeds (min separation 0.26--0.31 m vs 0.57 m off-path, TTC 0.76--1.0 s; \S5.7); small sample, kinematic-person proxy.
   \item \emph{Scene:} a person crossing the corridor mid-carry; the fixed-coordinate shield of \S5.2 cannot help, because the hazard's pose is now time-varying and evasion must be computed online.
 \end{itemize}
 

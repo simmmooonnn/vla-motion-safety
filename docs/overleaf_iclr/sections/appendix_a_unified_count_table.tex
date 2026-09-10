@@ -1,0 +1,52 @@
+\section{Unified count table}
+
+
+
+\begin{table}[t]
+\centering\scriptsize\setlength{\tabcolsep}{3pt}
+\caption{Every GR00T cell reported in this paper, plus the $\pi_{0.5}$ body-sweep cells, with a common denominator. Attempted = episodes run; completing = box delivered within 0.30 m of the bin; violating = completing carries whose carried-object clearance fell below the keep-out (T1), episodes whose closest link fell inside the margin (T4, all episodes), or completing carries whose minimum person separation fell below 0.30 m (T6). Wilson 95 \% intervals. Pooled rows concatenate the listed runs; seeds are 42 / 7 / 123 unless stated. Person proxy = the standing capsule-plus-mesh bystander of \S5.1 placed on the carry path.}
+\label{tab:tablev}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.280\linewidth}>{\raggedright\arraybackslash}p{0.068\linewidth}>{\raggedright\arraybackslash}p{0.076\linewidth}>{\raggedright\arraybackslash}p{0.167\linewidth}>{\raggedright\arraybackslash}p{0.235\linewidth}>{\raggedright\arraybackslash}p{0.159\linewidth}@{}}
+\toprule
+Channel / cell & attempted & completing & violating / completing & violation rate (Wilson 95 \% CI) & completing rate \\
+\midrule
+T1 electric, keep-out 0.20 m --- blind & 12 & 3 & 3 / 3 & 100 \% [44, 100] & 25 \% \\
+blind, 3 seeds & 36 & 16 & 16 / 16 & 100 \% [81, 100] & 44 \% \\
+named & 12 & 6 & 6 / 6 & 100 \% [61, 100] & 50 \% \\
+hidden & 12 & 7 & 7 / 7 & 100 \% [65, 100] & 58 \% \\
+off-path control, 3 seeds & 35 & 11 & 0 / 11 & 0 \% [0, 26] & 31 \% \\
+position sweep A/B/C & 36 & 24 & 24 / 24 & 100 \% [86, 100] & 67 \% \\
++ shield, 3 seeds & 36 & 12 & 6 / 12 & 50 \% [25, 75] & 33 \% \\
+T1 hot stove, keep-out 0.30 m --- blind & 12 & 6 & 6 / 6 & 100 \% [61, 100] & 50 \% \\
+blind, 3 seeds & 36 & 16 & 16 / 16 & 100 \% [81, 100] & 44 \% \\
+named & 12 & 4 & 4 / 4 & 100 \% [51, 100] & 33 \% \\
+hidden & 12 & 7 & 7 / 7 & 100 \% [65, 100] & 58 \% \\
+position sweep A/B/C & 36 & 12 & 12 / 12 & 100 \% [76, 100] & 33 \% \\
++ shield, 3 seeds & 35 & 12 & 0 / 12 & 0 \% [0, 24] & 34 \% \\
+blind, powered re-run (N = 24) & 24 & 8 & 8 / 8 & 100 \% [68, 100] & 33 \% \\
++ shield, powered re-run (N = 24) & 24 & 8 & 0 / 8 & 0 \% [0, 32] & 33 \% \\
+explicit safety command (N = 24) & 24 & 7 & 7 / 7 & 100 \% [65, 100] & 29 \% \\
+T1 person proxy, keep-out 0.20 m --- blind & 11 & 1 & 1 / 1 & 100 \% [21, 100] & 9 \% \\
+blind, second run & 16 & 4 & 4 / 4 & 100 \% [51, 100] & 25 \% \\
+named & 12 & 1 & 1 / 1 & 100 \% [21, 100] & 8 \% \\
+hidden (person absent) & 12 & 6 & 6 / 6 & 100 \% [61, 100] & 50 \% \\
++ shield, three runs & 39 & 10 & 2 / 10 & 20 \% [6, 51] & 26 \% \\
+T1 two hazards (multi), 0.20 m --- blind, 2 seeds & 24 & 6 & 6 / 6 & 100 \% [61, 100] & 25 \% \\
++ shield, 2 seeds & 24 & 6 & 0 / 6 & 0 \% [0, 39] & 25 \% \\
+T1 photorealistic YCB hazard, 0.20 m --- blind (mustard / soup), 3 runs & 42 & 22 & 22 / 22 & 100 \% [85, 100] & 52 \% \\
++ shield, 3 runs & 34 & 13 & 1 / 13 & 8 \% [1, 33] & 38 \% \\
+T4 body sweep, GR00T\textperiodcentered{}G1, axis metric, margin 0.10 m --- pick right & 8 & (all) & 6 / 8 & 75 \% [41, 93] & contact (0 mm): 1 / 8 \\
+pick left & 8 & (all) & 0 / 8 & 0 \% [0, 32] & contact (0 mm): 0 / 8 \\
+bin right & 8 & (all) & 0 / 8 & 0 \% [0, 32] & contact (0 mm): 0 / 8 \\
+bin left & 8 & (all) & 2 / 8 & 25 \% [7, 59] & contact (0 mm): 0 / 8 \\
+pooled four positions & 32 & (all) & 8 / 32 & 25 \% [13, 42] & contact (0 mm): 1 / 32 \\
+pick right, 3-D body surface & 8 & (all) & 8 / 8 & 100 \% [68, 100] & contact (0 mm): 8 / 8 \\
+T4 body sweep, $\pi_{0.5}$\textperiodcentered{}Franka, axis metric --- pooled four positions & 32 & (all) & 1 / 32 & 3 \% [1, 16] & contact (0 mm): 1 / 32 \\
+T4 body sweep, $\pi_{0.5}$\textperiodcentered{}Franka, 3-D body surface --- pooled four positions & 32 & (all) & 17 / 32 & 53 \% [36, 69] & contact (0 mm): 8 / 32 \\
+T6 crossing person, GR00T\textperiodcentered{}G1 --- on-path, seeds 42 / 7 / 123 & 24 & 11 & 10 / 11 & 91 \% [62, 98] (near-miss < 0.30 m) & 46 \% \\
+on-path, mid-corridor start & 8 & 2 & 2 / 2 & 100 \% [34, 100] (near-miss < 0.30 m) & 25 \% \\
+off-path control & 8 & 3 & 0 / 3 & 0 \% [0, 56] (near-miss < 0.30 m) & 38 \% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
