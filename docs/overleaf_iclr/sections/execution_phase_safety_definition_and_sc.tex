@@ -1,0 +1,46 @@
+\section{Execution-Phase Safety: Definition and Schema}
+
+
+
+\subsection{The third axis}
+
+
+Let a task be specified by an instruction $\ell$ and a goal predicate $g$ on terminal states. Instruction safety is a predicate on $\ell$; outcome safety is a predicate on the terminal state $s_T$. \textbf{Execution-phase safety} is a predicate on the \emph{trajectory} $\tau = (s_0, a_0, s_1, \dots, s_T)$ that is not reducible to a predicate on $\ell$ or on $s_T$ alone. Formally, a harm channel $h$ defines a per-step hazard functional $\phi_h(s_t)$ (a clearance, an angle, a force, a tilt), and an execution-phase safety property requires
+
+\[\forall t:\ \psi_h\big(\phi_h(s_t)\big) = \text{safe},\]
+
+where $\psi_h$ is a violation predicate. Crucially, a trajectory can satisfy the instruction and the goal ($\ell$ safe, $g(s_T)$ true) while violating $\psi_h$ at some intermediate $t$. Execution-phase safety is the conjunction of such per-step properties across harm channels.
+
+This is why success-conditioning is the default for transport hazards (\S5): a carry that fails to traverse never reaches a hazard on the path, so its non-violation is not evidence of safety. We condition on completion \textbf{when non-completion removes exposure to the hazard}, and report over all episodes when it does not --- as for the pick-phase body-sweep of T4 (\S5.5), where the reach happens regardless of eventual delivery --- isolating `\texttt{harmful how'' from }`failed what.''
+
+
+\subsection{The definition schema}
+
+
+Each safety \textbf{type} is specified as one tuple so that the taxonomy is a set of measurements, not a wish-list:
+
+\begin{table}[t]
+\centering\small
+\label{tab:t1}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Field & Meaning \\
+\midrule
+\textbf{Harm channel} & the physical mechanism of harm \\
+\textbf{Task phase} & when it manifests --- transport / presentation / contact / whole-episode \\
+\textbf{Measured quantity} & the geometric or physical scalar $\phi_h$ \\
+\textbf{Violation predicate} & the boolean $\psi_h$ that counts as unsafe \\
+\textbf{Metric} & the reported statistic, \textbf{success-conditioned}, with a confidence interval \\
+\textbf{Fixability class} & addressable by \emph{prompting}, by \emph{perception}, or only by an \emph{external safety layer} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The \textbf{fixability class} is the load-bearing field. It converts each type from a description of a failure into a claim about the \emph{kind} of intervention that can remedy it, and it is the field our empirical results speak to most directly (\S6). A failure that persists when the hazard is named in the instruction (prompting) and when it is rendered versus hidden (perception) is, by elimination, a behavioral-competence failure that only an architectural or external layer can address.
+
+
+\subsection{The design space behind the taxonomy}
+
+
+The six types are the \emph{harm-channel} slice of a larger design space we use to author scenarios. Each scenario fixes four axes and varies one: \textbf{what makes the payload dangerous} (sharp, hot, toxic or spraying, spilling, heavy, electrical, flame --- each with its own safe distance and danger \emph{geometry}: a blade is directional, a spray is a cone, a full cup is tilt-sensitive); \textbf{who is vulnerable} (an adult, a child, a specific body part, another object); \textbf{the person's state} (seated, static in the path, moving predictably, stepping in reactively, unaware, reaching); and \textbf{the safe move demanded} (detour, reorient the payload, slow near the person, raise the hazard, wait, or abort). Crossing the axes yields the scenario families a full suite would enumerate --- position clearance, payload orientation, dynamic or unaware humans, semantic ``danger twins'' that share geometry and differ only in meaning, and trade-offs such as choosing the safer of two goals --- of which T1--T6 are the measurable harm channels. The framework is general; in this paper we instantiate it \textbf{in depth} on the one cell no existing benchmark occupies --- a locomoting humanoid carrying a hazard past a passive bystander --- and show its \textbf{breadth} by replication across hazard classes and scenes (\S5.8) and across a second policy and embodiment (\S5.9), rather than by enumerating every cell.
+

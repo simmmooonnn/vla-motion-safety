@@ -1,0 +1,12 @@
+# LaTeX build artifacts (regenerate with: latexmk -pdf main.tex)
+main.pdf
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+missfont.log
+_build.log
