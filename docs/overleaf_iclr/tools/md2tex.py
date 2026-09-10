@@ -94,9 +94,9 @@ def esc_text(t):
     t = t.replace("\\", r"\textbackslash{}")
     for a, b in [("&", r"\&"), ("%", r"\%"), ("#", r"\#"), ("_", r"\_"), ("~", r"\textasciitilde{}"), ("^", r"\textasciicircum{}")]:
         t = t.replace(a, b)
-    for a, b in UNI: t = t.replace(a, b)
-    # inline code
+    # inline code BEFORE the quote mapping: curly quotes become ``...'' and would be mistaken for code delimiters
     t = re.sub(r"`([^`]+)`", lambda m: r"\texttt{" + m.group(1) + "}", t)
+    for a, b in UNI: t = t.replace(a, b)
     # bold / italic (bold first)
     t = re.sub(r"\*\*(.+?)\*\*", r"\\textbf{\1}", t)
     t = re.sub(r"(?<![\w\\])\*(?!\s)(.+?)(?<!\s)\*(?!\w)", r"\\emph{\1}", t)
@@ -363,7 +363,7 @@ MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v
 \graphicspath{{./}{figures/}}
 % \iclrfinalcopy  % uncomment for the camera-ready (shows authors)
 
-\title{Execution-Phase Safety for Embodied VLA Agents:\\ A Taxonomy and a Case for Behavioral Safety Competence}
+\title{Execution-Phase Safety for Embodied VLA Agents:\\ A Diagnostic Benchmark for How a Safe Task Gets Done}
 
 \author{Zijian Su \\
 Johns Hopkins University \\
