@@ -211,3 +211,19 @@ updated.
     config or far more episodes); E2 under-powered (power up alongside); electric-shield hang. Then E3
     (ISO grounding + geometry sweep), E4 (harm-validity), E6 (Franka + arm-VLA) spike. E6 is the biggest
     reviewer lever (single-policy → multi-policy breadth).
+- **2026-09-09 — REPOSITIONED (v0.24) after a web-verified literature re-check; T3 SSM done offline.**
+  - **Landscape (verified):** LIBERO-Safety (ECCV'26) already has a human proxy + dynamic perturbation on a
+    fixed-base arm (10 policies); SafeVLA-Bench (9 policies, ISO 200 N force, no human); Safety-CHORES (mobile,
+    no human); handover benchmarks own "presentation orientation" (cooperating receiver). Reviewer norm is now
+    6–10 policies. **Defensible novelty = the intersection:** locomoting humanoid + carried hazard past a
+    *passive* bystander + human-referenced SSM/PFL/orientation/whole-body sweep + fixability lens.
+  - **Strategy:** deep/focused for ICLR, packaged "framework general, evidence focused" — the original 4-axis ×
+    Tier A–E design space (`safety-scenarios.md`) is now §3.3; T1/T6 "first" claims softened; §2 + Table I
+    rewritten as an 8-row honest coverage matrix; §8 overlap bullet; handover refs [32]–[34].
+  - **T3 SSM (new, no GPU):** scored the 6 completing person-present carries against the ISO/TS 15066 SSM
+    envelope — closest approach med 0.157 m at 0.343 m/s where the allowed speed is 0 (stop distance 0.94 m
+    conservative / 0.32 m lenient): **6/6 violate**; speed *rises* as separation shrinks (0/6 slow near vs far)
+    → no speed-and-separation monitoring. T3a upgraded from "null" to a standards-grounded defect (§5.3).
+  - **Remaining before ICLR:** ② T6 anticipatory shield (staged; chaowei GPU down since 9/8, needs admin
+    reboot); ④ a different-architecture 3rd policy (OpenVLA) — 2→3 real policies; ⑤ minimal release artifact;
+    (opt.) real-robot demo. Overleaf seed = this draft.
