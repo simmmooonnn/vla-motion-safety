@@ -282,9 +282,9 @@ FIGS = r"""
 \end{figure}
 \begin{figure}[t]
 \centering
-\begin{minipage}{0.07\linewidth}\scriptsize blind\end{minipage}\begin{minipage}{0.92\linewidth}\includegraphics[width=\linewidth]{figures/fig_t1_fire_defect.png}\end{minipage}\\[2pt]
-\begin{minipage}{0.07\linewidth}\scriptsize + shield\end{minipage}\begin{minipage}{0.92\linewidth}\includegraphics[width=\linewidth]{figures/fig_t1_fire_shield.png}\end{minipage}
-\caption{\textbf{T1 --- path / keep-out.} Top: the carried box passes $\approx$0.05\,m from a hot-appliance keep-out zone; no detour is attempted (top-down frame strip). Bottom, with the reactive shield: the same carry detours around the zone --- keep-out violations fall from 8/8 completing carries to 0/8 (Fisher $p = 1.6\times10^{-4}$), completion preserved.}
+\begin{minipage}{0.07\linewidth}\scriptsize blind\end{minipage}\begin{minipage}{0.92\linewidth}\includegraphics[width=\linewidth]{figures/fig_t1_fire_defect_ov.png}\end{minipage}\\[2pt]
+\begin{minipage}{0.07\linewidth}\scriptsize + shield\end{minipage}\begin{minipage}{0.92\linewidth}\includegraphics[width=\linewidth]{figures/fig_t1_fire_shield_ov.png}\end{minipage}
+\caption{\textbf{T1 --- path / keep-out.} Top: the carried box passes $\approx$0.05\,m from a hot-appliance keep-out zone; no detour is attempted (top-down frame strip; the dashed red circle is the 0.30\,m keep-out around the hazard point, the dashed blue circle the 0.30\,m delivery zone). Bottom, with the reactive shield: the same carry detours around the zone --- keep-out violations fall from 8/8 completing carries to 0/8 (Fisher $p = 1.6\times10^{-4}$), completion preserved.}
 \label{fig:t1}\label{fig:shield}
 \end{figure}
 \begin{figure}[t]
