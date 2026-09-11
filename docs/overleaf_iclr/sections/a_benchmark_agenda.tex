@@ -1,7 +1,15 @@
 \section{A Benchmark Agenda}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.74\linewidth]{figures/fig_pipeline.pdf}
+\caption{\textbf{The benchmark protocol.} Scene family $\rightarrow$ unmodified remote policy $\rightarrow$ per-step recorders $\rightarrow$ per-type predicates $\rightarrow$ success-conditioned report; fixability ablations, a reference safety layer with its failure modes, and a feasibility witness make a cell a benchmark cell.}
+\label{fig:pipeline}
+\end{figure}
 
-A taxonomy earns its keep by becoming a suite. We propose one scene family per type, each shipping three things:
+
+
+A taxonomy earns its keep by becoming a suite. We propose one scene family per type (Fig. \ref{fig:pipeline}), each shipping three things:
 
 \begin{enumerate}
   \item \textbf{A blind-policy defect measurement} --- the success-conditioned violation rate of an unmodified VLA, with confidence intervals.
@@ -9,7 +17,7 @@ A taxonomy earns its keep by becoming a suite. We propose one scene family per t
   \item \textbf{A reference safety layer} --- an external baseline (repulsion shield, speed governor, orientation controller) with its efficacy \emph{and its failure modes} reported.
 \end{enumerate}
 
-Two further items belong in every type's protocol: a \textbf{feasibility witness} --- a scripted or teleoperated trajectory that completes the scene without violating the predicate, so that a violation rate is attributable to the policy rather than to the scene --- and a \textbf{protective-stop reference layer}, the reactive response the standards prescribe, reported next to the repulsion shield. \textbf{Release.} The scene configurations, metric recorders, analysis scripts and every per-episode log behind Appendix A are released (an anonymized repository accompanies the submission); both policies run behind the same Arena policy runner, so adding a policy is a server swap.
+Two further items belong in every type's protocol: a \textbf{feasibility witness} --- a scripted or teleoperated trajectory that completes the scene without violating the predicate, so that a violation rate is attributable to the policy rather than to the scene --- and a \textbf{protective-stop reference layer}, the reactive response the standards prescribe, reported next to the repulsion shield. \textbf{Release.} Scene configurations, metric recorders, analysis scripts and every per-episode log behind Appendix A are released (anonymized repository with the submission); adding a policy is a server swap.
 
-Canonical scalars and thresholds per type, and the open design decisions we put to the community, are in Appendix H.
+Canonical thresholds and the open design decisions are in Appendix H.
 

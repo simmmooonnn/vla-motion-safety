@@ -1,32 +1,16 @@
 \section{Empirical Spine}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\linewidth]{figures/fig_t1_fire_defect.png}\\[2pt]
-\includegraphics[width=0.9\linewidth]{figures/fig_t1_fire_shield.png}
-\caption{\textbf{T1 --- path / keep-out.} Top: the carried box passes $\approx$0.05\,m from a hot-appliance keep-out zone; no detour is attempted (top-down frame strip). Bottom, with the reactive shield: the same carry detours around the zone --- keep-out violations fall from 8/8 completing carries to 0/8 (Fisher $p = 1.6\times10^{-4}$), completion preserved.}
-\label{fig:t1}\label{fig:shield}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\linewidth]{figures/fig_t6_contact.pdf}
-\caption{\textbf{T6: the carried box stops only on contact.} Left: carried-box speed around the closest approach for the eleven completing on-path carries (three seeds) and the three off-path controls; on-path the box arrives at contact distance without slowing (0.25--0.37\,m/s one step before), is then held there for 2--3.5\,s in 6/11 carries and brushes past in 5/11; off-path the same corridor is traversed without a stop. Right: box--person separation; every on-path minimum sits at the contact distance (capsule radius 0.16\,m + box half-extent), and the 0.50\,m live-tracking shield (dashed) leaves it there.}
-\label{fig:t6contact}
-\end{figure}
-
-
 
 
 \subsection{Setup}
 
 
-We evaluate GR00T N1.6 \citep{ref5,ref13} driving a Unitree G1 in NVIDIA Isaac Sim via IsaacLab-Arena \citep{ref14,ref15} on a shelf-to-bin box carry: pick a box from a shelf, walk $\approx$ 1.9 m down a corridor, release it in a bin (Fig. \ref{fig:overview}). Into the corridor we place a hazard --- a live electrical strip, a hot stove, or a standing person proxy (a 0.16 m-radius capsule plus a head sphere) --- with a keep-out radius of 0.20 m (strip, person) or 0.30 m (stove); beside the workspace, a bystander for the body-sweep channel; and, for T6, a person crossing the corridor as a kinematic capsule with a collider at 0.06 m/s. The static proxies carry no collider, so their ``contacts'' are geometric penetrations of the body volume; only the crossing person can be hit. Per-step recorders log the carried object's pose (clearance, yaw, tilt), every robot link's pose (link clearance, with a 3-D body-surface variant) and the moving person's separation and time-to-collision. GR00T emits a decoupled whole-body action --- a navigation command plus arm and torso targets --- executed by a lower-body locomotion policy that sees neither language nor image, so the corridor path is GR00T's own output (Appendix E.1 discusses the attribution and its caveat). A carry \emph{completes} if the box ends within 0.30 m of the bin; violation rates are conditioned on completion, reported with Wilson 95 \% intervals and tested with Fisher's exact or McNemar's test on episode-level outcomes. Appendix C gives thresholds, seeds and sweeps; Appendix A lists every cell; Table~\ref{tab:III} summarizes.
+We evaluate GR00T N1.6 \citep{ref5,ref13} driving a Unitree G1 in NVIDIA Isaac Sim via IsaacLab-Arena \citep{ref14,ref15} on a shelf-to-bin box carry: pick a box from a shelf, walk $\approx$ 1.9 m down a corridor, release it in a bin (Fig. \ref{fig:overview}). Into the corridor we place a hazard --- a live electrical strip, a hot stove, or a standing person proxy (a 0.16 m-radius capsule plus a head sphere) --- with a keep-out radius of 0.20 m (strip, person) or 0.30 m (stove); beside the workspace, a bystander for the body-sweep channel; and, for T6, a person crossing the corridor as a kinematic capsule with a collider at 0.06 m/s. The static proxies carry no collider, so their ``contacts'' are geometric penetrations of the body volume; only the crossing person can be hit. Per-step recorders log the carried object's pose, every robot link's pose (with a 3-D body-surface variant) and the moving person's separation and time-to-collision. The corridor path is GR00T's own output: its navigation command is executed by a lower-body policy that sees neither language nor image (Appendix E.1). A carry \emph{completes} if the box ends within 0.30 m of the bin; violation rates are conditioned on completion, reported with Wilson 95 \% intervals and tested with Fisher's exact or McNemar's test on episode-level outcomes. Appendix C gives thresholds, seeds and sweeps; Appendix A lists every cell and Fig. \ref{fig:scatter} plots each cell's completion against its conditioned violation; Table~\ref{tab:III} summarizes.
 
 
 \begin{table}[t]
 \centering\scriptsize\setlength{\tabcolsep}{3pt}
-\caption{Headline results per channel. GR00T N1.6 on the G1 (all channels) and $\pi_{0.5}$ on the Franka (T1, T4); completing = delivered within 0.30 m of the bin; Wilson 95 \% intervals; command = explicit safety instruction (paired seeds, McNemar); shield = oracle-fed repulsion. Every cell in Appendix A.}
+\caption{Headline results per channel. GR00T\textperiodcentered{}G1 (all channels), $\pi_{0.5}$\textperiodcentered{}Franka (T1, T4); Wilson 95 \% intervals; command = explicit safety instruction (paired, McNemar); shield = oracle-fed repulsion; every cell in Appendix A.}
 \label{tab:III}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.078\linewidth}>{\raggedright\arraybackslash}p{0.122\linewidth}>{\raggedright\arraybackslash}p{0.261\linewidth}>{\raggedright\arraybackslash}p{0.091\linewidth}>{\raggedright\arraybackslash}p{0.161\linewidth}>{\raggedright\arraybackslash}p{0.191\linewidth}@{}}
 \toprule

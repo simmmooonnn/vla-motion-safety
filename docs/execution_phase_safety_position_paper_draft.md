@@ -1,6 +1,6 @@
 # Execution-Phase Safety for VLA Agents: A Diagnostic Benchmark for How a Safe Task Gets Done
 
-*Diagnostic-benchmark paper — draft v0.29 · 2026-09-10*
+*Diagnostic-benchmark paper — draft v0.30 · 2026-09-10*
 *Author: Zijian Su (Johns Hopkins University) · co-authors / advisor: [TBD]*
 *Platform: GR00T N1.6 · NVIDIA Isaac Sim / IsaacLab-Arena · Unitree G1 · cross-policy: π0.5 on Franka*
 
@@ -14,7 +14,7 @@
 
 ## Abstract
 
-Vision–language–action (VLA) safety is judged at two endpoints: whether the instruction should be followed and whether the end state is acceptable. Neither constrains *how* the task is carried out. We define **execution-phase safety** — harm done while a nominally safe task is completed: along the path, in the pose, at the speed, with the body, with the load, or by not reacting to a moving person — as a third axis, give it a six-type taxonomy (T1–T6) of measurable tuples with a fixability class, and instantiate it as a diagnostic benchmark on the cell no existing suite covers: a locomoting humanoid (GR00T N1.6 on a Unitree G1 in Isaac Sim) carrying a hazard past a passive bystander, with two channels ported to π0.5 on a Franka arm. Every carry that completes the task passes through the hazard's keep-out zone (GR00T 109/109 completing carries pooled over hazards, positions, seeds and appearance; π0.5 22/22, and 16/16 with the hazard rendered visible); explicit safety commands do not change this on either policy; an oracle-fed external shield does (8/8 → 0/8). The robot's own arm enters the bystander's body volume, the carried object passes a person at full speed inside the ISO/TS 15066 stop distance (6/6), and a slowly crossing person is reached without any slowing (11/11), the box stalling against them in 6/11 carries. The scoring geometry, not the policy, sets several of these rates; what a policy owns, we argue, is not the safety function but the demand it places on it. Scenes, metrics and per-episode logs are released.
+Vision–language–action (VLA) safety is judged at two endpoints: whether the instruction should be followed and whether the end state is acceptable. Neither constrains *how* the task is carried out. We define **execution-phase safety** — harm done while a nominally safe task is completed: along the path, in the pose, at the speed, with the body, with the load, or by not reacting to a moving person — as a third axis, give it a six-type taxonomy (T1–T6) of measurable tuples with a fixability class, and instantiate it as a diagnostic benchmark on the cell no existing suite covers: a locomoting humanoid (GR00T N1.6 on a Unitree G1 in Isaac Sim) carrying a hazard past a passive bystander, with two channels ported to π0.5 on a Franka. Every carry that completes the task passes through the hazard's keep-out zone (GR00T 109/109 pooled completing carries; π0.5 22/22, 16/16 with the hazard rendered visible); explicit safety commands do not change this on either policy; an oracle-fed external shield does (8/8 → 0/8). The robot's own arm enters the bystander's body volume, the carried object passes a person at full speed inside the ISO/TS 15066 stop distance (6/6), and a slowly crossing person is reached without any slowing (11/11), the box stalling against them in 6/11 carries. The scoring geometry, not the policy, sets several of these rates; what a policy owns, we argue, is not the safety function but the demand it places on it. Scenes, metrics and per-episode logs are released.
 
 > **中文摘要**(译文,供作者参考;非存档正文——英文投稿时移除或移入补充材料）。现有 VLA 安全研究隐含两条轴:该不该做(指令安全)与终态是否可接受(结果安全),都在判断"做什么",都不约束"怎么做"。我们提出第三条轴——**执行期安全**:合格的 VLA 能完成一个表面安全的任务,却在执行过程中造成伤害(路径、递物朝向、近人力/速度、机体扫掠体、负载稳定、对移动人的反应)。我们给出六类可度量类型(T1–T6),每类按〈伤害通道·发生阶段·度量量·违规判据·带置信区间的指标·可修性〉六元组定义,并在 GR00T N1.6 + Isaac Sim + Unitree G1 上给出实测脊柱(证据的局限也如实说明):T1 路径类——**凡是走完全程的搬运,100%(10/10)穿过危害区,无一绕行**;其余 episode 早期失败、未走完(非条件化违规率仅 29%,且失败是"没走"而非"绕路")。指令点名危害或渲染危害**未检出行为改变**——但违规封顶导致消融欠功效,只能说"未检出效应"而非"已证不变";对逼真物体外观不变;外部(oracle 喂坐标的)护盾在加大样本的火灾复跑上清零(完成搬运违规 8/8→0/8,Fisher p<0.0001,完成率不降);但对动态横穿(T6),即便喂给行人实时位姿,反应式护盾也**修不好**(需前瞻避让,§5.7)。T3a 按 episode 重算后**未见人在场对速度有可靠调控**(episode 级 CI 重叠;之前每步分析的 ~7% 效应是伪重复)。核心是一个**可证伪的假设**(与证据一致但未被证实):执行期失败是模仿训练分布里缺失的行为能力,需架构/外挂层而非更好的提示词——我们设计每类的基准来用足够功效检验它。
 
@@ -36,7 +36,7 @@ Existing VLA-safety benchmarks score trajectory predicates with no human in the 
 4. **A cross-cutting hypothesis (§6):** the T1 failure is unmoved by naming or rendering the hazard, consistent with a missing behavioral competence rather than a prompting or recognition gap — framed as the taxonomy's central, falsifiable question, not a settled result.
 5. **A benchmark protocol and release (§7).** A per-type protocol — defect measurement, fixability ablations, a reference safety layer, a feasibility witness — with the scenes, metric recorders and per-episode logs released so that further policies are a server swap away.
 
-**What the policy should own.** A certified robot never relies on its task policy for the safety function: speed-and-separation monitoring, protective stops and force limits live in a safety-rated external layer (ISO 10218-1/-2:2025 [35], [36]; ISO 13482 [37]; and ISO/IEC TR 5469 [38] on AI inside safety functions), and a learned policy earns no risk-reduction credit. We do not argue otherwise. Our claim is narrower and, we think, more useful: the policy's execution-phase behavior sets the **demand rate** on that layer — how often a protective stop fires, which for a biped is itself a fall hazard and a loss of availability — and a geometric stop cannot supply the competences T2 and T5 name — a stopped robot still points the blade and still tilts the cup — while for T6 the protective stop *is* the prescribed response (Appendix D), whose firing rate a policy that walks into people would set at one per crossing. Execution-phase safety is therefore the measurable part of a policy's behavior that decides how much the external layer has to do, and whether it can do it at all. Our T3a measurement is exactly such a demand number: every completing carry (6/6) enters the distance at which a speed-and-separation layer would have to stop the robot (§5.4), so an SSM layer wrapped around this policy would fire on every carry; for a legged robot each such stop is also a balance transient and a loss of availability, a cost we name but do not measure here.
+**What the policy should own.** A certified robot never relies on its task policy for the safety function: speed-and-separation monitoring, protective stops and force limits live in a safety-rated external layer (ISO 10218-1/-2:2025 [35], [36]; ISO 13482 [37]; ISO/IEC TR 5469 [38]), and a learned policy earns no risk-reduction credit; we do not argue otherwise. Our claim is narrower and, we think, more useful: the policy's execution-phase behavior sets the **demand rate** on that layer — how often a protective stop fires, which for a biped is itself a fall hazard and a loss of availability — and a geometric stop cannot supply the competences T2 and T5 name — a stopped robot still points the blade and still tilts the cup — while for T6 the protective stop *is* the prescribed response (Appendix D), whose firing rate a policy that walks into people would set at one per crossing. Execution-phase safety is therefore the measurable part of a policy's behavior that decides how much the external layer has to do, and whether it can do it at all. Our T3a measurement is such a demand number: every completing carry (6/6) enters the distance at which a speed-and-separation layer would have to stop the robot (§5.4), so that layer would fire on every carry — for a legged robot a balance transient and a loss of availability each time, a cost we name but do not measure.
 
 We are explicit throughout about what is *demonstrated* versus *proposed*: all six types now carry at least a partial measurement (T1 fully; T4, body swept-volume; T2, T5, and T6 partially or on small samples; and T3a, speed-and-separation, as a standards-grounded defect); only T3b (power-and-force limiting) is purely proposed. This is a taxonomy grounded in data where we have it and honest about where we do not.
 
@@ -103,16 +103,16 @@ We instantiate the schema for six types (Table II); all six carry at least a par
 | T5 | Load stability | carried object tilts / spills / drops | tilt angle; spill/drop event | tilt > limit; released early | **measured (null)** |
 | T6 | Dynamic reactivity | human/hazard moves; policy fails to react | min person separation; time-to-collision | contact with the crossing person (separation at contact distance; TTC reported) | **contact** 11/11; witness pending |
 
-The per-type instantiations — harm channel, phase, quantity, predicate, fixability class and the evidence each carries — are given in Appendix B.
+Fig. \ref{fig:gallery} draws each type's scored quantity on its scene; the per-type instantiations — harm channel, phase, quantity, predicate, fixability class and the evidence each carries — are given in Appendix B.
 
 
 ## 5. Empirical Spine
 
 ### 5.1 Setup
 
-We evaluate GR00T N1.6 [5], [13] driving a Unitree G1 in NVIDIA Isaac Sim via IsaacLab-Arena [14], [15] on a shelf-to-bin box carry: pick a box from a shelf, walk ≈ 1.9 m down a corridor, release it in a bin (Fig. \ref{fig:overview}). Into the corridor we place a hazard — a live electrical strip, a hot stove, or a standing person proxy (a 0.16 m-radius capsule plus a head sphere) — with a keep-out radius of 0.20 m (strip, person) or 0.30 m (stove); beside the workspace, a bystander for the body-sweep channel; and, for T6, a person crossing the corridor as a kinematic capsule with a collider at 0.06 m/s. The static proxies carry no collider, so their "contacts" are geometric penetrations of the body volume; only the crossing person can be hit. Per-step recorders log the carried object's pose (clearance, yaw, tilt), every robot link's pose (link clearance, with a 3-D body-surface variant) and the moving person's separation and time-to-collision. GR00T emits a decoupled whole-body action — a navigation command plus arm and torso targets — executed by a lower-body locomotion policy that sees neither language nor image, so the corridor path is GR00T's own output (Appendix E.1 discusses the attribution and its caveat). A carry *completes* if the box ends within 0.30 m of the bin; violation rates are conditioned on completion, reported with Wilson 95 % intervals and tested with Fisher's exact or McNemar's test on episode-level outcomes. Appendix C gives thresholds, seeds and sweeps; Appendix A lists every cell; Table III summarizes.
+We evaluate GR00T N1.6 [5], [13] driving a Unitree G1 in NVIDIA Isaac Sim via IsaacLab-Arena [14], [15] on a shelf-to-bin box carry: pick a box from a shelf, walk ≈ 1.9 m down a corridor, release it in a bin (Fig. \ref{fig:overview}). Into the corridor we place a hazard — a live electrical strip, a hot stove, or a standing person proxy (a 0.16 m-radius capsule plus a head sphere) — with a keep-out radius of 0.20 m (strip, person) or 0.30 m (stove); beside the workspace, a bystander for the body-sweep channel; and, for T6, a person crossing the corridor as a kinematic capsule with a collider at 0.06 m/s. The static proxies carry no collider, so their "contacts" are geometric penetrations of the body volume; only the crossing person can be hit. Per-step recorders log the carried object's pose, every robot link's pose (with a 3-D body-surface variant) and the moving person's separation and time-to-collision. The corridor path is GR00T's own output: its navigation command is executed by a lower-body policy that sees neither language nor image (Appendix E.1). A carry *completes* if the box ends within 0.30 m of the bin; violation rates are conditioned on completion, reported with Wilson 95 % intervals and tested with Fisher's exact or McNemar's test on episode-level outcomes. Appendix C gives thresholds, seeds and sweeps; Appendix A lists every cell and Fig. \ref{fig:scatter} plots each cell's completion against its conditioned violation; Table III summarizes.
 
-**Table III. Headline results per channel.** GR00T N1.6 on the G1 (all channels) and π0.5 on the Franka (T1, T4); completing = delivered within 0.30 m of the bin; Wilson 95 % intervals; command = explicit safety instruction (paired seeds, McNemar); shield = oracle-fed repulsion. Every cell in Appendix A.
+**Table III. Headline results per channel.** GR00T·G1 (all channels), π0.5·Franka (T1, T4); Wilson 95 % intervals; command = explicit safety instruction (paired, McNemar); shield = oracle-fed repulsion; every cell in Appendix A.
 
 | Type | GR00T·G1 cell | GR00T result | + command | + shield | π0.5·Franka |
 |---|---|---|---|---|---|
@@ -157,27 +157,27 @@ The ablations in §5.2 speak to *what kind* of intervention could fix T1. Naming
 
 What the evidence supports is therefore a **hypothesis** we place at the center of the taxonomy: execution-phase failures are missing *behavioral competences* — absent from the imitation training distribution (§2) rather than from the prompt or the percept — addressable by architecture or an external layer (a CBF-style shield [9], a shielding layer [10], an orientation controller) rather than by better prompts. It is falsifiable, our evidence is consistent with it but not decisive, and testing it needs a **non-ceiling** design in which the ablations *can* move the metric: does naming or showing the hazard change the behavior once the measurement has the power to notice (§7)?
 
-**Alternative views.** (i) *This is collision avoidance under a new name.* The predicates are classical; the object of measurement is not — a policy given no map, planner or filter, scored against human-referenced standards and paired with fixability ablations. (ii) *A shield fixes it, so the policy need not learn it.* True for T1, and shown; the same shield does not fix T6, cannot address T2 or T5, and works only when its margin is tuned per hazard (§5.2) — the residual is what the policy must own and what sets the demand on the layer (§1). (iii) *The scenes are unavoidable by construction.* For T1 the shield is the witness that a clearing path exists; for T3a, T4 and T6 a violation-free reference trajectory is still missing, so we do not attribute those rates to the policy alone until it exists (§7). (iv) *The promptability null is a completion null.* For T1 and T6 it is; the claim rests on the non-saturated T2 and π0.5 cells and on the unchanged corridor paths (Fig. \ref{fig:overlay}), and will stand or fall on the non-ceiling design.
+**Alternative views.** (i) *This is collision avoidance under a new name.* The predicates are classical; the object of measurement — a policy given no map, planner or filter, scored against human-referenced standards, with fixability ablations — is not. (ii) *A shield fixes it, so the policy need not learn it.* True for T1, and shown; the same shield does not fix T6, cannot address T2 or T5, and works only when its margin is tuned per hazard (§5.2) — the residual is what the policy must own and what sets the demand on the layer (§1). (iii) *The scenes are unavoidable by construction.* For T1 the shield is the witness that a clearing path exists; for T3a, T4 and T6 a violation-free reference trajectory is still missing, so we do not attribute those rates to the policy alone until it exists (§7). (iv) *The promptability null is a completion null.* For T1 and T6 it is; the claim rests on the non-saturated T2 and π0.5 cells and on the unchanged corridor paths (Fig. \ref{fig:overlay}), and will stand or fall on the non-ceiling design.
 
 ## 7. A Benchmark Agenda
 
-A taxonomy earns its keep by becoming a suite. We propose one scene family per type, each shipping three things:
+A taxonomy earns its keep by becoming a suite. We propose one scene family per type (Fig. \ref{fig:pipeline}), each shipping three things:
 
 1. **A blind-policy defect measurement** — the success-conditioned violation rate of an unmodified VLA, with confidence intervals.
 2. **Fixability ablations** — name the hazard vs not, render it vs hide it, which locate the failure on the prompting / perception / architecture spectrum.
 3. **A reference safety layer** — an external baseline (repulsion shield, speed governor, orientation controller) with its efficacy *and its failure modes* reported.
 
-Two further items belong in every type's protocol: a **feasibility witness** — a scripted or teleoperated trajectory that completes the scene without violating the predicate, so that a violation rate is attributable to the policy rather than to the scene — and a **protective-stop reference layer**, the reactive response the standards prescribe, reported next to the repulsion shield. **Release.** The scene configurations, metric recorders, analysis scripts and every per-episode log behind Appendix A are released (an anonymized repository accompanies the submission); both policies run behind the same Arena policy runner, so adding a policy is a server swap.
+Two further items belong in every type's protocol: a **feasibility witness** — a scripted or teleoperated trajectory that completes the scene without violating the predicate, so that a violation rate is attributable to the policy rather than to the scene — and a **protective-stop reference layer**, the reactive response the standards prescribe, reported next to the repulsion shield. **Release.** Scene configurations, metric recorders, analysis scripts and every per-episode log behind Appendix A are released (anonymized repository with the submission); adding a policy is a server swap.
 
-Canonical scalars and thresholds per type, and the open design decisions we put to the community, are in Appendix H.
+Canonical thresholds and the open design decisions are in Appendix H.
 
 ## 8. Limitations and Threats to Validity
 
-We state the boundaries plainly; Appendix F expands each. The evidence is **simulation-only**, mostly one policy on one embodiment, with **small cells** (T1 headline cells 3–8 completing carries, T3a *n* = 6, T4 *N* = 8 per position, T6 *n* = 11) and a headline person cell of 5/5 with a benign payload: the carried-hazard-past-a-person scene that names our novel cell is instantiated but not yet powered. Three measured rates — T3a's envelope count, T4 and T6 — are partly set by the scene or by the scoring geometry and are labelled **attribution-pending** until a violation-free reference trajectory exists; what is policy-attributable today is the absence of any slowing, detour or stop before contact. The language and perception ablations are **ceiling-limited**, so "no detectable change" is not invariance, and the paired promptability probe is for T1 and T6 a completion-rate comparison (§6). The shield is **oracle-fed and margin-tuned** per hazard. The static bystander proxies have **no collider**, the crossing one records no force and moves at only 0.06 m/s; the T4 body model omits the legs and uses link origins. Keep-out radii are **illustrative, not standards-derived**: a defensible separation under ISO/TS 15066 [11] / ISO 13855 [20] would be several times larger, which only deepens the violation; the ISO/TS 15066 formulas are carried into ISO 10218-1/-2:2025 [35], [36], and a domestic humanoid falls under ISO 13482 [37], whose hazard groups T1–T6 refine (Appendix D). LIBERO-Safety [24] already places a hand proxy beside a fixed-base arm and perturbs it, so measuring keep-out to a person or reactivity to motion is not new in itself; our claims are the intersection of §2. None of this undercuts the case: an appearance-robust keep-out defect on two policies, a body-penetration defect, a contact defect under a crossing person and a standards-referenced absence of slowing are enough to show that execution-phase harm is real, systematic and unaddressed by the existing two axes.
+We state the boundaries plainly; Appendix F expands each. The evidence is **simulation-only**, mostly one policy on one embodiment, with **small cells** (T1 headline cells 3–8 completing carries, T3a *n* = 6, T4 *N* = 8 per position, T6 *n* = 11) and a headline person cell of 5/5 with a benign payload: the carried-hazard-past-a-person scene that names our novel cell is instantiated but not yet powered. Three measured rates — T3a's envelope count, T4 and T6 — are partly set by the scene or by the scoring geometry and are labelled **attribution-pending** until a violation-free reference trajectory exists; what is policy-attributable today is the absence of any slowing, detour or stop before contact. The ablations are **ceiling-limited** and the paired probe is, for T1 and T6, a completion comparison (§6). The shield is **oracle-fed and margin-tuned** per hazard. The static bystander proxies have **no collider**; the crossing one records no force and moves at only 0.06 m/s. Keep-out radii are **illustrative, not standards-derived**: a defensible separation under ISO/TS 15066 [11] / ISO 13855 [20] would be several times larger, which only deepens the violation; the current editions and ISO 13482 are mapped in Appendix D. Measuring keep-out to a person or reactivity to motion is not new in itself (LIBERO-Safety [24]); our claims are the intersection of §2. None of this undercuts the case: an appearance-robust keep-out defect on two policies, a body-penetration defect, a contact defect under a crossing person and a standards-referenced absence of slowing are enough to show that execution-phase harm is real, systematic and unaddressed by the existing two axes.
 
 ## 9. Conclusion
 
-VLA safety today asks whether a task should be done and whether it ended well, not whether it was done *safely* in between. We have defined that "how" as a third axis, given it six measurable types with a shared schema, and built a diagnostic benchmark for the cell no suite covered — a locomoting humanoid carrying a hazard past a bystander. On it, two independently trained VLAs on two embodiments carry their payload through every hazard's keep-out on every completing carry, put their own arm into the bystander's body volume, run at full speed inside the standard's stop distance and reach a crossing person without slowing; safety commands do not change this, an external layer does for the static channels only, and the scoring geometry sets several of the headline rates. What a policy owns is not the safety function but the demand it places on it — and that demand is now measurable. Scenes, metrics and logs are released so that the next policy is a server swap away; the powered, non-ceiling tests of the behavioral-competence hypothesis are the benchmark's next round.
+VLA safety asks whether a task should be done and whether it ended well, not whether it was done *safely* in between. We have defined that "how" as a third axis with six measurable types, and built a diagnostic benchmark for the cell no suite covered. On it, two VLAs on two embodiments carry their payload through every keep-out, put their arm into a bystander's body volume, run at full speed inside the standard's stop distance and reach a crossing person without slowing; commands do not change this, an external layer fixes only the static channels, and the scoring geometry sets several headline rates. What a policy owns is not the safety function but the demand it places on it — now measurable. Scenes, metrics and logs are released; the powered, non-ceiling tests of the behavioral-competence hypothesis are the next round.
 
 ---
 
@@ -196,20 +196,22 @@ Language-model assistants were used to help draft and edit text, convert the man
 
 ## Appendix A. Unified count table
 
-Table V lists every cell behind the numbers in §5 with a common denominator; rows marked ⊂ are subsets of the pooled row above them.
+Tables V (T1) and X (all other channels and policies) list every cell behind the numbers in §5 with a common denominator; rows marked ⊂ are subsets of the pooled row above them.
 
-**Table V. Every cell reported in this paper, with a common denominator.** Attempted = episodes run; completing = box delivered within 0.30 m of the bin; violating = completing carries whose carried-object clearance fell below the keep-out (T1), episodes whose closest link fell inside the margin (T4, all episodes), or completing carries in which the box reached contact distance with the crossing person (≤ 0.31 m; T6). Wilson 95 % intervals. Pooled rows concatenate the listed runs; seeds are 42 / 7 / 123 unless stated; rows marked ⊂ are subsets of the pooled row above them. The 109/109 headline is the sum of the blind rows that are not subsets: electric 3-seed 16 + electric position sweep 24 + stove 3-seed 16 + stove position sweep 12 + stove powered re-run 8 + person 1 + 4 + two hazards 6 + YCB 22. Person proxy = the standing capsule-plus-mesh bystander of §5.1 placed on the carry path.
+**Table V. Every T1 (keep-out) cell reported in this paper, with a common denominator.** Attempted = episodes run; completing = box delivered within 0.30 m of the bin; violating = completing carries whose carried-object clearance fell below the keep-out (T1), episodes whose closest link fell inside the margin (T4, all episodes), or completing carries in which the box reached contact distance with the crossing person (≤ 0.31 m; T6). Wilson 95 % intervals. Pooled rows concatenate the listed runs; seeds are 42 / 7 / 123 unless stated; rows marked ⊂ are subsets of the pooled row above them. The 109/109 headline is the sum of the blind rows that are not subsets: electric 3-seed 16 + electric position sweep 24 + stove 3-seed 16 + stove position sweep 12 + stove powered re-run 8 + person 1 + 4 + two hazards 6 + YCB 22. Person proxy = the standing capsule-plus-mesh bystander of §5.1 placed on the carry path.
 
 | Channel / cell | attempted | completing | violating / completing | violation rate (Wilson 95 % CI) | completing rate |
 |---|---|---|---|---|---|
-| T1 electric, keep-out 0.20 m — ⊂ blind (seed 42) | 12 | 3 | 3 / 3 | 100 % [44, 100] | 25 % |
+| **T1 electric, keep-out 0.20 m** | | | | | |
+| ⊂ blind (seed 42) | 12 | 3 | 3 / 3 | 100 % [44, 100] | 25 % |
 | blind, 3 seeds | 36 | 16 | 16 / 16 | 100 % [81, 100] | 44 % |
 | named | 12 | 6 | 6 / 6 | 100 % [61, 100] | 50 % |
 | hidden | 12 | 7 | 7 / 7 | 100 % [65, 100] | 58 % |
 | off-path control, 3 seeds | 35 | 11 | 0 / 11 | 0 % [0, 26] | 31 % |
 | position sweep A/B/C | 36 | 24 | 24 / 24 | 100 % [86, 100] | 67 % |
 | + shield, 3 seeds | 36 | 12 | 6 / 12 | 50 % [25, 75] | 33 % |
-| T1 hot stove, keep-out 0.30 m — ⊂ blind (seed 42) | 12 | 6 | 6 / 6 | 100 % [61, 100] | 50 % |
+| **T1 hot stove, keep-out 0.30 m** | | | | | |
+| ⊂ blind (seed 42) | 12 | 6 | 6 / 6 | 100 % [61, 100] | 50 % |
 | blind, 3 seeds | 36 | 16 | 16 / 16 | 100 % [81, 100] | 44 % |
 | named | 12 | 4 | 4 / 4 | 100 % [51, 100] | 33 % |
 | hidden | 12 | 7 | 7 / 7 | 100 % [65, 100] | 58 % |
@@ -221,38 +223,56 @@ Table V lists every cell behind the numbers in §5 with a common denominator; ro
 | + shield, margin ≤ 0.50 m (five runs) | 60 | 25 | 22 / 25 | 88 % [70, 96] | 42 % |
 | + shield, margin ≥ 0.60 m (seven runs incl. the two above) | 95 | 28 | 0 / 28 | 0 % [0, 12] | 29 % |
 | explicit safety command (N = 24) | 24 | 7 | 7 / 7 | 100 % [65, 100] | 29 % |
-| T1 person proxy, keep-out 0.20 m — blind | 11 | 1 | 1 / 1 | 100 % [21, 100] | 9 % |
+| **T1 person proxy, keep-out 0.20 m** | | | | | |
+| blind | 11 | 1 | 1 / 1 | 100 % [21, 100] | 9 % |
 | blind, second run | 16 | 4 | 4 / 4 | 100 % [51, 100] | 25 % |
 | named | 12 | 1 | 1 / 1 | 100 % [21, 100] | 8 % |
 | hidden (person absent) | 12 | 6 | 6 / 6 | 100 % [61, 100] | 50 % |
 | + shield, three runs | 39 | 10 | 2 / 10 | 20 % [6, 51] | 26 % |
-| T1 two hazards (multi), 0.20 m — blind, 2 seeds | 24 | 6 | 6 / 6 | 100 % [61, 100] | 25 % |
+| **T1 two hazards (multi), 0.20 m** | | | | | |
+| blind, 2 seeds | 24 | 6 | 6 / 6 | 100 % [61, 100] | 25 % |
 | + shield, 2 seeds | 24 | 6 | 0 / 6 | 0 % [0, 39] | 25 % |
-| T1 photorealistic YCB hazard, 0.20 m — blind (mustard / soup), 3 runs | 42 | 22 | 22 / 22 | 100 % [85, 100] | 52 % |
+| **T1 photorealistic YCB hazard, 0.20 m** | | | | | |
+| blind (mustard / soup), 3 runs | 42 | 22 | 22 / 22 | 100 % [85, 100] | 52 % |
 | + shield, 3 runs | 34 | 13 | 1 / 13 | 8 % [1, 33] | 38 % |
-| T1 keep-out, π0.5·Franka, 0.20 m — on-path (geometric point) | 22 | 22 | 22 / 22 | 100 % [85, 100] | 100 % |
+| **T1 keep-out, π0.5·Franka, 0.20 m** | | | | | |
+| on-path (geometric point) | 22 | 22 | 22 / 22 | 100 % [85, 100] | 100 % |
 | off-path control (perpendicular 0.35 m) | 22 | 22 | 0 / 22 | 0 % [0, 15] | 100 % |
 | rendered on-path marker | 22 | 16 | 16 / 16 | 100 % [81, 100] | 73 % |
 | rendered marker + explicit spatial command (paired) | 16 | 16 | 14 / 16 vs 15 / 16 | 88 % [64, 97] vs 94 % [72, 99] | 100 % vs ≈ 62 % |
-| T2 orientation, GR00T·G1 — eight azimuths, proxy axis within 90° of the person | 64 | 27 | 14 / 27 | 52 % [34, 69] (yaw fixed +3° ± 11°) | 42 % |
-| T2 explicit-command probe (paired, N = 24) | 24 + 24 | 12 / 14 | 33 % → 46 % (p = 0.58) | — | — |
-| T5 load tilt, GR00T·G1 — four seeds, tilt > 45° in transit | 32 | 17 | 0 / 17 | 0 % [0, 19] | 53 % |
-| T4 body sweep, GR00T·G1, axis metric, margin 0.10 m — pick right | 8 | (all) | 6 / 8 | 75 % [41, 93] | contact (0 mm): 1 / 8 |
+
+**Table X. Every remaining cell — orientation, load, body sweep, the crossing person, and the second and third policies.** Same columns and conventions as Table V.
+
+| Channel / cell | attempted | completing | violating / completing | violation rate (Wilson 95 % CI) | completing rate |
+|---|---|---|---|---|---|
+| **T2 orientation, GR00T·G1** | | | | | |
+| eight azimuths, proxy axis within 90° of the person | 64 | 27 | 14 / 27 | 52 % [34, 69] (yaw fixed +3° ± 11°) | 42 % |
+| **T2 explicit-command probe** | | | | | |
+| (paired, N = 24) | 24 + 24 | 12 / 14 | 33 % → 46 % (p = 0.58) | — | — |
+| **T5 load tilt, GR00T·G1** | | | | | |
+| four seeds, tilt > 45° in transit | 32 | 17 | 0 / 17 | 0 % [0, 19] | 53 % |
+| **T4 body sweep, GR00T·G1, axis metric, margin 0.10 m** | | | | | |
+| pick right | 8 | (all) | 6 / 8 | 75 % [41, 93] | contact (0 mm): 1 / 8 |
 | pick left | 8 | (all) | 0 / 8 | 0 % [0, 32] | contact (0 mm): 0 / 8 |
 | bin right | 8 | (all) | 0 / 8 | 0 % [0, 32] | contact (0 mm): 0 / 8 |
 | bin left | 8 | (all) | 2 / 8 | 25 % [7, 59] | contact (0 mm): 0 / 8 |
 | pooled four positions | 32 | (all) | 8 / 32 | 25 % [13, 42] | contact (0 mm): 1 / 32 |
 | pick right, 3-D body surface | 8 | (all) | 8 / 8 | 100 % [68, 100] | contact (0 mm): 8 / 8 |
-| T4 body sweep, π0.5·Franka, axis metric — pooled four positions | 32 | (all) | 1 / 32 | 3 % [1, 16] | contact (0 mm): 1 / 32 |
-| T4 body sweep, π0.5·Franka, 3-D body surface — pooled four positions | 32 | (all) | 17 / 32 | 53 % [36, 69] | contact (0 mm): 8 / 32 |
-| T6 crossing person, GR00T·G1 — on-path, seeds 42 / 7 / 123 | 24 | 11 | 11 / 11 | 100 % [74, 100] (contact-limited stop, ≤ 0.31 m) | 46 % |
+| **T4 body sweep, π0.5·Franka, axis metric** | | | | | |
+| pooled four positions | 32 | (all) | 1 / 32 | 3 % [1, 16] | contact (0 mm): 1 / 32 |
+| **T4 body sweep, π0.5·Franka, 3-D body surface** | | | | | |
+| pooled four positions | 32 | (all) | 17 / 32 | 53 % [36, 69] | contact (0 mm): 8 / 32 |
+| **T6 crossing person, GR00T·G1** | | | | | |
+| on-path, seeds 42 / 7 / 123 | 24 | 11 | 11 / 11 | 100 % [74, 100] (contact-limited stop, ≤ 0.31 m) | 46 % |
 | on-path, mid-corridor start | 8 | 2 | 2 / 2 | 100 % [34, 100] (contact-limited stop) | 25 % |
 | person-absent control | 8 | 3 | 0 / 3 | 0 % [0, 56] (no stop; virtual separation 0.06–0.19 m) | 38 % |
 | unshielded, powered re-run (N = 24) | 24 | 6 | 6 / 6 | 100 % [61, 100] (contact-limited stop) | 25 % |
 | + fixed-anchor shield, 0.50 m (N = 24) | 24 | 4 | 4 / 4 | 100 % [51, 100] | 17 % |
 | + live-tracking shield, 0.50 m (N = 24) | 24 | 7 | 6 / 7 | 86 % [49, 97] | 29 % |
-| T6 explicit-command probe (paired, N = 20–24) | — | — | 30 % → 25 % (p = 1.0) | — | — |
-| T1 keep-out, π0 (preliminary) — on-path | 5 | 3 | 3 / 3 | 100 % [44, 100] | 60 % |
+| **T6 explicit-command probe** | | | | | |
+| (paired, N = 20–24) | — | — | 30 % → 25 % (p = 1.0) | — | — |
+| **T1 keep-out, π0 (preliminary)** | | | | | |
+| on-path | 5 | 3 | 3 / 3 | 100 % [44, 100] | 60 % |
 
 ## Appendix B. Per-type schema instantiations
 

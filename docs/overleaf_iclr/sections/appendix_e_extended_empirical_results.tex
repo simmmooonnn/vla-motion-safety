@@ -2,6 +2,21 @@
 
 \begin{figure}[t]
 \centering
+\begin{minipage}{0.07\linewidth}\scriptsize blind\end{minipage}\begin{minipage}{0.92\linewidth}\includegraphics[width=\linewidth]{figures/fig_t1_fire_defect.png}\end{minipage}\\[2pt]
+\begin{minipage}{0.07\linewidth}\scriptsize + shield\end{minipage}\begin{minipage}{0.92\linewidth}\includegraphics[width=\linewidth]{figures/fig_t1_fire_shield.png}\end{minipage}
+\caption{\textbf{T1 --- path / keep-out.} Top: the carried box passes $\approx$0.05\,m from a hot-appliance keep-out zone; no detour is attempted (top-down frame strip). Bottom, with the reactive shield: the same carry detours around the zone --- keep-out violations fall from 8/8 completing carries to 0/8 (Fisher $p = 1.6\times10^{-4}$), completion preserved.}
+\label{fig:t1}\label{fig:shield}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.8\linewidth]{figures/fig_success_safety.pdf}
+\caption{\textbf{Completion against conditioned violation, one point per cell} (Appendix A; marker = channel, colour = condition, size $\propto$ completing carries). Blind, named and hidden cells sit on the 100\,\% line regardless of completion; only shields (green) and off-path / person-absent controls (grey) leave it, and T2 sits at chance.}
+\label{fig:scatter}
+\end{figure}
+
+\begin{figure}[t]
+\centering
 \begin{minipage}{0.49\linewidth}\centering\includegraphics[width=\linewidth]{figures/fig_t4_body.png}\end{minipage}\hfill
 \begin{minipage}{0.49\linewidth}\centering\includegraphics[width=\linewidth]{figures/fig_t6_crossing.png}\end{minipage}
 \caption{\textbf{Left, T4 --- body swept-volume:} reaching for the object, the hand makes 3-D contact with the bystander (0.000\,m, 8/8 right-pick). \textbf{Right, T6 --- dynamic reactivity:} a pedestrian crosses the carry path; the robot walks the carried box into the person and stops only on contact (11/11 completing carries).}
@@ -58,6 +73,13 @@
 \includegraphics[width=\linewidth]{figures/fig_topdown_overlay.pdf}
 \caption{\textbf{Carried paths, top-down, stove hazard.} Twelve episodes per condition; red = completing carry through the keep-out (dashed circle), green = completing and clear, grey = non-completing (never leaves the shelf). Naming or hiding the hazard leaves the corridor path unchanged; the reactive shield routes every completing carry around the zone.}
 \label{fig:overlay}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.82\linewidth]{figures/fig_t6_contact.pdf}
+\caption{\textbf{T6: the carried box stops only on contact.} Left: carried-box speed around the closest approach for the eleven completing on-path carries (three seeds) and the three off-path controls; on-path the box arrives at contact distance without slowing (0.25--0.37\,m/s one step before), is then held there for 2--3.5\,s in 6/11 carries and brushes past in 5/11; off-path the same corridor is traversed without a stop. Right: box--person separation; every on-path minimum sits at the contact distance (capsule radius 0.16\,m + box half-extent), and the 0.50\,m live-tracking shield (dashed) leaves it there.}
+\label{fig:t6contact}
 \end{figure}
 
 \begin{figure}[t]

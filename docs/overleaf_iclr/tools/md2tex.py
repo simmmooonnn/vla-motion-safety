@@ -171,7 +171,11 @@ def convert_table(rows, caption, label):
         size = r"\small"
     cap = re.sub(r"^Table\s+[IVXL]+\.\s*", "", caption or "")   # markdown carried its own "Table I." prefix
     body_lines = [r"\begin{tabular}{" + colspec + "}", r"\toprule", " & ".join(convert_inline(c) for c in hdr) + r" \\", r"\midrule"]
+    first_group = True
     for r in data:
+        if r[0] and all(not c for c in r[1:]):       # group-header row: bold, spanning, with a rule above
+            body_lines.append((r"\addlinespace[2pt]" if first_group else r"\midrule") + r"\multicolumn{%d}{@{}l}{%s} \\" % (ncol, convert_inline(r[0])))
+            first_group = False; continue
         body_lines.append(" & ".join(convert_inline(c) for c in r) + r" \\")
     body_lines += [r"\bottomrule", r"\end{tabular}"]
     if not cap:                                       # uncaptioned -> inline (no float, no number)
@@ -278,10 +282,28 @@ FIGS = r"""
 \end{figure}
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{figures/fig_t1_fire_defect.png}\\[2pt]
-\includegraphics[width=0.9\linewidth]{figures/fig_t1_fire_shield.png}
+\begin{minipage}{0.07\linewidth}\scriptsize blind\end{minipage}\begin{minipage}{0.92\linewidth}\includegraphics[width=\linewidth]{figures/fig_t1_fire_defect.png}\end{minipage}\\[2pt]
+\begin{minipage}{0.07\linewidth}\scriptsize + shield\end{minipage}\begin{minipage}{0.92\linewidth}\includegraphics[width=\linewidth]{figures/fig_t1_fire_shield.png}\end{minipage}
 \caption{\textbf{T1 --- path / keep-out.} Top: the carried box passes $\approx$0.05\,m from a hot-appliance keep-out zone; no detour is attempted (top-down frame strip). Bottom, with the reactive shield: the same carry detours around the zone --- keep-out violations fall from 8/8 completing carries to 0/8 (Fisher $p = 1.6\times10^{-4}$), completion preserved.}
 \label{fig:t1}\label{fig:shield}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.86\linewidth]{figures/fig_gallery.pdf}
+\caption{\textbf{The six types, each with its scored quantity.} Top-down schematics of the benchmark scene (T5 in side view): the carried object's clearance to a hazard on the path (T1), the angle between its hazardous axis and the bearing to a bystander (T2), its speed against the ISO/TS 15066 separation envelope (T3), the robot's own links against the bystander's body surface (T4), the load's tilt and drop (T5), and separation and time-to-collision against a person crossing the corridor (T6). Rendered stills are in Figs.~\ref{fig:t1}, \ref{fig:t4t6} and \ref{fig:generality}.}
+\label{fig:gallery}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.74\linewidth]{figures/fig_pipeline.pdf}
+\caption{\textbf{The benchmark protocol.} Scene family $\rightarrow$ unmodified remote policy $\rightarrow$ per-step recorders $\rightarrow$ per-type predicates $\rightarrow$ success-conditioned report; fixability ablations, a reference safety layer with its failure modes, and a feasibility witness make a cell a benchmark cell.}
+\label{fig:pipeline}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.8\linewidth]{figures/fig_success_safety.pdf}
+\caption{\textbf{Completion against conditioned violation, one point per cell} (Appendix A; marker = channel, colour = condition, size $\propto$ completing carries). Blind, named and hidden cells sit on the 100\,\% line regardless of completion; only shields (green) and off-path / person-absent controls (grey) leave it, and T2 sits at chance.}
+\label{fig:scatter}
 \end{figure}
 \begin{figure}[t]
 \centering
@@ -337,7 +359,7 @@ FIGS = r"""
 \end{figure}
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{figures/fig_t6_contact.pdf}
+\includegraphics[width=0.82\linewidth]{figures/fig_t6_contact.pdf}
 \caption{\textbf{T6: the carried box stops only on contact.} Left: carried-box speed around the closest approach for the eleven completing on-path carries (three seeds) and the three off-path controls; on-path the box arrives at contact distance without slowing (0.25--0.37\,m/s one step before), is then held there for 2--3.5\,s in 6/11 carries and brushes past in 5/11; off-path the same corridor is traversed without a stop. Right: box--person separation; every on-path minimum sits at the contact distance (capsule radius 0.16\,m + box half-extent), and the 0.50\,m live-tracking shield (dashed) leaves it there.}
 \label{fig:t6contact}
 \end{figure}
@@ -355,18 +377,16 @@ FIGS = r"""
 \end{figure}
 """
 # route figures: a few in the main text (page budget), the rest at the top of Appendix E
-MAIN_LABELS = ("fig:t1", "fig:shield", "fig:t6contact")
+# route each figure block to a section file by label (default: Appendix E)
+ROUTE = {"fig:overview": "introduction", "fig:gallery": "a_taxonomy", "fig:pipeline": "a_benchmark_agenda"}   # page budget: T6 contact plot lives in Appendix E
 blocks = [r"\begin{figure}" + b for b in FIGS.split(r"\begin{figure}")[1:]]
-intro_figs = "\n".join(b for b in blocks if "\\label{fig:overview}" in b)
-main_figs = "\n".join(b for b in blocks if any(("\\label{%s}" % l) in b for l in MAIN_LABELS))
-app_figs = "\n".join(b for b in blocks if "\\label{fig:overview}" not in b and not any(("\\label{%s}" % l) in b for l in MAIN_LABELS))
+def route_of(b):
+    for lab, sec in ROUTE.items():
+        if ("\\label{%s}" % lab) in b: return sec
+    return "appendix_e"
 for f in files:
-    if f[0].startswith("introduction"):
-        f[1].insert(1, intro_figs)
-    if f[0].startswith("empirical"):
-        f[1].insert(1, main_figs)
-    if f[0].startswith("appendix_e"):
-        f[1].insert(1, app_figs)
+    figs = "\n".join(b for b in blocks if f[0].startswith(route_of(b)))
+    if figs: f[1].insert(1, figs)
 
 # write section files
 inputs = []
@@ -378,7 +398,7 @@ for fname, parts in files:
 # abstract
 abs_tex = "\n".join(convert_inline(l) for l in abstract if l.strip())
 
-MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.29).
+MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.30).
 %% Drop the official iclr2027_conference.sty / .bst from the ICLR author kit next to this file.
 \documentclass{article}
 \usepackage{iclr2027_conference,times}
