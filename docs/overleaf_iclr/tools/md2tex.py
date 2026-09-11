@@ -289,13 +289,27 @@ FIGS = r"""
 \end{figure}
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.86\linewidth]{figures/fig_gallery.pdf}
-\caption{\textbf{The six types, each with its scored quantity.} Top-down schematics of the benchmark scene (T5 in side view): the carried object's clearance to a hazard on the path (T1), the angle between its hazardous axis and the bearing to a bystander (T2), its speed against the ISO/TS 15066 separation envelope (T3), the robot's own links against the bystander's body surface (T4), the load's tilt and drop (T5), and separation and time-to-collision against a person crossing the corridor (T6). Rendered stills are in Figs.~\ref{fig:t1}, \ref{fig:t4t6} and \ref{fig:generality}.}
+\includegraphics[width=\linewidth]{figures/fig_gallery.pdf}
+\caption{\textbf{The six types, each with its scored quantity, and the scenes as rendered.} (a)--(f) Top-down schematics (T5 in side view) with the scored quantity drawn: carried-object clearance to a hazard on the path (T1), the angle between the hazardous axis and the bearing to a bystander (T2), payload speed against the ISO/TS 15066 separation envelope (T3), the robot's own links against the bystander's body surface (T4), load tilt and drop (T5), separation and time-to-collision against a crossing person (T6); predicates in Table~ef{tab:II}. (g)--(j) Top-down Isaac Sim stills of GR00T on the G1: the carry through an electrified strip, the arm sweeping a bystander, a crossing person, and the same carry past a real object. Frame strips with the keep-out drawn are in Fig.~\ref{fig:t1}.}
 \label{fig:gallery}
 \end{figure}
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.74\linewidth]{figures/fig_pipeline.pdf}
+\begin{tikzpicture}[font=\scriptsize, node distance=2.5mm and 2.5mm,
+  box/.style={draw, rounded corners=2pt, align=center, text width=2.3cm, minimum height=1.3cm, inner sep=2.5pt, line width=0.6pt},
+  wide/.style={box, text width=4.05cm, minimum height=1.0cm},
+  arr/.style={->, line width=0.6pt, color=black!55}]
+\node[box, draw=blue!45!black, fill=blue!4] (s1) {\textbf{1\; Scene family}\\[1pt] hazard class $\times$ person state $\times$ safe move demanded};
+\node[box, draw=blue!45!black, fill=blue!4, right=of s1] (s2) {\textbf{2\; Policy server}\\[1pt] GR00T N1.6, $\pi_{0.5}$, \ldots\ unmodified, remote; a new policy is a swap};
+\node[box, draw=blue!45!black, fill=blue!4, right=of s2] (s3) {\textbf{3\; Recorders}\\[1pt] object pose, every link's pose (3-D body model), moving person};
+\node[box, draw=red!55!black, fill=red!5, right=of s3] (s4) {\textbf{4\; Predicates T1--T6}\\[1pt] violation, contact, threshold curve; success-conditioned};
+\node[box, draw=black!70, fill=black!5, right=of s4] (s5) {\textbf{5\; Report}\\[1pt] attempted / completing / violating, Wilson CI, exact tests};
+\draw[arr] (s1) -- (s2); \draw[arr] (s2) -- (s3); \draw[arr] (s3) -- (s4); \draw[arr] (s4) -- (s5);
+\node[wide, draw=orange!75!black, fill=orange!6, anchor=north west] (b1) at ([yshift=-5mm]s1.south west) {\textbf{6\; Fixability ablations}\\[1pt] name the hazard $\cdot$ hide it $\cdot$ safety command (paired seeds; minimal detectable effect stated)};
+\node[wide, draw=green!35!black, fill=green!5, right=of b1] (b2) {\textbf{7\; Reference safety layer}\\[1pt] repulsion shield $\cdot$ protective stop $\cdot$ orientation control --- efficacy \emph{and} failure modes};
+\node[wide, draw=black!60, fill=black!4, right=of b2] (b3) {\textbf{8\; Feasibility witness}\\[1pt] a scripted violation-free trajectory, so the rate is attributable to the policy, not the scene};
+\draw[arr] (b1.north) -- (b1.north |- s1.south); \draw[arr] (b2.north) -- (b2.north |- s1.south); \draw[arr] (b3.north) -- (b3.north |- s1.south);
+\end{tikzpicture}
 \caption{\textbf{The benchmark protocol.} Scene family $\rightarrow$ unmodified remote policy $\rightarrow$ per-step recorders $\rightarrow$ per-type predicates $\rightarrow$ success-conditioned report; fixability ablations, a reference safety layer with its failure modes, and a feasibility witness make a cell a benchmark cell.}
 \label{fig:pipeline}
 \end{figure}
@@ -404,6 +418,8 @@ MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v
 \usepackage{iclr2027_conference,times}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{booktabs,array,graphicx,xcolor,url,microtype,multirow,float,placeins}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{hyperref}

@@ -5,7 +5,7 @@
 \subsection{The third axis}
 
 
-Let a task be specified by an instruction $\ell$ and a goal predicate $g$ on terminal states. Instruction safety is a predicate on $\ell$; outcome safety is a predicate on the terminal state $s_T$. \textbf{Execution-phase safety} is a predicate on the \emph{trajectory} $\tau = (s_0, a_0, s_1, \dots, s_T)$ that is not reducible to a predicate on $\ell$ or on $s_T$ alone. Formally, a harm channel $h$ defines a per-step hazard functional $\phi_h(s_t)$ (a clearance, an angle, a force, a tilt), and an execution-phase safety property requires
+Let a task be an instruction $\ell$ and a goal predicate $g$ on terminal states. Instruction safety is a predicate on $\ell$; outcome safety is a predicate on the terminal state $s_T$. \textbf{Execution-phase safety} is a predicate on the \emph{trajectory} $\tau = (s_0, a_0, s_1, \dots, s_T)$ that is not reducible to a predicate on $\ell$ or on $s_T$ alone. Formally, a harm channel $h$ defines a per-step hazard functional $\phi_h(s_t)$ (a clearance, an angle, a force, a tilt), and an execution-phase safety property requires
 
 \[\forall t:\ \psi_h\big(\phi_h(s_t)\big) = \text{safe},\]
 

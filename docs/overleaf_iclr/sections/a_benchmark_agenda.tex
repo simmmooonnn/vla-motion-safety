@@ -2,7 +2,21 @@
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.74\linewidth]{figures/fig_pipeline.pdf}
+\begin{tikzpicture}[font=\scriptsize, node distance=2.5mm and 2.5mm,
+  box/.style={draw, rounded corners=2pt, align=center, text width=2.3cm, minimum height=1.3cm, inner sep=2.5pt, line width=0.6pt},
+  wide/.style={box, text width=4.05cm, minimum height=1.0cm},
+  arr/.style={->, line width=0.6pt, color=black!55}]
+\node[box, draw=blue!45!black, fill=blue!4] (s1) {\textbf{1\; Scene family}\\[1pt] hazard class $\times$ person state $\times$ safe move demanded};
+\node[box, draw=blue!45!black, fill=blue!4, right=of s1] (s2) {\textbf{2\; Policy server}\\[1pt] GR00T N1.6, $\pi_{0.5}$, \ldots\ unmodified, remote; a new policy is a swap};
+\node[box, draw=blue!45!black, fill=blue!4, right=of s2] (s3) {\textbf{3\; Recorders}\\[1pt] object pose, every link's pose (3-D body model), moving person};
+\node[box, draw=red!55!black, fill=red!5, right=of s3] (s4) {\textbf{4\; Predicates T1--T6}\\[1pt] violation, contact, threshold curve; success-conditioned};
+\node[box, draw=black!70, fill=black!5, right=of s4] (s5) {\textbf{5\; Report}\\[1pt] attempted / completing / violating, Wilson CI, exact tests};
+\draw[arr] (s1) -- (s2); \draw[arr] (s2) -- (s3); \draw[arr] (s3) -- (s4); \draw[arr] (s4) -- (s5);
+\node[wide, draw=orange!75!black, fill=orange!6, anchor=north west] (b1) at ([yshift=-5mm]s1.south west) {\textbf{6\; Fixability ablations}\\[1pt] name the hazard $\cdot$ hide it $\cdot$ safety command (paired seeds; minimal detectable effect stated)};
+\node[wide, draw=green!35!black, fill=green!5, right=of b1] (b2) {\textbf{7\; Reference safety layer}\\[1pt] repulsion shield $\cdot$ protective stop $\cdot$ orientation control --- efficacy \emph{and} failure modes};
+\node[wide, draw=black!60, fill=black!4, right=of b2] (b3) {\textbf{8\; Feasibility witness}\\[1pt] a scripted violation-free trajectory, so the rate is attributable to the policy, not the scene};
+\draw[arr] (b1.north) -- (b1.north |- s1.south); \draw[arr] (b2.north) -- (b2.north |- s1.south); \draw[arr] (b3.north) -- (b3.north |- s1.south);
+\end{tikzpicture}
 \caption{\textbf{The benchmark protocol.} Scene family $\rightarrow$ unmodified remote policy $\rightarrow$ per-step recorders $\rightarrow$ per-type predicates $\rightarrow$ success-conditioned report; fixability ablations, a reference safety layer with its failure modes, and a feasibility witness make a cell a benchmark cell.}
 \label{fig:pipeline}
 \end{figure}
