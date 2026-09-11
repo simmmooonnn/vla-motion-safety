@@ -262,9 +262,16 @@ for lvl, title, content in sections:
 FIGS = r"""
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{figures/fig_t1_fire_defect.png}
-\caption{\textbf{T1 --- path / keep-out.} The carried box passes $\approx$0.05\,m from a hot-appliance keep-out zone; no detour is attempted (frame strip from a top-down recording).}
-\label{fig:t1}
+\includegraphics[width=\linewidth]{figures/fig_overview.pdf}
+\caption{\textbf{Overview.} Left: instruction and outcome safety judge the endpoints of a task; execution-phase safety judges the trajectory between them, decomposed into six measurable types, each a tuple with a fixability class. Right: the benchmark scene --- a shelf-to-bin carry on a locomoting humanoid past a hazard on the path (T1), with the carried object's orientation, speed and tilt scored against a person (T2, T3, T5), a bystander beside the workspace for the robot's own body (T4), and a person crossing the corridor (T6); two channels are ported to a Franka arm running $\pi_{0.5}$.}
+\label{fig:overview}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_t1_fire_defect.png}\\[2pt]
+\includegraphics[width=0.9\linewidth]{figures/fig_t1_fire_shield.png}
+\caption{\textbf{T1 --- path / keep-out.} Top: the carried box passes $\approx$0.05\,m from a hot-appliance keep-out zone; no detour is attempted (top-down frame strip). Bottom, with the reactive shield: the same carry detours around the zone --- keep-out violations fall from 8/8 completing carries to 0/8 (Fisher $p<10^{-4}$), completion preserved.}
+\label{fig:t1}\label{fig:shield}
 \end{figure}
 \begin{figure}[t]
 \centering
@@ -281,12 +288,6 @@ FIGS = r"""
 \begin{minipage}{0.24\linewidth}\centering\includegraphics[width=\linewidth]{figures/gen_firemicro.png}\\{\scriptsize (d) microwave fire}\end{minipage}
 \caption{\textbf{Generality.} The T1 keep-out defect replicates across hazard types and scenes (top-down stills).}
 \label{fig:generality}
-\end{figure}
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.9\linewidth]{figures/fig_t1_fire_shield.png}
-\caption{\textbf{T1 with the reactive shield.} The same carry now detours around the zone --- keep-out violations fall from 8/8 completing carries to 0/8 (Fisher $p<10^{-4}$), completion preserved.}
-\label{fig:shield}
 \end{figure}
 \begin{figure}[t]
 \centering
@@ -343,9 +344,16 @@ FIGS = r"""
 \label{fig:bimodal}
 \end{figure}
 """
+# route figures: a few in the main text (page budget), the rest at the top of Appendix E
+MAIN_LABELS = ("fig:overview", "fig:t1", "fig:shield", "fig:t6contact")
+blocks = [r"\begin{figure}" + b for b in FIGS.split(r"\begin{figure}")[1:]]
+main_figs = "\n".join(b for b in blocks if any(("\\label{%s}" % l) in b for l in MAIN_LABELS))
+app_figs = "\n".join(b for b in blocks if not any(("\\label{%s}" % l) in b for l in MAIN_LABELS))
 for f in files:
     if f[0].startswith("empirical"):
-        f[1].insert(1, FIGS)
+        f[1].insert(1, main_figs)
+    if f[0].startswith("appendix_e"):
+        f[1].insert(1, app_figs)
 
 # write section files
 inputs = []
@@ -357,7 +365,7 @@ for fname, parts in files:
 # abstract
 abs_tex = "\n".join(convert_inline(l) for l in abstract if l.strip())
 
-MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.27).
+MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.28).
 %% Drop the official iclr2027_conference.sty / .bst from the ICLR author kit next to this file.
 \documentclass{article}
 \usepackage{iclr2027_conference,times}
