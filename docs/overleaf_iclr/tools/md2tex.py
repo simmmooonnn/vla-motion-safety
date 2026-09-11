@@ -157,34 +157,44 @@ def convert_table(rows, caption, label):
     wide = ncol >= 5 or total_chars > 110
     if wide:
         L = []
+        def eff_len(c):                                # a "[N]" citation prints as "(Author et al., 2026)" in LaTeX
+            return len(re.sub(r"\[\d+\]", "X" * 18, c))
         for j in range(ncol):
             col = [r[j] for r in data]
-            typ = sorted(len(c) for c in col)[int(0.8 * (len(col) - 1))] if col else 0
+            typ = sorted(eff_len(c) for c in col)[int(0.8 * (len(col) - 1))] if col else 0
             L.append(min(max(len(hdr[j]), typ, 9), 60))
         # (ncol-1) inter-column gaps of 2*tabcolsep (3pt) on a ~397pt ICLR line width, plus 1% slack
         avail = 0.99 - (ncol - 1) * 6.0 / 397.0 - 0.01
         fr = [avail * l / sum(L) for l in L]
+        if label in WIDTHS:                            # hand-tuned proportions for the main-text tables
+            w = WIDTHS[label]; fr = [avail * x / sum(w) for x in w]
         colspec = "@{}" + "".join(r">{\raggedright\arraybackslash}p{%.3f\linewidth}" % f for f in fr) + "@{}"
         size = r"\scriptsize\setlength{\tabcolsep}{3pt}"
     else:
         colspec = "@{}" + "l" * ncol + "@{}"
         size = r"\small"
     cap = re.sub(r"^Table\s+[IVXL]+\.\s*", "", caption or "")   # markdown carried its own "Table I." prefix
-    body_lines = [r"\begin{tabular}{" + colspec + "}", r"\toprule", " & ".join(convert_inline(c) for c in hdr) + r" \\", r"\midrule"]
+    def cell(c):
+        """In a narrow p{} column a trailing '[N]' citation prints as '(Author et al., 2026)': put it on its own line."""
+        if wide: c = re.sub(r"^(\S.*?)\s+(\[\d+\](?:[–-]+\[\d+\])?)$", r"\1@@NL@@\2", c)
+        return convert_inline(c).replace("@@NL@@", r"\newline ")
+    body_lines = [r"\begin{tabular}{" + colspec + "}", r"\toprule", " & ".join(cell(c) for c in hdr) + r" \\", r"\midrule"]
     first_group = True
     for r in data:
         if r[0] and all(not c for c in r[1:]):       # group-header row: bold, spanning, with a rule above
             body_lines.append((r"\addlinespace[2pt]" if first_group else r"\midrule") + r"\multicolumn{%d}{@{}l}{%s} \\" % (ncol, convert_inline(r[0])))
             first_group = False; continue
-        body_lines.append(" & ".join(convert_inline(c) for c in r) + r" \\")
+        body_lines.append(" & ".join(cell(c) for c in r) + r" \\")
     body_lines += [r"\bottomrule", r"\end{tabular}"]
     if not cap:                                       # uncaptioned -> inline (no float, no number)
         return "\n".join([r"\begin{center}" + size] + body_lines + [r"\end{center}"])
     placement = "[H]" if IN_APPENDIX[0] else "[t]"   # appendix tables stay under their heading
-    lines = [r"\begin{table}" + placement, r"\centering" + size, r"\caption{" + convert_inline(cap) + "}", r"\label{" + label + "}"]
+    lines = [r"\begin{table}" + placement, r"\centering" + size, r"\caption{" + convert_inline(cap) + "}", r"\label{" + label + "}", r"\vspace{4pt}"]
     lines += body_lines + [r"\end{table}"]
     return "\n".join(lines)
 IN_APPENDIX = [False]
+WIDTHS = {"tab:I": [18, 14, 16, 17, 13, 13, 16], "tab:III": [11, 15, 30, 13, 16, 17], "tab:II": [4, 13, 24, 20, 24, 17],
+          "tab:VI": [13, 15, 26, 22, 11, 21], "tab:VII": [4, 17, 17, 17, 19, 26]}
 
 # ---------------------------------------------------------------- body -> sections
 lines = body.split("\n")
@@ -276,7 +286,43 @@ for lvl, title, content in sections:
 FIGS = r"""
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{figures/fig_overview.pdf}
+\begin{tikzpicture}[font=\scriptsize, line width=0.6pt,
+  axbox/.style={draw=blue!45!black, fill=blue!4, rounded corners=2pt, align=center, text width=2.75cm, inner sep=3pt},
+  arr/.style={->, color=black!55, line width=0.6pt}]
+% ---- (a) the three axes
+\node[font=\scriptsize\bfseries] at (0.05,4.45) {(a)};
+\node[axbox] (in) at (1.55,3.75) {\textbf{Instruction safety}\\ should the task be done?\\ (refusal, jailbreaks)};
+\node[axbox] (out) at (4.95,3.75) {\textbf{Outcome safety}\\ is the end state acceptable?\\ (goal predicates)};
+\node[draw=red!55!black, fill=red!5, rounded corners=2pt, align=center, text width=6.1cm, inner sep=3pt, line width=0.9pt] (ex) at (3.25,2.15)
+  {\textbf{Execution-phase safety} (this paper)\\ how is the task carried out along $\tau=(s_0,a_0,\ldots,s_T)$?\\[1pt]
+   T1 path / keep-out $\cdot$ T2 orientation $\cdot$ T3 force \& speed\\ T4 body sweep $\cdot$ T5 load stability $\cdot$ T6 reactivity};
+\node[draw=black!40, fill=black!4, rounded corners=2pt, align=center, text width=6.1cm, inner sep=3pt] (tup) at (3.25,0.55)
+  {type $=\langle$harm channel, phase, quantity,\\ violation predicate, metric with CI, fixability class$\rangle$\\[1pt]
+   \textcolor{red!55!black}{fixability: prompt it? $\cdot$ perceive it?\\ architecture? $\cdot$ external layer?}};
+\draw[arr] (in.south) -- (in.south |- ex.north);
+\draw[arr] (out.south) -- (out.south |- ex.north);
+% ---- (b) the scene, top-down
+\begin{scope}[shift={(7.0,0)}, x=1cm, y=1cm]
+\node[font=\scriptsize\bfseries, anchor=west] at (0,4.45) {(b)};
+\fill[brown!35!white, draw=brown!60!black] (1.65,3.95) rectangle (3.85,4.35); \node[font=\tiny, color=brown!60!black] at (2.75,4.15) {shelf (pick)};
+\fill[blue!15, draw=blue!45!black] (2.4,0.15) rectangle (3.1,0.7); \node[font=\tiny, color=blue!45!black] at (2.75,0.0) {bin (place)};
+\fill[black!15, draw=black!70] (2.75,3.65) circle (0.2); \node[font=\tiny, anchor=west] at (3.05,3.65) {G1 + GR00T};
+\draw[red!60!black, line width=1.1pt, ->] (2.75,3.45) .. controls (2.8,2.9) and (2.7,1.8) .. (2.75,0.75);
+\node[font=\tiny, color=red!60!black, anchor=west] at (3.0,1.5) {carry $\approx$1.9\,m};
+\fill[orange!80!black] (2.6,2.3) rectangle (2.9,2.6); \draw[red!60!black, dashed] (2.75,2.45) circle (0.5);
+\node[font=\tiny, color=red!60!black, anchor=west, align=left] at (3.35,2.45) {T1 hazard on the path\\ (strip / stove / person)};
+\fill[brown!60!black, rotate around={15:(2.75,3.1)}] (2.58,3.0) rectangle (2.92,3.2);
+\draw[orange!70!black, ->, line width=0.9pt] (2.75,3.1) -- (3.25,3.28);
+\node[font=\tiny, color=orange!70!black, anchor=west, align=left] at (0.0,3.3) {T2 hazardous axis:\\ where does it point?};
+\node[font=\tiny, anchor=west, align=left] at (0.0,2.7) {T3 payload speed\\ vs separation (SSM)};
+\node[font=\tiny, anchor=west, align=left] at (0.0,2.15) {T5 load tilt / spill};
+\fill[blue!45!black!60, draw=blue!45!black] (4.9,3.6) circle (0.28); \fill[orange!20] (4.9,3.6) circle (0.15);
+\node[font=\tiny, color=blue!45!black, align=center] at (4.9,3.0) {T4 bystander beside\\ the workspace (arm sweep)};
+\fill[blue!45!black!60, draw=blue!45!black] (1.0,1.3) circle (0.28); \fill[orange!20] (1.0,1.3) circle (0.15);
+\draw[blue!45!black, ->, line width=0.9pt] (1.35,1.3) -- (2.2,1.3);
+\node[font=\tiny, color=blue!45!black, anchor=west, align=left] at (0.0,0.7) {T6 person crossing\\ the corridor (0.06\,m/s)};
+\end{scope}
+\end{tikzpicture}
 \caption{\textbf{Overview.} Left: instruction and outcome safety judge the endpoints of a task; execution-phase safety judges the trajectory between them, decomposed into six measurable types, each a tuple with a fixability class. Right: the benchmark scene --- a shelf-to-bin carry on a locomoting humanoid past a hazard on the path (T1), with the carried object's orientation, speed and tilt scored against a person (T2, T3, T5), a bystander beside the workspace for the robot's own body (T4), and a person crossing the corridor (T6); two channels are ported to a Franka arm running $\pi_{0.5}$.}
 \label{fig:overview}
 \end{figure}
@@ -412,7 +458,7 @@ for fname, parts in files:
 # abstract
 abs_tex = "\n".join(convert_inline(l) for l in abstract if l.strip())
 
-MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.30).
+MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.31).
 %% Drop the official iclr2027_conference.sty / .bst from the ICLR author kit next to this file.
 \documentclass{article}
 \usepackage{iclr2027_conference,times}
@@ -424,6 +470,7 @@ MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v
 \usepackage[T1]{fontenc}
 \usepackage{hyperref}
 \graphicspath{{./}{figures/}}
+\raggedbottom   % appendix tables are placed [H]; without this, short pages before them are stretched with white gaps
 % \iclrfinalcopy  % uncomment for the camera-ready (shows authors)
 
 \title{Execution-Phase Safety for VLA Agents:\\ A Diagnostic Benchmark for How a Safe Task Gets Done}
@@ -435,6 +482,7 @@ Johns Hopkins University \\
 
 \begin{document}
 \maketitle
+\suppressfloats[t]   % keep Fig. 1 off the top of the title page
 
 \begin{abstract}
 @@ABSTRACT@@

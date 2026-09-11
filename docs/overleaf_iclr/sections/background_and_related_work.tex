@@ -18,18 +18,19 @@
 \centering\scriptsize\setlength{\tabcolsep}{3pt}
 \caption{Where this work sits among 2026 trajectory-level VLA-safety benchmarks. Cells are \emph{our reading} of each work; ``$\approx$Tn'' maps a suite's predicate onto our channel. Our distinguishing cells are the locomoting humanoid, the passive bystander and carried hazard, human-referenced SSM and body sweep, and the fixability ablations. Policies evaluated: SafeVLA-Bench 9, LIBERO-Safety 10, SafeManip 6, ForesightSafety 4 (+7 partial), HazardArena 4, this work 2 (+1 preliminary).}
 \label{tab:I}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.090\linewidth}>{\raggedright\arraybackslash}p{0.120\linewidth}>{\raggedright\arraybackslash}p{0.120\linewidth}>{\raggedright\arraybackslash}p{0.143\linewidth}>{\raggedright\arraybackslash}p{0.128\linewidth}>{\raggedright\arraybackslash}p{0.146\linewidth}>{\raggedright\arraybackslash}p{0.143\linewidth}@{}}
+\vspace{4pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.150\linewidth}>{\raggedright\arraybackslash}p{0.116\linewidth}>{\raggedright\arraybackslash}p{0.133\linewidth}>{\raggedright\arraybackslash}p{0.141\linewidth}>{\raggedright\arraybackslash}p{0.108\linewidth}>{\raggedright\arraybackslash}p{0.108\linewidth}>{\raggedright\arraybackslash}p{0.133\linewidth}@{}}
 \toprule
-Benchmark & Embodiment / motion & Human in scene & Channels ($\approx$ ours) & Speed / force vs a human (SSM/PFL) & Carried hazard past a passive bystander & Fixability ablation \\
+Benchmark & Embodiment & Human in scene & Channels ($\approx$ ours) & Speed / force vs a human & Carried hazard past a bystander & Fixability ablation \\
 \midrule
-SafeVLA-Bench \citep{ref27} & fixed-base (LIBERO, RoboCasa) & No --- ``bystanders'' are objects & self-contact $\approx$T4, held-object tilt $\approx$T5, contact force & force proxy only, no human & No & No (diagnostic-only) \\
-LIBERO-Safety \citep{ref24} & fixed-base tabletop & \textbf{Yes} --- a MANO hand proxy, kinematically perturbed ($\approx$T6, hand only) & collision margin $\approx$T1/T4, dynamic $\approx$T6 & No & No & chunk-level CBF mitigation (real-robot demo), no ablation \\
-SafeVLA / Safety-CHORES \citep{ref21} & \textbf{mobile} navigation + manipulation & No & environmental hazards, corners ($\approx$T4) & No & No & method (safe RL), not an ablation \\
-SafeManip \citep{ref30} & fixed-base (RoboCasa) & No & grasp / release stability $\approx$T5, contact & No & No & prompt ablation (three prompt styles), same null \\
-ForesightSafety-VLA \citep{ref23} & tabletop dual-arm, 5 embodiments & No & force/torque, spatial boundary $\approx$T3b/T4 & force, no human & No & No \\
-HazardArena \citep{ref19} & tabletop & static person asset, no contact scored & scene-level unsafe twins & No & No & defense baseline \\
-Handover benchmarks \citep{ref32,ref34} & fixed-base & \textbf{Yes} --- a cooperating receiver & handover orientation $\approx$T2 & No & No --- receiver, not bystander & No \\
-\textbf{This work} & \textbf{locomoting humanoid} (+ Franka arm, \S5.8) & \textbf{Yes} --- a passive bystander & \textbf{T1--T6} & \textbf{Yes} --- T3a speed per ISO/TS 15066; PFL proposed & \textbf{Yes} --- proxy payload, 5 completing carries & \textbf{Yes} --- prompt / perception / shield \\
+SafeVLA-Bench\newline \citep{ref27} & fixed-base (LIBERO, RoboCasa) & No (``bystanders'' are objects) & self-contact $\approx$T4, held-object tilt $\approx$T5, contact force & force proxy, no human & No & No (diagnostic only) \\
+LIBERO-Safety\newline \citep{ref24} & fixed-base tabletop & \textbf{Yes}: MANO hand proxy, perturbed ($\approx$T6, hand only) & collision margin $\approx$T1/T4, dynamic $\approx$T6 & No & No & CBF mitigation demo; no ablation \\
+SafeVLA / Safety-CHORES\newline \citep{ref21} & \textbf{mobile} nav + manip & No & environmental hazards, corners ($\approx$T4) & No & No & safe-RL method; no ablation \\
+SafeManip\newline \citep{ref30} & fixed-base (RoboCasa) & No & grasp / release stability $\approx$T5, contact & No & No & prompt ablation (3 styles), same null \\
+ForesightSafety-VLA\newline \citep{ref23} & tabletop, 5 embodiments & No & force / torque, spatial boundary $\approx$T3b/T4 & force, no human & No & No \\
+HazardArena\newline \citep{ref19} & tabletop & static person asset; contact not scored & scene-level unsafe twins & No & No & defense baseline \\
+Handover benchmarks\newline \citep{ref32,ref34} & fixed-base & \textbf{Yes}: cooperating receiver & handover orientation $\approx$T2 & No & No (receiver, not bystander) & No \\
+\textbf{This work} & \textbf{locomoting humanoid} (+ Franka, \S5.8) & \textbf{Yes}: passive bystander & \textbf{T1--T6} & \textbf{Yes}: T3a speed (ISO/TS 15066); PFL proposed & \textbf{Yes}: proxy payload, 5 carries & \textbf{Yes}: prompt / perception / shield \\
 \bottomrule
 \end{tabular}
 \end{table}

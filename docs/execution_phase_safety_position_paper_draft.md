@@ -1,6 +1,6 @@
 # Execution-Phase Safety for VLA Agents: A Diagnostic Benchmark for How a Safe Task Gets Done
 
-*Diagnostic-benchmark paper — draft v0.30 · 2026-09-10*
+*Diagnostic-benchmark paper — draft v0.31 · 2026-09-11*
 *Author: Zijian Su (Johns Hopkins University) · co-authors / advisor: [TBD]*
 *Platform: GR00T N1.6 · NVIDIA Isaac Sim / IsaacLab-Arena · Unitree G1 · cross-policy: π0.5 on Franka*
 
@@ -56,16 +56,16 @@ We are explicit throughout about what is *demonstrated* versus *proposed*: all s
 
 **Table I. Where this work sits among 2026 trajectory-level VLA-safety benchmarks.** Cells are *our reading* of each work; "≈Tn" maps a suite's predicate onto our channel. Our distinguishing cells are the locomoting humanoid, the passive bystander and carried hazard, human-referenced SSM and body sweep, and the fixability ablations. Policies evaluated: SafeVLA-Bench 9, LIBERO-Safety 10, SafeManip 6, ForesightSafety 4 (+7 partial), HazardArena 4, this work 2 (+1 preliminary).
 
-| Benchmark | Embodiment / motion | Human in scene | Channels (≈ ours) | Speed / force vs a human (SSM/PFL) | Carried hazard past a passive bystander | Fixability ablation |
+| Benchmark | Embodiment | Human in scene | Channels (≈ ours) | Speed / force vs a human | Carried hazard past a bystander | Fixability ablation |
 | --- | --- | --- | --- | --- | --- | --- |
-| SafeVLA-Bench [27] | fixed-base (LIBERO, RoboCasa) | No — "bystanders" are objects | self-contact ≈T4, held-object tilt ≈T5, contact force | force proxy only, no human | No | No (diagnostic-only) |
-| LIBERO-Safety [24] | fixed-base tabletop | **Yes** — a MANO hand proxy, kinematically perturbed (≈T6, hand only) | collision margin ≈T1/T4, dynamic ≈T6 | No | No | chunk-level CBF mitigation (real-robot demo), no ablation |
-| SafeVLA / Safety-CHORES [21] | **mobile** navigation + manipulation | No | environmental hazards, corners (≈T4) | No | No | method (safe RL), not an ablation |
-| SafeManip [30] | fixed-base (RoboCasa) | No | grasp / release stability ≈T5, contact | No | No | prompt ablation (three prompt styles), same null |
-| ForesightSafety-VLA [23] | tabletop dual-arm, 5 embodiments | No | force/torque, spatial boundary ≈T3b/T4 | force, no human | No | No |
-| HazardArena [19] | tabletop | static person asset, no contact scored | scene-level unsafe twins | No | No | defense baseline |
-| Handover benchmarks [32]–[34] | fixed-base | **Yes** — a cooperating receiver | handover orientation ≈T2 | No | No — receiver, not bystander | No |
-| **This work** | **locomoting humanoid** (+ Franka arm, §5.8) | **Yes** — a passive bystander | **T1–T6** | **Yes** — T3a speed per ISO/TS 15066; PFL proposed | **Yes** — proxy payload, 5 completing carries | **Yes** — prompt / perception / shield |
+| SafeVLA-Bench [27] | fixed-base (LIBERO, RoboCasa) | No ("bystanders" are objects) | self-contact ≈T4, held-object tilt ≈T5, contact force | force proxy, no human | No | No (diagnostic only) |
+| LIBERO-Safety [24] | fixed-base tabletop | **Yes**: MANO hand proxy, perturbed (≈T6, hand only) | collision margin ≈T1/T4, dynamic ≈T6 | No | No | CBF mitigation demo; no ablation |
+| SafeVLA / Safety-CHORES [21] | **mobile** nav + manip | No | environmental hazards, corners (≈T4) | No | No | safe-RL method; no ablation |
+| SafeManip [30] | fixed-base (RoboCasa) | No | grasp / release stability ≈T5, contact | No | No | prompt ablation (3 styles), same null |
+| ForesightSafety-VLA [23] | tabletop, 5 embodiments | No | force / torque, spatial boundary ≈T3b/T4 | force, no human | No | No |
+| HazardArena [19] | tabletop | static person asset; contact not scored | scene-level unsafe twins | No | No | defense baseline |
+| Handover benchmarks [32]–[34] | fixed-base | **Yes**: cooperating receiver | handover orientation ≈T2 | No | No (receiver, not bystander) | No |
+| **This work** | **locomoting humanoid** (+ Franka, §5.8) | **Yes**: passive bystander | **T1–T6** | **Yes**: T3a speed (ISO/TS 15066); PFL proposed | **Yes**: proxy payload, 5 carries | **Yes**: prompt / perception / shield |
 
 ## 3. Execution-Phase Safety: Definition and Schema
 
@@ -336,15 +336,15 @@ Tables VI and VII place the six types against the safety standards and against t
 
 **Table VI. Where each type lives in the safety standards.** Our reading, written for the practitioner who has to decide which clause a measurement speaks to; clause numbers are to be re-verified against the 2025 editions at camera-ready. "SSM-only" marks channels in which contact is never permissible (hot, sharp, electrical payloads are excluded from power-and-force limiting), "PFL-eligible" those in which a limited transient contact by a blunt body or payload could be argued under ISO/TS 15066 Annex A.
 
-| Type | ISO 12100 hazard class | Governing requirement | Human-referenced quantity the standard uses | Regime | Our proxy in this paper |
+| Type | ISO 12100 hazard class | Governing requirement | Human-referenced quantity | Regime | Our proxy |
 |---|---|---|---|---|---|
-| T1 path / keep-out | thermal, electrical, mechanical (impact, crushing) | ISO 10218-2 collaborative workspace + ISO/TS 15066 speed-and-separation monitoring (5.5.4); ISO 13482 hazards from incorrect autonomous decisions and from hazardous physical contact | protective separation distance $S_p$ (ISO 13855 approach speed 1.6 m/s, reaction + stopping time, intrusion, uncertainties) | SSM-only | fixed keep-out radius 0.20 / 0.30 m around a hazard point (illustrative; Appendix C) |
-| T2 presentation orientation | mechanical (cutting, stabbing), thermal | no explicit clause; handover conventions in the HRI literature; ISO 13482 hazardous physical contact | angle between the hazardous feature and the bearing to the person; contact never permitted | SSM-only | nominal long axis of a box as the hazardous axis, 90° criterion |
-| T3a speed near a person | mechanical (impact) | ISO/TS 15066 SSM (5.5.4), inverted to $v_{\text{allow}}(d)$; ISO 10218-1 reduced speed 250 mm/s | robot / payload speed as a function of separation | SSM | carried-object speed vs separation (Fig. \ref{fig:ssm}); $T_r+T_s$ assumed, not measured |
-| T3b contact force | mechanical (impact, crushing) | ISO/TS 15066 power-and-force limiting (5.5.5), Annex A body-region limits (no transient contact to the skull) | force / pressure per body region, transient vs quasi-static | PFL-eligible (blunt contact only) | not measured (needs a contact sensor) |
-| T4 body swept-volume | mechanical (impact, crushing by robot links) | ISO 10218-2 collaborative operation; ISO/TS 15066 PFL for the robot body; ISO 13482 hazardous physical contact | minimum link-to-body-surface distance; contact impulse per body region | PFL-eligible for blunt links, SSM otherwise | capsule + head-sphere body model, surface distance, threshold curve (Fig. \ref{fig:t4thr}) |
-| T5 load stability | thermal (scald), falling objects | ISO 13482 hazards due to the robot's load and dropped objects; ISO 10218-2 workpiece handling | tilt / spill / drop event | neither (the hazard is the payload's contents) | rigid-box tilt (null); filled-cup test proposed |
-| T6 dynamic reactivity | mechanical (impact) | ISO 13482 hazards due to robot motion; ISO/TS 15066 SSM with the human-velocity term; the prescribed reactive response is a protective stop | separation and time-to-collision against a moving person; stop performance | SSM (protective stop) | kinematic crosser at a fixed speed; 0.30 m near-miss label, minima reported (Appendix A) |
+| T1 keep-out | thermal, electrical, mechanical (impact, crushing) | ISO 10218-2 collaborative workspace; ISO/TS 15066 SSM (5.5.4); ISO 13482 incorrect autonomous decisions, hazardous contact | protective separation distance $S_p$ (ISO 13855: 1.6 m/s approach, reaction + stopping time, intrusion, uncertainty) | SSM-only | fixed keep-out radius 0.20 / 0.30 m around a hazard point (Appendix C) |
+| T2 orientation | mechanical (cutting, stabbing), thermal | no explicit clause; HRI handover conventions; ISO 13482 hazardous contact | angle between the hazardous feature and the bearing to the person; contact never permitted | SSM-only | box long axis as the hazardous axis, 90° criterion |
+| T3a speed | mechanical (impact) | ISO/TS 15066 SSM (5.5.4), inverted to $v_{\text{allow}}(d)$; ISO 10218-1 reduced speed 250 mm/s | robot / payload speed as a function of separation | SSM | carried-object speed vs separation (Fig. \ref{fig:ssm}); $T_r+T_s$ assumed |
+| T3b force | mechanical (impact, crushing) | ISO/TS 15066 PFL (5.5.5), Annex A body-region limits (no transient contact to the skull) | force / pressure per body region, transient vs quasi-static | PFL-eligible (blunt only) | not measured (needs a contact sensor) |
+| T4 body sweep | mechanical (impact, crushing by links) | ISO 10218-2 collaborative operation; ISO/TS 15066 PFL (robot body); ISO 13482 hazardous contact | minimum link-to-body-surface distance; contact impulse per body region | PFL-eligible (blunt links), else SSM | capsule + head-sphere body, surface distance, threshold curve (Fig. \ref{fig:t4thr}) |
+| T5 load | thermal (scald), falling objects | ISO 13482 hazards from the load and dropped objects; ISO 10218-2 workpiece handling | tilt / spill / drop event | neither (the hazard is the contents) | rigid-box tilt (null); filled-cup test proposed |
+| T6 reactivity | mechanical (impact) | ISO 13482 robot-motion hazards; ISO/TS 15066 SSM with the human-velocity term; prescribed response: protective stop | separation and time-to-collision against a moving person; stop performance | SSM (protective stop) | kinematic crosser at fixed speed; 0.30 m near-miss label, minima reported (Appendix A) |
 
 **Table VII. Crosswalk to the peer taxonomies.** What each peer suite already scores on the same channel, and what T1–T6 adds. Peer categories are quoted from the respective papers as we read them (ForesightSafety-VLA's Safe-Core categories; SafeVLA-Bench's constraint families; LIBERO-Safety's physical track; SafeManip's temporal templates; HazardArena's risk families).
 
@@ -353,7 +353,7 @@ Tables VI and VII place the six types against the safety standards and against t
 | T1 | Thermal, Spatial Boundary (object-referenced) | keep-out / boundary clauses, object-referenced | collision margin to a MANO hand proxy beside a fixed-base arm | HazardArena semantic unsafe twins (e.g. a knife toward a person) | a *carried* hazard past a full-body bystander on a locomoting robot; fixability ablations |
 | T2 | — | — | — | — (handover literature only) | the non-receiving bystander; orientation invariance across azimuths |
 | T3a | — | — (force proxies only) | — | — | speed scored against the human-referenced SSM envelope |
-| T3b | Force/Torque | contact force ceiling (200 N, the suite's own value; ISO/TS 15066 Annex A limits are body-region-specific) | — | — | body-region PFL against a person (proposed) |
+| T3b | Force/Torque | contact-force ceiling (200 N, the suite's value; not body-region-specific) | — | — | body-region PFL against a person (proposed) |
 | T4 | Collaborative (dual-arm separation, not a person) | self-collision (robot–robot) | arm-collision margin (mesh) to the hand proxy | — | whole-body sweep against a full-body bystander; threshold curve and contact rate |
 | T5 | — | object tilt / drop clauses | — | SafeManip grasp / release stability | transport-phase stability with a spill proxy |
 | T6 | Temporal | — | kinematic perturbation of the hand proxy | — | a crossing person, time-to-collision, and the reactive-vs-anticipatory fixability split |

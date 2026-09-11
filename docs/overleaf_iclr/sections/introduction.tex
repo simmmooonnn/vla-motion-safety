@@ -2,7 +2,43 @@
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{figures/fig_overview.pdf}
+\begin{tikzpicture}[font=\scriptsize, line width=0.6pt,
+  axbox/.style={draw=blue!45!black, fill=blue!4, rounded corners=2pt, align=center, text width=2.75cm, inner sep=3pt},
+  arr/.style={->, color=black!55, line width=0.6pt}]
+% ---- (a) the three axes
+\node[font=\scriptsize\bfseries] at (0.05,4.45) {(a)};
+\node[axbox] (in) at (1.55,3.75) {\textbf{Instruction safety}\\ should the task be done?\\ (refusal, jailbreaks)};
+\node[axbox] (out) at (4.95,3.75) {\textbf{Outcome safety}\\ is the end state acceptable?\\ (goal predicates)};
+\node[draw=red!55!black, fill=red!5, rounded corners=2pt, align=center, text width=6.1cm, inner sep=3pt, line width=0.9pt] (ex) at (3.25,2.15)
+  {\textbf{Execution-phase safety} (this paper)\\ how is the task carried out along $\tau=(s_0,a_0,\ldots,s_T)$?\\[1pt]
+   T1 path / keep-out $\cdot$ T2 orientation $\cdot$ T3 force \& speed\\ T4 body sweep $\cdot$ T5 load stability $\cdot$ T6 reactivity};
+\node[draw=black!40, fill=black!4, rounded corners=2pt, align=center, text width=6.1cm, inner sep=3pt] (tup) at (3.25,0.55)
+  {type $=\langle$harm channel, phase, quantity,\\ violation predicate, metric with CI, fixability class$\rangle$\\[1pt]
+   \textcolor{red!55!black}{fixability: prompt it? $\cdot$ perceive it?\\ architecture? $\cdot$ external layer?}};
+\draw[arr] (in.south) -- (in.south |- ex.north);
+\draw[arr] (out.south) -- (out.south |- ex.north);
+% ---- (b) the scene, top-down
+\begin{scope}[shift={(7.0,0)}, x=1cm, y=1cm]
+\node[font=\scriptsize\bfseries, anchor=west] at (0,4.45) {(b)};
+\fill[brown!35!white, draw=brown!60!black] (1.65,3.95) rectangle (3.85,4.35); \node[font=\tiny, color=brown!60!black] at (2.75,4.15) {shelf (pick)};
+\fill[blue!15, draw=blue!45!black] (2.4,0.15) rectangle (3.1,0.7); \node[font=\tiny, color=blue!45!black] at (2.75,0.0) {bin (place)};
+\fill[black!15, draw=black!70] (2.75,3.65) circle (0.2); \node[font=\tiny, anchor=west] at (3.05,3.65) {G1 + GR00T};
+\draw[red!60!black, line width=1.1pt, ->] (2.75,3.45) .. controls (2.8,2.9) and (2.7,1.8) .. (2.75,0.75);
+\node[font=\tiny, color=red!60!black, anchor=west] at (3.0,1.5) {carry $\approx$1.9\,m};
+\fill[orange!80!black] (2.6,2.3) rectangle (2.9,2.6); \draw[red!60!black, dashed] (2.75,2.45) circle (0.5);
+\node[font=\tiny, color=red!60!black, anchor=west, align=left] at (3.35,2.45) {T1 hazard on the path\\ (strip / stove / person)};
+\fill[brown!60!black, rotate around={15:(2.75,3.1)}] (2.58,3.0) rectangle (2.92,3.2);
+\draw[orange!70!black, ->, line width=0.9pt] (2.75,3.1) -- (3.25,3.28);
+\node[font=\tiny, color=orange!70!black, anchor=west, align=left] at (0.0,3.3) {T2 hazardous axis:\\ where does it point?};
+\node[font=\tiny, anchor=west, align=left] at (0.0,2.7) {T3 payload speed\\ vs separation (SSM)};
+\node[font=\tiny, anchor=west, align=left] at (0.0,2.15) {T5 load tilt / spill};
+\fill[blue!45!black!60, draw=blue!45!black] (4.9,3.6) circle (0.28); \fill[orange!20] (4.9,3.6) circle (0.15);
+\node[font=\tiny, color=blue!45!black, align=center] at (4.9,3.0) {T4 bystander beside\\ the workspace (arm sweep)};
+\fill[blue!45!black!60, draw=blue!45!black] (1.0,1.3) circle (0.28); \fill[orange!20] (1.0,1.3) circle (0.15);
+\draw[blue!45!black, ->, line width=0.9pt] (1.35,1.3) -- (2.2,1.3);
+\node[font=\tiny, color=blue!45!black, anchor=west, align=left] at (0.0,0.7) {T6 person crossing\\ the corridor (0.06\,m/s)};
+\end{scope}
+\end{tikzpicture}
 \caption{\textbf{Overview.} Left: instruction and outcome safety judge the endpoints of a task; execution-phase safety judges the trajectory between them, decomposed into six measurable types, each a tuple with a fixability class. Right: the benchmark scene --- a shelf-to-bin carry on a locomoting humanoid past a hazard on the path (T1), with the carried object's orientation, speed and tilt scored against a person (T2, T3, T5), a bystander beside the workspace for the robot's own body (T4), and a person crossing the corridor (T6); two channels are ported to a Franka arm running $\pi_{0.5}$.}
 \label{fig:overview}
 \end{figure}
