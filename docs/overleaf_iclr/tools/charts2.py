@@ -5,7 +5,7 @@ import os, json, math
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "axes.spines.top": False, "axes.spines.right": False, "pdf.fonttype": 42})
+plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "legend.fontsize": 7, "xtick.labelsize": 7.5, "ytick.labelsize": 7.5, "axes.spines.top": False, "axes.spines.right": False, "pdf.fonttype": 42})
 S = r"C:\Users\苏子健\AppData\Local\Temp\claude\E--Research-Robotics-Safety\0f8a80ac-06d8-48e8-b25c-61ee2e370d30\scratchpad"
 FIG = r"E:\Research\Robotics-Safety\docs\overleaf_iclr\figures"
 E = json.load(open(os.path.join(S, "export_a2.json")))
@@ -30,10 +30,10 @@ ax.plot(ds, [v_allow(d, 1.6, 0.20, 0.0, 0.0) for d in ds], color="k", lw=1.0, ls
 ax.plot(ds, [v_allow(d, 0.0, 0.20, 0.0, 0.0) for d in ds], color="k", lw=0.8, ls=":", label="stationary human ($v_h$ = 0)")
 ax.axhline(0.25, color=GOLD, lw=0.9, ls="-.", label="ISO 10218-1 reduced speed 250 mm/s")
 ax.set_xlim(0, 1.25); ax.set_ylim(0, 0.6)
-ax.axvspan(0, 0.94, color="#f3e6e5", zorder=0); ax.text(0.47, 0.565, "SSM requires a stop ($d < d_0$ = 0.94 m)", fontsize=6.3, color=VIOL, ha="center")
+ax.axvspan(0, 0.94, color="#f3e6e5", zorder=0); ax.text(0.47, 0.565, "SSM requires a stop for $d < d_0$ = 0.94 m", fontsize=7, color=VIOL, ha="center")
 ax.set_xlabel("separation: carried object → person (m)"); ax.set_ylabel("payload speed (m/s)")
-ax.legend(fontsize=6.0, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.22), ncol=2)
-fig.set_size_inches(4.8, 3.5); fig.tight_layout(); fig.savefig(os.path.join(FIG, "fig_ssm_envelope.pdf")); plt.close(fig)
+ax.legend(fontsize=7, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.22), ncol=2)
+fig.set_size_inches(4.8, 3.5); fig.tight_layout(); fig.savefig(os.path.join(FIG, "fig_ssm_envelope.pdf"), bbox_inches="tight"); plt.close(fig)
 
 # ---------------- Fig: T4 violation vs radial threshold, GR00T positions (+ pi0.5 axis / 3-D) ----------------
 ths = [0.05, 0.10, 0.16, 0.20, 0.25, 0.30]
@@ -47,9 +47,9 @@ for tag, lbl in names.items():
     for th in ths: pooled[th][0] += sum(1 for x in m if x < th); pooled[th][1] += n
 ax.plot(ths, [100 * pooled[th][0] / pooled[th][1] for th in ths], color="k", lw=1.8, marker="s", ms=3, label="GR00T pooled (n=32)")
 ax.axvline(0.10, color=NEUT, lw=0.8, ls=":"); ax.axvline(0.16, color=NEUT, lw=0.8, ls="--")
-ax.text(0.101, 92, "axis\nmargin", fontsize=6, color="#555"); ax.text(0.161, 92, "capsule\nradius", fontsize=6, color="#555")
+ax.text(0.101, 92, "axis\nmargin", fontsize=7, color="#555"); ax.text(0.161, 92, "capsule\nradius", fontsize=7, color="#555")
 ax.set_xlabel("radial threshold to the person's axis (m)"); ax.set_ylabel("episodes violating (%)"); ax.set_ylim(0, 105)
-ax.legend(fontsize=5.8, frameon=False, loc="lower right")
+ax.legend(fontsize=7, frameon=False, loc="lower right")
 ax = axs[1]
 pi_axis = [E["t4"][k]["mins"] for k in ["pi0_t4_cl", "pi0_t4_cr", "pi0_t4_ym", "pi0_t4_yp"]]
 pi_3d = [E["t4"][k]["mins"] for k in ["pi0_t4_3d_cl", "pi0_t4_3d_cr", "pi0_t4_3d_ym", "pi0_t4_3d_yp"]]
@@ -58,14 +58,14 @@ ax.plot(ths, [100 * sum(1 for x in pa if x < th) / len(pa) for th in ths], marke
 ax.plot(ths, [100 * sum(1 for x in p3 if x < th) / len(p3) for th in ths], marker="^", ms=3, lw=1.2, color=VIOL, label=f"π0.5·Franka, 3-D body surface (n={len(p3)})")
 ax.plot(ths, [100 * pooled[th][0] / pooled[th][1] for th in ths], color="k", lw=1.2, marker="s", ms=3, ls="--", label="GR00T·G1, axis metric (n=32)")
 # 3-D "margin 0.10 m to a 0.16 m-radius body capsule" == 0.26 m from the axis for links inside the body's height band
-ax.axvline(0.26, color=VIOL, lw=0.8, ls=":"); ax.text(0.262, 4, "3-D margin 0.10 m\n≡ 0.26 m to axis", fontsize=5.8, color=VIOL)
+ax.axvline(0.26, color=VIOL, lw=0.8, ls=":"); ax.text(0.262, 4, "3-D margin 0.10 m\n≡ 0.26 m to axis", fontsize=7, color=VIOL)
 c3 = sum(1 for x in p3 if x <= 1e-3)
-ax.text(0.115, 14, f"π0.5 actual contact\n(surface distance 0): {c3}/{len(p3)}", fontsize=5.8, color=VIOL)
+ax.text(0.115, 14, f"π0.5 actual contact\n(surface distance 0): {c3}/{len(p3)}", fontsize=7, color=VIOL)
 ax.set_xlabel("threshold (m)"); ax.set_ylim(0, 105)
-ax.legend(fontsize=5.8, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.30), ncol=1)
+ax.legend(fontsize=7, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.30), ncol=1)
 ax.set_title("cross-policy: the threshold, not the policy, sets the rate", fontsize=8)
-axs[0].legend(fontsize=5.8, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.30), ncol=2)
-fig.set_size_inches(6.4, 3.4); fig.tight_layout(); fig.savefig(os.path.join(FIG, "fig_t4_threshold.pdf")); plt.close(fig)
+axs[0].legend(fontsize=7, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.30), ncol=2)
+fig.set_size_inches(6.4, 3.4); fig.tight_layout(); fig.savefig(os.path.join(FIG, "fig_t4_threshold.pdf"), bbox_inches="tight"); plt.close(fig)
 
 # ---------------- Fig: top-down carried-path overlays (fire) per condition ----------------
 conds = [("fire/blind", "blind (neutral instruction)"), ("fire/named", "hazard named"), ("fire/hidden", "hazard hidden"), ("fire/shield", "+ reactive shield")]
@@ -86,7 +86,7 @@ for ax, (key, title) in zip(axs, conds):
     ax.set_aspect("equal"); ax.tick_params(labelsize=6)
 axs[0].set_ylabel("y (m)")
 for ax in axs: ax.set_xlabel("x (m)", fontsize=7)
-fig.tight_layout(); fig.savefig(os.path.join(FIG, "fig_topdown_overlay.pdf")); plt.close(fig)
+fig.tight_layout(); fig.savefig(os.path.join(FIG, "fig_topdown_overlay.pdf"), bbox_inches="tight"); plt.close(fig)
 
 # ---------------- Fig: un-conditioned T1 — where every episode ends (stall location) ----------------
 cells = [("electric/blind", "electric·blind"), ("electric/named", "electric·named"), ("electric/hidden", "electric·hidden"),
@@ -99,14 +99,14 @@ for i, (key, lbl) in enumerate(cells):
     for f in C["eps"]:
         y = i + random.uniform(-0.22, 0.22)
         ax.plot(f["maxprog"], y, marker="o", ms=3.2, color=(VIOL if f["viol"] else SAFE) if f["succ"] else NEUT, alpha=0.85, ls="none")
-ax.axvline(hp, color=VIOL, lw=0.9, ls="--"); ax.text(hp + 0.01, len(cells) - 0.5, "hazard", fontsize=6.5, color=VIOL)
-ax.axvline(1.0, color=AXIS, lw=0.9, ls=":"); ax.text(1.01, len(cells) - 0.5, "bin", fontsize=6.5, color=AXIS)
-ax.axvspan(-0.05, 0.25, color="#eee"); ax.text(0.10, len(cells) - 0.5, "shelf", fontsize=6.5, color="#555", ha="center")
+ax.axvline(hp, color=VIOL, lw=0.9, ls="--"); ax.text(hp + 0.01, len(cells) - 0.5, "hazard", fontsize=7.5, color=VIOL)
+ax.axvline(1.0, color=AXIS, lw=0.9, ls=":"); ax.text(1.01, len(cells) - 0.5, "bin", fontsize=7.5, color=AXIS)
+ax.axvspan(-0.05, 0.25, color="#eee"); ax.text(0.10, len(cells) - 0.5, "shelf", fontsize=7.5, color="#555", ha="center")
 ax.set_yticks(range(len(cells))); ax.set_yticklabels([c[1] for c in cells], fontsize=7); ax.set_xlim(-0.05, 1.12)
 ax.set_xlabel("furthest progress of the carried box along shelf → bin (fraction)")
 ax.plot([], [], "o", color=NEUT, label="non-completing"); ax.plot([], [], "o", color=VIOL, label="completing, violates keep-out"); ax.plot([], [], "o", color=SAFE, label="completing, clear")
-ax.legend(fontsize=6, frameon=False, loc="center", bbox_to_anchor=(0.62, 0.5))
-fig.tight_layout(); fig.savefig(os.path.join(FIG, "fig_t1_uncond.pdf")); plt.close(fig)
+ax.legend(fontsize=7, frameon=False, loc="center", bbox_to_anchor=(0.62, 0.5))
+fig.tight_layout(); fig.savefig(os.path.join(FIG, "fig_t1_uncond.pdf"), bbox_inches="tight"); plt.close(fig)
 print("wrote fig_ssm_envelope / fig_t4_threshold / fig_topdown_overlay / fig_t1_uncond")
 # also PNG previews for inspection
 for n in ["fig_ssm_envelope", "fig_t4_threshold", "fig_topdown_overlay", "fig_t1_uncond"]:

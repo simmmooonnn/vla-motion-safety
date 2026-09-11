@@ -1,16 +1,16 @@
-%% ICLR 2027 submission — seed generated from the markdown draft (v0.28).
+%% ICLR 2027 submission — seed generated from the markdown draft (v0.29).
 %% Drop the official iclr2027_conference.sty / .bst from the ICLR author kit next to this file.
 \documentclass{article}
 \usepackage{iclr2027_conference,times}
 \usepackage{amsmath,amssymb,amsfonts}
-\usepackage{booktabs,array,graphicx,xcolor,url,microtype,multirow}
+\usepackage{booktabs,array,graphicx,xcolor,url,microtype,multirow,float,placeins}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{hyperref}
 \graphicspath{{./}{figures/}}
 % \iclrfinalcopy  % uncomment for the camera-ready (shows authors)
 
-\title{Execution-Phase Safety for Embodied VLA Agents:\\ A Diagnostic Benchmark for How a Safe Task Gets Done}
+\title{Execution-Phase Safety for VLA Agents:\\ A Diagnostic Benchmark for How a Safe Task Gets Done}
 
 \author{Zijian Su \\
 Johns Hopkins University \\
@@ -21,7 +21,7 @@ Johns Hopkins University \\
 \maketitle
 
 \begin{abstract}
-Vision--language--action (VLA) safety is judged at two endpoints: whether the instruction should be followed and whether the end state is acceptable. Neither constrains \emph{how} the task is carried out. We define \textbf{execution-phase safety} --- harm done while a nominally safe task is completed: along the path, in the pose, at the speed, with the body, with the load, or by not reacting to a moving person --- as a third axis, and give it a six-type taxonomy (T1--T6), each type a measurable tuple of harm channel, phase, quantity, violation predicate, metric and fixability class. We instantiate it as a diagnostic benchmark on the cell no existing suite covers --- a locomoting humanoid (GR00T N1.6 on a Unitree G1 in Isaac Sim) carrying a hazard past a passive bystander --- and port two channels to $\pi_{0.5}$ on a Franka arm. Every carry that completes the task passes through the hazard's keep-out zone (GR00T 109/109 completing carries pooled over hazards, positions, seeds and appearance; $\pi_{0.5}$ 22/22, and 16/16 with the hazard rendered visible); explicit safety commands do not reduce this on either policy (paired \emph{N} = 16--24, McNemar \emph{p} = 1.0); an oracle-fed external shield does (8/8 $\rightarrow$ 0/8 on the stove; on the other hazards only with a larger margin). The robot's own arm reaches the bystander's body surface ($\pi_{0.5}$ 8/32 episodes; GR00T 8/8 at its worst position), the carried object passes a person at full speed inside the ISO/TS 15066 stop distance (6/6), and a crossing person is walked into --- the carried box stops only on contact with them, on 11/11 completing carries (0/3 off-path). We show that the scoring geometry, not the policy, sets several of these rates, and argue that what a policy owns is not the safety function but the demand it places on it. Scenes, metrics and the per-episode logs behind every reported number are released.
+Vision--language--action (VLA) safety is judged at two endpoints: whether the instruction should be followed and whether the end state is acceptable. Neither constrains \emph{how} the task is carried out. We define \textbf{execution-phase safety} --- harm done while a nominally safe task is completed: along the path, in the pose, at the speed, with the body, with the load, or by not reacting to a moving person --- as a third axis, give it a six-type taxonomy (T1--T6) of measurable tuples with a fixability class, and instantiate it as a diagnostic benchmark on the cell no existing suite covers: a locomoting humanoid (GR00T N1.6 on a Unitree G1 in Isaac Sim) carrying a hazard past a passive bystander, with two channels ported to $\pi_{0.5}$ on a Franka arm. Every carry that completes the task passes through the hazard's keep-out zone (GR00T 109/109 completing carries pooled over hazards, positions, seeds and appearance; $\pi_{0.5}$ 22/22, and 16/16 with the hazard rendered visible); explicit safety commands do not change this on either policy; an oracle-fed external shield does (8/8 $\rightarrow$ 0/8). The robot's own arm enters the bystander's body volume, the carried object passes a person at full speed inside the ISO/TS 15066 stop distance (6/6), and a slowly crossing person is reached without any slowing (11/11), the box stalling against them in 6/11 carries. The scoring geometry, not the policy, sets several of these rates; what a policy owns, we argue, is not the safety function but the demand it places on it. Scenes, metrics and per-episode logs are released.
 \end{abstract}
 
 \input{sections/introduction}
@@ -33,18 +33,21 @@ Vision--language--action (VLA) safety is judged at two endpoints: whether the in
 \input{sections/a_benchmark_agenda}
 \input{sections/limitations_and_threats_to_validity}
 \input{sections/conclusion}
+\input{sections/reproducibility_statement}
+\input{sections/ethics_statement}
+\input{sections/use_of_large_language_models}
 
 \bibliography{refs}
 \bibliographystyle{iclr2027_conference}
 
 \appendix
-\input{sections/appendix_a_unified_count_table}
-\input{sections/appendix_b_per_type_schema_instantiation}
-\input{sections/appendix_c_reproducibility_notes_and_swe}
-\input{sections/appendix_d_standards_mapping_and_taxonom}
-\input{sections/appendix_e_extended_empirical_results}
-\input{sections/appendix_f_extended_limitations_and_thre}
-\input{sections/appendix_g_extended_related_work}
-\input{sections/appendix_h_benchmark_agenda_details}
+\FloatBarrier\input{sections/appendix_a_unified_count_table}
+\FloatBarrier\input{sections/appendix_b_per_type_schema_instantiation}
+\FloatBarrier\input{sections/appendix_c_reproducibility_notes_and_swe}
+\FloatBarrier\input{sections/appendix_d_standards_mapping_and_taxonom}
+\FloatBarrier\input{sections/appendix_e_extended_empirical_results}
+\FloatBarrier\input{sections/appendix_f_extended_limitations_and_thre}
+\FloatBarrier\input{sections/appendix_g_extended_related_work}
+\FloatBarrier\input{sections/appendix_h_benchmark_agenda_details}
 
 \end{document}

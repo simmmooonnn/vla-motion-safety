@@ -23,6 +23,7 @@ def bib_author(a):
     a = a.strip().rstrip(",").strip()
     if not a: return ""
     for k, v in ACC.items(): a = a.replace(k, v)
+    if a == "International Organization for Standardization": return "{ISO}"     # cite as (ISO, 2016)
     if a in ORGS: return "{" + a + "}"
     etal = bool(re.search(r"\bet al\.?$", a))
     a = re.sub(r",?\s*et al\.?$", "", a)
@@ -59,8 +60,10 @@ for m in re.finditer(r"^\[(\d+)\]\s+(.*?)\s*$", refs_md, re.M):
     pm = re.search(r"\s*\(([^()]*(?:\([^()]*\)[^()]*)*)\)\s*$", rest)   # trailing "(Concurrent work.)" -> note
     if pm and len(pm.group(1)) > 12:
         note, rest = pm.group(1).strip(), rest[:pm.start()].strip(" ,.")
-    rest = re.sub(r",?\s*(?:[A-Z][a-z]{2}\.\s+)?\b%s\b\.?$" % year, "", rest).strip(" ,.")  # bst prints the year itself
+    rest = re.sub(r",?\s*(?:[A-Z][a-z]{2}\.\s+)?\b%s\b\.?(?=,|\s|$)" % year, "", rest).strip(" ,.")  # bst prints the year itself
+    rest = re.sub(r"\s+,", ",", rest)
     rest = re.sub(r"^in\s+", "In ", rest)
+    note = ""                                        # editorial notes ("Concurrent work.") do not belong in the bibliography
     fields = []
     au = bib_author(author)
     if au: fields.append("  author = {%s}" % au)
@@ -85,6 +88,7 @@ UNI = [
     ("θ", r"$\theta$"), ("Δ", r"$\Delta$"), ("κ", r"$\kappa$"), ("τ", r"$\tau$"), ("ψ", r"$\psi$"), ("φ", r"$\phi$"),
     ("✓", r"$\checkmark$"), ("✔", r"$\checkmark$"), ("✗", r"$\times$"), ("★", r"$\star$"),
     ("\u00a0", "~"), ("\u202f", r"\,"), ("\u2009", r"\,"),
+    ("d\u2080", r"$d_0$"), ("\u2080", r"$_{0}$"), ("\u2282", r"$\subset$"), ("\u2261", r"$\equiv$"),
 ]
 def esc_text(t):
     """Escape a NON-math text segment for LaTeX and convert markdown inline markup."""
@@ -106,6 +110,9 @@ def esc_text(t):
     t = re.sub(r"\[(\d+)\]", r"\\citep{ref\1}", t)
     # section refs like §5.9 -> \S5.9
     t = t.replace("§", r"\S")
+    # table cross-references: "Table I" / "Tables III--IV" -> \ref by roman label (captions carry "Table N.")
+    t = re.sub(r"\bTables ([IVX]+)--([IVX]+)", r"Tables~\\ref{tab:\1}--\\ref{tab:\2}", t)
+    t = re.sub(r"\bTable ([IVX]+)\b(?!\.)", r"Table~\\ref{tab:\1}", t)
     for i, r in enumerate(refs): t = t.replace("@@REF%d@@" % i, r)
     return t
 
@@ -133,7 +140,9 @@ def convert_inline(line):
 def heading_text(h):
     h = re.sub(r"^\d+(\.\d+)*\.?\s*", "", h).strip()          # strip leading numbers
     h = re.sub(r"^Appendix\s+[A-Z]\.?\s*", "", h).strip()      # \appendix numbers it already
-    return convert_inline(h)
+    h = re.sub(r"^[A-Z]\.\d+\s+", "", h)                          # "E.1 Setup" -> LaTeX numbers it
+    out = convert_inline(h)
+    return re.sub(r"\bT(\d)([ab])\b", r"T\1\\textnormal{\2}", out)  # keep 'T3a' lowercase under small caps
 
 # ---------------------------------------------------------------- table conversion
 def convert_table(rows, caption, label):
@@ -152,7 +161,8 @@ def convert_table(rows, caption, label):
             col = [r[j] for r in data]
             typ = sorted(len(c) for c in col)[int(0.8 * (len(col) - 1))] if col else 0
             L.append(min(max(len(hdr[j]), typ, 9), 60))
-        avail = 0.985                                  # fraction of \linewidth left after @{} margins + tabcolsep
+        # (ncol-1) inter-column gaps of 2*tabcolsep (3pt) on a ~397pt ICLR line width, plus 1% slack
+        avail = 0.99 - (ncol - 1) * 6.0 / 397.0 - 0.01
         fr = [avail * l / sum(L) for l in L]
         colspec = "@{}" + "".join(r">{\raggedright\arraybackslash}p{%.3f\linewidth}" % f for f in fr) + "@{}"
         size = r"\scriptsize\setlength{\tabcolsep}{3pt}"
@@ -160,21 +170,17 @@ def convert_table(rows, caption, label):
         colspec = "@{}" + "l" * ncol + "@{}"
         size = r"\small"
     cap = re.sub(r"^Table\s+[IVXL]+\.\s*", "", caption or "")   # markdown carried its own "Table I." prefix
-    lines = []
-    lines.append(r"\begin{table}[t]")
-    lines.append(r"\centering" + size)
-    if cap: lines.append(r"\caption{" + convert_inline(cap) + "}")
-    lines.append(r"\label{" + label + "}")
-    lines.append(r"\begin{tabular}{" + colspec + "}")
-    lines.append(r"\toprule")
-    lines.append(" & ".join(convert_inline(c) for c in hdr) + r" \\")
-    lines.append(r"\midrule")
+    body_lines = [r"\begin{tabular}{" + colspec + "}", r"\toprule", " & ".join(convert_inline(c) for c in hdr) + r" \\", r"\midrule"]
     for r in data:
-        lines.append(" & ".join(convert_inline(c) for c in r) + r" \\")
-    lines.append(r"\bottomrule")
-    lines.append(r"\end{tabular}")
-    lines.append(r"\end{table}")
+        body_lines.append(" & ".join(convert_inline(c) for c in r) + r" \\")
+    body_lines += [r"\bottomrule", r"\end{tabular}"]
+    if not cap:                                       # uncaptioned -> inline (no float, no number)
+        return "\n".join([r"\begin{center}" + size] + body_lines + [r"\end{center}"])
+    placement = "[H]" if IN_APPENDIX[0] else "[t]"   # appendix tables stay under their heading
+    lines = [r"\begin{table}" + placement, r"\centering" + size, r"\caption{" + convert_inline(cap) + "}", r"\label{" + label + "}"]
+    lines += body_lines + [r"\end{table}"]
     return "\n".join(lines)
+IN_APPENDIX = [False]
 
 # ---------------------------------------------------------------- body -> sections
 lines = body.split("\n")
@@ -221,7 +227,8 @@ def convert_block(content):
             while j < len(content) and content[j].strip().startswith("|"):
                 rows.append(content[j]); j += 1
             tcount[0] += 1
-            lab = "tab:" + re.sub(r"[^a-z0-9]+", "", (pending_caption or "t%d" % tcount[0]).split(".")[0].lower())
+            rm = re.match(r"Table\s+([IVX]+)\.", pending_caption or "")
+            lab = "tab:" + (rm.group(1) if rm else "t%d" % tcount[0])
             out.append(convert_table(rows, pending_caption, lab)); pending_caption = None
             continue
         # lists
@@ -247,10 +254,13 @@ def convert_block(content):
 # group level-1 sections into files
 files = []   # (filename, latex)
 curfile = None
+UNNUMBERED = ("reproducibility statement", "ethics statement", "use of large language models")
 for lvl, title, content in sections:
     if lvl == 1:
         fname = re.sub(r"[^a-z0-9]+", "_", re.sub(r"^\d+\.?\s*", "", title).lower()).strip("_")[:40]
-        curfile = [fname, [r"\section{" + heading_text(title) + "}", convert_block(content)]]
+        IN_APPENDIX[0] = title.lower().startswith("appendix")
+        sec_cmd = r"\section*{" if title.lower().strip() in UNNUMBERED else r"\section{"
+        curfile = [fname, [sec_cmd + heading_text(title) + "}", convert_block(content)]]
         files.append(curfile)
     else:
         if curfile is None:
@@ -270,7 +280,7 @@ FIGS = r"""
 \centering
 \includegraphics[width=\linewidth]{figures/fig_t1_fire_defect.png}\\[2pt]
 \includegraphics[width=0.9\linewidth]{figures/fig_t1_fire_shield.png}
-\caption{\textbf{T1 --- path / keep-out.} Top: the carried box passes $\approx$0.05\,m from a hot-appliance keep-out zone; no detour is attempted (top-down frame strip). Bottom, with the reactive shield: the same carry detours around the zone --- keep-out violations fall from 8/8 completing carries to 0/8 (Fisher $p<10^{-4}$), completion preserved.}
+\caption{\textbf{T1 --- path / keep-out.} Top: the carried box passes $\approx$0.05\,m from a hot-appliance keep-out zone; no detour is attempted (top-down frame strip). Bottom, with the reactive shield: the same carry detours around the zone --- keep-out violations fall from 8/8 completing carries to 0/8 (Fisher $p = 1.6\times10^{-4}$), completion preserved.}
 \label{fig:t1}\label{fig:shield}
 \end{figure}
 \begin{figure}[t]
@@ -298,7 +308,7 @@ FIGS = r"""
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_fixability.pdf}
-\caption{\textbf{Fixability.} Left: an explicit safety command does not reduce violations (paired seeds, $N=20$--$24$). Middle: the reactive shield eliminates T1 keep-out violations (8/8 $\rightarrow$ 0/8). Right: the same shield, even reading the crosser's live pose, does not fix T6.}
+\caption{\textbf{Fixability.} Left: an explicit safety command does not reduce violations (paired seeds, $N=20$--$24$). Middle: the reactive shield eliminates T1 keep-out violations (8/8 $\rightarrow$ 0/8). Right: the same shield at a 0.50\,m margin, even reading the crosser's live pose, does not prevent the T6 contact (whether a larger margin would is open).}
 \label{fig:fixability}
 \end{figure}
 \begin{figure}[t]
@@ -327,13 +337,13 @@ FIGS = r"""
 \end{figure}
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.78\linewidth]{figures/fig_ssm_envelope.pdf}
+\includegraphics[width=\linewidth]{figures/fig_t6_contact.pdf}
 \caption{\textbf{T6: the carried box stops only on contact.} Left: carried-box speed around the closest approach for the eleven completing on-path carries (three seeds) and the three off-path controls; on-path the box arrives at contact distance without slowing (0.25--0.37\,m/s one step before), is then held there for 2--3.5\,s in 6/11 carries and brushes past in 5/11; off-path the same corridor is traversed without a stop. Right: box--person separation; every on-path minimum sits at the contact distance (capsule radius 0.16\,m + box half-extent), and the 0.50\,m live-tracking shield (dashed) leaves it there.}
 \label{fig:t6contact}
 \end{figure}
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{figures/fig_t6_contact.pdf}
+\includegraphics[width=0.78\linewidth]{figures/fig_ssm_envelope.pdf}
 \caption{\textbf{T3a against the ISO/TS 15066 speed-and-separation envelope.} Payload speed versus carried-object--person separation for the six completing carries with the bystander present (0.2\,s smoothing), with the allowed speed $v_{\mathrm{allow}}(d)$ under the walking-human, lenient and stationary-human parameterizations and the ISO 10218-1 reduced speed. Every carry runs at 0.2--0.45\,m/s inside $d_0 = 0.94$\,m; none decelerates toward the person.}
 \label{fig:ssm}
 \end{figure}
@@ -345,11 +355,14 @@ FIGS = r"""
 \end{figure}
 """
 # route figures: a few in the main text (page budget), the rest at the top of Appendix E
-MAIN_LABELS = ("fig:overview", "fig:t1", "fig:shield", "fig:t6contact")
+MAIN_LABELS = ("fig:t1", "fig:shield", "fig:t6contact")
 blocks = [r"\begin{figure}" + b for b in FIGS.split(r"\begin{figure}")[1:]]
+intro_figs = "\n".join(b for b in blocks if "\\label{fig:overview}" in b)
 main_figs = "\n".join(b for b in blocks if any(("\\label{%s}" % l) in b for l in MAIN_LABELS))
-app_figs = "\n".join(b for b in blocks if not any(("\\label{%s}" % l) in b for l in MAIN_LABELS))
+app_figs = "\n".join(b for b in blocks if "\\label{fig:overview}" not in b and not any(("\\label{%s}" % l) in b for l in MAIN_LABELS))
 for f in files:
+    if f[0].startswith("introduction"):
+        f[1].insert(1, intro_figs)
     if f[0].startswith("empirical"):
         f[1].insert(1, main_figs)
     if f[0].startswith("appendix_e"):
@@ -365,19 +378,19 @@ for fname, parts in files:
 # abstract
 abs_tex = "\n".join(convert_inline(l) for l in abstract if l.strip())
 
-MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.28).
+MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.29).
 %% Drop the official iclr2027_conference.sty / .bst from the ICLR author kit next to this file.
 \documentclass{article}
 \usepackage{iclr2027_conference,times}
 \usepackage{amsmath,amssymb,amsfonts}
-\usepackage{booktabs,array,graphicx,xcolor,url,microtype,multirow}
+\usepackage{booktabs,array,graphicx,xcolor,url,microtype,multirow,float,placeins}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{hyperref}
 \graphicspath{{./}{figures/}}
 % \iclrfinalcopy  % uncomment for the camera-ready (shows authors)
 
-\title{Execution-Phase Safety for Embodied VLA Agents:\\ A Diagnostic Benchmark for How a Safe Task Gets Done}
+\title{Execution-Phase Safety for VLA Agents:\\ A Diagnostic Benchmark for How a Safe Task Gets Done}
 
 \author{Zijian Su \\
 Johns Hopkins University \\
@@ -403,7 +416,7 @@ Johns Hopkins University \\
 inp_lines = []
 for f in inputs:
     if f.startswith("appendix") and r"\appendix" not in inp_lines: inp_lines.append(r"\appendix")
-    inp_lines.append(r"\input{sections/%s}" % f)
+    inp_lines.append((r"\FloatBarrier\input{sections/%s}" if f.startswith("appendix") else r"\input{sections/%s}") % f)
 # the appendix goes after the bibliography (ICLR: references do not count toward the page limit; appendix follows)
 body_in = [l for l in inp_lines if not (l == r"\appendix" or "appendix" in l)]
 app_in = [l for l in inp_lines if l == r"\appendix" or "appendix" in l]

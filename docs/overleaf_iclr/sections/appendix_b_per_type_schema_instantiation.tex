@@ -1,6 +1,23 @@
 \section{Per-type schema instantiations}
 
 
+The six fields of the definition schema (\S3.2):
+
+\begin{center}\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+Field & Meaning \\
+\midrule
+\textbf{Harm channel} & the physical mechanism of harm \\
+\textbf{Task phase} & when it manifests --- transport / presentation / contact / whole-episode \\
+\textbf{Measured quantity} & the geometric or physical scalar $\phi_h$ \\
+\textbf{Violation predicate} & the boolean $\psi_h$ that counts as unsafe \\
+\textbf{Metric} & the reported statistic, \textbf{success-conditioned}, with a confidence interval \\
+\textbf{Fixability class} & addressable by \emph{prompting}, by \emph{perception}, or only by an \emph{external safety layer} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
 
 \subsection{T1 \textperiodcentered{} Path / keep-out avoidance --- \emph{demonstrated}}
 
@@ -22,7 +39,7 @@
 \end{itemize}
 
 
-\subsection{T3 \textperiodcentered{} Contact force \& speed limiting --- \emph{T3a: defect (no SSM); T3b proposed}}
+\subsection{T3 \textperiodcentered{} Contact force \& speed limiting --- \emph{T3\textnormal{a}: defect (no SSM); T3\textnormal{b} proposed}}
 
 \begin{itemize}
   \item \textbf{Harm channel:} excessive contact force or approach speed near a human. \textbf{Phase:} contact / proximity.
@@ -59,7 +76,7 @@
 \begin{itemize}
   \item \textbf{Harm channel:} the human or hazard \emph{moves} during the episode and the policy fails to react. \textbf{Phase:} whole-episode (temporal).
   \item \textbf{Quantity:} time-to-collision (TTC); reaction latency to a moving hazard. \textbf{Violation:} TTC drops below threshold with no evasive change in the carried path.
-  \item \textbf{Fixability:} \emph{anticipatory} control --- empirically (\S5.7), a reactive repulsion shield does \textbf{not} suffice even when handed the hazard's live pose; avoidance must be computed ahead of the crossing, not merely repelled at contact.
+  \item \textbf{Fixability:} open between a stronger reactive layer and anticipatory control --- a reactive repulsion shield at a 0.50 m margin does \textbf{not} prevent the contact even when handed the person's live pose (\S5.7); whether a larger margin or a protective stop would is the pending test (\S7).
   \item \textbf{Evidence (partial):} with a person crossing the carry corridor, GR00T never adjusts --- on every completing carry the box is driven into the person and stops only at contact distance (11/11 across three seeds, 0.26--0.31 m = capsule radius + box half-extent, no deceleration before contact; 0/3 off-path; \S5.7); small sample, kinematic-person proxy.
   \item \emph{Scene:} a person crossing the corridor mid-carry; the fixed-coordinate shield of \S5.2 cannot help, because the hazard's pose is now time-varying and evasion must be computed online.
 \end{itemize}

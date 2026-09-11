@@ -1,23 +1,23 @@
 \section{A Taxonomy of Six Execution-Phase Safety Types}
 
 
-We instantiate the schema for six types (Table II); all six carry at least a partial measurement in \S5, and only \textbf{T3b} (power-and-force limiting) is purely proposed.
+We instantiate the schema for six types (Table~\ref{tab:II}); all six carry at least a partial measurement in \S5, and only \textbf{T3b} (power-and-force limiting) is purely proposed.
 
 
 \begin{table}[t]
 \centering\scriptsize\setlength{\tabcolsep}{3pt}
-\caption{Six execution-phase safety types.}
-\label{tab:tableii}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.037\linewidth}>{\raggedright\arraybackslash}p{0.087\linewidth}>{\raggedright\arraybackslash}p{0.175\linewidth}>{\raggedright\arraybackslash}p{0.079\linewidth}>{\raggedright\arraybackslash}p{0.137\linewidth}>{\raggedright\arraybackslash}p{0.224\linewidth}>{\raggedright\arraybackslash}p{0.083\linewidth}>{\raggedright\arraybackslash}p{0.162\linewidth}@{}}
+\caption{Six execution-phase safety types (phase and fixability class per type in Appendix B).}
+\label{tab:II}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.041\linewidth}>{\raggedright\arraybackslash}p{0.096\linewidth}>{\raggedright\arraybackslash}p{0.192\linewidth}>{\raggedright\arraybackslash}p{0.151\linewidth}>{\raggedright\arraybackslash}p{0.247\linewidth}>{\raggedright\arraybackslash}p{0.178\linewidth}@{}}
 \toprule
-ID & Type & Harm channel & Phase & Quantity & Violation & Fixability & Status \\
+ID & Type & Harm channel & Quantity & Violation & Status \\
 \midrule
-T1 & Path / keep-out & carried object / body enters a hazard zone & transport & min clearance to hazard & clearance < keep-out radius & external shield & \textbf{demonstrated} \\
-T2 & Presentation orientation & hazardous feature aimed at a human & presentation / handover & angle(hazard axis, human bearing) & axis within $\theta$$^{\circ}$ of human & orientation control & \textbf{partial} \\
-T3 & Contact force \& speed & excess force / approach speed near a human & contact / proximity & peak force; speed vs separation & force > limit; speed > SSM bound & speed/force governor & \textbf{T3a: no slowing} (0/6); T3b proposed \\
-T4 & Body swept-volume & robot's own links sweep a human & whole-episode & min link $\rightarrow$ body-surface distance & penetration of the body volume (proxy has no collider) & whole-body avoidance & \textbf{penetration} 8/8 at the worst position; witness pending \\
-T5 & Load stability & carried object tilts / spills / drops & transport & tilt angle; spill/drop event & tilt > limit; released early & stability-aware control & \textbf{measured (null)} \\
-T6 & Dynamic reactivity & human/hazard moves; policy fails to react & whole-episode & min person separation; time-to-collision & contact with the crossing person (separation at contact distance; TTC reported) & reactive control & \textbf{contact} 11/11; witness pending \\
+T1 & Path / keep-out & carried object / body enters a hazard zone & min clearance to hazard & clearance < keep-out radius & \textbf{demonstrated} \\
+T2 & Presentation orientation & hazardous feature aimed at a human & angle(hazard axis, human bearing) & axis within $\theta$$^{\circ}$ of human & \textbf{partial} \\
+T3 & Contact force \& speed & excess force / approach speed near a human & peak force; speed vs separation & force > limit; speed > SSM bound & \textbf{T3a: no slowing} (0/6); T3b proposed \\
+T4 & Body swept-volume & robot's own links sweep a human & min link $\rightarrow$ body-surface distance & penetration of the body volume (proxy has no collider) & \textbf{penetration} 8/8 at the worst position; witness pending \\
+T5 & Load stability & carried object tilts / spills / drops & tilt angle; spill/drop event & tilt > limit; released early & \textbf{measured (null)} \\
+T6 & Dynamic reactivity & human/hazard moves; policy fails to react & min person separation; time-to-collision & contact with the crossing person (separation at contact distance; TTC reported) & \textbf{contact} 11/11; witness pending \\
 \bottomrule
 \end{tabular}
 \end{table}

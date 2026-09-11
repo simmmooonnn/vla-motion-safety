@@ -1,30 +1,35 @@
 \section{Unified count table}
 
 
+Table~\ref{tab:V} lists every cell behind the numbers in \S5 with a common denominator; rows marked $\subset$ are subsets of the pooled row above them.
 
-\begin{table}[t]
+
+\begin{table}[H]
 \centering\scriptsize\setlength{\tabcolsep}{3pt}
-\caption{Every GR00T cell reported in this paper, plus the $\pi_{0.5}$ body-sweep cells, with a common denominator. Attempted = episodes run; completing = box delivered within 0.30 m of the bin; violating = completing carries whose carried-object clearance fell below the keep-out (T1), episodes whose closest link fell inside the margin (T4, all episodes), or completing carries in which the box reached contact distance with the crossing person ($\leq$ 0.31 m; T6). Wilson 95 \% intervals. Pooled rows concatenate the listed runs; seeds are 42 / 7 / 123 unless stated. Person proxy = the standing capsule-plus-mesh bystander of \S5.1 placed on the carry path.}
-\label{tab:tablev}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.310\linewidth}>{\raggedright\arraybackslash}p{0.070\linewidth}>{\raggedright\arraybackslash}p{0.078\linewidth}>{\raggedright\arraybackslash}p{0.171\linewidth}>{\raggedright\arraybackslash}p{0.240\linewidth}>{\raggedright\arraybackslash}p{0.116\linewidth}@{}}
+\caption{Every cell reported in this paper, with a common denominator. Attempted = episodes run; completing = box delivered within 0.30 m of the bin; violating = completing carries whose carried-object clearance fell below the keep-out (T1), episodes whose closest link fell inside the margin (T4, all episodes), or completing carries in which the box reached contact distance with the crossing person ($\leq$ 0.31 m; T6). Wilson 95 \% intervals. Pooled rows concatenate the listed runs; seeds are 42 / 7 / 123 unless stated; rows marked $\subset$ are subsets of the pooled row above them. The 109/109 headline is the sum of the blind rows that are not subsets: electric 3-seed 16 + electric position sweep 24 + stove 3-seed 16 + stove position sweep 12 + stove powered re-run 8 + person 1 + 4 + two hazards 6 + YCB 22. Person proxy = the standing capsule-plus-mesh bystander of \S5.1 placed on the carry path.}
+\label{tab:V}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.334\linewidth}>{\raggedright\arraybackslash}p{0.059\linewidth}>{\raggedright\arraybackslash}p{0.066\linewidth}>{\raggedright\arraybackslash}p{0.144\linewidth}>{\raggedright\arraybackslash}p{0.203\linewidth}>{\raggedright\arraybackslash}p{0.098\linewidth}@{}}
 \toprule
 Channel / cell & attempted & completing & violating / completing & violation rate (Wilson 95 \% CI) & completing rate \\
 \midrule
-T1 electric, keep-out 0.20 m --- blind & 12 & 3 & 3 / 3 & 100 \% [44, 100] & 25 \% \\
+T1 electric, keep-out 0.20 m --- $\subset$ blind (seed 42) & 12 & 3 & 3 / 3 & 100 \% [44, 100] & 25 \% \\
 blind, 3 seeds & 36 & 16 & 16 / 16 & 100 \% [81, 100] & 44 \% \\
 named & 12 & 6 & 6 / 6 & 100 \% [61, 100] & 50 \% \\
 hidden & 12 & 7 & 7 / 7 & 100 \% [65, 100] & 58 \% \\
 off-path control, 3 seeds & 35 & 11 & 0 / 11 & 0 \% [0, 26] & 31 \% \\
 position sweep A/B/C & 36 & 24 & 24 / 24 & 100 \% [86, 100] & 67 \% \\
 + shield, 3 seeds & 36 & 12 & 6 / 12 & 50 \% [25, 75] & 33 \% \\
-T1 hot stove, keep-out 0.30 m --- blind & 12 & 6 & 6 / 6 & 100 \% [61, 100] & 50 \% \\
+T1 hot stove, keep-out 0.30 m --- $\subset$ blind (seed 42) & 12 & 6 & 6 / 6 & 100 \% [61, 100] & 50 \% \\
 blind, 3 seeds & 36 & 16 & 16 / 16 & 100 \% [81, 100] & 44 \% \\
 named & 12 & 4 & 4 / 4 & 100 \% [51, 100] & 33 \% \\
 hidden & 12 & 7 & 7 / 7 & 100 \% [65, 100] & 58 \% \\
 position sweep A/B/C & 36 & 12 & 12 / 12 & 100 \% [76, 100] & 33 \% \\
 + shield, 3 seeds & 35 & 12 & 0 / 12 & 0 \% [0, 24] & 34 \% \\
+off-path controls, hazard 0.40 / 0.75 m off the path & 23 & 12 & 0 / 12 & 0 \% [0, 24] & 52 \% \\
 blind, powered re-run (N = 24) & 24 & 8 & 8 / 8 & 100 \% [68, 100] & 33 \% \\
-+ shield, powered re-run (N = 24) & 24 & 8 & 0 / 8 & 0 \% [0, 32] & 33 \% \\
++ shield, powered re-run (N = 24, margin 0.60 m) & 24 & 8 & 0 / 8 & 0 \% [0, 32] & 33 \% \\
++ shield, margin $\leq$ 0.50 m (five runs) & 60 & 25 & 22 / 25 & 88 \% [70, 96] & 42 \% \\
++ shield, margin $\geq$ 0.60 m (seven runs incl. the two above) & 95 & 28 & 0 / 28 & 0 \% [0, 12] & 29 \% \\
 explicit safety command (N = 24) & 24 & 7 & 7 / 7 & 100 \% [65, 100] & 29 \% \\
 T1 person proxy, keep-out 0.20 m --- blind & 11 & 1 & 1 / 1 & 100 \% [21, 100] & 9 \% \\
 blind, second run & 16 & 4 & 4 / 4 & 100 \% [51, 100] & 25 \% \\
@@ -39,6 +44,9 @@ T1 keep-out, $\pi_{0.5}$\textperiodcentered{}Franka, 0.20 m --- on-path (geometr
 off-path control (perpendicular 0.35 m) & 22 & 22 & 0 / 22 & 0 \% [0, 15] & 100 \% \\
 rendered on-path marker & 22 & 16 & 16 / 16 & 100 \% [81, 100] & 73 \% \\
 rendered marker + explicit spatial command (paired) & 16 & 16 & 14 / 16 vs 15 / 16 & 88 \% [64, 97] vs 94 \% [72, 99] & 100 \% vs $\approx$ 62 \% \\
+T2 orientation, GR00T\textperiodcentered{}G1 --- eight azimuths, proxy axis within 90$^{\circ}$ of the person & 64 & 27 & 14 / 27 & 52 \% [34, 69] (yaw fixed +3$^{\circ}$ $\pm$ 11$^{\circ}$) & 42 \% \\
+T2 explicit-command probe (paired, N = 24) & 24 + 24 & 12 / 14 & 33 \% $\rightarrow$ 46 \% (p = 0.58) & --- & --- \\
+T5 load tilt, GR00T\textperiodcentered{}G1 --- four seeds, tilt > 45$^{\circ}$ in transit & 32 & 17 & 0 / 17 & 0 \% [0, 19] & 53 \% \\
 T4 body sweep, GR00T\textperiodcentered{}G1, axis metric, margin 0.10 m --- pick right & 8 & (all) & 6 / 8 & 75 \% [41, 93] & contact (0 mm): 1 / 8 \\
 pick left & 8 & (all) & 0 / 8 & 0 \% [0, 32] & contact (0 mm): 0 / 8 \\
 bin right & 8 & (all) & 0 / 8 & 0 \% [0, 32] & contact (0 mm): 0 / 8 \\
@@ -49,7 +57,12 @@ T4 body sweep, $\pi_{0.5}$\textperiodcentered{}Franka, axis metric --- pooled fo
 T4 body sweep, $\pi_{0.5}$\textperiodcentered{}Franka, 3-D body surface --- pooled four positions & 32 & (all) & 17 / 32 & 53 \% [36, 69] & contact (0 mm): 8 / 32 \\
 T6 crossing person, GR00T\textperiodcentered{}G1 --- on-path, seeds 42 / 7 / 123 & 24 & 11 & 11 / 11 & 100 \% [74, 100] (contact-limited stop, $\leq$ 0.31 m) & 46 \% \\
 on-path, mid-corridor start & 8 & 2 & 2 / 2 & 100 \% [34, 100] (contact-limited stop) & 25 \% \\
-off-path control & 8 & 3 & 0 / 3 & 0 \% [0, 56] (no stop; virtual separation 0.06--0.19 m) & 38 \% \\
+person-absent control & 8 & 3 & 0 / 3 & 0 \% [0, 56] (no stop; virtual separation 0.06--0.19 m) & 38 \% \\
+unshielded, powered re-run (N = 24) & 24 & 6 & 6 / 6 & 100 \% [61, 100] (contact-limited stop) & 25 \% \\
++ fixed-anchor shield, 0.50 m (N = 24) & 24 & 4 & 4 / 4 & 100 \% [51, 100] & 17 \% \\
++ live-tracking shield, 0.50 m (N = 24) & 24 & 7 & 6 / 7 & 86 \% [49, 97] & 29 \% \\
+T6 explicit-command probe (paired, N = 20--24) & --- & --- & 30 \% $\rightarrow$ 25 \% (p = 1.0) & --- & --- \\
+T1 keep-out, $\pi_0$ (preliminary) --- on-path & 5 & 3 & 3 / 3 & 100 \% [44, 100] & 60 \% \\
 \bottomrule
 \end{tabular}
 \end{table}

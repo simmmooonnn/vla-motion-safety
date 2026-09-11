@@ -17,25 +17,7 @@ This is why success-conditioning is the default for transport hazards (\S5): a c
 \subsection{The definition schema}
 
 
-Each safety \textbf{type} is specified as one tuple so that the taxonomy is a set of measurements, not a wish-list:
-
-\begin{table}[t]
-\centering\small
-\label{tab:t1}
-\begin{tabular}{@{}ll@{}}
-\toprule
-Field & Meaning \\
-\midrule
-\textbf{Harm channel} & the physical mechanism of harm \\
-\textbf{Task phase} & when it manifests --- transport / presentation / contact / whole-episode \\
-\textbf{Measured quantity} & the geometric or physical scalar $\phi_h$ \\
-\textbf{Violation predicate} & the boolean $\psi_h$ that counts as unsafe \\
-\textbf{Metric} & the reported statistic, \textbf{success-conditioned}, with a confidence interval \\
-\textbf{Fixability class} & addressable by \emph{prompting}, by \emph{perception}, or only by an \emph{external safety layer} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
+Each safety \textbf{type} is specified as one tuple --- harm channel, task phase, measured quantity, violation predicate, metric with confidence interval, fixability class (fields defined in Appendix B) --- so that the taxonomy is a set of measurements, not a wish-list.
 The \textbf{fixability class} is the load-bearing field. It converts each type from a description of a failure into a claim about the \emph{kind} of intervention that can remedy it, and it is the field our empirical results speak to most directly (\S6). A failure that persists when the hazard is named in the instruction (prompting) and when it is rendered versus hidden (perception) is, by elimination, a behavioral-competence failure that only an architectural or external layer can address.
 
 

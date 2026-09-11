@@ -1,12 +1,14 @@
 \section{Standards mapping and taxonomy crosswalk}
 
 
+Tables VI and VII place the six types against the safety standards and against the peer taxonomies.
 
-\begin{table}[t]
+
+\begin{table}[H]
 \centering\scriptsize\setlength{\tabcolsep}{3pt}
 \caption{Where each type lives in the safety standards. Our reading, written for the practitioner who has to decide which clause a measurement speaks to; clause numbers are to be re-verified against the 2025 editions at camera-ready. ``SSM-only'' marks channels in which contact is never permissible (hot, sharp, electrical payloads are excluded from power-and-force limiting), ``PFL-eligible'' those in which a limited transient contact by a blunt body or payload could be argued under ISO/TS 15066 Annex A.}
-\label{tab:tablevi}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.076\linewidth}>{\raggedright\arraybackslash}p{0.141\linewidth}>{\raggedright\arraybackslash}p{0.216\linewidth}>{\raggedright\arraybackslash}p{0.216\linewidth}>{\raggedright\arraybackslash}p{0.119\linewidth}>{\raggedright\arraybackslash}p{0.216\linewidth}@{}}
+\label{tab:VI}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.070\linewidth}>{\raggedright\arraybackslash}p{0.129\linewidth}>{\raggedright\arraybackslash}p{0.199\linewidth}>{\raggedright\arraybackslash}p{0.199\linewidth}>{\raggedright\arraybackslash}p{0.109\linewidth}>{\raggedright\arraybackslash}p{0.199\linewidth}@{}}
 \toprule
 Type & ISO 12100 hazard class & Governing requirement & Human-referenced quantity the standard uses & Regime & Our proxy in this paper \\
 \midrule
@@ -22,19 +24,19 @@ T6 dynamic reactivity & mechanical (impact) & ISO 13482 hazards due to robot mot
 \end{table}
 
 
-\begin{table}[t]
+\begin{table}[H]
 \centering\scriptsize\setlength{\tabcolsep}{3pt}
 \caption{Crosswalk to the peer taxonomies. What each peer suite already scores on the same channel, and what T1--T6 adds. Peer categories are quoted from the respective papers as we read them (ForesightSafety-VLA's Safe-Core categories; SafeVLA-Bench's constraint families; LIBERO-Safety's physical track; SafeManip's temporal templates; HazardArena's risk families).}
-\label{tab:tablevii}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.046\linewidth}>{\raggedright\arraybackslash}p{0.122\linewidth}>{\raggedright\arraybackslash}p{0.142\linewidth}>{\raggedright\arraybackslash}p{0.203\linewidth}>{\raggedright\arraybackslash}p{0.168\linewidth}>{\raggedright\arraybackslash}p{0.305\linewidth}@{}}
+\label{tab:VII}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.042\linewidth}>{\raggedright\arraybackslash}p{0.112\linewidth}>{\raggedright\arraybackslash}p{0.131\linewidth}>{\raggedright\arraybackslash}p{0.186\linewidth}>{\raggedright\arraybackslash}p{0.154\linewidth}>{\raggedright\arraybackslash}p{0.280\linewidth}@{}}
 \toprule
 Type & ForesightSafety-VLA \citep{ref23} & SafeVLA-Bench \citep{ref27} & LIBERO-Safety \citep{ref24} & SafeManip \citep{ref30} / HazardArena \citep{ref19} & What T1--T6 adds \\
 \midrule
 T1 & Thermal, Spatial Boundary (object-referenced) & keep-out / boundary clauses, object-referenced & collision margin to a MANO hand proxy beside a fixed-base arm & HazardArena semantic unsafe twins (e.g. a knife toward a person) & a \emph{carried} hazard past a full-body bystander on a locomoting robot; fixability ablations \\
 T2 & --- & --- & --- & --- (handover literature only) & the non-receiving bystander; orientation invariance across azimuths \\
-T3a & Collaborative (proximity) & --- (force proxies only) & --- & --- & speed scored against the human-referenced SSM envelope \\
-T3b & Force/Torque & contact force ceiling (ISO 200 N, object-referenced) & --- & --- & body-region PFL against a person (proposed) \\
-T4 & Collaborative & self-collision (robot--robot) & arm-collision margin (mesh) to the hand proxy & --- & whole-body sweep against a full-body bystander; threshold curve and contact rate \\
+T3a & --- & --- (force proxies only) & --- & --- & speed scored against the human-referenced SSM envelope \\
+T3b & Force/Torque & contact force ceiling (200 N, the suite's own value; ISO/TS 15066 Annex A limits are body-region-specific) & --- & --- & body-region PFL against a person (proposed) \\
+T4 & Collaborative (dual-arm separation, not a person) & self-collision (robot--robot) & arm-collision margin (mesh) to the hand proxy & --- & whole-body sweep against a full-body bystander; threshold curve and contact rate \\
 T5 & --- & object tilt / drop clauses & --- & SafeManip grasp / release stability & transport-phase stability with a spill proxy \\
 T6 & Temporal & --- & kinematic perturbation of the hand proxy & --- & a crossing person, time-to-collision, and the reactive-vs-anticipatory fixability split \\
 \bottomrule

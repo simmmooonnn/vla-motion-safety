@@ -14,12 +14,12 @@ CONTACT = 0.16 + 0.10
 fig, axs = plt.subplots(1, 2, figsize=(6.6, 2.6))
 ax = axs[0]
 for i, tr in enumerate(E["onpath"]):
-    ax.plot(tr["t"], tr["sp"], color=VIOL, lw=0.8, alpha=0.8, label="on-path crossing (n = 11)" if i == 0 else None)
+    ax.plot(tr["t"], tr["sp"], color=VIOL, lw=0.8, alpha=0.8, label="on-path (n = 11)" if i == 0 else None)
 for i, tr in enumerate(E["offpath"]):
-    ax.plot(tr["t"], tr["sp"], color=SAFE, lw=1.0, alpha=0.9, label="off-path control (n = 3)" if i == 0 else None)
-ax.text(0.2, 0.555, "at contact: 6/11 held 2–3.5 s, 5/11 brush past", fontsize=6.3, color=VIOL)
+    ax.plot(tr["t"], tr["sp"], color=SAFE, lw=1.0, alpha=0.9, label="person-absent control (n = 3)" if i == 0 else None)
+ax.text(-3.9, 0.555, "at contact: 6/11 held 2–3.5 s, 5/11 brush past", fontsize=7, color=VIOL)
 ax.set_xlim(-4, 7); ax.set_ylim(0, 0.6); ax.set_xlabel("time from closest approach (s)"); ax.set_ylabel("carried-box speed (m/s)")
-ax.legend(fontsize=6.3, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.28), ncol=2)
+ax.legend(fontsize=7, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.28), ncol=2)
 ax = axs[1]
 for i, tr in enumerate(E["onpath"]):
     ax.plot(tr["t"], tr["sep"], color=VIOL, lw=0.8, alpha=0.8)
@@ -27,12 +27,12 @@ for tr in E["offpath"]:
     ax.plot(tr["t"], tr["sep"], color=SAFE, lw=1.0, alpha=0.9)
 for i, tr in enumerate(E["track"]):
     ax.plot(tr["t"], tr["sep"], color=AXIS, lw=0.7, alpha=0.7, ls="--", label="+ live-tracking shield, 0.50 m (n = 7)" if i == 0 else None)
-ax.axhline(CONTACT, color="k", lw=0.9, ls=":"); ax.text(-3.9, CONTACT - 0.07, "contact distance: capsule radius 0.16 m + box half-extent ≈ 0.10 m", fontsize=6, color="#333")
-ax.axhline(0.30, color=NEUT, lw=0.6, ls="--"); ax.text(6.9, 0.315, "old 0.30 m near-miss label", fontsize=5.8, color="#666", ha="right")
+ax.axhline(CONTACT, color="k", lw=0.9, ls=":"); ax.text(-3.9, CONTACT - 0.07, "contact distance", fontsize=7, color="#333")
+ax.axhline(0.30, color=NEUT, lw=0.6, ls="--"); ax.text(6.9, 0.315, "old 0.30 m label", fontsize=7, color="#666", ha="right")
 ax.set_xlim(-4, 7); ax.set_ylim(0, 1.0); ax.set_xlabel("time from closest approach (s)"); ax.set_ylabel("box → person separation (m)")
-ax.plot([], [], color=VIOL, lw=0.8, label="on-path (n = 11)"); ax.plot([], [], color=SAFE, lw=1.0, label="off-path: separation to the virtual crossing")
-ax.legend(fontsize=6.0, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.28), ncol=2)
-fig.set_size_inches(6.6, 3.3); fig.tight_layout(); fig.savefig(os.path.join(FIG, "fig_t6_contact.pdf")); plt.close(fig)
+ax.plot([], [], color=VIOL, lw=0.8, label="on-path (n = 11)"); ax.plot([], [], color=SAFE, lw=1.0, label="person-absent: separation to the virtual crossing")
+ax.legend(fontsize=7, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.28), ncol=2)
+fig.set_size_inches(6.6, 3.3); fig.tight_layout(); fig.savefig(os.path.join(FIG, "fig_t6_contact.pdf"), bbox_inches="tight"); plt.close(fig)
 import fitz
 doc = fitz.open(os.path.join(FIG, "fig_t6_contact.pdf")); doc[0].get_pixmap(dpi=110).save(os.path.join(S, "pdfpages", "fig_t6_contact.png"))
 print("wrote fig_t6_contact.pdf")
