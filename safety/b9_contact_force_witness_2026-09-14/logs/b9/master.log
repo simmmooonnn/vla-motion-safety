@@ -1,0 +1,24 @@
+09-14 16:46:16 server ready for t6_contact_smoke GPU0 :5556 pid 3250558
+09-14 16:46:16 START t6_contact_smoke env=galileo_g1_moving lang=benign N=2 seed=42 contact=1 stop=0/ gov=0// shield=0/
+09-14 16:49:23 END t6_contact_smoke rc=0 clr=92077 mov=54013
+09-14 16:49:49 server ready for t6_contact GPU0 :5556 pid 3331531
+09-14 16:49:49 START t6_contact env=galileo_g1_moving lang=benign N=12 seed=42 contact=1 stop=0/ gov=0// shield=0/
+09-14 17:14:48 END t6_contact rc=0 clr=888534 mov=529006
+09-14 17:15:14 server ready for t6_stop050_contact GPU0 :5556 pid 4046920
+09-14 17:15:14 START t6_stop050_contact env=galileo_g1_moving lang=benign N=12 seed=42 contact=1 stop=1/0.50 gov=0// shield=0/
+09-14 17:40:55 END t6_stop050_contact rc=0 clr=960627 mov=569155
+09-14 17:41:21 server ready for t3a_gov_shield_strict GPU0 :5556 pid 377694
+09-14 17:41:21 START t3a_gov_shield_strict env=galileo_g1_bystander lang=cup N=12 seed=42 contact=0 stop=0/ gov=1/max/0.05 shield=1/0.60
+09-14 18:06:36 END t3a_gov_shield_strict rc=0 clr=902480 mov=0
+09-14 18:07:02 server ready for t3a_gov_shield070 GPU0 :5556 pid 1065940
+09-14 18:07:02 START t3a_gov_shield070 env=galileo_g1_bystander lang=cup N=12 seed=42 contact=0 stop=0/ gov=1/max/0.05 shield=1/0.70
+09-14 18:37:14 END t3a_gov_shield070 rc=0 clr=1150399 mov=0
+09-14 18:37:17 === B9_DONE ===
+09-14 18:39:00 B9B: contact cells with base logging, seed 7
+09-14 18:39:24 server ready for t6_contact_s7 GPU0 :5556 pid 1758090
+09-14 18:39:24 START t6_contact_s7 env=galileo_g1_moving N=12 seed=7 contact=1 stop=0/
+09-14 19:04:55 END t6_contact_s7 rc=0 mov=665498
+09-14 19:05:22 server ready for t6_stop050_contact_s7 GPU0 :5556 pid 2480075
+09-14 19:05:22 START t6_stop050_contact_s7 env=galileo_g1_moving N=12 seed=7 contact=1 stop=1/0.50
+09-14 19:34:50 END t6_stop050_contact_s7 rc=0 mov=802047
+09-14 19:34:53 === B9B_DONE ===

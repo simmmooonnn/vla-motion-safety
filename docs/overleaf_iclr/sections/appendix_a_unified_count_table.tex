@@ -71,7 +71,7 @@ rendered marker + explicit spatial command (paired) & 16 & 16 & 14 / 16 vs 15 / 
 \caption{Every remaining cell --- orientation, load, body sweep, the crossing person, and the second and third policies. Same columns and conventions as Table V.}
 \label{tab:X}
 \vspace{4pt}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.288\linewidth}>{\raggedright\arraybackslash}p{0.054\linewidth}>{\raggedright\arraybackslash}p{0.060\linewidth}>{\raggedright\arraybackslash}p{0.192\linewidth}>{\raggedright\arraybackslash}p{0.186\linewidth}>{\raggedright\arraybackslash}p{0.126\linewidth}@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.281\linewidth}>{\raggedright\arraybackslash}p{0.050\linewidth}>{\raggedright\arraybackslash}p{0.055\linewidth}>{\raggedright\arraybackslash}p{0.232\linewidth}>{\raggedright\arraybackslash}p{0.171\linewidth}>{\raggedright\arraybackslash}p{0.116\linewidth}@{}}
 \toprule
 Channel / cell & attempted & completing & violating / completing & violation rate (Wilson 95 \% CI) & completing rate \\
 \midrule
@@ -111,11 +111,15 @@ baseline replicate, substitute driver (2026-09, seed 42) & 12 & 4 & 4 / 5 carrie
 trigger-path control, 0.06 m/s (2026-09; person starts too late to meet the carry) & 12 & 2 & 0 / 3 carried & --- & 17 \% \\
 + protective stop, 0.50 m (SSM at 0.06 m/s), seeds 42 / 7 & 24 & 8 & 0 / 11 carried (minimum 0.39 m); fires 22 / 24, overshoot $\leq$ 0.11 m & 0 \% [0, 26] & 33 \% \\
 + protective stop, 0.94 m (ISO 13855 walking speed) & 12 & 0 & 0 / 4 carried; fires 11 / 12, never completes & --- & 0 \% \\
+contact sensor on the person, unshielded (seeds 42 / 7) & 24 & 10 & 13 / 13 carried with force (peak median 200 N, 95--428 N; 1.7 s); body strikes in 6 / 11 empty-handed episodes & 100 \% [77, 100] & 42 \% \\
+contact sensor + protective stop 0.50 m (seeds 42 / 7) & 24 & 12 & 0 / 13 carried with force & 0 \% [0, 23] & 50 \% \\
 robot-triggered crossing, 0.3 / 0.6 / 1.2 m/s, seeds 42 / 7 & 108 & 1 & 16 / 23 carried struck by the person (7 / 9, 6 / 8, 3 / 6; box knocked out) & 70 \% [49, 84] & 1 \% (carried 23 / 108) \\
 \midrule\multicolumn{6}{@{}l}{\textbf{T3a static person on the path, GR00T\textperiodcentered{}G1}} \\
 + protective stop, 0.45 m (v\_h = 0) & 6 & 0 & fires 6 / 6 at 0.445--0.449 m, never releases & --- & 0 \% \\
 + SSM speed governor (v\_h = 0, T\_r+T\_s = 0.4 s, C = 0.2, Z = 0.1) & 12 & 0 & halted at 0.26--0.29 m in 12 / 12 & --- & 0 \% \\
 + governor + repulsion shield 0.60 m & 12 & 4 & 0 / 4 (clearance 0.42--0.43 m; transient excess over v\_allow 0.08--0.24 m/s) & 0 \% [0, 49] & 33 \% \\
++ strict governor (faster of base / payload, 0.05 m/s margin) + shield 0.60 m & 12 & 6 & 3 / 6 completing carries envelope-compliant; clearance 0.41--0.46 m & --- & 50 \% \\
++ strict governor + shield 0.70 m & 12 & 1 & 0 / 1 (9 steps over) & --- & 8 \% \\
 \midrule\multicolumn{6}{@{}l}{\textbf{T6 explicit-command probe}} \\
 (paired, N = 20--24) & --- & --- & 30 \% $\rightarrow$ 25 \% (p = 1.0) & --- & --- \\
 \midrule\multicolumn{6}{@{}l}{\textbf{T1 keep-out, $\pi_0$ (preliminary)}} \\
