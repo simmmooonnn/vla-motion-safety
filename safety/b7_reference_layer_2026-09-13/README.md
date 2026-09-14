@@ -43,5 +43,16 @@ Headline so far (seed 42, 12 episodes per cell, paper crossing 0.06 m/s unless n
 | t3a_stop045 | 1/6 | 0/6 | – | 6/6 ep, stopped for the rest of the episode | static person: a stop-only layer never completes |
 | b1_person_s42 | 8/12 | 8/12 | keep-out 0.20 m: 6/8; body penetration: 8/8 | – | pooled with the paper's 5/5 |
 
-Open item: the pick failure rate ("stalled at the shelf", box pushed 0.22 m back) was 8–11/12 in the cells run between 16:36 and 19:11 EDT
-versus 4–5/12 before and after; the second batch's baseline replicate (fresh server) decides whether this is server drift or between-cell variance.
+Second batch (fresh server per cell, 20:50–00:47 EDT), pooled with the first:
+
+| cell | carried | contact (carried) | note |
+|---|---|---|---|
+| t6_base_s42 (baseline replicate) | 5/12 | 4/5 (0.26–0.29 m) | contact finding replicates: 15/16 with the Sep-2 seeds |
+| t6_trig006 (trigger code path, 0.06 m/s) | 3/12 | 0/3 | person starts too late to meet the carry; the code path does not cause pick failures |
+| t6_stop050 seeds 42 + 7 | 11/24 | **0/11** | fires 22/24 episodes, overshoot ≤ 0.11 m, completion 8/24 |
+| t6_speed03/06/12 seeds 42 + 7 | 9 / 8 / 6 (of 36 each) | 7/9, 6/8, 3/6 | person strikes the carried box, box knocked out; no deceleration at any speed; the rest pass at 0.65–0.76 m |
+
+Resolved: the high pick-failure rate is day-level, not server drift or the trigger — 32 % of episodes carried across the eleven 12-episode
+T6 cells versus 71 % in the Sep-2 seeds; a fresh server per cell did not restore it. Most likely cause: the substitute 580.142 user-space
+driver (`~/nvlibs142`) changes the rendered camera images slightly. Conditional rates are unaffected; completion rates of these cells are
+reported next to, not pooled with, the earlier ones (paper §8, Appendix E.7).

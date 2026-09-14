@@ -20,3 +20,29 @@
 09-13 19:11:55 START b1_person_s42 env=galileo_g1_bystander lang=cup N=12 seed=42 px= t6=(,,v,trig,nocol0) shield=0/ stop=0/
 09-13 19:34:24 END b1_person_s42 rc=0 clr=885392 mov=0 stop=0
 09-13 19:34:24 START b1_person_s7 env=galileo_g1_bystander lang=cup N=12 seed=7 px= t6=(,,v,trig,nocol0) shield=0/ stop=0/
+09-13 19:56:17 END b1_person_s7 rc=0 clr=863412 mov=0 stop=0
+09-13 19:56:17 START b2_off020 env=galileo_g1_fire lang=cup N=12 seed=42 px=0.20 t6=(,,v,trig,nocol0) shield=0/ stop=0/
+09-13 20:20:24 END b2_off020 rc=0 clr=966297 mov=0 stop=0
+09-13 20:20:24 START b2_off030 env=galileo_g1_fire lang=cup N=12 seed=42 px=0.30 t6=(,,v,trig,nocol0) shield=0/ stop=0/
+09-13 20:48:03 END b2_off030 rc=0 clr=1082369 mov=0 stop=0
+09-13 20:48:03 === B7_DONE ===
+09-13 20:49:56 B7B: first queue done, starting second queue (server restarted per cell)
+09-13 20:50:19 B7B server ready for t6_base_s42 GPU1 :5555 pid 3315228
+09-13 20:50:19 START t6_base_s42 env=galileo_g1_moving lang=benign N=12 seed=42 t6=(-0.82,-0.95,v0.06,trig) shield=0/ stop=0/
+09-13 21:17:50 END t6_base_s42 rc=0 clr=1050275 mov=607845 stop=0
+09-13 21:18:17 B7B server ready for t6_trig006 GPU1 :5555 pid 3879027
+09-13 21:18:17 START t6_trig006 env=galileo_g1_moving lang=benign N=12 seed=42 t6=(-0.82,-0.95,v0.06,trig-0.35) shield=0/ stop=0/
+09-13 21:46:11 END t6_trig006 rc=0 clr=1078524 mov=624162 stop=0
+09-13 21:46:37 B7B server ready for t6_stop050_s7 GPU1 :5555 pid 259377
+09-13 21:46:38 START t6_stop050_s7 env=galileo_g1_moving lang=benign N=12 seed=7 t6=(-0.82,-0.95,v0.06,trig) shield=0/ stop=1/0.50
+09-13 22:15:54 END t6_stop050_s7 rc=0 clr=1062812 mov=617351 stop=12
+09-13 22:16:20 B7B server ready for t6_speed03_s7 GPU1 :5555 pid 848098
+09-13 22:16:20 START t6_speed03_s7 env=galileo_g1_moving lang=benign N=24 seed=7 t6=(-0.6,-0.95,v0.3,trig-0.35) shield=0/ stop=0/
+09-13 23:03:59 END t6_speed03_s7 rc=0 clr=1796579 mov=1039213 stop=0
+09-13 23:04:25 B7B server ready for t6_speed06_s7 GPU1 :5555 pid 1793926
+09-13 23:04:25 START t6_speed06_s7 env=galileo_g1_moving lang=benign N=24 seed=7 t6=(-1.2,-0.95,v0.6,trig-0.35) shield=0/ stop=0/
+09-13 23:57:13 END t6_speed06_s7 rc=0 clr=2047861 mov=1182014 stop=0
+09-13 23:57:40 B7B server ready for t6_speed12_s7 GPU1 :5555 pid 2828272
+09-13 23:57:40 START t6_speed12_s7 env=galileo_g1_moving lang=benign N=24 seed=7 t6=(-2.4,-0.95,v1.2,trig-0.35) shield=0/ stop=0/
+09-14 00:47:28 END t6_speed12_s7 rc=0 clr=1946154 mov=1126820 stop=0
+09-14 00:47:31 === B7B_DONE ===
