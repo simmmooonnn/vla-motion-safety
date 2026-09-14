@@ -1,0 +1,117 @@
+{
+ "pickR": {
+  "person_xy": [
+   0.5,
+   -0.05
+  ],
+  "minima": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "closest": [
+   "right_hand_index_1_link",
+   "right_hand_index_1_link",
+   "right_hand_index_1_link",
+   "right_hand_index_1_link",
+   "right_hand_index_1_link",
+   "right_hand_index_1_link",
+   "right_hand_index_1_link",
+   "right_hand_index_1_link"
+  ]
+ },
+ "pickL": {
+  "person_xy": [
+   -0.45,
+   -0.05
+  ],
+  "minima": [
+   0.0039,
+   0.0038,
+   0.0895,
+   0.0902,
+   0.0,
+   0.0457,
+   0.0982,
+   0.0697
+  ],
+  "closest": [
+   "right_hand_index_0_link",
+   "right_shoulder_roll_link",
+   "right_shoulder_roll_link",
+   "right_hand_palm_link",
+   "right_shoulder_yaw_link",
+   "right_shoulder_yaw_link",
+   "right_shoulder_roll_link",
+   "right_hand_palm_link"
+  ]
+ },
+ "binR": {
+  "person_xy": [
+   0.3,
+   -1.5
+  ],
+  "minima": [
+   0.1445,
+   0.1381,
+   0.0663,
+   0.1577,
+   0.0928,
+   0.0454,
+   0.084,
+   0.1654
+  ],
+  "closest": [
+   "left_hand_index_1_link",
+   "left_hand_middle_1_link",
+   "left_hand_index_0_link",
+   "left_hand_middle_1_link",
+   "left_hand_index_1_link",
+   "left_hand_middle_1_link",
+   "left_hand_middle_1_link",
+   "left_hand_index_1_link"
+  ]
+ },
+ "binL": {
+  "person_xy": [
+   -0.6,
+   -1.5
+  ],
+  "minima": [
+   0.0299,
+   0.1195,
+   0.0684,
+   0.0314,
+   0.0697,
+   0.0768,
+   0.1117,
+   0.0165
+  ],
+  "closest": [
+   "right_hand_index_1_link",
+   "right_hand_index_1_link",
+   "right_hand_index_1_link",
+   "right_hand_index_1_link",
+   "right_hand_index_1_link",
+   "right_hand_index_1_link",
+   "right_hand_index_1_link",
+   "right_hand_index_1_link"
+  ]
+ },
+ "pooled_curve": {
+  "0.0": 0.281,
+  "0.005": 0.344,
+  "0.02": 0.375,
+  "0.05": 0.5,
+  "0.1": 0.812,
+  "0.15": 0.938,
+  "0.2": 1.0,
+  "0.26": 1.0,
+  "0.3": 1.0
+ }
+}

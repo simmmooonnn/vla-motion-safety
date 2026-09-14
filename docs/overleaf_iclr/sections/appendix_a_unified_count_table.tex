@@ -9,7 +9,7 @@ Tables V (T1) and X (all other channels and policies) list every cell behind the
 \caption{Every T1 (keep-out) cell reported in this paper, with a common denominator. Attempted = episodes run; completing = box delivered within 0.30 m of the bin; violating = completing carries whose carried-object clearance fell below the keep-out (T1), episodes whose closest link fell inside the margin (T4, all episodes), or completing carries in which the box reached contact distance with the crossing person ($\leq$ 0.31 m; T6). Wilson 95 \% intervals. Pooled rows concatenate the listed runs; seeds are 42 / 7 / 123 unless stated; rows marked $\subset$ are subsets of the pooled row above them. The 109/109 headline is the sum of the blind rows that are not subsets: electric 3-seed 16 + electric position sweep 24 + stove 3-seed 16 + stove position sweep 12 + stove powered re-run 8 + person 1 + 4 + two hazards 6 + YCB 22. Person proxy = the standing capsule-plus-mesh bystander of \S5.1 placed on the carry path.}
 \label{tab:V}
 \vspace{4pt}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.270\linewidth}>{\raggedright\arraybackslash}p{0.066\linewidth}>{\raggedright\arraybackslash}p{0.073\linewidth}>{\raggedright\arraybackslash}p{0.160\linewidth}>{\raggedright\arraybackslash}p{0.226\linewidth}>{\raggedright\arraybackslash}p{0.109\linewidth}@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.280\linewidth}>{\raggedright\arraybackslash}p{0.065\linewidth}>{\raggedright\arraybackslash}p{0.072\linewidth}>{\raggedright\arraybackslash}p{0.158\linewidth}>{\raggedright\arraybackslash}p{0.223\linewidth}>{\raggedright\arraybackslash}p{0.108\linewidth}@{}}
 \toprule
 Channel / cell & attempted & completing & violating / completing & violation rate (Wilson 95 \% CI) & completing rate \\
 \midrule
@@ -30,6 +30,7 @@ position sweep A/B/C & 36 & 12 & 12 / 12 & 100 \% [76, 100] & 33 \% \\
 + shield, 3 seeds & 35 & 12 & 0 / 12 & 0 \% [0, 24] & 34 \% \\
 off-path controls, hazard 0.40 / 0.75 m off the path & 23 & 12 & 0 / 12 & 0 \% [0, 24] & 52 \% \\
 offset calibration, stove 0.20 m off the path (2026-09) & 12 & 5 & 5 / 5 & 100 \% [57, 100] & 42 \% \\
+offset calibration, stove 0.25 m off the path (2026-09) & 24 & 11 & 9 / 11 & 82 \% [52, 95] (clearances 0.20--0.33 m) & 46 \% \\
 offset calibration, stove 0.30 m off the path (2026-09) & 12 & 2 & 0 / 2 & 0 \% [0, 66] & 17 \% \\
 blind, powered re-run (N = 24) & 24 & 8 & 8 / 8 & 100 \% [68, 100] & 33 \% \\
 + shield, powered re-run (N = 24, margin 0.60 m) & 24 & 8 & 0 / 8 & 0 \% [0, 32] & 33 \% \\
@@ -65,7 +66,7 @@ rendered marker + explicit spatial command (paired) & 16 & 16 & 14 / 16 vs 15 / 
 \caption{Every remaining cell --- orientation, load, body sweep, the crossing person, and the second and third policies. Same columns and conventions as Table V.}
 \label{tab:X}
 \vspace{4pt}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.286\linewidth}>{\raggedright\arraybackslash}p{0.060\linewidth}>{\raggedright\arraybackslash}p{0.067\linewidth}>{\raggedright\arraybackslash}p{0.146\linewidth}>{\raggedright\arraybackslash}p{0.206\linewidth}>{\raggedright\arraybackslash}p{0.140\linewidth}@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.288\linewidth}>{\raggedright\arraybackslash}p{0.054\linewidth}>{\raggedright\arraybackslash}p{0.060\linewidth}>{\raggedright\arraybackslash}p{0.192\linewidth}>{\raggedright\arraybackslash}p{0.186\linewidth}>{\raggedright\arraybackslash}p{0.126\linewidth}@{}}
 \toprule
 Channel / cell & attempted & completing & violating / completing & violation rate (Wilson 95 \% CI) & completing rate \\
 \midrule
@@ -81,7 +82,12 @@ pick left & 8 & (all) & 0 / 8 & 0 \% [0, 32] & contact (0 mm): 0 / 8 \\
 bin right & 8 & (all) & 0 / 8 & 0 \% [0, 32] & contact (0 mm): 0 / 8 \\
 bin left & 8 & (all) & 2 / 8 & 25 \% [7, 59] & contact (0 mm): 0 / 8 \\
 pooled four positions & 32 & (all) & 8 / 32 & 25 \% [13, 42] & contact (0 mm): 1 / 32 \\
-pick right, 3-D body surface & 8 & (all) & 8 / 8 & 100 \% [68, 100] & contact (0 mm): 8 / 8 \\
+\midrule\multicolumn{6}{@{}l}{\textbf{T4 body sweep, GR00T\textperiodcentered{}G1, 3-D body surface, margin 0.10 m}} \\
+pick right & 8 & (all) & 8 / 8 & 100 \% [68, 100] & contact (0 mm): 8 / 8 \\
+pick left (2026-09) & 8 & (all) & 8 / 8 & 100 \% [68, 100] & contact (0 mm): 1 / 8 \\
+bin right (2026-09) & 8 & (all) & 4 / 8 & 50 \% [22, 78] & contact (0 mm): 0 / 8 \\
+bin left (2026-09) & 8 & (all) & 6 / 8 & 75 \% [41, 93] & contact (0 mm): 0 / 8 \\
+pooled four positions & 32 & (all) & 26 / 32 & 81 \% [65, 91] & contact (0 mm): 9 / 32 \\
 \midrule\multicolumn{6}{@{}l}{\textbf{T4 body sweep, $\pi_{0.5}$\textperiodcentered{}Franka, axis metric}} \\
 pooled four positions & 32 & (all) & 1 / 32 & 3 \% [1, 16] & contact (0 mm): 1 / 32 \\
 \midrule\multicolumn{6}{@{}l}{\textbf{T4 body sweep, $\pi_{0.5}$\textperiodcentered{}Franka, 3-D body surface}} \\
@@ -103,6 +109,8 @@ trigger-path control, 0.06 m/s (2026-09; person starts too late to meet the carr
 robot-triggered crossing, 0.3 / 0.6 / 1.2 m/s, seeds 42 / 7 & 108 & 1 & 16 / 23 carried struck by the person (7 / 9, 6 / 8, 3 / 6; box knocked out) & 70 \% [49, 84] & 1 \% (carried 23 / 108) \\
 \midrule\multicolumn{6}{@{}l}{\textbf{T3a static person on the path, GR00T\textperiodcentered{}G1}} \\
 + protective stop, 0.45 m (v\_h = 0) & 6 & 0 & fires 6 / 6 at 0.445--0.449 m, never releases & --- & 0 \% \\
++ SSM speed governor (v\_h = 0, T\_r+T\_s = 0.4 s, C = 0.2, Z = 0.1) & 12 & 0 & halted at 0.26--0.29 m in 12 / 12 & --- & 0 \% \\
++ governor + repulsion shield 0.60 m & 12 & 4 & 0 / 4 (clearance 0.42--0.43 m; transient excess over v\_allow 0.08--0.24 m/s) & 0 \% [0, 49] & 33 \% \\
 \midrule\multicolumn{6}{@{}l}{\textbf{T6 explicit-command probe}} \\
 (paired, N = 20--24) & --- & --- & 30 \% $\rightarrow$ 25 \% (p = 1.0) & --- & --- \\
 \midrule\multicolumn{6}{@{}l}{\textbf{T1 keep-out, $\pi_0$ (preliminary)}} \\

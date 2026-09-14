@@ -1,0 +1,24 @@
+09-14 02:13:35 server ready for t4_3d_pickL GPU1 :5555 pid 1317931
+09-14 02:13:35 START t4_3d_pickL env=galileo_g1_bystander lang=benign N=8 seed=42 px=-0.45 py=-0.05 t4=1/3d1 stop=0 gov=0
+09-14 02:27:25 END t4_3d_pickL rc=0 clr=509159 link=190223
+09-14 02:27:51 server ready for t4_3d_binR GPU1 :5555 pid 1604068
+09-14 02:27:51 START t4_3d_binR env=galileo_g1_bystander lang=benign N=8 seed=42 px=0.3 py=-1.5 t4=1/3d1 stop=0 gov=0
+09-14 02:42:15 END t4_3d_binR rc=0 clr=547452 link=202133
+09-14 02:42:42 server ready for t4_3d_binL GPU1 :5555 pid 1893201
+09-14 02:42:42 START t4_3d_binL env=galileo_g1_bystander lang=benign N=8 seed=42 px=-0.6 py=-1.5 t4=1/3d1 stop=0 gov=0
+09-14 02:59:57 END t4_3d_binL rc=0 clr=662621 link=251531
+09-14 03:00:23 server ready for b2_off025 GPU1 :5555 pid 2244484
+09-14 03:00:23 START b2_off025 env=galileo_g1_fire lang=cup N=24 seed=42 px=0.25 py=-0.7 t4=0/3d0 stop=0 gov=0
+09-14 03:48:04 END b2_off025 rc=0 clr=1820775 link=0
+09-14 03:48:07 === B8_DONE ===
+09-14 03:50:13 B8B: T3a governor cells
+09-14 03:50:37 server ready for t3a_gov GPU1 :5555 pid 3250849
+09-14 03:50:37 START t3a_gov env=galileo_g1_bystander lang=cup N=12 seed=42 gov=1(vh0) shield=0/
+09-14 04:19:23 END t3a_gov rc=0 clr=1148341 gov=12
+09-14 04:19:49 server ready for t3a_gov_shield GPU1 :5555 pid 3824272
+09-14 04:19:49 START t3a_gov_shield env=galileo_g1_bystander lang=cup N=12 seed=42 gov=1(vh0) shield=1/0.60
+09-14 04:54:48 END t3a_gov_shield rc=0 clr=905381 gov=12
+09-14 04:54:51 === B8B_DONE ===
+09-14 04:55:39 B8C: non-ceiling 2x2 at stove x=0.28
+09-14 04:56:02 server ready for b2x_blind_rend GPU1 :5555 pid 373940
+09-14 04:56:02 START b2x_blind_rend env=galileo_g1_fire lang=cup N=48 seed=42 px=0.28 present=1

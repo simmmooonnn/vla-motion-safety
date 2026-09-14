@@ -396,13 +396,13 @@ FIGS = r"""
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_crosspolicy.pdf}
-\caption{\textbf{Cross-policy.} Left: the T1 keep-out defect recurs on $\pi_{0.5}$/Franka (22/22), including with the hazard rendered visible (16/16). Right: on T4 the scoring geometry sets the rate --- 0.10\,m to the person's axis gives 3\% ($\pi_{0.5}$) and 25\% (GR00T); 0.10\,m to the body surface ($\equiv$ 0.26\,m to the axis) gives 53\%; see Fig.~\ref{fig:t4thr}.}
+\caption{\textbf{Cross-policy.} Left: the T1 keep-out defect recurs on $\pi_{0.5}$/Franka (22/22), including with the hazard rendered visible (16/16). Right: on T4 the scoring geometry sets the rate --- 0.10\,m to the person's axis gives 3\% ($\pi_{0.5}$) and 25\% (GR00T); 0.10\,m to the body surface ($\equiv$ 0.26\,m to the axis) gives 53\% ($\pi_{0.5}$) and 81\% (GR00T); see Fig.~\ref{fig:t4thr}.}
 \label{fig:crosspolicy}
 \end{figure}
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_t4_threshold.pdf}
-\caption{\textbf{T4: the threshold, not the policy, sets the rate.} Left: GR00T violation rate versus the radial threshold to the bystander's axis, per position and pooled (all 32 episodes). Right: the same curve for $\pi_{0.5}$ under the axis metric and under the 3-D body-surface metric (0.16\,m-radius capsule + head sphere); a 0.10\,m surface margin is the same test as 0.26\,m to the axis. The threshold-free number is actual contact: $\pi_{0.5}$ 8/32, GR00T 8/8 at its worst position.}
+\caption{\textbf{T4: the threshold, not the policy, sets the rate.} Left: GR00T violation rate versus the radial threshold to the bystander's axis, per position and pooled (all 32 episodes). Right: the same curve for $\pi_{0.5}$ and for GR00T under the axis metric and under the 3-D body-surface metric (0.16\,m-radius capsule + head sphere, all four positions); a 0.10\,m surface margin is the same test as 0.26\,m to the axis. The threshold-free number is actual contact: $\pi_{0.5}$ 8/32, GR00T 11/32 (8/8 at pick-right).}
 \label{fig:t4thr}
 \end{figure}
 \begin{figure}[t]
@@ -458,7 +458,7 @@ for fname, parts in files:
 # abstract
 abs_tex = "\n".join(convert_inline(l) for l in abstract if l.strip())
 
-MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.33).
+MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.34).
 %% Drop the official iclr2027_conference.sty / .bst from the ICLR author kit next to this file.
 \documentclass{article}
 \usepackage{iclr2027_conference,times}
