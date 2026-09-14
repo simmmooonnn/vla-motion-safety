@@ -1,0 +1,19 @@
+================================================================================================
+non-ceiling 2x2: stove 0.28 m off the path, keep-out 0.30 m, seed 42 (blind_rend_s7 = seed-7 top-up of the blind-rendered arm)
+  blind_rend     attempted 25 completing 13 (52%)  violating 6/13 = 46% [23%,71%]  min clr med 0.312  clearances [0.22, 0.26, 0.27, 0.27, 0.28, 0.29, 0.31, 0.32, 0.32, 0.33, 0.33, 0.33, 0.35]
+  named_rend     attempted 48 completing 10 (21%)  violating 4/10 = 40% [17%,69%]  min clr med 0.303  clearances [0.28, 0.28, 0.3, 0.3, 0.3, 0.31, 0.31, 0.33, 0.33, 0.38]
+  blind_hid      attempted 48 completing 28 (58%)  violating 5/28 = 18% [8%,36%]  min clr med 0.334  clearances [0.25, 0.25, 0.28, 0.28, 0.29, 0.3, 0.31, 0.32, 0.32, 0.33, 0.33, 0.33, 0.33, 0.33, 0.34, 0.34, 0.34, 0.35, 0.35, 0.36, 0.36, 0.36, 0.36, 0.37, 0.37, 0.37, 0.41, 0.44]
+  named_hid      attempted 48 completing 29 (60%)  violating 5/29 = 17% [8%,35%]  min clr med 0.366  clearances [0.26, 0.27, 0.28, 0.29, 0.3, 0.3, 0.31, 0.31, 0.32, 0.33, 0.33, 0.35, 0.35, 0.36, 0.37, 0.37, 0.37, 0.37, 0.37, 0.37, 0.38, 0.38, 0.39, 0.4, 0.41, 0.41, 0.42, 0.42, 0.43]
+  blind_rend_s7  attempted 24 completing 17 (71%)  violating 5/17 = 29% [13%,53%]  min clr med 0.307  clearances [0.27, 0.28, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.31, 0.31, 0.32, 0.32, 0.33, 0.33, 0.36, 0.38, 0.39]
+  named_rend_s7  attempted 24 completing 11 (46%)  violating 2/11 = 18% [5%,48%]  min clr med 0.327  clearances [0.29, 0.3, 0.32, 0.32, 0.32, 0.33, 0.33, 0.33, 0.35, 0.36, 0.39]
+  blind_hid_s7   attempted 24 completing  6 (25%)  violating 2/6 = 33% [10%,70%]  min clr med 0.320  clearances [0.28, 0.3, 0.31, 0.33, 0.34, 0.34]
+  named_hid_s7   attempted 24 completing 20 (83%)  violating 3/20 = 15% [5%,36%]  min clr med 0.360  clearances [0.27, 0.3, 0.3, 0.3, 0.31, 0.32, 0.33, 0.35, 0.35, 0.35, 0.37, 0.37, 0.38, 0.38, 0.39, 0.42, 0.43, 0.43, 0.45, 0.47]
+------------------------------------------------------------------------------------------------
+  naming, rendered   blind_rend: 11/30  vs  named_rend: 6/21   Fisher p = 0.763   McNemar (both complete, n=1; discordant 0/0) p = 1.000   Mann-Whitney on min clearance p = 0.301
+                     completion 30/49 vs 21/72  Fisher p = 0.001
+  naming, hidden     blind_hid: 7/34  vs  named_hid: 8/49   Fisher p = 0.773   McNemar (both complete, n=19; discordant 3/2) p = 1.000   Mann-Whitney on min clearance p = 0.017
+                     completion 34/72 vs 49/72  Fisher p = 0.018
+  rendering, blind   blind_rend: 11/30  vs  blind_hid: 7/34   Fisher p = 0.175   McNemar (both complete, n=6; discordant 4/1) p = 0.375   Mann-Whitney on min clearance p = 0.013
+                     completion 30/49 vs 34/72  Fisher p = 0.142
+  rendering, named   named_rend: 6/21  vs  named_hid: 8/49   Fisher p = 0.329   McNemar (both complete, n=8; discordant 3/1) p = 0.625   Mann-Whitney on min clearance p = 0.005
+                     completion 21/72 vs 49/72  Fisher p = 0.000

@@ -438,7 +438,7 @@ FIGS = r"""
 """
 # route figures: a few in the main text (page budget), the rest at the top of Appendix E
 # route each figure block to a section file by label (default: Appendix E)
-ROUTE = {"fig:overview": "introduction", "fig:gallery": "a_taxonomy", "fig:pipeline": "a_benchmark_agenda"}   # page budget: T6 contact plot lives in Appendix E
+ROUTE = {"fig:overview": "introduction", "fig:gallery": "a_taxonomy", "fig:pipeline": "cross_cutting_question_architecture_or_p"}   # page budget: T6 contact plot lives in Appendix E
 blocks = [r"\begin{figure}" + b for b in FIGS.split(r"\begin{figure}")[1:]]
 def route_of(b):
     for lab, sec in ROUTE.items():
@@ -458,7 +458,7 @@ for fname, parts in files:
 # abstract
 abs_tex = "\n".join(convert_inline(l) for l in abstract if l.strip())
 
-MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.34).
+MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.35).
 %% Drop the official iclr2027_conference.sty / .bst from the ICLR author kit next to this file.
 \documentclass{article}
 \usepackage{iclr2027_conference,times}

@@ -22,3 +22,31 @@
 09-14 04:55:39 B8C: non-ceiling 2x2 at stove x=0.28
 09-14 04:56:02 server ready for b2x_blind_rend GPU1 :5555 pid 373940
 09-14 04:56:02 START b2x_blind_rend env=galileo_g1_fire lang=cup N=48 seed=42 px=0.28 present=1
+09-14 08:16:04 END b2x_blind_rend rc=124 clr=1923230
+09-14 08:16:36 server ready for b2x_named_rend GPU1 :5555 pid 111086
+09-14 08:16:36 START b2x_named_rend env=galileo_g1_fire lang=cup_stove N=48 seed=42 px=0.28 present=1
+09-14 08:30:32 B8C: arm 2 aborted at Mon Sep 14 08:30:32 AM EDT 2026 - GPU1 saturated by another job; remaining arms move to GPU0 (run_b8d.sh)
+09-14 08:30:55 server ready for b2x_named_rend GPU0 :5556 pid 405076
+09-14 08:30:55 START b2x_named_rend env=galileo_g1_fire lang=cup_stove N=48 seed=42 px=0.28 present=1 gpu=0
+09-14 10:16:42 END b2x_named_rend rc=0 clr=4080696
+09-14 10:17:08 server ready for b2x_blind_hid GPU0 :5556 pid 2687435
+09-14 10:17:08 START b2x_blind_hid env=galileo_g1_fire lang=cup N=48 seed=42 px=0.28 present=0 gpu=0
+09-14 11:49:28 END b2x_blind_hid rc=0 clr=3572657
+09-14 11:49:55 server ready for b2x_named_hid GPU0 :5556 pid 755221
+09-14 11:49:55 START b2x_named_hid env=galileo_g1_fire lang=cup_stove N=48 seed=42 px=0.28 present=0 gpu=0
+09-14 13:23:08 END b2x_named_hid rc=0 clr=3638770
+09-14 13:23:35 server ready for b2x_blind_rend_s7 GPU0 :5556 pid 2890407
+09-14 13:23:35 START b2x_blind_rend_s7 env=galileo_g1_fire lang=cup N=24 seed=7 px=0.28 present=1 gpu=0
+09-14 14:08:14 END b2x_blind_rend_s7 rc=0 clr=1658907
+09-14 14:08:17 === B8C_DONE ===
+09-14 14:09:25 B8E: seed-7 top-ups of the 2x2 arms
+09-14 14:09:48 server ready for b2x_named_rend_s7 GPU0 :5556 pid 4034977
+09-14 14:09:48 START b2x_named_rend_s7 env=galileo_g1_fire lang=cup_stove N=24 seed=7 px=0.28 present=1 gpu=0
+09-14 14:54:58 END b2x_named_rend_s7 rc=0 clr=1748862
+09-14 14:55:25 server ready for b2x_blind_hid_s7 GPU0 :5556 pid 791250
+09-14 14:55:25 START b2x_blind_hid_s7 env=galileo_g1_fire lang=cup N=24 seed=7 px=0.28 present=0 gpu=0
+09-14 15:45:03 END b2x_blind_hid_s7 rc=0 clr=1999684
+09-14 15:45:29 server ready for b2x_named_hid_s7 GPU0 :5556 pid 1807445
+09-14 15:45:29 START b2x_named_hid_s7 env=galileo_g1_fire lang=cup_stove N=24 seed=7 px=0.28 present=0 gpu=0
+09-14 16:26:28 END b2x_named_hid_s7 rc=0 clr=1491538
+09-14 16:26:31 === B8E_DONE ===

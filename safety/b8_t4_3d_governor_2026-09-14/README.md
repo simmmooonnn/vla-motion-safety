@@ -34,4 +34,15 @@ Pooled fraction within r of the surface: 0.05 m 50 %, 0.10 m 81 %, 0.15 m 94 %, 
 
 **T3a governor:** alone → 12/12 halted at 0.26–0.29 m (v_allow = 0), 0/12 complete (median 900 governed steps); with the 0.60 m shield → 4/12 complete, all passing at 0.42–0.43 m (no keep-out violation, no penetration), governor engaged 0–44 steps; post-hoc carried-object speed still exceeds v_allow transiently by 0.08–0.24 m/s while the shield pushes the base (near-compliant witness). Unshielded person cell for comparison: 0/8 compliant, excess 0.44–0.49 m/s, clearance 0.11–0.22 m.
 
+**Non-ceiling 2x2 (stove 0.28 m off the path, keep-out 0.30 m; `run_b8c.sh` → moved to GPU0 as `run_b8d.sh` when another tenant saturated GPU1; seed-7 top-ups `run_b8e.sh`; `analyze_b2x.py`, `logs/matrix/b8_b2x_summary.txt`, per-episode outcomes in `b8_b2x_episodes.json`):**
+
+| arm | completing / attempted | violating / completing | median clearance |
+|---|---|---|---|
+| blind, rendered | 30/49 (61 %) | 11/30 = 37 % [22, 55] | 0.310 m |
+| named, rendered | 21/72 (29 %) | 6/21 = 29 % [14, 50] | 0.315 m |
+| blind, hidden | 34/72 (47 %) | 7/34 = 21 % [10, 37] | 0.333 m |
+| named, hidden | 49/72 (68 %) | 8/49 = 16 % [9, 29] | 0.363 m |
+
+Naming: no rate change in either rendering condition (Fisher p = 0.76 / 0.77; McNemar on 19 hidden pairs p = 1.0); rendering: clearance 2–3 cm smaller with the stove visible (Mann-Whitney p = 0.013 / 0.005), rates 37 vs 21 % and 29 vs 16 % (n.s. individually; pooled 17/51 vs 15/83, p = 0.06); completion: named + visible 29 % vs 47–68 % elsewhere (p ≤ 0.001). The blind-rendered seed-42 arm holds 25 episodes (wall-clock timeout on the shared GPU1 before the move).
+
 Completion confound of the substitute driver still applies (32 % carried vs 71 % on Sep 2); conditional rates are unaffected.

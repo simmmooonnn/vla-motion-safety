@@ -165,6 +165,28 @@ Person (proxy) & 1 / 11 & 1 / 12 & 6 / 12 \\
 
 On the continuous min-clearance the conditions are not significantly different (Mann-Whitney \emph{p} = 0.15--0.95) but not equivalent either (TOST does not reach $\pm$0.05 m) --- hence ``no detectable effect,'' not invariance.
 
+\textbf{Non-ceiling 2 $\times$ 2 (2026-09).} The on-path ablation cannot move a 100 \% rate. A position calibration (5/5 violating at 0.20 m off the path, 9/11 at 0.25 m, 0/2 at 0.30 m, 0/12 at 0.40--0.75 m; Table~\ref{tab:V}) puts the edge of the keep-out at 0.27--0.28 m, and we ran the full naming $\times$ rendering design with the stove 0.28 m off the path: 48 episodes per arm with seed 42 plus 24 with seed 7 (the blind-rendered seed-42 arm holds 25 episodes, a wall-clock timeout on a shared GPU), keep-out 0.30 m, tests on completing carries only.
+
+
+\begin{table}[H]
+\centering\small
+\caption{Non-ceiling ablation, stove 0.28 m off the path. Completing carries / attempted, violating / completing (Wilson 95 \%), median minimum clearance.}
+\label{tab:XI}
+\vspace{4pt}
+\begin{tabular}{@{}llll@{}}
+\toprule
+arm & completing / attempted & violating / completing & median clearance (m) \\
+\midrule
+blind, rendered & 30 / 49 (61 \%) & 11 / 30 = 37 \% [22, 55] & 0.310 \\
+named, rendered & 21 / 72 (29 \%) & 6 / 21 = 29 \% [14, 50] & 0.315 \\
+blind, hidden & 34 / 72 (47 \%) & 7 / 34 = 21 \% [10, 37] & 0.333 \\
+named, hidden & 49 / 72 (68 \%) & 8 / 49 = 16 \% [9, 29] & 0.363 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\emph{Naming} does not reduce the violation rate in either rendering condition (rendered 37 \% $\rightarrow$ 29 \%, Fisher \emph{p} = 0.76; hidden 21 \% $\rightarrow$ 16 \%, \emph{p} = 0.77; on the 19 seed-42 episode pairs in which both hidden arms complete, 3 vs 2 discordant, McNemar \emph{p} = 1.0), and on the continuous clearance it shifts the hidden-stove path 3 cm farther (Mann-Whitney \emph{p} = 0.017) and the rendered one not at all (\emph{p} = 0.30). \emph{Rendering} moves the path toward the hazard: with the stove visible the minimum clearance is 2--3 cm smaller in both language conditions (Mann-Whitney \emph{p} = 0.013 blind, 0.005 named) and the violation rate higher (37 \% vs 21 \%, 29 \% vs 16 \%; individually \emph{p} = 0.18 and 0.33, pooled over naming 17/51 vs 15/83, \emph{p} = 0.06). \emph{Completion} shows the interaction: the named-plus-visible arm completes 29 \% of episodes against 47--68 \% in the other three (\emph{p} $\leq$ 0.001 against either neighbour), while naming with the stove hidden completes more (68 \% vs 47 \%, \emph{p} = 0.018). Read together with the on-path cells, the picture is consistent: a safety command changes whether GR00T finishes the task and never where its path runs; a visible hazard changes where the path runs, in the direction of the hazard, by centimetres --- the perception channel is live but is not avoidance. Caveats: two seeds, 21--49 completing carries per arm (the design detects a halving of the rate, not a quarter), four pairwise tests without correction, and the substitute-driver day (\S8).
+
 
 \subsection{T2 --- orientation, measured across eight azimuths}
 
