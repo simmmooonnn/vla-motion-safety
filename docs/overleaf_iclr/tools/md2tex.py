@@ -194,12 +194,21 @@ def convert_table(rows, caption, label):
     first_group = True
     for r in data:
         if r[0] and all(not c for c in r[1:]):       # group-header row: bold, spanning, with a rule above
-            body_lines.append((r"\addlinespace[2pt]" if first_group else r"\midrule") + r"\multicolumn{%d}{@{}l}{%s} \\" % (ncol, convert_inline(r[0])))
+            body_lines.append((r"\addlinespace[2pt]" if first_group else r"\midrule") + r"\multicolumn{%d}{@{}p{0.96\linewidth}}{%s} \\" % (ncol, convert_inline(r[0])))   # wraps long group titles
             first_group = False; continue
         body_lines.append(" & ".join(cell(c) for c in r) + r" \\")
     body_lines += [r"\bottomrule", r"\end{tabular}"]
     if not cap:                                       # uncaptioned -> inline (no float, no number)
         return "\n".join([r"\begin{center}" + size] + body_lines + [r"\end{center}"])
+    if IN_APPENDIX[0] and len(data) > 30:            # long appendix tables break across pages (header repeated)
+        hdr_line = " & ".join(cell(c) for c in hdr) + r" \\"
+        nhead = 4 if groups else 2                    # tabular + toprule (+ group line + cmidrules)
+        head = [r"\toprule"] + (body_lines[2:4] if groups else []) + [hdr_line, r"\midrule"]
+        rows = body_lines[nhead + 2:-2]              # skip header line + midrule; drop bottomrule/end
+        lt = [r"{" + size, r"\begin{longtable}{" + colspec + "}", r"\caption{" + convert_inline(cap) + r"}\label{" + label + r"}\\"]
+        lt += head + [r"\endfirsthead", r"\multicolumn{%d}{@{}l}{\emph{(Table~\ref{%s}, continued)}}\\" % (ncol, label)] + head
+        lt += [r"\endhead", r"\bottomrule", r"\endlastfoot"] + rows + [r"\end{longtable}}"]
+        return "\n".join(lt)
     placement = "[H]" if IN_APPENDIX[0] else "[t]"   # appendix tables stay under their heading
     lines = [r"\begin{table}" + placement, r"\centering" + size, r"\caption{" + convert_inline(cap) + "}", r"\label{" + label + "}", r"\vspace{4pt}"]
     lines += body_lines + [r"\end{table}"]
@@ -413,8 +422,20 @@ FIGS = r"""
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_crosspolicy.pdf}
-\caption{\textbf{Cross-policy.} Left: the T1 keep-out defect recurs on $\pi_{0.5}$/Franka (22/22), including with the hazard rendered visible (16/16). Right: on T2 the scoring geometry sets the rate --- 0.10\,m to the person's axis gives 3\% ($\pi_{0.5}$) and 25\% (GR00T); 0.10\,m to the body surface ($\equiv$ 0.26\,m to the axis) gives 53\% ($\pi_{0.5}$) and 81\% (GR00T); see Fig.~\ref{fig:t4thr}.}
+\caption{\textbf{Cross-policy, first probes.} Left: the T1 keep-out defect recurs on $\pi_{0.5}$/Franka (22/22), including with the hazard rendered visible (16/16). Right: on T2 the scoring geometry sets the rate --- with an unrendered body placed inside the table footprint, 0.10\,m to the person's axis gives 3\% ($\pi_{0.5}$) and 25\% (GR00T), 0.10\,m to the body surface ($\equiv$ 0.26\,m to the axis) 53\% and 81\%; see Fig.~\ref{fig:t4thr}. With the rendered adult standing at the table, $\pi_{0.5}$'s rate is near zero (Appendix E.8).}
 \label{fig:crosspolicy}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_tabletop.png}
+\caption{\textbf{The tabletop family} (Franka, $\pi_{0.5}$ and $\pi_{0}$; rendered frames). (a) Scissors carried past an adult at the table edge: the blade's bearing is the same whichever side the person stands (T3), and the carry does not slow (T5a). (b) A coworker's hand reaching into the destination bowl, triggered when the mug is lifted; the mug is lowered onto it (T5b, T6). (c) The adult at the near corner, beside the arm (T2). (d) A kitchen counter with the person beside the robot and (e) an industrial packing station with a coworker across the table, both with a hot-plate or keep-out marker between the pick and place spots in their T1 cells.}
+\label{fig:tabletop}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_main_heatmap.pdf}
+\caption{\textbf{Table III as a map.} Unsafe rate per policy and sub-type (number = \%, below = unsafe / scored episodes); hatched = not scorable. Columns are grouped by dimension.}
+\label{fig:heatmap}
 \end{figure}
 \begin{figure}[t]
 \centering
@@ -455,7 +476,8 @@ FIGS = r"""
 """
 # route figures: a few in the main text (page budget), the rest at the top of Appendix E
 # route each figure block to a section file by label (default: Appendix E)
-ROUTE = {"fig:overview": "introduction", "fig:gallery": "execution_phase_safety_definition", "fig:pipeline": "benchmark_design"}   # page budget: T6 contact plot lives in Appendix E
+ROUTE = {"fig:overview": "introduction", "fig:gallery": "execution_phase_safety_definition", "fig:pipeline": "benchmark_design",
+         "fig:heatmap": "appendix_a"}   # page budget: T6 contact plot lives in Appendix E
 blocks = [r"\begin{figure}" + b for b in FIGS.split(r"\begin{figure}")[1:]]
 def route_of(b):
     for lab, sec in ROUTE.items():
@@ -478,12 +500,12 @@ for _fn in os.listdir(os.path.join(OUT, "sections")):          # drop section fi
 # abstract
 abs_tex = "\n".join(convert_inline(l) for l in abstract if l.strip())
 
-MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.40).
+MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v0.41).
 %% Drop the official iclr2027_conference.sty / .bst from the ICLR author kit next to this file.
 \documentclass{article}
 \usepackage{iclr2027_conference,times}
 \usepackage{amsmath,amssymb,amsfonts}
-\usepackage{booktabs,array,graphicx,xcolor,url,microtype,multirow,float,placeins}
+\usepackage{booktabs,array,graphicx,xcolor,url,microtype,multirow,float,placeins,longtable}
 \usepackage{tikz}
 \usetikzlibrary{positioning}
 \usepackage[utf8]{inputenc}
