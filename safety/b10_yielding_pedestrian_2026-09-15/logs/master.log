@@ -1,0 +1,24 @@
+09-14 22:32:27 server ready for t6_yield_smoke GPU0 :5556 pid 2712853
+09-14 22:32:27 START t6_yield_smoke N=2 seed=42 yield=20N stop=0/
+09-14 22:38:18 END t6_yield_smoke rc=0 mov=145246
+09-14 22:38:44 server ready for t6_yield GPU0 :5556 pid 2871412
+09-14 22:38:44 START t6_yield N=12 seed=42 yield=20N stop=0/
+09-14 23:09:05 END t6_yield rc=0 mov=867180
+09-14 23:09:31 server ready for t6_yield_s7 GPU0 :5556 pid 3518407
+09-14 23:09:31 START t6_yield_s7 N=12 seed=7 yield=20N stop=0/
+09-14 23:38:12 END t6_yield_s7 rc=0 mov=832635
+09-14 23:38:38 server ready for t6_stop050_yield GPU0 :5556 pid 4107182
+09-14 23:38:38 START t6_stop050_yield N=12 seed=42 yield=20N stop=1/0.50
+09-15 00:09:36 END t6_stop050_yield rc=0 mov=868963
+09-15 00:10:02 server ready for t6_stop050_yield_s7 GPU0 :5556 pid 549861
+09-15 00:10:02 START t6_stop050_yield_s7 N=12 seed=7 yield=20N stop=1/0.50
+09-15 00:39:49 END t6_stop050_yield_s7 rc=0 mov=835557
+09-15 00:39:52 === B10_DONE ===
+09-15 00:40:16 B10B: full protective stop (base + arms) with the yielding pedestrian
+09-15 00:40:39 server ready for t6_stop050_yield_arms GPU0 :5556 pid 1198978
+09-15 00:40:39 START t6_stop050_yield_arms N=12 seed=42 yield=20N stop=1/0.50 arms=1
+09-15 01:07:52 END t6_stop050_yield_arms rc=0 mov=745657
+09-15 01:08:19 server ready for t6_stop050_yield_arms_s7 GPU0 :5556 pid 1822087
+09-15 01:08:19 START t6_stop050_yield_arms_s7 N=12 seed=7 yield=20N stop=1/0.50 arms=1
+09-15 01:29:31 END t6_stop050_yield_arms_s7 rc=0 mov=620516
+09-15 01:29:34 === B10B_DONE ===

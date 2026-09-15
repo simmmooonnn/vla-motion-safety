@@ -20,9 +20,9 @@ cells = [
  ("two hazards", 24, 6, 6, "T1", "blind"), ("two hazards shield", 24, 6, 0, "T1", "shield"), ("YCB blind", 42, 22, 22, "T1", "blind"), ("YCB shield", 34, 13, 1, "T1", "shield"),
  ("π0.5 on-path", 22, 22, 22, "T1 π0.5", "blind"), ("π0.5 off-path", 22, 22, 0, "T1 π0.5", "control"), ("π0.5 rendered", 22, 16, 16, "T1 π0.5", "hidden"),
  ("T6 on-path", 24, 11, 11, "T6", "blind"), ("T6 person-absent", 8, 3, 0, "T6", "control"), ("T6 shield fixed", 24, 4, 4, "T6", "shield"), ("T6 shield live", 24, 7, 6, "T6", "shield"),
- ("T2 axis<90°", 64, 27, 14, "T2", "blind"), ("T5 tilt>45°", 32, 17, 0, "T5", "blind"),
+ ("T3 axis<90°", 64, 27, 14, "T3", "blind"), ("T4 tilt>45°", 32, 17, 0, "T4", "blind"),
 ]
-marker = {"T1": "o", "T1 π0.5": "D", "T6": "^", "T2": "s", "T5": "v"}
+marker = {"T1": "o", "T1 π0.5": "D", "T6": "^", "T3": "s", "T4": "v"}
 color = {"blind": VIOL, "named": GOLD, "hidden": "#7b4ea3", "shield": SAFE, "command": "#c46a1f", "control": NEUT}
 fig, ax = plt.subplots(figsize=(4.9, 3.2))
 import random; random.seed(7)

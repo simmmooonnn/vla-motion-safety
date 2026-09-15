@@ -1,7 +1,7 @@
 \section{Standards mapping and taxonomy crosswalk}
 
 
-Tables VI and VII place the six types against the safety standards and against the peer taxonomies.
+Tables VI and VII place the six sub-types against the safety standards and against the peer taxonomies.
 
 
 \begin{table}[H]
@@ -14,12 +14,12 @@ Tables VI and VII place the six types against the safety standards and against t
 Type & ISO 12100 hazard class & Governing requirement & Human-referenced quantity & Regime & Our proxy \\
 \midrule
 T1 keep-out & thermal, electrical, mechanical (impact, crushing) & ISO 10218-2 collaborative workspace; ISO/TS 15066 SSM (5.5.4); ISO 13482 incorrect autonomous decisions, hazardous contact & protective separation distance $S_p$ (ISO 13855: 1.6 m/s approach, reaction + stopping time, intrusion, uncertainty) & SSM-only & fixed keep-out radius 0.20 / 0.30 m around a hazard point (Appendix C) \\
-T2 orientation & mechanical (cutting, stabbing), thermal & no explicit clause; HRI handover conventions; ISO 13482 hazardous contact & angle between the hazardous feature and the bearing to the person; contact never permitted & SSM-only & box long axis as the hazardous axis, 90$^{\circ}$ criterion \\
-T3a speed & mechanical (impact) & ISO/TS 15066 SSM (5.5.4), inverted to $v_{\text{allow}}(d)$; ISO 10218-1 reduced speed 250 mm/s & robot / payload speed as a function of separation & SSM & carried-object speed vs separation (Fig. \ref{fig:ssm}); $T_r+T_s$ assumed \\
-T3b force & mechanical (impact, crushing) & ISO/TS 15066 PFL (5.5.5), Annex A body-region limits (no transient contact to the skull) & force / pressure per body region, transient vs quasi-static & PFL-eligible (blunt only) & net contact force on the kinematic crosser (\S5.7), no body-region resolution \\
-T4 body sweep & mechanical (impact, crushing by links) & ISO 10218-2 collaborative operation; ISO/TS 15066 PFL (robot body); ISO 13482 hazardous contact & minimum link-to-body-surface distance; contact impulse per body region & PFL-eligible (blunt links), else SSM & capsule + head-sphere body, surface distance, threshold curve (Fig. \ref{fig:t4thr}) \\
-T5 load & thermal (scald), falling objects & ISO 13482 hazards from the load and dropped objects; ISO 10218-2 workpiece handling & tilt / spill / drop event & neither (the hazard is the contents) & rigid-box tilt (null); filled-cup test proposed \\
-T6 reactivity & mechanical (impact) & ISO 13482 robot-motion hazards; ISO/TS 15066 SSM with the human-velocity term; prescribed response: protective stop & separation and time-to-collision against a moving person; stop performance & SSM (protective stop) & kinematic crosser at fixed speed; 0.30 m near-miss label, minima reported (Appendix A) \\
+T2 body sweep & mechanical (impact, crushing by links) & ISO 10218-2 collaborative operation; ISO/TS 15066 PFL (robot body); ISO 13482 hazardous contact & minimum link-to-body-surface distance; contact impulse per body region & PFL-eligible (blunt links), else SSM & capsule + head-sphere body, surface distance, threshold curve (Fig. \ref{fig:t4thr}) \\
+T3 orientation & mechanical (cutting, stabbing), thermal & no explicit clause; HRI handover conventions; ISO 13482 hazardous contact & angle between the hazardous feature and the bearing to the person; contact never permitted & SSM-only & box long axis as the hazardous axis, 90$^{\circ}$ criterion \\
+T4 load & thermal (scald), falling objects & ISO 13482 hazards from the load and dropped objects; ISO 10218-2 workpiece handling & tilt / spill / drop event & neither (the hazard is the contents) & rigid-box tilt (null); filled-cup test proposed \\
+T5a speed & mechanical (impact) & ISO/TS 15066 SSM (5.5.4), inverted to $v_{\text{allow}}(d)$; ISO 10218-1 reduced speed 250 mm/s & robot / payload speed as a function of separation & SSM & carried-object speed vs separation (Fig. \ref{fig:ssm}); $T_r+T_s$ assumed \\
+T5b force & mechanical (impact, crushing) & ISO/TS 15066 PFL (5.5.5), Annex A body-region limits (no transient contact to the skull) & force / pressure per body region, transient vs quasi-static & PFL-eligible (blunt only) & net contact force on the kinematic crosser (\S5.4), no body-region resolution \\
+T6 reactivity & mechanical (impact) & ISO 13482 robot-motion hazards; ISO/TS 15066 SSM with the human-velocity term; prescribed response: protective stop & separation and time-to-collision against a moving person; stop performance & SSM (protective stop) & kinematic crosser with a collider and a contact sensor; contact distance and force (Appendix E.7) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -35,11 +35,11 @@ T6 reactivity & mechanical (impact) & ISO 13482 robot-motion hazards; ISO/TS 150
 Type & ForesightSafety-VLA\newline \citep{ref23} & SafeVLA-Bench\newline \citep{ref27} & LIBERO-Safety\newline \citep{ref24} & SafeManip \citep{ref30} / HazardArena\newline \citep{ref19} & What T1--T6 adds \\
 \midrule
 T1 & Thermal, Spatial Boundary (object-referenced) & keep-out / boundary clauses, object-referenced & collision margin to a MANO hand proxy beside a fixed-base arm & HazardArena semantic unsafe twins (e.g. a knife toward a person) & a \emph{carried} hazard past a full-body bystander on a locomoting robot; fixability ablations \\
-T2 & --- & --- & --- & --- (handover literature only) & the non-receiving bystander; orientation invariance across azimuths \\
-T3a & --- & --- (force proxies only) & --- & --- & speed scored against the human-referenced SSM envelope \\
-T3b & Force/Torque & contact-force ceiling (200 N, the suite's value; not body-region-specific) & --- & --- & body-region PFL against a person (proposed) \\
-T4 & Collaborative (dual-arm separation, not a person) & self-collision (robot--robot) & arm-collision margin (mesh) to the hand proxy & --- & whole-body sweep against a full-body bystander; threshold curve and contact rate \\
-T5 & --- & object tilt / drop clauses & --- & SafeManip grasp / release stability & transport-phase stability with a spill proxy \\
+T2 & Collaborative (dual-arm separation, not a person) & self-collision (robot--robot) & arm-collision margin (mesh) to the hand proxy & --- & whole-body sweep against a full-body bystander; threshold curve and contact rate \\
+T3 & --- & --- & --- & --- (handover literature only) & the non-receiving bystander; orientation invariance across azimuths \\
+T4 & --- & object tilt / drop clauses & --- & SafeManip grasp / release stability & transport-phase stability with a spill proxy \\
+T5a & --- & --- (force proxies only) & --- & --- & speed scored against the human-referenced SSM envelope \\
+T5b & Force/Torque & contact-force ceiling (200 N, the suite's value; not body-region-specific) & --- & --- & net contact force against a person, compared with the body-region limits \\
 T6 & Temporal & --- & kinematic perturbation of the hand proxy & --- & a crossing person, time-to-collision, and the reactive-vs-anticipatory fixability split \\
 \bottomrule
 \end{tabular}

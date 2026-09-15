@@ -1,4 +1,4 @@
-%% ICLR 2027 submission — seed generated from the markdown draft (v0.36).
+%% ICLR 2027 submission — seed generated from the markdown draft (v0.40).
 %% Drop the official iclr2027_conference.sty / .bst from the ICLR author kit next to this file.
 \documentclass{article}
 \usepackage{iclr2027_conference,times}
@@ -25,16 +25,16 @@ Johns Hopkins University \\
 \suppressfloats[t]   % keep Fig. 1 off the top of the title page
 
 \begin{abstract}
-Vision--language--action (VLA) safety is judged at two endpoints --- should the instruction be followed, and is the end state acceptable --- and neither constrains \emph{how} the task is carried out. We define \textbf{execution-phase safety}, harm done while a nominally safe task is completed, as a third axis; give it a six-type taxonomy (T1--T6) of measurable tuples with a fixability class; and instantiate it as a diagnostic benchmark on a cell no suite covers: a locomoting humanoid (GR00T N1.6 on a Unitree G1 in Isaac Sim) carrying a hazard past a passive bystander, with two channels ported to $\pi_{0.5}$ on a Franka. Every completing carry passes through the hazard's keep-out zone (GR00T 109/109 pooled; $\pi_{0.5}$ 22/22, even with the hazard rendered visible); safety commands do not change this on either policy; an oracle-fed shield does (8/8 $\rightarrow$ 0/8). The arm enters the bystander's body, the carried object passes a person at full speed inside the ISO/TS 15066 stop distance (6/6), and a crossing person is walked into (11/11; 95--428 N) --- a protective stop removes that contact (0/13) where repulsion does not. Scoring geometry, not the policy, sets several rates; what a policy owns is the demand it places on the safety layer. Scenes, metrics and per-episode logs are released.
+Vision--language--action (VLA) safety is judged at two endpoints --- should the instruction be followed, and is the end state acceptable --- and neither constrains \emph{how} the task is carried out. We define \textbf{execution-phase safety}, harm done while a nominally safe task is completed, as a third axis and decompose it along four parallel dimensions of a motion: where it goes (trajectory), how its payload is oriented, how fast and how hard it meets a person (speed and force), and whether it reacts when the person moves (dynamics) --- six sub-types, each with a human-referenced predicate. A diagnostic benchmark instantiates them on a cell no suite covers, a locomoting humanoid (GR00T N1.6 on a Unitree G1 in Isaac Sim) carrying a hazard past a passive bystander, with two sub-types ported to $\pi_{0.5}$ on a Franka, and reports one unsafe rate per policy and sub-type. Completing carries enter the hazard's keep-out (GR00T 121/125, $\pi_{0.5}$ 22/22); the robot's own body comes within 0.10 m of a bystander on 81 \% and 53 \% of episodes; the payload passes a person at full speed inside the ISO/TS 15066 stop distance (6/6); and a crossing person is walked into (15/16) at a median 200 N. Naming the hazard does not change the path; rendering it draws the path closer. Scenes, metrics and per-episode logs are released.
 \end{abstract}
 
 \input{sections/introduction}
 \input{sections/background_and_related_work}
-\input{sections/execution_phase_safety_definition_and_sc}
-\input{sections/a_taxonomy_of_six_execution_phase_safety}
-\input{sections/empirical_spine}
-\input{sections/cross_cutting_question_architecture_or_p}
-\input{sections/a_benchmark_agenda}
+\input{sections/execution_phase_safety_definition_and_fo}
+\input{sections/benchmark_design}
+\input{sections/results}
+\input{sections/what_is_new_four_findings}
+\input{sections/benchmark_protocol_and_release}
 \input{sections/limitations_and_threats_to_validity}
 \input{sections/conclusion}
 \input{sections/reproducibility_statement}

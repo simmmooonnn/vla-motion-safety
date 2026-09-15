@@ -6,20 +6,24 @@
   axbox/.style={draw=blue!45!black, fill=blue!4, rounded corners=2pt, align=center, text width=2.75cm, inner sep=3pt},
   arr/.style={->, color=black!55, line width=0.6pt}]
 % ---- (a) the three axes
-\node[font=\scriptsize\bfseries] at (0.05,4.45) {(a)};
-\node[axbox] (in) at (1.55,3.75) {\textbf{Instruction safety}\\ should the task be done?\\ (refusal, jailbreaks)};
-\node[axbox] (out) at (4.95,3.75) {\textbf{Outcome safety}\\ is the end state acceptable?\\ (goal predicates)};
-\node[draw=red!55!black, fill=red!5, rounded corners=2pt, align=center, text width=6.1cm, inner sep=3pt, line width=0.9pt] (ex) at (3.25,2.15)
-  {\textbf{Execution-phase safety} (this paper)\\ how is the task carried out along $\tau=(s_0,a_0,\ldots,s_T)$?\\[1pt]
-   T1 path / keep-out $\cdot$ T2 orientation $\cdot$ T3 force \& speed\\ T4 body sweep $\cdot$ T5 load stability $\cdot$ T6 reactivity};
-\node[draw=black!40, fill=black!4, rounded corners=2pt, align=center, text width=6.1cm, inner sep=3pt] (tup) at (3.25,0.55)
-  {type $=\langle$harm channel, phase, quantity,\\ violation predicate, metric with CI, fixability class$\rangle$\\[1pt]
-   \textcolor{red!55!black}{fixability: prompt it? $\cdot$ perceive it?\\ architecture? $\cdot$ external layer?}};
+\node[font=\scriptsize\bfseries] at (0.05,4.8) {(a)};
+\node[axbox] (in) at (1.55,4.05) {\textbf{Instruction safety}\\ should the task be done?\\ (refusal, jailbreaks)};
+\node[axbox] (out) at (4.95,4.05) {\textbf{Outcome safety}\\ is the end state acceptable?\\ (goal predicates)};
+\node[draw=red!55!black, fill=red!5, rounded corners=2pt, align=center, text width=6.1cm, inner sep=3pt, line width=0.9pt] (ex) at (3.25,2.05)
+  {\textbf{Execution-phase safety} (this paper)\\ how is the task carried out along $\tau=(s_0,a_0,\ldots,s_T)$?\\[2pt]
+   \textbf{Trajectory}: T1 payload path $\cdot$ T2 body sweep\\
+   \textbf{Orientation}: T3 hazard axis $\cdot$ T4 load tilt\\
+   \textbf{Speed \& force}: T5a speed $\cdot$ T5b contact force\\
+   \textbf{Dynamics}: T6 moving person};
+\node[draw=black!40, fill=black!4, rounded corners=2pt, align=center, text width=6.1cm, inner sep=3pt] (tup) at (3.25,-0.1)
+  {per sub-type: task $\cdot$ quantity $\cdot$ human-referenced predicate\\ $\rightarrow$ one unsafe rate per policy (Table~\ref{tab:III})\\[1pt]
+   \textcolor{red!55!black}{attribution: name it? $\cdot$ show it? $\cdot$ does a compliant completion exist?}};
+\draw[arr] (ex.south) -- (tup.north);
 \draw[arr] (in.south) -- (in.south |- ex.north);
 \draw[arr] (out.south) -- (out.south |- ex.north);
 % ---- (b) the scene, top-down
 \begin{scope}[shift={(7.0,0)}, x=1cm, y=1cm]
-\node[font=\scriptsize\bfseries, anchor=west] at (0,4.45) {(b)};
+\node[font=\scriptsize\bfseries, anchor=west] at (0,4.8) {(b)};
 \fill[brown!35!white, draw=brown!60!black] (1.65,3.95) rectangle (3.85,4.35); \node[font=\tiny, color=brown!60!black] at (2.75,4.15) {shelf (pick)};
 \fill[blue!15, draw=blue!45!black] (2.4,0.15) rectangle (3.1,0.7); \node[font=\tiny, color=blue!45!black] at (2.75,0.0) {bin (place)};
 \fill[black!15, draw=black!70] (2.75,3.65) circle (0.2); \node[font=\tiny, anchor=west] at (3.05,3.65) {G1 + GR00T};
@@ -29,17 +33,17 @@
 \node[font=\tiny, color=red!60!black, anchor=west, align=left] at (3.35,2.45) {T1 hazard on the path\\ (strip / stove / person)};
 \fill[brown!60!black, rotate around={15:(2.75,3.1)}] (2.58,3.0) rectangle (2.92,3.2);
 \draw[orange!70!black, ->, line width=0.9pt] (2.75,3.1) -- (3.25,3.28);
-\node[font=\tiny, color=orange!70!black, anchor=west, align=left] at (0.0,3.3) {T2 hazardous axis:\\ where does it point?};
-\node[font=\tiny, anchor=west, align=left] at (0.0,2.7) {T3 payload speed\\ vs separation (SSM)};
-\node[font=\tiny, anchor=west, align=left] at (0.0,2.15) {T5 load tilt / spill};
+\node[font=\tiny, color=orange!70!black, anchor=west, align=left] at (0.0,3.3) {T3 hazardous axis:\\ where does it point?};
+\node[font=\tiny, anchor=west, align=left] at (0.0,2.7) {T5 payload speed\\ vs separation (SSM)};
+\node[font=\tiny, anchor=west, align=left] at (0.0,2.15) {T4 load tilt / spill};
 \fill[blue!45!black!60, draw=blue!45!black] (4.9,3.6) circle (0.28); \fill[orange!20] (4.9,3.6) circle (0.15);
-\node[font=\tiny, color=blue!45!black, align=center] at (4.9,3.0) {T4 bystander beside\\ the workspace (arm sweep)};
+\node[font=\tiny, color=blue!45!black, align=center] at (4.9,3.0) {T2 bystander beside\\ the workspace (arm sweep)};
 \fill[blue!45!black!60, draw=blue!45!black] (1.0,1.3) circle (0.28); \fill[orange!20] (1.0,1.3) circle (0.15);
 \draw[blue!45!black, ->, line width=0.9pt] (1.35,1.3) -- (2.2,1.3);
 \node[font=\tiny, color=blue!45!black, anchor=west, align=left] at (0.0,0.7) {T6 person crossing\\ the corridor (0.06\,m/s)};
 \end{scope}
 \end{tikzpicture}
-\caption{\textbf{Overview.} Left: instruction and outcome safety judge the endpoints of a task; execution-phase safety judges the trajectory between them, decomposed into six measurable types, each a tuple with a fixability class. Right: the benchmark scene --- a shelf-to-bin carry on a locomoting humanoid past a hazard on the path (T1), with the carried object's orientation, speed and tilt scored against a person (T2, T3, T5), a bystander beside the workspace for the robot's own body (T4), and a person crossing the corridor (T6); two channels are ported to a Franka arm running $\pi_{0.5}$.}
+\caption{\textbf{Overview.} Left: instruction and outcome safety judge the endpoints of a task; execution-phase safety judges the trajectory between them, decomposed into four parallel dimensions of a motion --- trajectory, orientation, speed and force, dynamics --- with six sub-types, each scored per policy against a human-referenced predicate, and attributed by fixability ablations and a feasibility witness. Right: the benchmark scene --- a shelf-to-bin carry on a locomoting humanoid past a hazard on the path (T1), a bystander beside the workspace for the robot's own body (T2), the carried object's orientation, tilt and speed scored against a person (T3, T4, T5), and a person crossing the corridor (T6); two sub-types are ported to a Franka arm running $\pi_{0.5}$.}
 \label{fig:overview}
 \end{figure}
 
@@ -47,19 +51,19 @@
 
 A modern VLA agent takes a natural-language instruction and camera observations and emits low-level actions, end to end. Given ``put the box in the bin,'' a humanoid such as GR00T N1.6 will pick the box from a shelf, walk to the bin, and release it --- a task that is, on its face, entirely benign. Safety work on such systems has concentrated on two questions. The first asks whether the \emph{instruction} is acceptable: refuse ``pour bleach into the soup,'' flag adversarial or jailbreaking prompts, decline to enact harmful stereotypes \citep{ref1,ref2}. The second asks whether the \emph{end state} is acceptable: the knife should end in the block, not the sink; the pan should not end on the floor. Both are worthwhile, and both are incomplete in the same way. They judge the endpoints of behavior --- the command that starts it and the state that ends it --- and say nothing about the physical process in between.
 
-That process is where a large class of real harm lives: a box carried \emph{through} the space of a hot stove, a live strip or a standing person; a knife carried blade-first toward a bystander who is not receiving it; a full cup tilted past spilling, or accelerated toward someone rather than slowed. In each case instruction-level and outcome-level safety are satisfied and harm still occurs: the gap is not \emph{what} the agent did but \emph{how}. We call the missing dimension \textbf{execution-phase safety}, and we argue it is a distinct third axis of VLA safety with its own definitions, measurements and benchmarks.
+That process is where a large class of real harm lives: a box carried \emph{through} the space of a hot stove, a live strip or a standing person; a knife carried blade-first toward a bystander who is not receiving it; a full cup tilted past spilling, or accelerated toward someone rather than slowed. In each case instruction-level and outcome-level safety are satisfied and harm still occurs: the gap is not \emph{what} the agent did but \emph{how}. We call the missing dimension \textbf{execution-phase safety} and argue that it is a distinct third axis of VLA safety with its own definitions, measurements and benchmarks.
 
-Existing VLA-safety benchmarks score trajectory predicates with no human in the scene, or with a human hand beside a fixed-base arm; none asks how a \emph{locomoting} VLA moves a hazard past a bystander, or whether the failure is promptable (Table~\ref{tab:I}). This paper is a \textbf{diagnostic benchmark}, not a new policy or safety filter. It contributes a taxonomy that decomposes execution-phase harm into six measurable types --- each pinned to a harm channel, a task phase, a scalar quantity, a violation predicate and a fixability class --- and a measured instantiation of it: two VLAs on two embodiments drive a carried hazard through a keep-out zone on every completing carry, and their own arm onto a bystander's body on 25 \% ($\pi_{0.5}$, pooled) to 100 \% (GR00T, worst position) of episodes; safety commands and visible cues do not change this (paired \emph{N} = 16--24); an external layer does. Specifically:
+\textbf{Why this is not collision avoidance.} Keeping a robot's geometry out of mapped obstacles is a solved layer of the stack. The risks measured here arise one level up, in what an end-to-end policy chooses to do with a payload near people, and they fall between the existing layers: the path is the policy's own output, so no planner holds a keep-out around what it carries; no layer constrains which way a payload's hazardous feature points or how far it tilts; speed-and-separation monitoring and force limiting sit in an external layer that the policy leaves to do all the work; and reacting to a person who moves requires perceiving the change in time. We therefore decompose execution-phase safety not by hazard but by the properties of a motion that a person experiences --- where it goes, how its payload is oriented, how fast and how hard it arrives, and whether it changes when the person moves: four parallel dimensions with six sub-types (Fig. \ref{fig:overview}).
+
+This paper is a \textbf{diagnostic benchmark}, not a new policy or guard. Existing VLA-safety benchmarks score trajectory predicates with no human in the scene, or with a human hand beside a fixed-base arm (Table~\ref{tab:I}). We instantiate the four dimensions on the cell none of them occupies --- a locomoting humanoid carrying a hazard past a passive bystander --- give each sub-type its own task and predicate, and report a profile per policy (Table~\ref{tab:III}). Specifically:
 
 \begin{enumerate}
-  \item \textbf{A third axis and a definition schema (\S3):} execution-phase safety defined against the two established axes, with a six-field tuple that makes each type a family of measurable properties.
-  \item \textbf{A six-type taxonomy (\S4):} T1 path/keep-out, T2 presentation orientation, T3 contact force and speed, T4 body swept-volume, T5 load stability, T6 dynamic reactivity.
-  \item \textbf{An empirical spine --- every type carries a measurement (\S5).} On GR00T N1.6 driving a Unitree G1 in Isaac Sim (Fig. \ref{fig:overview}), every carry that completes the traversal passes through the hazard (109/109 completing blind carries pooled over hazards, seeds, positions and appearance; naming or hiding the hazard does not change this among completing carries); the robot's own arm or shoulder comes within 0.10 m of a bystander's body on 26/32 episodes over four positions and touches it on 9/32; the carried object's orientation is held fixed across eight bystander azimuths (T2); the object passes a person at full speed inside the ISO/TS 15066 stop distance with no slowing (T3a, 6/6); the load stays level in transit (T5, a null on a rigid box); and a crossing person is walked into at 95--428 N (T6) --- a protective stop removes the contact, a repulsion shield does not.
-  \item \textbf{A cross-cutting hypothesis (\S6):} the T1 failure is unmoved by naming the hazard and moved the wrong way by rendering it, consistent with a missing behavioral competence rather than a prompting gap --- the taxonomy's central, falsifiable question, not a settled result.
-  \item \textbf{A benchmark protocol and release (\S7):} defect measurement, fixability ablations, a reference safety layer, a feasibility witness; scenes, recorders and per-episode logs released, so further policies are a server swap.
+  \item \textbf{A third axis and four parallel dimensions (\S3):} execution-phase safety as a predicate on the trajectory, decomposed into trajectory (T1 payload path, T2 body sweep), orientation (T3 hazard presentation, T4 load tilt), speed and force (T5) and dynamics (T6), each sub-type with a stated reason for its predicate.
+  \item \textbf{A benchmark design (\S4):} a task per sub-type on a shared scene family, success-conditioned unsafe rates with Wilson intervals, fixability ablations at a placement where the rate can move, and feasibility witnesses that decide whether a rate is attributable to the policy or to the scene.
+  \item \textbf{A policy $\times$ sub-type evaluation (\S5, Table~\ref{tab:III}):} GR00T N1.6 on a Unitree G1 on all six sub-types, $\pi_{0.5}$ on a Franka on two, $\pi_0$ preliminary --- GR00T is unsafe on every trajectory and speed-and-force sub-type, at chance on orientation and without any reaction to a moving person, and $\pi_{0.5}$ reproduces both trajectory sub-types.
+  \item \textbf{Four findings a collision checker would not see (\S6):} a safety command changes whether the task gets done, not how; a rendered hazard pulls the path toward it; neither orientation nor speed is ever conditioned on the person; and a moving person is walked into --- and pressed against once they stop.
+  \item \textbf{Release (\S7):} scenes, recorders and per-episode logs; adding a policy is a server swap.
 \end{enumerate}
 
-\textbf{What the policy should own.} A certified robot never relies on its task policy for the safety function: speed-and-separation monitoring, protective stops and force limits live in a safety-rated external layer (ISO 10218-1/-2:2025 \citep{ref35,ref36}; ISO 13482 \citep{ref37}; ISO/IEC TR 5469 \citep{ref38}), and a learned policy earns no risk-reduction credit; we do not argue otherwise. Our claim is narrower and, we think, more useful: the policy's execution-phase behavior sets the \textbf{demand rate} on that layer --- how often a protective stop fires, which for a biped is itself a fall hazard and a loss of availability --- and a geometric stop cannot supply the competences T2 and T5 name, while for T6 the protective stop \emph{is} the prescribed response (Appendix D). Execution-phase safety is the measurable part of a policy's behavior that decides how much the external layer has to do, and whether it can. Our T3a measurement is such a demand number: every completing carry (6/6) enters the distance at which a speed-and-separation layer would have to stop the robot (\S5.4), --- for a legged robot a balance transient and a loss of availability each time; on T6 the stop layer counts it: 22/24 episodes, once or twice each (\S5.7).
-
-We are explicit about what is \emph{demonstrated} versus \emph{proposed}: all six types carry at least a partial measurement; T3b (power-and-force limiting) has only a first one, the contact force on the crossing person (\S5.7).
+\textbf{Scope.} A certified robot never relies on its task policy for the safety function: speed-and-separation monitoring, protective stops and force limits belong to a safety-rated external layer (ISO 10218-1/-2:2025 \citep{ref35,ref36}; ISO 13482 \citep{ref37}; ISO/IEC TR 5469 \citep{ref38}), and we do not propose one. What the policy's execution-phase behavior decides is how often that layer must act --- the \textbf{demand} it places on it --- and whether the layer can supply the competence at all: no stop corrects which way a blade points. External layers appear here only as instruments that show a compliant completion exists in a scene (\S4.2).
 
