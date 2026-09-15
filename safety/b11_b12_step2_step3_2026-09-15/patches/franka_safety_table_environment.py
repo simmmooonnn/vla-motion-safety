@@ -106,6 +106,12 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
             if _v:
                 _x, _y = (float(s) for s in _v.split(","))
                 _obj.add_relation(AtPosition(x=_x, y=_y))
+        # T3 witness / dissociation: spawn the pick object at a fixed world yaw (degrees; default 0 = the asset's rest pose)
+        _yaw = os.environ.get("PICK_YAW_DEG", "")
+        if _yaw:
+            import math
+            from isaaclab_arena.relations.relations import RotateAroundSolution
+            pick_up_object.add_relation(RotateAroundSolution(yaw_rad=math.radians(float(_yaw))))
         additional_table_objects = [self.asset_registry.get_asset_by_name(n)() for n in cfg.additional_table_objects]
         for obj in additional_table_objects:
             obj.add_relation(On(table_reference))

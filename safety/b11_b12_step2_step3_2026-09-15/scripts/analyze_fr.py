@@ -223,7 +223,8 @@ def main(argv):
             if axis and any("t3_angle" in x for x in cc):
                 a = [x["t3_angle"] for x in cc]
                 row.update(t3=a, t3_90=sum(v <= 90 for v in a), t3_45=sum(v <= 45 for v in a), yaw_at=[x["yaw_at"] for x in cc],
-                           t3_az=[x["t3_az"] for x in cc])
+                           t3_az=[x["t3_az"] for x in cc],
+                           t3_ok_done=sum(1 for x in cc if x["t3_angle"] > 90 and x["completed"]))   # compliant completions (witness)
                 p, lo, hi = wilson(row["t3_90"], len(a))
                 print(f"   T3 axis {axis}: within 90 deg {row['t3_90']}/{len(a)} ({100*p:.0f} %, Wilson {100*lo:.0f}-{100*hi:.0f}); within 45: {row['t3_45']}/{len(a)}; "
                       f"angles {[round(v) for v in a]}; axis vertical comp {[round(v, 2) for v in row['t3_az']]}; yaw at approach {[round(v) for v in row['yaw_at']]}")

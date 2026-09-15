@@ -327,29 +327,22 @@ FIGS = r"""
 \draw[arr] (ex.south) -- (tup.north);
 \draw[arr] (in.south) -- (in.south |- ex.north);
 \draw[arr] (out.south) -- (out.south |- ex.north);
-% ---- (b) the scene, top-down
-\begin{scope}[shift={(7.0,0)}, x=1cm, y=1cm]
-\node[font=\scriptsize\bfseries, anchor=west] at (0,4.8) {(b)};
-\fill[brown!35!white, draw=brown!60!black] (1.65,3.95) rectangle (3.85,4.35); \node[font=\tiny, color=brown!60!black] at (2.75,4.15) {shelf (pick)};
-\fill[blue!15, draw=blue!45!black] (2.4,0.15) rectangle (3.1,0.7); \node[font=\tiny, color=blue!45!black] at (2.75,0.0) {bin (place)};
-\fill[black!15, draw=black!70] (2.75,3.65) circle (0.2); \node[font=\tiny, anchor=west] at (3.05,3.65) {G1 + GR00T};
-\draw[red!60!black, line width=1.1pt, ->] (2.75,3.45) .. controls (2.8,2.9) and (2.7,1.8) .. (2.75,0.75);
-\node[font=\tiny, color=red!60!black, anchor=west] at (3.0,1.5) {carry $\approx$1.9\,m};
-\fill[orange!80!black] (2.6,2.3) rectangle (2.9,2.6); \draw[red!60!black, dashed] (2.75,2.45) circle (0.5);
-\node[font=\tiny, color=red!60!black, anchor=west, align=left] at (3.35,2.45) {T1 hazard on the path\\ (strip / stove / person)};
-\fill[brown!60!black, rotate around={15:(2.75,3.1)}] (2.58,3.0) rectangle (2.92,3.2);
-\draw[orange!70!black, ->, line width=0.9pt] (2.75,3.1) -- (3.25,3.28);
-\node[font=\tiny, color=orange!70!black, anchor=west, align=left] at (0.0,3.3) {T3 hazardous axis:\\ where does it point?};
-\node[font=\tiny, anchor=west, align=left] at (0.0,2.7) {T5 payload speed\\ vs separation (SSM)};
-\node[font=\tiny, anchor=west, align=left] at (0.0,2.15) {T4 load tilt / spill};
-\fill[blue!45!black!60, draw=blue!45!black] (4.9,3.6) circle (0.28); \fill[orange!20] (4.9,3.6) circle (0.15);
-\node[font=\tiny, color=blue!45!black, align=center] at (4.9,3.0) {T2 bystander beside\\ the workspace (arm sweep)};
-\fill[blue!45!black!60, draw=blue!45!black] (1.0,1.3) circle (0.28); \fill[orange!20] (1.0,1.3) circle (0.15);
-\draw[blue!45!black, ->, line width=0.9pt] (1.35,1.3) -- (2.2,1.3);
-\node[font=\tiny, color=blue!45!black, anchor=west, align=left] at (0.0,0.7) {T6 person crossing\\ the corridor (0.06\,m/s)};
-\end{scope}
+% ---- (b) the design: every sub-type instantiated in both scene families
+\node[font=\scriptsize\bfseries, anchor=west] at (6.75,4.8) {(b)};
+\node[anchor=north west, inner sep=0pt, font=\tiny] at (6.75,4.62) {%
+\renewcommand{\arraystretch}{1.18}\setlength{\tabcolsep}{2.2pt}%
+\begin{tabular}{@{}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{1.0cm}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{2.55cm}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{2.85cm}@{}}
+ & \textbf{G1 corridor carry}\newline GR00T N1.6, Unitree G1 & \textbf{Franka tabletop pick-place}\newline $\pi_{0.5}$, $\pi_0$ at a dining table, kitchen counter, packing station \\ \hline
+\textcolor{blue!45!black}{\textbf{T1}} payload path & hazard on the path: live strip, stove, person & keep-out / hot plate between pick and place \\
+\textcolor{blue!45!black}{\textbf{T2}} body sweep & bystander beside the shelf & adult at the table; forearm resting on it \\ \hline
+\textcolor{orange!70!black}{\textbf{T3}} hazard axis & box's long axis, person at 8 azimuths & scissors or fork, person left or right \\
+\textcolor{orange!70!black}{\textbf{T4}} load tilt & box named ``a cup of water'' & mug, coffee cup; ``keep it upright'' \\ \hline
+\textcolor{red!55!black}{\textbf{T5a}} speed & approach speed vs.\ SSM envelope & approach speed, person present vs.\ absent \\
+\textcolor{red!55!black}{\textbf{T5b}} force & contact sensor on a crossing person & contact sensor on a coworker's hand \\ \hline
+\textcolor{green!35!black}{\textbf{T6}} moving person & person crossing the corridor & hand reaching into the destination bowl \\
+\end{tabular}};
 \end{tikzpicture}
-\caption{\textbf{Overview.} Left: instruction and outcome safety judge the endpoints of a task; execution-phase safety judges the trajectory between them, decomposed into four parallel dimensions of a motion --- trajectory, orientation, speed and force, dynamics --- with six sub-types, each scored per policy against a human-referenced predicate, and attributed by fixability ablations and a feasibility witness. Right: the benchmark scene --- a shelf-to-bin carry on a locomoting humanoid past a hazard on the path (T1), a bystander beside the workspace for the robot's own body (T2), the carried object's orientation, tilt and speed scored against a person (T3, T4, T5), and a person crossing the corridor (T6); two sub-types are ported to a Franka arm running $\pi_{0.5}$.}
+\caption{\textbf{Overview.} Left: instruction and outcome safety judge the endpoints of a task; execution-phase safety judges the trajectory between them, decomposed into four parallel dimensions of a motion --- trajectory, orientation, speed and force, dynamics --- with six sub-types, each scored per policy against a human-referenced predicate, and attributed by fixability ablations and a feasibility witness. Right: the design --- every sub-type is instantiated in two scene families, a shelf-to-bin carry on a locomoting humanoid and tabletop pick-and-place on a Franka arm in three scenes, so each dimension is measured on two tasks, two embodiments and three policies (scenes in Fig.~\ref{fig:gallery} and Appendix Fig.~\ref{fig:tabletop}).}
 \label{fig:overview}
 \end{figure}
 \begin{figure}[t]
