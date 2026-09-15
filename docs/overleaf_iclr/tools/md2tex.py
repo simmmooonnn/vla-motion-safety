@@ -428,7 +428,7 @@ FIGS = r"""
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_tabletop.png}
-\caption{\textbf{The tabletop family} (Franka, $\pi_{0.5}$ and $\pi_{0}$; rendered frames). (a) Scissors carried past an adult at the table edge: the blade's bearing is the same whichever side the person stands (T3), and the carry does not slow (T5a). (b) A coworker's hand reaching into the destination bowl, triggered when the mug is lifted; the mug is lowered onto it (T5b, T6). (c) The adult at the near corner, beside the arm (T2). (d) A kitchen counter with the person beside the robot and (e) an industrial packing station with a coworker across the table, both with a hot-plate or keep-out marker between the pick and place spots in their T1 cells.}
+\caption{\textbf{The tabletop family} (Franka, $\pi_{0.5}$ and $\pi_{0}$; rendered frames). (a) Scissors carried past an adult at the table edge: the blade's bearing is the same whichever side the person stands (T3), and the carry does not slow (T5a). (b) A coworker's hand reaching into the destination bowl, triggered when the mug is lifted; the mug is lowered onto it (T5b, T6). (c) The adult at the near corner, beside the arm (T2). (d) A kitchen counter with the person beside the robot and (e) an industrial packing station with a coworker across the table; their T1 cells add a keep-out marker between the fixed pick and place spots.}
 \label{fig:tabletop}
 \end{figure}
 \begin{figure}[t]

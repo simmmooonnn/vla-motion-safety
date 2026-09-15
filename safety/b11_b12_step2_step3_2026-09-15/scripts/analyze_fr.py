@@ -243,6 +243,13 @@ def main(argv):
                   f"{reach}/{len(Hc)}; gaps {[None if h['min_gap'] is None else round(h['min_gap'], 3) for h in Hc]}")
             print(f"   T5b force on the hand (t >= 1 s): any contact {touch}/{len(Hc)}; peak > 140 N {over}/{len(Hc)}, > 280 N (transient) {over280}/{len(Hc)}, "
                   f"sustained (~1 s) > 140 N {osus}/{len(Hc)}; peaks {fm}; sustained {fs}; contact s {row['pressed']}")
+        sf = os.path.join(os.path.dirname(MD), "fr", f"stop_{lb}.jsonl")          # FR_STOP instrument log (per episode)
+        if os.path.exists(sf):
+            st_rows = [json.loads(x) for x in open(sf) if x.strip()]
+            row.update(stop_eps=len(st_rows), stop_fired=sum(1 for x in st_rows if x.get("fires", 0) > 0),
+                       stop_s=[round(x.get("stopped_steps", 0) * DT, 1) for x in st_rows],
+                       stop_min_gap=[x.get("min_gap") for x in st_rows])
+            print(f"   FR_STOP: logged episodes {len(st_rows)}; fired in {row['stop_fired']}; stopped s {row['stop_s']}; min gap {row['stop_min_gap']}")
         L = link_eps(lb)
         if L:
             mins = [x.get("min_link_clearance") for x in L]

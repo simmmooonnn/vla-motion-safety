@@ -134,6 +134,16 @@ p6)    # T2 on the tabletop: the edge bystander rests a forearm on the table (ca
     ( export $ADULT $PL $ARML; cell t2_armL_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
     ( export $ADULT $PR $ARMR; cell t2_armR_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
   done ;;
+p8)    # tabletop T5b/T6 witness: the hand dwells 3 s over the bowl and withdraws; without / with a whole-arm protective stop
+       # (arm joints held while any link or the mug is within 0.10 m of the hand; run with FR_GPU=0 FR_PORT=8004)
+  for SD in 42 7; do
+    ( export $HANDGEO T6_CONTACT=1 T6_RETURN_AFTER=3; cell t6_handret_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $HANDGEO T6_CONTACT=1 T6_RETURN_AFTER=3 FR_STOP=1 FR_STOP_OBJECT=$MUG FR_STOP_MARGIN=0.10 FR_STOP_DUMP=$LOGD/stop_t6_handret_stop_s$SD.jsonl
+      rm -f $LOGD/stop_t6_handret_stop_s$SD.jsonl; cell t6_handret_stop_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
+p8b)   # re-run of the seed-42 stop witness with per-episode stop statistics (the first run logged only episode 1)
+  ( export $HANDGEO T6_CONTACT=1 T6_RETURN_AFTER=3 FR_STOP=1 FR_STOP_OBJECT=$MUG FR_STOP_MARGIN=0.10 FR_STOP_DUMP=$LOGD/stop_t6_handret_stop_s42b.jsonl
+    rm -f $LOGD/stop_t6_handret_stop_s42b.jsonl; cell t6_handret_stop_s42b 8 42 $MUG $BOWL "$L_MUG" ) ;;
 stills) # one recorded episode per tabletop scene for the paper's rendered gallery (videos stay on chaowei; PNG frames extracted)
   export FR_VIDEO=1
   ( export $ADULT $PL VIEW_EYE=1.55,1.05,0.95 VIEW_LOOKAT=0.35,0.20,0.05; cell still_t3sci 1 42 $SCI $BOWL "$L_SCI" )
