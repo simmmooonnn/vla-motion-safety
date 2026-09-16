@@ -42,7 +42,7 @@ def _envf(name: str, default: float) -> float:
 
 SCENES = {  # scene name -> (background asset, table prim relative to the environment namespace)
     "maple": ("maple_table_robolab", "{ENV_REGEX_NS}/maple_table_robolab/table"),                     # home dining table
-    "oak": ("table_oak_robolab", "{ENV_REGEX_NS}/table_oak_robolab"),                                   # plain work table
+    "oak": ("table_oak_robolab", os.environ.get("TABLE_PRIM", "{ENV_REGEX_NS}/table_oak_robolab")),      # plain work table
     "kitchen": ("kitchen", "{ENV_REGEX_NS}/kitchen/Kitchen_Counter/TRS_Base/TRS_Static/Counter_Top_A"),  # kitchen counter
     "office": ("office_table_background",
                "{ENV_REGEX_NS}/office_table_background/Geometry/sm_tabletop_a01_01/sm_tabletop_a01_top_01"),  # office desk
@@ -54,10 +54,19 @@ SCENES = {  # scene name -> (background asset, table prim relative to the enviro
     # (Cabinet_B_01) sits at x -0.19..0.77, y 0.17..0.93 with its rim at z -0.004 (DEBUG_SCENE probe, 2026-09-16)
     "drawer": ("kitchen_with_open_drawer",
                os.environ.get("TABLE_PRIM", "{ENV_REGEX_NS}/kitchen_with_open_drawer/Kitchen_Counter/TRS_Base/TRS_Static/Counter_Top_A")),
-    "rk_island": ("replicator_kitchen_l_island", os.environ.get("TABLE_PRIM", "{ENV_REGEX_NS}/replicator_kitchen_l_island")),
+    "rk_island": ("replicator_kitchen_l_island",
+                  os.environ.get("TABLE_PRIM", "{ENV_REGEX_NS}/replicator_kitchen_l_island/Base_north_00")),
     "rk_ushape": ("replicator_kitchen_u_shape", os.environ.get("TABLE_PRIM", "{ENV_REGEX_NS}/replicator_kitchen_u_shape")),
     "rk_peninsula": ("replicator_kitchen_peninsula", os.environ.get("TABLE_PRIM", "{ENV_REGEX_NS}/replicator_kitchen_peninsula")),
     "lw_kitchen": ("lightwheel_robocasa_kitchen", os.environ.get("TABLE_PRIM", "{ENV_REGEX_NS}/lightwheel_robocasa_kitchen")),
+}
+
+# SCENE_OFFSETS: default background shift per scene, so that the work surface lands in front of the arm with its top near
+# z = 0 (the height the robot is mounted at). Measured with DEBUG_SCENE on 2026-09-16; SCENE_X/Y/Z override them.
+SCENE_OFFSETS = {
+    "rk_island": (1.35, -1.685, -0.866),   # counter run Base_north_00/01 -> x -0.15..1.02, y 0.25..0.90, top 0.00
+    "oak": (0.55, 0.0, -0.352),            # plain work table 0.70 x 1.00, top 0.35 -> x 0.20..0.90, top 0.00
+    "office": (0.45, 0.0, -0.531),         # office desk 1.80 x 0.80, top 0.531 -> x -0.45..1.35, top 0.00
 }
 
 
@@ -100,21 +109,32 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
         background = self.asset_registry.get_asset_by_name(bg_name)()
         # SCENE_Z: shift the whole background in z, for rooms modelled with the floor at 0 (the robot is mounted at work-surface
         # height, so a 0.85 m counter has to come down to it)
-        _sz = os.environ.get("SCENE_Z", "")
-        if _sz:
-            background.set_initial_pose(Pose(position_xyz=(_envf("SCENE_X", 0.0), _envf("SCENE_Y", 0.0), float(_sz)),
-                                             rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
+        _dx, _dy, _dz = SCENE_OFFSETS.get(scene_name, (0.0, 0.0, 0.0))
+        _off = (_envf("SCENE_X", _dx), _envf("SCENE_Y", _dy), _envf("SCENE_Z", _dz))
+        if any(abs(v) > 1e-9 for v in _off):
+            background.set_initial_pose(Pose(position_xyz=_off, rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
         pick_up_object = self.asset_registry.get_asset_by_name(cfg.pick_up_object)()
         destination_location = self.asset_registry.get_asset_by_name(cfg.destination_location)()
 
         # the maple / oak tables carry a RigidBodyAPI; kitchen counter, office desk and packing station are static geometry
-        if scene_name in ("maple", "oak"):
+        # only the maple table stays a RigidBodyAPI reference; a shifted background (SCENE_OFFSETS) must be static, or
+        # the visual moves while the rigid body stays behind and the payload falls through the table (oak, 2026-09-16)
+        if scene_name == "maple":
             table_reference = ObjectReference(name="table", prim_path=table_prim, parent_asset=background, object_type=ObjectType.RIGID)
         else:
             table_reference = ObjectReference(name="table", prim_path=table_prim, parent_asset=background)
         table_reference.add_relation(IsAnchor())
         pick_up_object.add_relation(On(table_reference))
-        destination_location.add_relation(On(table_reference))
+        # DEST_ON_PRIM: put the destination on a different surface than the payload -- e.g. into the open drawer of the
+        # "drawer" kitchen, which makes the delivery a different task (a lower, enclosed target) in the same scene
+        _dest_prim = os.environ.get("DEST_ON_PRIM", "")
+        if _dest_prim:
+            dest_surface = ObjectReference(name="dest_surface", prim_path=_dest_prim, parent_asset=background)
+            dest_surface.add_relation(IsAnchor())   # a reference surface has to be an anchor, like the table
+            destination_location.add_relation(On(dest_surface))
+        else:
+            dest_surface = None
+            destination_location.add_relation(On(table_reference))
         # large surfaces (kitchen counter, packing station): pin the pick / place spots inside the arm's reach
         from isaaclab_arena.relations.relations import AtPosition
         for _obj, _key in ((pick_up_object, "PICK_XY"), (destination_location, "DEST_XY")):
@@ -136,8 +156,17 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
 
         light = self.asset_registry.get_asset_by_name("light")()
         light.set_intensity(cfg.light_intensity)
+        # HDR_FILE=<name under the Arena backgrounds folder, or a full URL>: any environment map on the asset server,
+        # including the outdoors/ set (courtyard, woods, wide_street, ...), not just the eleven registered ones
+        _hdr_file = os.environ.get("HDR_FILE", "")
         hdr = os.environ.get("SCENE_HDR") or cfg.hdr  # e.g. empty_warehouse_robolab (industrial lighting)
-        if hdr:
+        if _hdr_file:
+            from isaaclab_arena.assets.hdr_image import HDRImage
+            from isaaclab_arena.assets.nucleus import ARENA_NUCLEUS_DIR
+            _path = _hdr_file if "://" in _hdr_file else (
+                f"{ARENA_NUCLEUS_DIR}/Arena/assets/object_library/srl_robolab_assets/backgrounds/{_hdr_file}")
+            light.add_hdr(HDRImage(name="env_map", texture_file=_path))
+        elif hdr:
             light.add_hdr(self.hdr_registry.get_hdr_by_name(hdr)())
         directional_light = self.asset_registry.get_asset_by_name("directional_light")()
         embodiment = self.asset_registry.get_asset_by_name(cfg.embodiment)(enable_cameras=cfg.enable_cameras)
@@ -222,6 +251,7 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
             extra.append(person)
 
         scene = Scene(assets=[background, light, directional_light, pick_up_object, destination_location, table_reference,
+                              *([dest_surface] if dest_surface is not None else []),
                               *additional_table_objects, *extra])
 
         carried = pick_up_object

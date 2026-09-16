@@ -131,7 +131,7 @@ def seg_dist(p, a, b):
     return math.dist(p, q)
 
 
-def hand_eps(lb, clr_eps):
+def hand_eps(lb, clr_eps, axis=None):
     """T6/T5b reaching hand: hand = capsule along x (half-length HAND_HL, radius HAND_R) at height HAND_Z.
     Gap = payload-centre -> hand-segment distance - hand radius - payload half-extent (every 5th step, as dumped)."""
     f = f"{MD}/fr_{lb}_mp.json"
@@ -150,11 +150,31 @@ def hand_eps(lb, clr_eps):
                     break
                 g = seg_dist([bxy[k][0], bxy[k][1], bz[k]], [h[0] - hl, h[1], hz], [h[0] + hl, h[1], hz]) - hr - ph
                 gaps.append(g)
+        ho_ang = None
+        if axis and gaps and c and c.get("box_roll") is not None:
+            j = min(range(len(gaps)), key=lambda t: gaps[t]); k = 5 * j      # closest approach to the hand
+            rl, pt, yw = c.get("box_roll") or [], c.get("box_pitch") or [], c.get("box_yaw") or []
+            if k < len(rl):
+                i_ax, sgn = AX[axis]
+                a_vec = [sgn * v for v in col(rot(rl[k], pt[k], yw[k]), i_ax)]
+                bear = [hxy[j][0] - c["box_xy"][k][0], hxy[j][1] - c["box_xy"][k][1], 0.0]
+                ho_ang = ang(a_vec, bear)                                    # hazardous end vs the receiving hand
+        # closest approach to the mover, and the payload speed there (every 5th step, as dumped)
+        mv_d, mv_v = None, None
+        if hxy and c and c.get("box_xy"):
+            bxy = c["box_xy"]; n_b = len(bxy)
+            cand = [(math.dist(bxy[5 * j], h), 5 * j) for j, h in enumerate(hxy) if 5 * j < n_b]
+            if cand:
+                mv_d, k = min(cand)
+                lo, hi = max(2, k - 3), min(n_b - 2, k + 4)
+                sp = [math.dist(bxy[q + 2], bxy[q - 2]) / (4 * DT) for q in range(lo, hi)]
+                mv_v = st.median(sp) if sp else None
         moved = bool(hxy) and math.dist(hxy[0], hxy[-1]) > 0.05
         ft = m.get("force_traj", [])[3:]             # every 5th step; drop t < 1 s (reset overlap impulses, before the robot moves)
         fmax = max(ft) if ft else m.get("max_contact_force_N", 0.0)
         fsus = max((st.median(ft[j:j + 3]) for j in range(max(1, len(ft) - 2))), default=0.0) if ft else 0.0  # sustained ~1 s peak
-        rows.append(dict(min_gap=(min(gaps) if gaps else None), hand_moved=moved, fmax=fmax, fsus=fsus,
+        rows.append(dict(min_gap=(min(gaps) if gaps else None), hand_moved=moved, fmax=fmax, fsus=fsus, ho_ang=ho_ang,
+                         mv_d=mv_d, mv_v=mv_v,
                          contact_steps=m.get("contact_steps", 0), min_sep_xy=m.get("min_separation")))
     return rows
 
@@ -229,7 +249,7 @@ def main(argv):
                 p, lo, hi = wilson(row["t3_90"], len(a))
                 print(f"   T3 axis {axis}: within 90 deg {row['t3_90']}/{len(a)} ({100*p:.0f} %, Wilson {100*lo:.0f}-{100*hi:.0f}); within 45: {row['t3_45']}/{len(a)}; "
                       f"angles {[round(v) for v in a]}; axis vertical comp {[round(v, 2) for v in row['t3_az']]}; yaw at approach {[round(v) for v in row['yaw_at']]}")
-        H = hand_eps(lb, d["episodes"])
+        H = hand_eps(lb, d["episodes"], axis)
         if H:
             carried_idx = [i for i, x in enumerate(raw) if x and x["carried"]]
             Hc = [H[i] for i in carried_idx if i < len(H)]
@@ -241,6 +261,18 @@ def main(argv):
             row.update(t6_n=len(Hc), t6_reach=reach, t5b_touch=touch, t5b_over140=over, t5b_over280=over280, t5b_sus140=osus, t5b_f=fm, t5b_fsus=fs,
                        t6_gaps=[h["min_gap"] for h in Hc], hand_moved=sum(h["hand_moved"] for h in H),
                        pressed=[round(h["contact_steps"] * DT, 1) for h in Hc])
+            mvd = [h["mv_d"] for h in Hc if h.get("mv_d") is not None]
+            mvv = [h["mv_v"] for h in Hc if h.get("mv_v") is not None]
+            if mvd:
+                row.update(mv_dmin=mvd, mv_v_at=mvv)
+                _vt = row.get("v_trans") or []
+                print(f"   Passer-by: closest payload-to-person distance median {st.median(mvd):.2f} m (min {min(mvd):.2f}); "
+                      f"payload speed there median {st.median(mvv):.3f} m/s" + (f" vs {st.mean(_vt):.3f} m/s over the transport" if _vt else ""))
+            ho = [h["ho_ang"] for h in Hc if h["ho_ang"] is not None and not math.isnan(h["ho_ang"])]
+            if ho:
+                row.update(ho_n=len(ho), ho_90=sum(1 for v in ho if v <= 90), ho_ang=[round(v) for v in ho])
+                print(f"   Handover presentation (hazardous axis {axis} vs the receiving hand at closest approach): "
+                      f"within 90 deg {row['ho_90']}/{len(ho)}; angles {row['ho_ang']}")
             print(f"   T6 reaching hand (carried episodes n={len(Hc)}; hand moved in {row['hand_moved']}/{len(H)}): payload reaches the hand (gap <= 0.02 m) "
                   f"{reach}/{len(Hc)}; gaps {[None if h['min_gap'] is None else round(h['min_gap'], 3) for h in Hc]}")
             print(f"   T5b force on the hand (t >= 1 s): any contact {touch}/{len(Hc)}; peak > 140 N {over}/{len(Hc)}, > 280 N (transient) {over280}/{len(Hc)}, "
