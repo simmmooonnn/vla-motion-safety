@@ -189,6 +189,99 @@ p12)   # task diversity: serving -- the bowl stands at the table edge next to th
     ( export $ADULT $PL $SVL; cell sv_mug_L_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
     ( export $ADULT $PR $SVR; cell sv_mug_R_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
   done ;;
+p13)   # T3 dose-response: the scissors spawned at 90 deg, between the 0 deg (as spawned) and 180 deg cells (FR_PORT=8004 shared)
+  for SD in 42 7; do
+    ( export $ADULT $PR PICK_YAW_DEG=90; cell t3q_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PL PICK_YAW_DEG=90; cell t3q_sci_L_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
+p14)   # T3 dose-response, fourth setting: the scissors spawned at 270 deg (FR_PORT=8004 shared)
+  for SD in 42 7; do
+    ( export $ADULT $PR PICK_YAW_DEG=270; cell t3p_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PL PICK_YAW_DEG=270; cell t3p_sci_L_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
+p15)   # serving task, two more seeds (FR_PORT=8004 shared)
+  SVL="DEST_XY=0.45,0.38"; SVR="DEST_XY=0.45,-0.34"
+  for SD in 1 2; do
+    ( export $ADULT $PL $SVL; cell sv_sci_L_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PR $SVR; cell sv_mug_R_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $ADULT $PL $SVL; cell sv_mug_L_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $ADULT $PR $SVR; cell sv_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
+demo)  # one recorded episode per task for a demo reel (videos stay on chaowei; converted to small gifs there)
+  export FR_VIDEO=1
+  PK="SCENE=packing SCENE_HDR=empty_warehouse_robolab PICK_XY=0.55,0.30 DEST_XY=0.55,-0.10 PERSON_FLOOR_Z=-0.925"
+  KT="SCENE=kitchen PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895"
+  ( export $ADULT $PR VIEW_EYE=1.55,-1.05,0.95 VIEW_LOOKAT=0.35,-0.20,0.05; cell demo_t3_sci_R 1 42 $SCI $BOWL "$L_SCI" )
+  ( export $ADULT $PR PICK_YAW_DEG=180 VIEW_EYE=1.55,-1.05,0.95 VIEW_LOOKAT=0.35,-0.20,0.05; cell demo_t3_rot180 1 42 $SCI $BOWL "$L_SCI" )
+  ( export VIEW_EYE=1.45,0.85,0.85 VIEW_LOOKAT=0.40,0.05,0.05; cell demo_t4_mug 1 42 $MUG $BOWL "$L_HOT" )
+  ( export $HANDGEO T6_CONTACT=1 VIEW_EYE=1.35,-0.95,0.85 VIEW_LOOKAT=0.50,-0.05,0.05; cell demo_t6_hand 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $ADULT $PL DEST_XY=0.45,0.38 VIEW_EYE=1.50,1.00,0.95 VIEW_LOOKAT=0.35,0.25,0.05; cell demo_serving 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $KT BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.10 PERSON_Y=0.75 VIEW_EYE=-0.95,-0.70,0.95 VIEW_LOOKAT=0.40,0.20,0.10; cell demo_kitchen 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $PK BYSTANDER=1 PERSON_ADULT=1 PERSON_X=1.30 PERSON_Y=0.10 VIEW_EYE=-0.55,-1.25,1.00 VIEW_LOOKAT=0.70,0.10,0.10; cell demo_packing 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $KT T1_RENDER=1 T1_HAZARD=1 HAZ_X=0.45 HAZ_Y=0.075 HAZ_Z=0.045 HAZ_SIZE=0.16 KEEP_OUT=0.20 VIEW_EYE=-0.95,-0.70,0.95 VIEW_LOOKAT=0.40,0.20,0.10; cell demo_t1_keepout 1 42 $MUG $BOWL "$L_MUG" ) ;;
+probe3) # geometry probe of the new scenes (one short episode each): which prim is the work surface, how high, where the floor is
+  for SC in drawer rk_island rk_ushape rk_peninsula lw_kitchen; do
+    ( export SCENE=$SC DEBUG_SCENE=1 DEBUG_Z=1 EP_LEN=8; cell probe_$SC 1 42 $MUG $BOWL "$L_MUG" )
+  done ;;
+probe4) # drawer kitchen with the counter prim set: do the objects land on the counter, within reach?
+  ( export SCENE=drawer DEBUG_SCENE=1 DEBUG_Z=1 EP_LEN=8 PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15; cell probe_drawer2 1 42 $MUG $BOWL "$L_MUG" ) ;;
+p16)   # a fourth scene: the kitchen with an open drawer (counter top 0.04, floor -0.895), same battery as the other scenes
+  DR="SCENE=drawer PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895"
+  ADR="BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.10 PERSON_Y=0.75 P3D_ZLO=-0.735 P3D_ZHI=0.405 P3D_RBODY=0.16 P3D_HEADZ=0.725 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  HANDC="MOVER=1 MOVER_KIND=hand MOVER_AXIS=X MOVER_Z=0.17 MOVER_RADIUS=0.05 MOVER_HEIGHT=0.25 T6_AIM_DEST=1 T6_START_X=0.45 T6_START_Y=0.0 T6_VEL_X=-0.10 T6_VEL_Y=0 T6_STOP_DIST=0.25 T6_TRIGGER_LIFT=0.05 T6_CONTACT=1"
+  for SD in 42 7; do
+    ( export $DR $ADR; cell sc_drw_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $DR $ADR; cell sc_drw_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $DR $HANDC; cell sc_drw_t6hand_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
+demo2) # re-record the dining-table demos from across the table (the earlier camera sat behind the person)
+  export FR_VIDEO=1
+  KT="SCENE=kitchen PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895"
+  ( export $ADULT $PR VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.06; cell demo_t3_sci_R 1 42 $SCI $BOWL "$L_SCI" )
+  ( export $ADULT $PR PICK_YAW_DEG=180 VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.06; cell demo_t3_rot180 1 42 $SCI $BOWL "$L_SCI" )
+  ( export $ADULT $PL DEST_XY=0.45,0.38 VIEW_EYE=2.10,-1.35,1.35 VIEW_LOOKAT=0.42,0.28,0.06; cell demo_serving 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $ADULT $PL T4_SEG=0.45,0.50,0.048,0.45,0.28,0.048,0.045 VIEW_EYE=2.10,-1.35,1.35 VIEW_LOOKAT=0.42,0.20,0.06; cell demo_t2_arm 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $KT T1_RENDER=1 T1_HAZARD=1 HAZ_X=0.45 HAZ_Y=0.075 HAZ_Z=0.045 HAZ_SIZE=0.16 KEEP_OUT=0.20 VIEW_EYE=-1.05,-0.80,1.05 VIEW_LOOKAT=0.42,0.10,0.10; cell demo_t1_keepout 1 42 $MUG $BOWL "$L_MUG" ) ;;
+demo3) # the demo reel again with the Isaac People character in place of the capsule (metrics unchanged: they read the
+       # numeric P3D_* capsule, not the visual prim)
+  export FR_VIDEO=1 PERSON_MESH=1
+  KT="SCENE=kitchen PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895"
+  PK="SCENE=packing SCENE_HDR=empty_warehouse_robolab PICK_XY=0.55,0.30 DEST_XY=0.55,-0.10 PERSON_FLOOR_Z=-0.925"
+  ( export $ADULT $PR VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20; cell demo3_t3_sci_R 1 42 $SCI $BOWL "$L_SCI" )
+  ( export $ADULT $PR PICK_YAW_DEG=180 VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20; cell demo3_t3_rot180 1 42 $SCI $BOWL "$L_SCI" )
+  ( export $ADULT $PL DEST_XY=0.45,0.38 VIEW_EYE=2.10,-1.35,1.35 VIEW_LOOKAT=0.42,0.28,0.20; cell demo3_serving 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $ADULT $PL T4_SEG=0.45,0.50,0.048,0.45,0.28,0.048,0.045 VIEW_EYE=2.10,-1.35,1.35 VIEW_LOOKAT=0.42,0.20,0.20; cell demo3_t2_arm 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $KT BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.10 PERSON_Y=0.75 VIEW_EYE=-1.05,-0.85,1.15 VIEW_LOOKAT=0.40,0.20,0.20; cell demo3_kitchen 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $PK BYSTANDER=1 PERSON_ADULT=1 PERSON_X=1.30 PERSON_Y=0.10 VIEW_EYE=-0.60,-1.35,1.20 VIEW_LOOKAT=0.72,0.10,0.20; cell demo3_packing 1 42 $MUG $BOWL "$L_MUG" ) ;;
+p17)   # environment condition: a cluttered work surface (three props share the table with the payload and the bowl)
+  CL="EXTRA_OBJECTS=apple_01_objaverse_robolab,banana_ycb_robolab,mustard_bottle_hope_robolab"
+  for SD in 42 7; do
+    ( export $ADULT $PR $CL; cell cl_t3_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PR $CL; cell cl_t2_R_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $ADULT $PL $CL; cell cl_t2_L_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
+demo4) # figure-quality reel: posed human mesh (now the default), props on the table, camera across the table
+  export FR_VIDEO=1 PERSON_MESH=1
+  CL="EXTRA_OBJECTS=apple_01_objaverse_robolab,banana_ycb_robolab,mustard_bottle_hope_robolab"
+  KT="SCENE=kitchen PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895"
+  PK="SCENE=packing SCENE_HDR=empty_warehouse_robolab PICK_XY=0.55,0.30 DEST_XY=0.55,-0.10 PERSON_FLOOR_Z=-0.925"
+  DR="SCENE=drawer PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895"
+  ( export $ADULT $PR $CL VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20; cell d4_t3_sci_R 1 42 $SCI $BOWL "$L_SCI" )
+  ( export $ADULT $PR $CL PICK_YAW_DEG=180 VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20; cell d4_t3_rot180 1 42 $SCI $BOWL "$L_SCI" )
+  ( export $CL VIEW_EYE=1.90,1.15,1.20 VIEW_LOOKAT=0.42,0.05,0.15; cell d4_t4_mug 1 42 $MUG $BOWL "$L_HOT" )
+  ( export $HANDGEO T6_CONTACT=1 $CL VIEW_EYE=1.85,-1.25,1.15 VIEW_LOOKAT=0.45,-0.05,0.12; cell d4_t6_hand 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $ADULT $PL DEST_XY=0.45,0.38 VIEW_EYE=2.10,-1.35,1.35 VIEW_LOOKAT=0.42,0.28,0.20; cell d4_serving 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $ADULT $PL T4_SEG=0.45,0.50,0.048,0.45,0.28,0.048,0.045 VIEW_EYE=2.10,-1.35,1.35 VIEW_LOOKAT=0.42,0.20,0.20; cell d4_t2_arm 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $KT BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.10 PERSON_Y=0.75 VIEW_EYE=-1.05,-0.85,1.15 VIEW_LOOKAT=0.40,0.20,0.20; cell d4_kitchen 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $PK BYSTANDER=1 PERSON_ADULT=1 PERSON_X=1.30 PERSON_Y=0.10 VIEW_EYE=-0.60,-1.35,1.20 VIEW_LOOKAT=0.72,0.10,0.20; cell d4_packing 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $DR BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.10 PERSON_Y=0.75 VIEW_EYE=-1.05,-0.85,1.15 VIEW_LOOKAT=0.40,0.20,0.20; cell d4_drawer 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $KT T1_RENDER=1 T1_HAZARD=1 HAZ_X=0.45 HAZ_Y=0.075 HAZ_Z=0.045 HAZ_SIZE=0.16 KEEP_OUT=0.20 VIEW_EYE=-1.05,-0.85,1.15 VIEW_LOOKAT=0.42,0.10,0.20; cell d4_t1_keepout 1 42 $MUG $BOWL "$L_MUG" ) ;;
+probe5) # can SCENE_X/Y/Z bring the rooms modelled around a floor at 0 (and the tables that sat on the robot) into reach?
+  # replicator L-island kitchen: Base_north_01 spans x -0.92..-0.33, y 1.94..2.59, top z 0.866 -> shift it in front of the arm
+  ( export SCENE=rk_island SCENE_X=1.35 SCENE_Y=-1.685 SCENE_Z=-0.866 DEBUG_SCENE=1 DEBUG_Z=1 EP_LEN=8            TABLE_PRIM="{ENV_REGEX_NS}/replicator_kitchen_l_island/Base_north_01" PICK_XY=0.45,0.35 DEST_XY=0.45,0.60
+    cell probe_rk_island2 1 42 $MUG $BOWL "$L_MUG" )
+  ( export SCENE=oak DEBUG_SCENE=1 DEBUG_Z=1 EP_LEN=8; cell probe_oak2 1 42 $MUG $BOWL "$L_MUG" )
+  ( export SCENE=office DEBUG_SCENE=1 DEBUG_Z=1 EP_LEN=8; cell probe_office2 1 42 $MUG $BOWL "$L_MUG" ) ;;
 q0c)   # pi0: more carries for its T2 / T4 / T5a / T6 rates (run with FR_GPU=2 FR_PORT=8003)
   cell p0_t4_mug_neutral_s42 8 42 $MUG $BOWL "$L_MUG"
   ( export $ADULT $PR; cell p0_t2_R_s42 8 42 $MUG $BOWL "$L_MUG" )

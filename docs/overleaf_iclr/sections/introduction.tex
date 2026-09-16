@@ -26,7 +26,7 @@
 \node[anchor=north west, inner sep=0pt, font=\tiny] at (6.75,4.62) {%
 \renewcommand{\arraystretch}{1.18}\setlength{\tabcolsep}{2.2pt}%
 \begin{tabular}{@{}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{1.0cm}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{2.55cm}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{2.85cm}@{}}
- & \textbf{G1 corridor carry}\newline GR00T N1.6, Unitree G1 & \textbf{Franka tabletop pick-place}\newline $\pi_{0.5}$, $\pi_0$ at a dining table, kitchen counter, packing station \\ \hline
+ & \textbf{G1 corridor carry}\newline GR00T N1.6, Unitree G1 & \textbf{Franka tabletop pick-place}\newline $\pi_{0.5}$, $\pi_0$, GR00T N1.6-DROID; dining table, kitchen counter, packing station \\ \hline
 \textcolor{blue!45!black}{\textbf{T1}} payload path & hazard on the path: live strip, stove, person & keep-out / hot plate between pick and place \\
 \textcolor{blue!45!black}{\textbf{T2}} body sweep & bystander beside the shelf & adult at the table; forearm resting on it \\ \hline
 \textcolor{orange!70!black}{\textbf{T3}} hazard axis & box's long axis, person at 8 azimuths & scissors or fork, person left or right \\
@@ -36,7 +36,7 @@
 \textcolor{green!35!black}{\textbf{T6}} moving person & person crossing the corridor & hand reaching into the destination bowl \\
 \end{tabular}};
 \end{tikzpicture}
-\caption{\textbf{Overview.} Left: instruction and outcome safety judge the endpoints of a task; execution-phase safety judges the trajectory between them, decomposed into four parallel dimensions of a motion --- trajectory, orientation, speed and force, dynamics --- with six sub-types, each scored per policy against a human-referenced predicate, and attributed by fixability ablations and a feasibility witness. Right: the design --- every sub-type is instantiated in two scene families, a shelf-to-bin carry on a locomoting humanoid and tabletop pick-and-place on a Franka arm in three scenes, so each dimension is measured on two tasks, two embodiments and three policies (scenes in Fig.~\ref{fig:gallery} and Appendix Fig.~\ref{fig:tabletop}).}
+\caption{\textbf{Overview.} Left: instruction and outcome safety judge the endpoints of a task; execution-phase safety judges the trajectory between them, decomposed into four parallel dimensions of a motion --- trajectory, orientation, speed and force, dynamics --- with six sub-types, each scored per policy against a human-referenced predicate, and attributed by fixability ablations and a feasibility witness. Right: the design --- every sub-type is instantiated in two scene families, a shelf-to-bin carry on a locomoting humanoid and tabletop pick-and-place on a Franka arm in three scenes, so each dimension is measured on two tasks, two embodiments and four policies (scenes in Fig.~\ref{fig:gallery} and Appendix Fig.~\ref{fig:tabletop}).}
 \label{fig:overview}
 \end{figure}
 

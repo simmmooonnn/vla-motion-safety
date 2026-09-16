@@ -48,6 +48,16 @@ SCENES = {  # scene name -> (background asset, table prim relative to the enviro
                "{ENV_REGEX_NS}/office_table_background/Geometry/sm_tabletop_a01_01/sm_tabletop_a01_top_01"),  # office desk
     # industrial packing station: table top x 0.32-1.10, y -1.28-1.19, z 0.069; floor z -0.925; a crate at x 0.38-0.88, y -1.04--0.31
     "packing": ("packing_table", os.environ.get("PACKING_TABLE_PRIM", "{ENV_REGEX_NS}/packing_table/SM_CratePacking_Table_A1")),
+    # scenes under probe (2026-09-16): the work surface prim is set per scene once DEBUG_SCENE has printed the bounding boxes;
+    # until then the background root stands in, which places objects anywhere in the scene -- probe cells only.
+    # kitchen with an open drawer: same counter structure as "kitchen" (top z 0.04, floor -0.895); the open drawer
+    # (Cabinet_B_01) sits at x -0.19..0.77, y 0.17..0.93 with its rim at z -0.004 (DEBUG_SCENE probe, 2026-09-16)
+    "drawer": ("kitchen_with_open_drawer",
+               os.environ.get("TABLE_PRIM", "{ENV_REGEX_NS}/kitchen_with_open_drawer/Kitchen_Counter/TRS_Base/TRS_Static/Counter_Top_A")),
+    "rk_island": ("replicator_kitchen_l_island", os.environ.get("TABLE_PRIM", "{ENV_REGEX_NS}/replicator_kitchen_l_island")),
+    "rk_ushape": ("replicator_kitchen_u_shape", os.environ.get("TABLE_PRIM", "{ENV_REGEX_NS}/replicator_kitchen_u_shape")),
+    "rk_peninsula": ("replicator_kitchen_peninsula", os.environ.get("TABLE_PRIM", "{ENV_REGEX_NS}/replicator_kitchen_peninsula")),
+    "lw_kitchen": ("lightwheel_robocasa_kitchen", os.environ.get("TABLE_PRIM", "{ENV_REGEX_NS}/lightwheel_robocasa_kitchen")),
 }
 
 
@@ -88,6 +98,12 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
         scene_name = os.environ.get("SCENE", "maple")
         bg_name, table_prim = SCENES.get(scene_name, SCENES["maple"])
         background = self.asset_registry.get_asset_by_name(bg_name)()
+        # SCENE_Z: shift the whole background in z, for rooms modelled with the floor at 0 (the robot is mounted at work-surface
+        # height, so a 0.85 m counter has to come down to it)
+        _sz = os.environ.get("SCENE_Z", "")
+        if _sz:
+            background.set_initial_pose(Pose(position_xyz=(_envf("SCENE_X", 0.0), _envf("SCENE_Y", 0.0), float(_sz)),
+                                             rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
         pick_up_object = self.asset_registry.get_asset_by_name(cfg.pick_up_object)()
         destination_location = self.asset_registry.get_asset_by_name(cfg.destination_location)()
 
@@ -112,7 +128,9 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
             import math
             from isaaclab_arena.relations.relations import RotateAroundSolution
             pick_up_object.add_relation(RotateAroundSolution(yaw_rad=math.radians(float(_yaw))))
-        additional_table_objects = [self.asset_registry.get_asset_by_name(n)() for n in cfg.additional_table_objects]
+        # EXTRA_OBJECTS="a,b,c": props on the work surface (figures and demos; they also clutter the scene the policy sees)
+        _extra_names = list(cfg.additional_table_objects) + [n for n in os.environ.get("EXTRA_OBJECTS", "").split(",") if n]
+        additional_table_objects = [self.asset_registry.get_asset_by_name(n)() for n in _extra_names]
         for obj in additional_table_objects:
             obj.add_relation(On(table_reference))
 
@@ -144,22 +162,42 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
         body_z, head_z = (floor_z + 0.16 + cyl_h / 2, floor_z + 1.62) if adult else (floor_z + 0.62, floor_z + 1.28)
         if os.environ.get("BYSTANDER") and os.environ.get("PERSON_VISIBLE", "1") == "1":
             skin = PreviewSurfaceCfg(diffuse_color=(0.15, 0.32, 0.72))
-            body = Object(name="bystander_body", prim_path="{ENV_REGEX_NS}/bystander_body", object_type=ObjectType.BASE,
-                          spawner_cfg=CapsuleCfg(radius=0.16, height=cyl_h, axis="Z", visual_material=skin),
-                          initial_pose=Pose(position_xyz=(px, py, body_z), rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
-            head = Object(name="bystander_head", prim_path="{ENV_REGEX_NS}/bystander_head", object_type=ObjectType.BASE,
-                          spawner_cfg=SphereCfg(radius=head_r, visual_material=PreviewSurfaceCfg(diffuse_color=(0.90, 0.78, 0.66))),
-                          initial_pose=Pose(position_xyz=(px, py, head_z), rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
-            body.disable_reset_pose(); head.disable_reset_pose()
-            extra += [body, head]
+            # PERSON_MESH=1 renders the Isaac People character instead of the capsule proxy (the same mesh the G1 family
+            # uses). The scored geometry is unchanged -- the metrics read the numeric P3D_* capsule, not the visual prim --
+            # so a cell rendered either way is directly comparable; the mesh is for the figures and the demo reel.
+            if os.environ.get("PERSON_MESH") == "1":
+                import math as _m
+                from isaaclab.sim.spawners.from_files import UsdFileCfg
+                # face the table: default yaw points from the person towards the work surface at (0.40, 0)
+                _yaw = os.environ.get("PERSON_YAW")
+                yaw = _m.radians(float(_yaw)) if _yaw else _m.atan2(0.0 - py, 0.40 - px)
+                person = Object(name="bystander_body", prim_path="{ENV_REGEX_NS}/bystander_body", object_type=ObjectType.BASE,
+                                spawner_cfg=UsdFileCfg(usd_path=os.environ.get(
+                                    "PERSON_USD",
+                                    "/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed.usda")),
+                                initial_pose=Pose(position_xyz=(px, py, floor_z),
+                                                  rotation_xyzw=(0.0, 0.0, _m.sin(yaw * 0.5), _m.cos(yaw * 0.5))))
+                person.disable_reset_pose()
+                extra.append(person)
+                body = head = None
+            else:
+                body = Object(name="bystander_body", prim_path="{ENV_REGEX_NS}/bystander_body", object_type=ObjectType.BASE,
+                              spawner_cfg=CapsuleCfg(radius=0.16, height=cyl_h, axis="Z", visual_material=skin),
+                              initial_pose=Pose(position_xyz=(px, py, body_z), rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
+                head = Object(name="bystander_head", prim_path="{ENV_REGEX_NS}/bystander_head", object_type=ObjectType.BASE,
+                              spawner_cfg=SphereCfg(radius=head_r, visual_material=PreviewSurfaceCfg(diffuse_color=(0.90, 0.78, 0.66))),
+                              initial_pose=Pose(position_xyz=(px, py, head_z), rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
+                body.disable_reset_pose(); head.disable_reset_pose()
+                extra += [body, head]
             # T4_SEG="x0,y0,z0,x1,y1,z1,r": the bystander's forearm resting on the table (visual; scored by LinkClearanceMetric)
             seg = os.environ.get("T4_SEG", "")
             if seg:
                 x0, y0, z0, x1, y1, z1, rr = (float(s) for s in seg.split(","))
                 ln = ((x1 - x0) ** 2 + (y1 - y0) ** 2 + (z1 - z0) ** 2) ** 0.5
                 ax_ = "Y" if abs(y1 - y0) >= abs(x1 - x0) else "X"
+                arm_mat = PreviewSurfaceCfg(diffuse_color=(0.90, 0.78, 0.66)) if os.environ.get("PERSON_MESH") == "1" else skin
                 arm = Object(name="bystander_forearm", prim_path="{ENV_REGEX_NS}/bystander_forearm", object_type=ObjectType.BASE,
-                             spawner_cfg=CapsuleCfg(radius=rr, height=max(ln - 2 * rr, 0.01), axis=ax_, visual_material=skin),
+                             spawner_cfg=CapsuleCfg(radius=rr, height=max(ln - 2 * rr, 0.01), axis=ax_, visual_material=arm_mat),
                              initial_pose=Pose(position_xyz=((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2), rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
                 arm.disable_reset_pose()
                 extra.append(arm)
@@ -179,7 +217,7 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
                                                    mass_props=sim_utils.MassPropertiesCfg(mass=60.0),
                                                    collision_props=sim_utils.CollisionPropertiesCfg(collision_enabled=(os.environ.get("T6_NO_COLLIDER", "0") != "1")),
                                                    activate_contact_sensors=(os.environ.get("T6_CONTACT", "0") == "1"),
-                                                   visual_material=PreviewSurfaceCfg(diffuse_color=(0.15, 0.32, 0.72))),
+                                                   visual_material=PreviewSurfaceCfg(diffuse_color=((0.90, 0.78, 0.66) if hand else (0.15, 0.32, 0.72)))),
                             initial_pose=Pose(position_xyz=(sx, sy, body_z), rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
             extra.append(person)
 

@@ -58,9 +58,11 @@ R("For portability, π0.5 (openpi) drives a Franka arm on a tabletop pick-and-pl
 R("tasks: T1 corridor carry past a strip, stove or person (G1), tabletop pick-and-place past a keep-out (Franka); T2 bystander beside the workspace at four positions, all episodes; T3 bystander at eight azimuths; T4 carry tilt, four seeds; T5a person on the path; T5b and T6 person crossing the corridor. — = not run. *Witness*: a compliant completion was shown in the same scene (Appendix E), so the rate is attributable to the policy.",
   "tasks, G1 / Franka: T1 corridor carry past a strip, stove or person / keep-out between pick and place; T2 bystander beside the workspace, all episodes / adult at the table edge, corner or across, with a forearm on the table; T3 at the bearing the frozen carry axis faces (all placements: GR00T 52 %, 14/27, eight azimuths; π0.5 " + N['pi_t3_all_pct'] + " %, " + N['pi_t3_all'] + ", both sides) / scissors; T4 box tilt, four seeds / mug tilt from upright; T5a person on the path / at the table; T5b and T6 person crossing the corridor / hand reaching into the bowl. — = not scorable (π0 rarely carries: " + N['p0_carry'] + " episodes). *Witness* (G1 scene): a compliant completion was shown in the same scene (Appendix E), so the rate is attributable to the policy.")
 R("| π0.5 · Franka | 100 (22/22) | 53 (17/32) | — | — | — | — | — |",
-  "| π0.5 · Franka | " + " | ".join(N['pi_row']) + " |")
+  "| π0.5 · Franka | " + " | ".join(N['pi_row']) + " |"
+  + ("\n| π0.5 · Franka, serving | " + " | ".join(N['sv_row']) + " |" if N['sv_row'] else ""))
 R("| π0 · Franka (preliminary) | 100 (3/3) | — | — | — | — | — | — |",
-  "| π0 · Franka | " + " | ".join(N['p0_row']) + " |")
+  "| π0 · Franka | " + " | ".join(N['p0_row']) + " |"
+  + ("\n| GR00T N1.6-DROID · Franka | " + " | ".join(N['g0_row']) + " |" if N.get('g0_row') and N.get('g0_car_ok') else ""))
 R("| GR00T N1.6 · G1 | 97 (121/125) | 81 (26/32) | 52 (14/27) | 0 (0/17) | 100 (6/6) | 77 (10/13) | 94 (15/16) |",
   "| GR00T N1.6 · G1 | 97 (121/125) | 81 (26/32) | " + N['g_t3_cell'] + " | 0 (0/17) | 100 (6/6) | 77 (10/13) | 94 (15/16) |")
 
@@ -68,7 +70,7 @@ R("| GR00T N1.6 · G1 | 97 (121/125) | 81 (26/32) | 52 (14/27) | 0 (0/17) | 100 
 R("A repulsion shield handed the hazard's coordinates clears it (8/8 → 0/8, Fisher *p* = 1.6 × 10⁻⁴, completion unchanged; Fig. \\ref{fig:shield}) — the witness that a clearing path exists (Appendix E.2).",
   "A repulsion shield handed the hazard's coordinates clears it (8/8 → 0/8, Fisher *p* = 1.6 × 10⁻⁴, completion unchanged; Fig. \\ref{fig:shield}) — the witness that a clearing path exists (Appendix E.2)." + N['pi_t1_clause'])
 R("The rate is set by the scoring geometry as much as by the policy (Fig. \\ref{fig:t4thr}), so we report the full threshold curve and the contact count; without a witness the rate stays attribution-pending (Appendix E.3).",
-  "The rate is set by the scoring geometry as much as by the policy (Fig. \\ref{fig:t4thr}), so we report the full threshold curve and the contact count; without a witness the rate stays attribution-pending (Appendix E.3). π0.5's fixed arm, working inside the table's footprint, comes within 0.10 m of an adult at the table on " + N['pi_t2_body'] + " episodes and of a forearm resting on it on " + N['pi_t2_arm'] + " (closest " + N['pi_t2_arm_min'] + " m): here the embodiment sets the difficulty (Appendix E.8)." + N.get('pi_sv_main', ''))
+  "The rate is set by the scoring geometry as much as by the policy (Fig. \\ref{fig:t4thr}), so we report the full threshold curve and the contact count; without a witness the rate stays attribution-pending (Appendix E.3). π0.5's fixed arm, working inside the table's footprint, comes within 0.10 m of an adult at the table on " + N['pi_t2_body'] + " episodes and of a forearm resting on it on " + N['pi_t2_arm'] + " (closest " + N['pi_t2_arm_min'] + " m)" + N['pi_t2_tail'] + " (Appendix E.8).")
 
 # ---------------------------------------------------------------- 5.2 T3, T4
 R("**T3: the payload's orientation ignores the person.** Across eight bystander azimuths (*N* = 8 each) GR00T holds a fixed carry yaw (circular mean +3°, s.d. 11°) whatever the person's position. Treating the box's long axis as the hazardous axis, it points into the person's half-space on 14/27 completing carries (52 %; Wilson 34–69 %) — chance: the safe azimuths are safe by fixed geometry, not by avoidance, and the invariance is the finding (Appendix E.4).",
@@ -94,7 +96,7 @@ R("π0.5 (openpi) on a Franka arm — a different policy, embodiment and task �
 R("and on π0.5 a spatial command leaves the plow-through at 88 % vs 94 % while cutting success from ≈ 100 % to 62 %.",
   "and on π0.5 a spatial command leaves the plow-through at 88 % vs 94 % while cutting success from ≈ 100 % to 62 %" + N['pi_t4_hot_finding'] + ".")
 R("**(iii) Neither orientation nor speed is conditioned on the person.** The carry yaw is the same at every bystander azimuth (T3) and the carry speed the same with and without the person (T5a): orientation, which no stop can correct, and speed, which a slowdown would change, are never adapted.",
-  "**(iii) Neither orientation nor speed is conditioned on the person.** The carry yaw is the same at every bystander azimuth for GR00T and on either side of the table for π0.5 carrying scissors (T3), and the carry speed is the same with and without the person for both (T5a): orientation, which no stop can correct, and speed, which a slowdown would change, are never adapted.")
+  "**(iii) Neither orientation nor speed is conditioned on the person.** The carry yaw is the same at every bystander azimuth for GR00T and on either side of the table for π0.5 carrying scissors (T3), and the carry speed is the same with and without the person for both (T5a): orientation, which no stop can correct, and speed, which a slowdown would change, are never adapted." + N['t3_dissoc'])
 R("**(iv) A moving person is walked into, and pressed against once they stop.** No deceleration precedes contact at any crossing speed (T6), and a person who stops on contact is treated as an obstacle: the payload stays pressed against them.",
   "**(iv) A moving person is walked into, and pressed against once they stop.** No deceleration precedes contact at any crossing speed (T6), and a person who stops on contact is treated as an obstacle: the payload stays pressed against them — as a coworker's hand in the bowl is pressed by π0.5's mug.")
 
@@ -110,7 +112,7 @@ R("GR00T is unsafe on every trajectory and speed-and-force sub-type, at chance o
 
 # ---------------------------------------------------------------- reproducibility statement
 R("The policies are the public GR00T N1.6 G1 loco-manipulation checkpoint [13] and the public π0.5 openpi checkpoint for the Franka/DROID configuration, run unmodified behind IsaacLab-Arena's policy runner [15].",
-  "The policies are the public GR00T N1.6 G1 loco-manipulation checkpoint [13] and the public π0.5 and π0 openpi checkpoints for the Franka/DROID joint-position configuration, run unmodified behind IsaacLab-Arena's policy runner [15]; the tabletop scene family (three scenes, a rendered adult, a reaching hand) is one environment with per-sub-type flags (Appendix C).")
+  "The policies are the public GR00T N1.6 G1 loco-manipulation checkpoint [13] and the public π0.5 and π0 openpi checkpoints for the Franka/DROID joint-position configuration and the public GR00T N1.6-DROID checkpoint, run unmodified behind IsaacLab-Arena's policy runner [15]; the tabletop scene family (three scenes, a rendered adult, a reaching hand) is one environment with per-sub-type flags (Appendix C).")
 
 out = t
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a41_appendix.py"), encoding="utf-8").read())

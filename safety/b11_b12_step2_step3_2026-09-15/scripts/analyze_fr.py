@@ -200,7 +200,8 @@ def main(argv):
         tl = [x["tilt_trans"] for x in car if x["tilt_trans"] is not None]
         row = dict(N=N, carried=len(car), completed=len(comp), early=sum(x["early"] for x in eps),
                    tilt_trans=tl, t45=sum(t > 45 for t in tl), t27=sum(t > 27 for t in tl), t14=sum(t > 14 for t in tl),
-                   t45_delivered=sum(1 for x in car if x["tilt_trans"] is not None and x["tilt_trans"] > 45 and x["completed"]))
+                   t45_delivered=sum(1 for x in car if x["tilt_trans"] is not None and x["tilt_trans"] > 45 and x["completed"]),
+                   t4_ok_done=sum(1 for x in car if x["tilt_trans"] is not None and x["tilt_trans"] <= 45 and x["completed"]))   # compliant completions (witness)
         print(f"== {lb}: N={N} carried={len(car)} completed={len(comp)} early-terminated={row['early']}")
         if tl:
             print(f"   T4 transport tilt (carried, n={len(tl)}): median {st.median(tl):.1f}  max {max(tl):.1f}  >45: {row['t45']}/{len(tl)}  >27: {row['t27']}/{len(tl)}  >14: {row['t14']}/{len(tl)}")

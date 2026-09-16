@@ -17,7 +17,10 @@ def parse(s):
     m = re.search(r"\((\d+)/(\d+)\)", s or ""); return [int(m.group(1)), int(m.group(2))] if m else None
 rows = [{"name": "GR00T N1.6 · G1", "cells": [[121, 125], [26, 32], parse(N["g_t3_cell"]), [0, 17], [6, 6], [10, 13], [15, 16]]},
         {"name": "π0.5 · Franka", "cells": [parse(x) for x in N["pi_row"]]},
-        {"name": "π0 · Franka", "cells": [parse(x) for x in N["p0_row"]]}]
+        {"name": "π0.5 · serving", "cells": [parse(x) for x in N["sv_row"]]} if N.get("sv_row") else None,
+        {"name": "π0 · Franka", "cells": [parse(x) for x in N["p0_row"]]},
+        {"name": "GR00T-DROID · Franka", "cells": [parse(x) for x in N["g0_row"]]} if N.get("g0_car_ok") else None]
+rows = [r for r in rows if r]
 json.dump({"rows": rows}, open("heatmap_data.json", "w", encoding="utf-8"), ensure_ascii=False)
 EOF
 python heatmap_fig.py > /dev/null && python edit_paper_a41.py && python md2tex.py > /dev/null 2>&1 || exit 1
