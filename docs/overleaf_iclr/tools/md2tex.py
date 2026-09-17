@@ -169,7 +169,7 @@ def convert_table(rows, caption, label):
         # (ncol-1) inter-column gaps of 2*tabcolsep (3pt) on a ~397pt ICLR line width, plus 1% slack
         avail = 0.99 - (ncol - 1) * 6.0 / 397.0 - 0.01
         fr = [avail * l / sum(L) for l in L]
-        if label in WIDTHS:                            # hand-tuned proportions for the main-text tables
+        if label in WIDTHS and len(WIDTHS[label]) == ncol:   # hand-tuned proportions for the main-text tables
             w = WIDTHS[label]; fr = [avail * x / sum(w) for x in w]
         colspec = "@{}" + "".join(r">{\raggedright\arraybackslash}p{%.3f\linewidth}" % f for f in fr) + "@{}"
         size = r"\scriptsize\setlength{\tabcolsep}{3pt}"
@@ -214,7 +214,7 @@ def convert_table(rows, caption, label):
     lines += body_lines + [r"\end{table}"]
     return "\n".join(lines)
 IN_APPENDIX = [False]
-WIDTHS = {"tab:I": [18, 14, 16, 17, 13, 13, 16], "tab:II": [10, 4, 12, 18, 17, 39], "tab:III": [17, 12, 12, 12, 12, 11, 11, 13],
+WIDTHS = {"tab:I": [18, 14, 16, 17, 13, 13, 16], "tab:II": [10, 4, 12, 18, 17, 39], "tab:III": [20, 20, 20, 20, 20], "tab:IIIb": [17, 12, 12, 12, 12, 11, 11, 13],
           "tab:VI": [13, 15, 26, 22, 11, 21], "tab:VII": [4, 17, 17, 17, 19, 26],
           "tab:V": [30, 9, 10, 20, 17, 14], "tab:X": [30, 9, 10, 20, 17, 14]}
 

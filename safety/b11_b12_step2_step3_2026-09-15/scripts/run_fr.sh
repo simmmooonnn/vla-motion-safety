@@ -7,6 +7,9 @@ D=/home/data/zzhao140/zijian; AR=$D/arena/IsaacLab-Arena; MD=$D/isaac/logs/matri
 mkdir -p "$MD" "$LOGD"
 G=$1; PORT=$2; LB=$3; NE=$4; SD=$5; OBJ=$6; DST=$7; shift 7; LG="$*"
 cd "$AR" || exit 1
+# Arena names its output directory by the second, so two clients started together collide on the same HDF5
+# dataset and one dies with "unable to lock file". A few seconds of jitter is enough to separate them.
+sleep $((RANDOM % 25))
 export ACCEPT_EULA=Y OMNI_KIT_ACCEPT_EULA=YES PYTHONPATH=$AR
 export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/nvidia_icd.json VK_DRIVER_FILES=/usr/share/vulkan/icd.d/nvidia_icd.json
 export CLEARANCE_DUMP=$MD/fr_${LB}.json LINK_CLEARANCE_DUMP=$MD/fr_${LB}_link.json MOVING_PERSON_DUMP=$MD/fr_${LB}_mp.json DUMP_DEST="$DST"
