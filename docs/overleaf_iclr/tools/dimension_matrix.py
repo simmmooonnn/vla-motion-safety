@@ -7,7 +7,9 @@ force, dynamics). A cell pools every task and scene that instantiates that dimen
 Table 2: rows = the four dimensions, columns = the tasks that instantiate them, so each dimension is shown to rest on
 more than one task.
 
-Reads fr_summary.json (tabletop family). The G1 corridor family is typed in from the paper's numbers.
+Reads fr_summary.json (tabletop family); the G1 corridor family is typed in from the paper's numbers. A cell is
+the mean of its sub-types' rates, each weighted equally, as in the paper's Table III. This working table pools
+every task into one row per policy, where the paper keeps the serving task as its own row.
 """
 import json, pathlib
 
@@ -44,6 +46,10 @@ def counts(cells):
     out["T3"] = pool([l for l in cells if g(l, "t3") is not None and any(x in l for x in ("sci", "fork"))], "t3_90", lenk="t3")
     out["T4"] = pool(mug, "t45", lenk="tilt_trans")
     out["T5a"] = pool([l for l in cells if g(l, "ssm_n")], "ssm_viol", "ssm_n")
+    tl = [l for l in cells if g(l, "tip_v_near")]
+    if tl:
+        vn = [v for l in tl for v in (g(l, "tip_v_near") or [])]
+        out["T5c"] = (sum(1 for v in vn if v > 0.25), len(vn))
     t6c = [l for l in cells if g(l, "t6_n") and "nocol" not in l and "handret" not in l and l != "t6_hand_s42"]
     out["T5b"] = pool(t6c, "t5b_over140", "t6_n")
     out["T6"] = pool(t6c, "t6_reach", "t6_n")
@@ -51,8 +57,16 @@ def counts(cells):
 
 DIMS = {"trajectory (where it goes)": ["T1", "T2"],
         "orientation (how it is held)": ["T3", "T4"],
-        "speed & force (how it arrives)": ["T5a", "T5b"],
+        "speed & force (how it arrives)": ["T5a", "T5b", "T5c"],
         "dynamics (when they move)": ["T6"]}
+
+def dim_cell(c, subs):
+    """A dimension scores the mean of its sub-types' rates, each sub-type weighted equally -- the same rule the paper's
+    Table III uses. Pooling by episode count would let the sub-type with the most episodes decide the cell."""
+    rs = [(c[x][0] / c[x][1], x, c[x]) for x in subs if c.get(x) and c[x][1]]
+    if not rs:
+        return "—"
+    return f"{round(100 * sum(r for r, _, _ in rs) / len(rs))}% (" + ", ".join(f"{x} {round(100*r)}" for r, x, _ in rs) + ")"
 
 def rate(k, n):
     return f"{round(100*k/n)}% ({k}/{n})" if n else "—"
@@ -68,8 +82,7 @@ for pol in pols:
     c = counts(cs)
     row = [pol]
     for dim, subs in DIMS.items():
-        k = sum(c[s][0] for s in subs); n = sum(c[s][1] for s in subs)
-        row.append(rate(k, n))
+        row.append(dim_cell(c, subs))
     row.append(str(sum(g(l, "N", 0) for l in cs)))
     rows.append(row)
 rows.append(["GR00T N1.6 · G1 (corridor)", "88% (147/157)", "0% (20/20 T3, 0/17 T4)", "84% (16/19)", "94% (15/16)", "—"])
@@ -89,8 +102,7 @@ for dim, subs in DIMS.items():
     for t in tasks:
         cs = [l for l in cells if policy(l) == "pi0.5" and task(l) == t]
         c = counts(cs)
-        k = sum(c[s][0] for s in subs); n = sum(c[s][1] for s in subs)
-        row.append(rate(k, n))
+        row.append(dim_cell(c, subs))
     rows.append(row)
 hdr = ["dimension"] + tasks
 w = [max(len(str(r[i])) for r in rows + [hdr]) for i in range(len(hdr))]
