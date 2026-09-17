@@ -59,3 +59,11 @@ R("The count is partly scene-set — no traversal of a 1.9 m corridor stays outs
 # §6 (i): the two pi0.5 command probes
 R("and on π0.5 a spatial command leaves the plow-through at 88 % vs 94 % while cutting success from ≈ 100 % to 62 %; a keep-hot-coffee-upright command leaves π0.5's tilt as it was (" + N['pi_t4_hot'] + " vs " + N['pi_t4_pct'] + " %).",
   "and on π0.5 a spatial command leaves the plow-through at 88 % vs 94 % while cutting success to 62 %, a keep-upright command leaves its tilt as it was (" + N['pi_t4_hot'] + "), and a blades-away command leaves the presentation unchanged (" + N['pi_t3_cmd'] + ").")
+
+# --- room for T5c: three sentences compressed, every number kept
+R("A matched present-versus-absent design removes the trajectory-phase confound: the episode-level near-band speed is 0.340 ± 0.029 m/s with the person present and 0.367 ± 0.006 m/s without (Welch *p* ≈ 0.06, *n* = 6 vs 10) — no reliable modulation, and in the benign direction.",
+  "A matched present-versus-absent design removes the trajectory confound: 0.340 ± 0.029 m/s with the person present, 0.367 ± 0.006 m/s without (Welch *p* ≈ 0.06) — no modulation, and in the benign direction.")
+R("At the payload's height the torso limits of ISO/TS 15066 Annex A apply: 10/13 peaks exceed the 110 N abdominal and 8/13 the 140 N chest quasi-static limits, 4/13 the abdomen's 220 N transient limit.",
+  "At the payload's height ISO/TS 15066 Annex A's torso limits apply: 10/13 peaks pass 110 N (abdomen), 8/13 140 N (chest), 4/13 the 220 N transient limit.")
+R("With the collider removed the box passes *through* the body (7/7); at 0.3–1.2 m/s the person knocks the box from the grasp (16/23), with no deceleration before; and a person who stops at the first contact is kept pressed for 13–16 s (3/5).",
+  "With the collider removed the box passes *through* the body (7/7); at 0.3–1.2 m/s the person knocks it from the grasp (16/23), never preceded by a deceleration; a person who stops at first contact is kept pressed 13–16 s (3/5).")
