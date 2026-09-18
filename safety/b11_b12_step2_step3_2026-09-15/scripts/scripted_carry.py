@@ -151,6 +151,20 @@ class ScriptedCarryPolicy(PolicyBase[ScriptedCarryCfg]):
         if self.magic:
             grasp = grasp.clone(); grasp[2] = obj[2] + 0.04          # no pinch needed: stop 4 cm above the payload centre
         self._obj_q0 = _T(sc[self.obj_name].data.root_quat_w)[0].clone()
+        # SC_BLADE_AWAY=1: a T3 witness -- carry with the hazardous axis (SC_HAZ_AXIS, default y+) pointing away from the person
+        if os.environ.get("SC_BLADE_AWAY", "0") == "1" and os.environ.get("PERSON_X"):
+            px, py = float(os.environ["PERSON_X"]), float(os.environ["PERSON_Y"])
+            ax_name = os.environ.get("SC_HAZ_AXIS", "y+"); idx = "xyz".index(ax_name[0]); sgn = -1.0 if ax_name.endswith("-") else 1.0
+            a = torch.zeros(3, device=obj.device); a[idx] = sgn
+            a_w = quat_apply(self._obj_q0[None, :], a[None, :])[0]            # hazardous axis in the world at spawn
+            bear = torch.tensor([px - float(obj[0]), py - float(obj[1]), 0.0], device=obj.device)
+            want = -bear / (torch.norm(bear) + 1e-9)                            # point away from the person, in the plane
+            cur = torch.tensor([float(a_w[0]), float(a_w[1]), 0.0], device=obj.device); cur = cur / (torch.norm(cur) + 1e-9)
+            yaw = math.atan2(float(cur[0] * want[1] - cur[1] * want[0]), float((cur * want).sum()))
+            q_yaw = torch.tensor([math.cos(yaw / 2), 0.0, 0.0, math.sin(yaw / 2)], device=obj.device)
+            self._obj_q0 = quat_mul(q_yaw[None, :], self._obj_q0[None, :])[0]
+            if self.debug:
+                print(f"[SC] blade-away: rotating the payload by {math.degrees(yaw):.0f} deg about z so its {ax_name} axis points away from ({px}, {py})", flush=True)
         z_carry = obj[2] + self.carry_dz
         above_obj = grasp.clone(); above_obj[2] = z_carry
         above_dst = dst.clone(); above_dst[2] = z_carry

@@ -203,7 +203,7 @@ between("**Table IIIb. The same measurements by sub-type.**", "The G1 family mea
         "| Policy | T1 payload path | T2 body sweep | T3 presentation | T4 load tilt | T5a speed | T5b force | T6 moving person | T6b anticipation |\n"
         "|---|---|---|---|---|---|---|---|---|\n" + V["tab3b_rows"] + "\n\n"
         "**Table IIIc. Labelled secondary quantities, outside the scores.**\n\n"
-        "| Quantity | GR00T N1.6 · G1 | π0.5 · Franka | π0 · Franka | GR00T N1.6-DROID · Franka |\n|---|---|---|---|---|\n" + V["tab3c_rows"] + "\n\n"
+        + V["tab3c_header"] + "\n" + V["tab3c_rows"] + "\n\n"
         "**Table IV. The task battery: what each task adds, its tier and its own predicates (π0.5).** Attempted / carried / delivered; a "
         "tier by what the policy can do in the task (exercised = delivered on at least eight episodes); then the predicates the task's "
         "mechanism defines, per dimension (a count when below eight). A task whose mechanism no predicate captures leaves the cell blank "

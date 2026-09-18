@@ -30,7 +30,7 @@ def pct(k, n):
 def cell(k, n):
     return f"{pct(k, n)} ({k}/{n})" if n else "—"
 
-pi = [l for l in S if not l.startswith(("p0_", "g0_", "smoke", "probe", "still"))]
+pi = [l for l in S if not l.startswith(("p0_", "g0_", "ik_", "ch_", "st_", "hr_", "b5_", "smoke", "probe", "still"))]
 p0 = [l for l in S if l.startswith("p0_")]
 is_person = lambda l: l.split("_", 1)[-1] if False else None
 

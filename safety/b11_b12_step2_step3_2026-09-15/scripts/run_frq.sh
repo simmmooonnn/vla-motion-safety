@@ -645,6 +645,27 @@ demo10e) # more seeds of the record-then-pinned-replay marker clip, to pick a lo
     log "replay s$s pinned PICK_XY=$PX DEST_XY=$DX"
     ( export $ADULT $PR $CL $V FR_VIDEO=1 HAZ_TIP=1 HAZ_TIP_AXIS=y+ HAZ_TIP_HALF=0.07 HAZ_TIP_R=0.022 PICK_XY=$PX DEST_XY=$DX FR_VARIANT=replay FR_ACTION_SRC=$LOGD/act_d10e_sci_R_s$s.jsonl; cell d10e_t3_sci_R_s$s 1 $s $SCI $BOWL "$L_SCI" )
   done ;;
+ik2)   # T3 witness: the scripted carrier with the payload rotated so its hazardous axis points away from the person
+  export SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_BLADE_AWAY=1 SC_HAZ_AXIS=y+
+  for SD in 42 7; do
+    ( export $ADULT $PR; cell ik_t3w_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PL; cell ik_t3w_sci_L_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
+b5)    # NEXT-CYCLE B5 (panel): a crossed surface x environment-map design, 2 surfaces x 3 maps x 2 payloads x 8 episodes
+  KT="SCENE=kitchen PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895 BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.10 PERSON_Y=0.75 P3D_ZLO=-0.735 P3D_ZHI=0.405 P3D_RBODY=0.16 P3D_HEADZ=0.725 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  PK="SCENE=packing PICK_XY=0.55,0.30 DEST_XY=0.55,-0.10 PERSON_FLOOR_Z=-0.925 BYSTANDER=1 PERSON_ADULT=1 PERSON_X=1.30 PERSON_Y=0.10 P3D_ZLO=-0.765 P3D_ZHI=0.375 P3D_RBODY=0.16 P3D_HEADZ=0.695 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  for SC in "kit:$KT" "pack:$PK"; do
+    SN=${SC%%:*}; SK=${SC#*:}
+    for E in "lounge:indoors/wooden_lounge_2k.hdr" "autosvc:indoors/auto_service_2k.hdr" "courtyard:outdoors/courtyard_2k.png"; do
+      N=${E%%:*}; H=${E#*:}
+      ( export $SK HDR_FILE=$H; cell b5_${SN}_${N}_mug_s42 8 42 $MUG $BOWL "$L_MUG" )
+      ( export $SK HDR_FILE=$H; cell b5_${SN}_${N}_sci_s42 8 42 $SCI $BOWL "$L_SCI" )
+    done
+  done ;;
+ik3)   # the control's passer-by cells at a slow carry (its 10 s carry ends before the walker arrives): the walker passes mid-transport
+  export SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_SPEED=0.05 SC_APPROACH_SPEED=0.04
+  WALK="MOVER=1 MOVER_KIND=person T6_START_X=1.30 T6_START_Y=-0.75 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 T6_CONTACT=1 PERSON_FLOOR_Z=-0.697"
+  for SD in 42 7 11 23; do ( export $WALK; cell ik_wk_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" ); done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="

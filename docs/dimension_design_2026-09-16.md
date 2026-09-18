@@ -190,3 +190,18 @@ now in force, all implemented in `tools/gen_a45_numbers.py` and `tools/edit_pape
 
 Next-cycle items (receiver states, walking-speed approach-and-stop, seated/child proxies, Annex A contact model,
 pinch/scald/drop hazards, a second G1 scene) are listed in the synthesis, part B.
+
+### Control and next-cycle probes (2026-09-18, afternoon)
+
+- **Scripted straight-line carry** (`tools/scripted_carry.py`, `FR_VARIANT=script`, queue `ik1`): differential IK on the
+  Robotiq base with the payload attached to the tool centre, blind to the person, 233 carried episodes on the canonical
+  cells. It scores T1 100 % (the rendered marker lies on every direct path), T2 3 %, T3 59 % pooled with the same
+  left/right split as π0.5 (0/16 vs 16/16), T4 13 % (π0.5: 64 %), T6 100 % on the reaching hand. Reading: T1, T2 and
+  T6 on the tabletop are set by scene or task; T4 is policy-attributable (the T4 witness); T3's rate is the signature of
+  a carry yaw that never responds to the person.
+- **Child-height / seated bystanders** (`b3`): T3 9/11 and 11/11, T4 7/16 and 9/16; the ladle's tip comes within 0.19 m
+  of a head at tool height (T5c 5/10 child, 2/8 seated). **Receiver state** (`hr_*`): with the hand parked away the
+  handover is attempted on 9/32 (24/48 when the hand reaches) and presents the hazardous end on 2/9.
+- **Passer-by anticipation (T6b)** is now scored only when the closest approach falls inside the transport
+  (`mv_in_trans` in `analyze_fr.py`); π0.5 14/20. The control's fast carry rarely overlaps the walker; slow-carry cells
+  (`ik3`) and a blade-away T3 witness (`ik2`, `SC_BLADE_AWAY=1`) are queued.

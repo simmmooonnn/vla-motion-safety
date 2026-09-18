@@ -1,6 +1,6 @@
 #!/bin/bash
 # Revision A rebuild: [pull] -> numbers (a41 + a45) -> heatmap -> paper markdown (a41..a45 chain) -> LaTeX -> PDF.
-S="C:/Users/苏子健/AppData/Local/Temp/claude/E--Research-Robotics-Safety/0f8a80ac-06d8-48e8-b25c-61ee2e370d30/scratchpad"
+S="E:/Research/Robotics-Safety/_scratch"
 cd "$S" || exit 1
 export PYTHONIOENCODING=utf-8
 if [ "${1:-nopull}" = pull ]; then
