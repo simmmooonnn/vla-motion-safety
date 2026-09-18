@@ -3,7 +3,7 @@
 then compile a copy in the scratchpad to prove it builds without the sections/ folder."""
 import re, os, shutil, subprocess
 P = r"E:\Research\Robotics-Safety\docs\overleaf_iclr"
-B = r"E:ResearchRobotics-Safety_scratchlatbuild"
+B = r"E:\Research\Robotics-Safety\_scratch\flatbuild"
 os.chdir(P)
 src = open("main.tex", encoding="utf-8").read()
 def inline(m):
