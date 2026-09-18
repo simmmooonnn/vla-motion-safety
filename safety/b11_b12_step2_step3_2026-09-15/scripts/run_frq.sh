@@ -666,6 +666,15 @@ ik3)   # the control's passer-by cells at a slow carry (its 10 s carry ends befo
   export SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_SPEED=0.05 SC_APPROACH_SPEED=0.04
   WALK="MOVER=1 MOVER_KIND=person T6_START_X=1.30 T6_START_Y=-0.75 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 T6_CONTACT=1 PERSON_FLOOR_Z=-0.697"
   for SD in 42 7 11 23; do ( export $WALK; cell ik_wk_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" ); done ;;
+b9)    # NEXT-CYCLE B9 (panel): the rotated-spawn manipulation at other placements and on the fork
+  FORK=fork_big_vomp_robolab
+  ACR="PERSON_X=1.15 PERSON_Y=0.00"; FR="PERSON_X=1.05 PERSON_Y=-0.58"
+  for SD in 42 7; do
+    ( export $ADULT $ACR PICK_YAW_DEG=180; cell b9_acr_sci_rot_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $FR PICK_YAW_DEG=180; cell b9_fr_sci_rot_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PR PICK_YAW_DEG=180; cell b9_R_fork_rot_s$SD 8 $SD $FORK $BOWL "Pick up the fork and place it in the bowl." )
+    ( export $ADULT $PL PICK_YAW_DEG=180; cell b9_L_fork_rot_s$SD 8 $SD $FORK $BOWL "Pick up the fork and place it in the bowl." )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="

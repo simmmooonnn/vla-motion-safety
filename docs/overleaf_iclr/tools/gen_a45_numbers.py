@@ -228,6 +228,7 @@ N["ik_v_trans"] = f"{st.median(_ikv):.2f}" if _ikv else "—"
 def task(l):
     b = base(l)
     for pre, name in (("sv_", "serving beside the person"), ("ho_", "handover"), ("hr_", "handover, hand parked away (receiver state)"),
+                      ("b5_", "pick-and-place, surface x map crossed design"), ("b9_", "pick-and-place, rotated spawn at other placements"),
                       ("ch_tu_", "tool use, child-height bystander"), ("st_tu_", "tool use, seated bystander"),
                       ("ch_", "pick-and-place, child-height bystander"), ("st_", "pick-and-place, seated bystander"),
                       ("dw_", "put away in a drawer"), ("cl_", "cluttered table"),
@@ -285,7 +286,7 @@ def task_row(name, ls):
 
 ORDER_T = ["pick-and-place, person at the table", "pick-and-place, hand reaches in", "pick-and-place, person walks past", "pick-and-place, other placements",
            "pick-and-place, child-height bystander", "pick-and-place, seated bystander", "tool use, child-height bystander", "tool use, seated bystander",
-           "handover, hand parked away (receiver state)",
+           "handover, hand parked away (receiver state)", "pick-and-place, surface x map crossed design", "pick-and-place, rotated spawn at other placements",
            "pick-and-place, environment maps", "serving beside the person", "cluttered table", "pour", "push (no grasp)", "tool use (stir, scrape, toss)",
            "tool use, told to go slowly", "handover", "put away in a drawer", "clear the table", "close a door", "pick-and-place, island kitchen"]
 N["tab4_rows"] = "\n".join(task_row(nm, groups[nm]) for nm in ORDER_T if nm in groups)
@@ -305,6 +306,23 @@ N["b3"] = {k: _tstats(v) for k, v in (("child", "pick-and-place, child-height by
 N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exercised" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 
+# ---- T3 witness: the scripted carrier with the blade turned away (ik_t3w_*)
+_w = {side: [l for l in S if l.startswith(f"ik_t3w_sci_{side}")] for side in ("R", "L")}
+N["ik_t3w"] = {side: {"t3": "{}/{}".format(*pool(ls, "t3_90", lenk="t3")), "ok_done": str(sum(g(l, "t3_ok_done", 0) or 0 for l in ls)),
+                      "carried": str(sum(g(l, "carried", 0) or 0 for l in ls)), "delivered": str(sum(g(l, "completed", 0) or 0 for l in ls))}
+               for side, ls in _w.items()}
+# ---- B5 crossed design: surface x map cells
+_b5 = {}
+for l in [l for l in S if l.startswith("b5_")]:
+    _, sn, mp_, ob, _sd = l.split("_", 4)
+    sb = subtypes([l]); att = g(l, "N", 0); car = g(l, "carried", 0) or 0; dl = g(l, "completed", 0) or 0
+    _b5[(sn, mp_, ob)] = dict(att=att, car=car, dl=dl, T3="{}/{}".format(*sb["T3"]) if sb["T3"][1] else "—", T4="{}/{}".format(*sb["T4"]) if sb["T4"][1] else "—",
+                              T2="{}/{}".format(*sb["T2"]) if sb["T2"][1] else "—")
+N["b5_rows"] = "\n".join("| " + {"kit": "kitchen counter", "pack": "packing station"}[sn] + " | " + {"lounge": "domestic lounge", "autosvc": "industrial auto shop", "courtyard": "outdoor courtyard"}[mp_]
+                          + " | " + " | ".join((f'{_b5[(sn, mp_, ob)]["car"]}/{_b5[(sn, mp_, ob)]["att"]} carried, {_b5[(sn, mp_, ob)]["dl"]} delivered; ' +
+                                                (f'T4 {_b5[(sn, mp_, ob)]["T4"]}' if ob == "mug" else f'T3 {_b5[(sn, mp_, ob)]["T3"]}') + f'; T2 {_b5[(sn, mp_, ob)]["T2"]}')
+                                               if (sn, mp_, ob) in _b5 else "—" for ob in ("mug", "sci")) + " |"
+                          for sn in ("kit", "pack") for mp_ in ("lounge", "autosvc", "courtyard"))
 # ---- coverage: work surface x policy x task, N
 def surface(l):
     b = base(l)
