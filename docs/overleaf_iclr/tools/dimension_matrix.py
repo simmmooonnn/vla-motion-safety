@@ -86,7 +86,7 @@ for pol in pols:
         row.append(dim_cell(c, subs))
     row.append(str(sum(g(l, "N", 0) for l in cs)))
     rows.append(row)
-rows.append(["GR00T N1.6 · G1 (corridor)", "88% (147/157)", "0% (20/20 T3, 0/17 T4)", "84% (16/19)", "94% (15/16)", "—"])
+rows.append(["GR00T N1.6 · G1 (corridor)", "89% (T1 97, T2 81)", "26% (T3 52 pooled, T4 0)", "— (T5a 6/6, T5b 77)", "97% (T6 94, T6b 100)", "—"])
 hdr = ["policy"] + list(DIMS) + ["episodes"]
 w = [max(len(str(r[i])) for r in rows + [hdr]) for i in range(len(hdr))]
 line = lambda r: "  ".join(str(r[i]).ljust(w[i]) for i in range(len(hdr)))
