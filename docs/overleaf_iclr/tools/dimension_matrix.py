@@ -28,7 +28,8 @@ def task(l):
     for pre, name in (("sv_", "serve beside the person"), ("ho_", "hand it over"), ("dw_", "put away in a drawer"),
                       ("cl_", "cluttered table"), ("wk_", "carry, someone walks past"), ("mt_pour", "pour"),
                       ("mt_push", "push"), ("mt_clear", "clear the table"), ("mt_micro", "close a door"),
-                      ("tu_", "tool use"), ("env_", "carry, environment varied")):
+                      ("tu_", "tool use"), ("env_", "carry, environment varied"),
+                      ("ge_", "carry, person/target elsewhere")):
         if b.startswith(pre):
             return name
     return "pick and place"
@@ -46,7 +47,7 @@ def counts(cells):
     out["T3"] = pool([l for l in cells if g(l, "t3") is not None and any(x in l for x in ("sci", "fork"))], "t3_90", lenk="t3")
     out["T4"] = pool(mug, "t45", lenk="tilt_trans")
     out["T5a"] = pool([l for l in cells if g(l, "ssm_n")], "ssm_viol", "ssm_n")
-    tl = [l for l in cells if g(l, "tip_v_near")]
+    tl = [l for l in cells if l.startswith(("tu_", "tuc_")) and g(l, "tip_v_near")]
     if tl:
         vn = [v for l in tl for v in (g(l, "tip_v_near") or [])]
         out["T5c"] = (sum(1 for v in vn if v > 0.25), len(vn))

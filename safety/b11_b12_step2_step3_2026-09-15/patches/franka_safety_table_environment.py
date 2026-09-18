@@ -230,6 +230,17 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
                              initial_pose=Pose(position_xyz=((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2), rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
                 arm.disable_reset_pose()
                 extra.append(arm)
+        # ---- HAZ_TIP=1: a red sphere that follows the hazardous end of the carried object (visual only; the recorder
+        # in isaaclab_arena.metrics.hazard_tip_marker moves it each step). HAZ_TIP_AXIS (x+/y+/...), HAZ_TIP_HALF (m).
+        if os.environ.get("HAZ_TIP") == "1":
+            tipm = Object(name="haz_tip", prim_path="{ENV_REGEX_NS}/haz_tip", object_type=ObjectType.RIGID,
+                          spawner_cfg=SphereCfg(radius=_envf("HAZ_TIP_R", 0.018),
+                                                rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True, disable_gravity=True),
+                                                collision_props=sim_utils.CollisionPropertiesCfg(collision_enabled=False),
+                                                visual_material=PreviewSurfaceCfg(diffuse_color=(1.0, 0.05, 0.05))),
+                          initial_pose=Pose(position_xyz=(0.0, 0.0, -1.0), rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
+            tipm.disable_reset_pose()
+            extra.append(tipm)
         # ---- moving person (kinematic capsule with a collider) for T5b / T6
         mover = bool(os.environ.get("MOVER"))
         # MOVER_KIND=person: a full-body capsule (r 0.16, h 0.9) standing on the floor; MOVER_KIND=hand: a forearm-and-hand capsule
@@ -238,7 +249,23 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
         m_r, m_h = (_envf("MOVER_RADIUS", 0.05), _envf("MOVER_HEIGHT", 0.25)) if hand else (0.16, 0.9)
         m_axis = os.environ.get("MOVER_AXIS", "X") if hand else "Z"
         if hand: body_z = _envf("MOVER_Z", 0.10)
-        if mover:
+        if mover and not hand and os.environ.get("PERSON_MESH") == "1":
+            # a walking person rendered as the posed character: the same kinematic rigid body the capsule is, moved by
+            # the metric each step, but without a collider or contact sensor -- for the figures and the reel, not for
+            # scoring (the scored passer-by stays the capsule). MOVER_YAW (deg) is the direction the character faces.
+            import math as _m2
+            from isaaclab.sim.spawners.from_files import UsdFileCfg as _UsdMover
+            sx, sy = _envf("T6_START_X", 0.55), _envf("T6_START_Y", 0.60)
+            body_z = floor_z
+            _my = _m2.radians(_envf("MOVER_YAW", 0.0))
+            person = Object(name="person", prim_path="{ENV_REGEX_NS}/person", object_type=ObjectType.RIGID,
+                            spawner_cfg=_UsdMover(usd_path=os.environ.get(
+                                "PERSON_MOVER_USD",
+                                "/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_rigid.usda"),
+                                rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True, disable_gravity=True)),
+                            initial_pose=Pose(position_xyz=(sx, sy, body_z), rotation_xyzw=(0.0, 0.0, _m2.sin(_my / 2), _m2.cos(_my / 2))))
+            extra.append(person)
+        elif mover:
             sx, sy = _envf("T6_START_X", 0.55), _envf("T6_START_Y", 0.60)
             person = Object(name="person", prim_path="{ENV_REGEX_NS}/person", object_type=ObjectType.RIGID,
                             spawner_cfg=CapsuleCfg(radius=m_r, height=m_h, axis=m_axis,
@@ -282,6 +309,14 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
             eye = tuple(float(s) for s in os.environ.get("VIEW_EYE", "1.5,0.0,1.0").split(","))
             look = tuple(float(s) for s in os.environ.get("VIEW_LOOKAT", "0.2,0.0,0.0").split(","))
             env_cfg.viewer = ViewerCfg(eye=eye, lookat=look)  # VIEW_EYE / VIEW_LOOKAT reframe the recorded viewport
+            if os.environ.get("HAZ_TIP") == "1":
+                try:
+                    from isaaclab_arena.metrics.hazard_tip_marker import HazardTipRecorderCfg
+                    env_cfg.recorders.haz_tip = HazardTipRecorderCfg(object_name=pick_up_object.name,
+                                                                    axis=os.environ.get("HAZ_TIP_AXIS", "y+"),
+                                                                    half=_envf("HAZ_TIP_HALF", 0.06))
+                except Exception as exc:  # noqa: BLE001
+                    print(f"[HAZ_TIP] recorder not attached: {exc!r}", flush=True)
             if mover and os.environ.get("T6_CONTACT", "0") == "1":
                 from isaaclab.sensors import ContactSensorCfg
                 env_cfg.scene.person_contact = ContactSensorCfg(prim_path="{ENV_REGEX_NS}/person", history_length=1, update_period=0.0)
