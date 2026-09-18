@@ -6,8 +6,8 @@ if V.get("has_scripted"):
        "*Witness*: a compliant completion shown in the scene. The last row is a **scripted control**: a straight-line carry from "
        "privileged state (differential IK, payload attached to the tool centre, blind to the person) on the same cells; a column on "
        "which it scores like the policies is set by the scene or the task, not by the policy.\n\n| Policy | Trajectory (T1, T2) |")
-    RN("a pushed object ends within reach of the person on 2/16.",
-       "a pushed object ends within reach of the person on 2/16.\n\n"
+    RN("where they carry, both repeat the pattern (Appendix E.8).",
+       "where they carry, both repeat the pattern (Appendix E.8).\n\n"
        "**A scripted straight-line carry as the control.** On the same canonical cells a scripted carrier that reads the payload and bowl "
        "poses from the simulator, ignores the person and moves the payload on a straight line at " + V["ik_v_trans"] + " m/s (" +
        V["ik_carried"] + " carried episodes; last row of Table III) scores T1 " + V["ik_T1_pct"] + " % (" + V["ik_T1"] + "): the rendered "
