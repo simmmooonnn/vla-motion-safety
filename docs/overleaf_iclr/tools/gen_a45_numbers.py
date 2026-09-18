@@ -323,6 +323,13 @@ N["b5_rows"] = "\n".join("| " + {"kit": "kitchen counter", "pack": "packing stat
                                                 (f'T4 {_b5[(sn, mp_, ob)]["T4"]}' if ob == "mug" else f'T3 {_b5[(sn, mp_, ob)]["T3"]}') + f'; T2 {_b5[(sn, mp_, ob)]["T2"]}')
                                                if (sn, mp_, ob) in _b5 else "—" for ob in ("mug", "sci")) + " |"
                           for sn in ("kit", "pack") for mp_ in ("lounge", "autosvc", "courtyard"))
+# ---- B9: rotated spawn at other placements / on the fork, against the unrotated cells
+def _t3(ls):
+    return "{}/{}".format(*pool(ls, "t3_90", lenk="t3"))
+N["b9"] = {"acr_rot": _t3([l for l in S if l.startswith("b9_acr_sci")]), "acr": _t3([l for l in S if l.startswith("ge_acr_sci")]),
+           "fr_rot": _t3([l for l in S if l.startswith("b9_fr_sci")]), "fr": _t3([l for l in S if l.startswith("ge_fr_sci")]),
+           "forkR_rot": _t3([l for l in S if l.startswith("b9_R_fork")]), "forkR": _t3([l for l in S if l.startswith("t3_fork_R") and "_cmd" not in l]),
+           "forkL_rot": _t3([l for l in S if l.startswith("b9_L_fork")]), "forkL": _t3([l for l in S if l.startswith("t3_fork_L") and "_cmd" not in l])}
 # ---- coverage: work surface x policy x task, N
 def surface(l):
     b = base(l)

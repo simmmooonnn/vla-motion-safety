@@ -307,6 +307,7 @@ tool use, child-height bystander & 16 / 10 / 2 & exercised (held, no delivery ta
 tool use, seated bystander & 16 / 8 / 0 & exercised (held, no delivery target) & T2 0 (0/16) & --- & T5c 25 (2/8) & --- \\
 handover, hand parked away (receiver state) & 32 / 9 / 1 & carried, not delivered & --- & T3 (hazardous end toward the receiving hand) 22 (2/9); T4 2/6 & --- & T6b 56 (5/9) \\
 pick-and-place, surface x map crossed design & 89 / 77 / 60 & exercised & --- & T3 32 (9/28); T4 69 (33/48) & --- & --- \\
+pick-and-place, rotated spawn at other placements & 64 / 43 / 26 & exercised & --- & T3 63 (27/43) & --- & --- \\
 pick-and-place, environment maps & 57 / 48 / 34 & exercised & --- & T3 88 (15/17); T4 74 (23/31) & --- & --- \\
 serving beside the person & 128 / 102 / 69 & exercised & --- & T3 54 (21/39); T4 73 (45/62) & --- & --- \\
 cluttered table & 48 / 42 / 29 & exercised & --- & T3 100 (11/11); T4 60 (18/30) & --- & --- \\
@@ -326,14 +327,14 @@ pick-and-place, island kitchen & 32 / 6 / 3 & capability boundary & T2 0 (0/32) 
 
 \begin{table}[H]
 \centering\small
-\caption{Coverage: attempted / carried / delivered episodes per work surface and policy (every tabletop cell; probes and demos excluded; 2173 episodes, 1523 carried, 982 delivered).}
+\caption{Coverage: attempted / carried / delivered episodes per work surface and policy (every tabletop cell; probes and demos excluded; 2237 episodes, 1566 carried, 1008 delivered).}
 \label{tab:IVb}
 \vspace{4pt}
 \begin{tabular}{@{}llll@{}}
 \toprule
 Work surface & $\pi_{0.5}$ & $\pi_0$ & GR00T N1.6-DROID \\
 \midrule
-dining table & 1335 / 943 / 592 & 119 / 31 / 15 & 89 / 21 / 11 \\
+dining table & 1399 / 986 / 618 & 119 / 31 / 15 & 89 / 21 / 11 \\
 kitchen counter & 48 / 44 / 42 & 16 / 8 / 5 & 12 / 10 / 6 \\
 packing station & 56 / 54 / 45 & --- & --- \\
 drawer kitchen & 72 / 58 / 23 & --- & --- \\
@@ -398,6 +399,8 @@ packing station & outdoor courtyard & 8/8 carried, 8 delivered; T4 6/8; T2 --- &
 \bottomrule
 \end{tabular}
 \end{center}
+
+\textbf{Rotated spawn at other placements and on the fork (next-cycle probe).} The 180$^{\circ}$ spawn rotation that moves the scissors' violated side at the left and right placements (5/13 against 10/10; 12/15 against 1/10) was repeated with the person across the far edge and at the far-right corner, and with the fork on either side: 3/6 against 3/8 (across), 2/8 against 5/10 (far right), 11/14 against 8/9 (fork, right), 11/15 against 6/10 (fork, left). Where the carry yaw is roughly perpendicular to the bearing (the far placements; the fork, carried tines-back), rotating the spawn does not move the side, and the rate stays near chance: the causal spine is the alignment between a frozen carry yaw and the bearing to the person, not the spawn as such.
 
 \textbf{Bystander height and receiver state (next-cycle probes, run last).} A child-height (1.1 m) and a seated (eye height 1.2 m) capsule bystander at the right-hand placement leave the presentation and tilt rates where the standing adult left them --- scissors into the person's half-space on 9/11 and 11/11 carries, the mug past 45$^{\circ}$ on 7/16 and 9/16 --- and put a stirred ladle within 0.19 m of a head at tool height, above 0.25 m/s inside 0.5 m on 5/10 (child) and 2/8 (seated) episodes: the hazardous end is not lowered for a smaller person. With the receiving hand parked away instead of reaching in, the handover is attempted less often (9/32 carried against 24/48) and the hazardous end is presented to the parked hand on 2/9 (reaching hand: 8/24); the receiver's state changes whether the policy hands over, not how. Both are scored in Table IV.
 
