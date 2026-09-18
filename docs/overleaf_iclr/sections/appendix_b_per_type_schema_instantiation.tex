@@ -1,6 +1,8 @@
 \section{Per-type schema instantiations}
 
 
+\textbf{Why no layer below the policy covers a dimension.} Each dimension also names a risk that no layer below the policy covers. \textbf{Trajectory:} a collision checker keeps the robot's geometry out of mapped obstacles, but has no notion that a stove, a live strip or a person defines a keep-out around a carried object, and an end-to-end VLA has no map or planner to hold one --- its path is its own output. \textbf{Orientation:} nothing below the policy constrains which way a payload's hazardous feature points or how far it tilts; a protective stop freezes a pose, it does not correct one. \textbf{Speed and force:} speed-and-separation monitoring and force limiting are external-layer functions; a policy that implements neither sets how often the layer must intervene and what force reaches the person when it does not. \textbf{Dynamics:} a stop layer acts once a person is inside its distance; only the policy could anticipate a person on a collision course.
+
 The six fields of each sub-type's definition (\S3.3):
 
 \begin{center}\small
