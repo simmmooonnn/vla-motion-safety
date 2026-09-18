@@ -248,39 +248,128 @@ The other five types place a \emph{static} hazard; T6 makes the bystander move. 
 \subsection{Tabletop family: the sub-types on a Franka arm}
 
 
-\textbf{Table IIIb. The same measurements by sub-type.} Unsafe rate in \% (unsafe / scored). Table~\ref{tab:III} averages each pair into its dimension.
 
-\begin{center}\scriptsize\setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.169\linewidth}>{\raggedright\arraybackslash}p{0.115\linewidth}>{\raggedright\arraybackslash}p{0.100\linewidth}>{\raggedright\arraybackslash}p{0.115\linewidth}>{\raggedright\arraybackslash}p{0.092\linewidth}>{\raggedright\arraybackslash}p{0.092\linewidth}>{\raggedright\arraybackslash}p{0.069\linewidth}>{\raggedright\arraybackslash}p{0.123\linewidth}@{}}
+\begin{table}[H]
+\centering\scriptsize\setlength{\tabcolsep}{3pt}
+\caption{The same measurements by sub-type: unsafe / scored, rate and Wilson 95 \% interval. Below the floor of eight episodes a count only. T5a on the tabletop is exposure (every transport inside $d_0$), not a score; T6b on the G1 is the absence of any deceleration before the 11 contacts (E.7).}
+\label{tab:IIIb}
+\vspace{4pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.129\linewidth}>{\raggedright\arraybackslash}p{0.095\linewidth}>{\raggedright\arraybackslash}p{0.095\linewidth}>{\raggedright\arraybackslash}p{0.095\linewidth}>{\raggedright\arraybackslash}p{0.095\linewidth}>{\raggedright\arraybackslash}p{0.086\linewidth}>{\raggedright\arraybackslash}p{0.086\linewidth}>{\raggedright\arraybackslash}p{0.086\linewidth}>{\raggedright\arraybackslash}p{0.095\linewidth}@{}}
 \toprule
-Policy & T1 payload path & T2 body sweep & T3 presentation & T4 load tilt & T5a speed & T5b force & T6 moving person \\
+Policy & T1 payload path & T2 body sweep & T3 presentation & T4 load tilt & T5a speed & T5b force & T6 moving person & T6b anticipation \\
 \midrule
-GR00T N1.6 \textperiodcentered{} G1 & 97 (121/125) & 81 (26/32) & 100 (20/20) & 0 (0/17) & 100 (6/6) & 77 (10/13) & 94 (15/16) \\
-$\pi_{0.5}$ \textperiodcentered{} Franka & 100 (22/22) & 1 (3/317) & 100 (10/10) & 67 (346/517) & 100 (326/326) & 4 (6/138) & 63 (87/138) \\
-$\pi_{0.5}$ \textperiodcentered{} Franka, serving & --- & 22 (28/128) & 54 (21/39) & 73 (45/62) & 99 (100/101) & --- & --- \\
-$\pi_0$ \textperiodcentered{} Franka & 100 (3/3) & 0 (0/106) & 80 (4/5) & 42 (20/48) & 100 (33/33) & 0 (0/4) & 75 (3/4) \\
-GR00T N1.6-DROID \textperiodcentered{} Franka & --- & 6 (5/77) & 33 (2/6) & 78 (21/27) & 100 (29/29) & 0 (0/2) & 0 (0/2) \\
+GR00T N1.6 \textperiodcentered{} G1 & 121/125 = 97 \% [92, 99] & 26/32 = 81 \% [65, 91] & 14/27 = 52 \% [34, 69] & 0/17 = 0 \% [0, 18] & 6/6 (below the floor) & 10/13 = 77 \% [50, 92] & 15/16 = 94 \% [72, 99] & 11/11 = 100 \% [74, 100] \\
+$\pi_{0.5}$ \textperiodcentered{} Franka & 24/24 = 100 \% [86, 100] & 3/285 = 1 \% [0, 3] & 32/75 = 43 \% [32, 54] & 130/202 = 64 \% [58, 71] & (304/304 exposure) & 6/83 = 7 \% [3, 15] & 78/83 = 94 \% [87, 97] & 15/25 = 60 \% [41, 77] \\
+$\pi_0$ \textperiodcentered{} Franka & --- & 0/106 = 0 \% [0, 3] & 4/5 (below the floor) & 14/36 = 39 \% [25, 55] & (33/33 exposure) & 0/4 (below the floor) & 3/4 (below the floor) & --- \\
+GR00T N1.6-DROID \textperiodcentered{} Franka & --- & 3/71 = 4 \% [1, 12] & 2/6 (below the floor) & 20/25 = 80 \% [61, 91] & (29/29 exposure) & 0/2 (below the floor) & 0/2 (below the floor) & --- \\
 \bottomrule
 \end{tabular}
-\end{center}
+\end{table}
 
-The G1 family measures one policy on one embodiment. The \textbf{tabletop family} puts the same six sub-types around a Franka Panda in the DROID configuration doing pick-and-place, driven by $\pi_{0.5}$ and $\pi_0$ (openpi) and, where it carries often enough to score, GR00T N1.6-DROID, behind the same policy runner, at a dining table, a kitchen counter and an industrial packing station (Fig. \ref{fig:tabletop}; setup in Appendix C). The metrics port unchanged: the link recorder reduces \texttt{robot.data.body\_pos\_w}, which is embodiment-agnostic, and the payload and moving-body recorders track the Franka's object. Cells run eight episodes; Table~\ref{tab:X} lists every cell.
 
-\textbf{T1 (keep-out) recurs on the headline channel.} Because the tabletop task randomizes the cube and bowl placement, each carry has its own pick$\rightarrow$place corridor; we therefore site the keep-out hazard \emph{per episode} at the geometric midpoint of that carry --- the point a direct transport must cross --- and measure the carried object's minimum clearance to it (keep-out 0.20 m), with an off-path control that displaces the hazard \textbf{perpendicular to the carry by 0.35 m} (scoring the closer of the two sides, the harder test). Across \textbf{N = 22 completing transports} (100 \% task success), $\pi_{0.5}$ routes the object \textbf{through} the on-path keep-out on \textbf{100 \% of carries} (22/22; Wilson 95 \% CI 85--100 \%), passing a median of \textbf{2.9 cm} from the hazard (max 10 cm) --- while the perpendicular off-path control drops to \textbf{0 \%} (0/22; CI 0--15 \%; median clearance 31 cm; Fisher exact \emph{p} $\approx$ $10^{-12}$). The separation is \textbf{threshold-insensitive}: on-path clearances are all $\leq$ 0.10 m and off-path clearances all $\geq$ 0.245 m (an empty band between), so the 100 \%/0 \% split holds for \emph{every} keep-out radius in [0.12, 0.24] m. This mirrors the G1, where completing carries pass essentially through the hazard (0.05--0.08 m) and a lateral position sweep drops the violation rate to zero (Appendix C): a carried-hazard keep-out defect \emph{and} a metric that is geometry-sensitive rather than saturated both recur on a second policy and embodiment, on the benchmark's \textbf{headline} channel. We are precise about what this does and does not show: the on-path hazard here is a \textbf{geometric keep-out point, not a rendered obstacle}, so this establishes (i) that the T1 metric ports and cleanly separates on-path from off-path, and (ii) that $\pi_{0.5}$'s carries are \textbf{direct --- it makes no spontaneous detour} that would clear an on-path keep-out. To close the gap to a \emph{perceived} cue, we then ran the \textbf{rendered-hazard version}: a salient red keep-out marker placed on the table at a fixed on-path location --- one the randomized carries cross 91 \% of the time (20/22) when it is present only as a geometric measurement point. With the marker \textbf{rendered to the policy's cameras}, $\pi_{0.5}$ still routes the carried object \textbf{through} it on \textbf{100 \% of completing carries} (16/16; median clearance 4.2 cm; task success preserved with the marker present), statistically indistinguishable from the unrendered rate (Fisher \emph{p} = 0.50). Seeing the hazard changes nothing: the ``no execution-phase avoidance'' signature holds for a second policy on a \emph{rendered} hazard, on the headline channel --- exactly as on the G1.
+\begin{table}[H]
+\centering\scriptsize\setlength{\tabcolsep}{3pt}
+\caption{Labelled secondary quantities, outside the scores.}
+\label{tab:IIIc}
+\vspace{4pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.331\linewidth}>{\raggedright\arraybackslash}p{0.147\linewidth}>{\raggedright\arraybackslash}p{0.147\linewidth}>{\raggedright\arraybackslash}p{0.147\linewidth}>{\raggedright\arraybackslash}p{0.147\linewidth}@{}}
+\toprule
+Quantity & GR00T N1.6 \textperiodcentered{} G1 & $\pi_{0.5}$ \textperiodcentered{} Franka & $\pi_0$ \textperiodcentered{} Franka & GR00T N1.6-DROID \textperiodcentered{} Franka \\
+\midrule
+T5c tool-end speed > 0.25 m/s inside 0.5 m (tool tasks; neutral / told to go slowly) & --- & 13/55 = 24 \% [14, 36] (10/41 / 3/14) & --- & --- \\
+T3 at the bearing the frozen carry axis faces (worst bearing) & 20/20 = 100 \% [84, 100] & 10/10 = 100 \% [72, 100] & 3/3 (below the floor) & 2/2 (below the floor) \\
+T4 above the 14--27$^{\circ}$ spill angle (27$^{\circ}$) & 0/17 & 167/202 = 83 \% [77, 87] & 25/36 = 69 \% [53, 82] & 21/25 = 84 \% [65, 94] \\
+T5b any contact with the hand / person & 13/13 = 100 \% [77, 100] & 65/83 = 78 \% [68, 86] & 3/4 (below the floor) & 1/2 (below the floor) \\
+T6c payload kept pressed $\geq$ 5 s (hand) / until the episode ends (person) & 3/5 (below the floor) & 16/83 = 19 \% [12, 29] & 0/4 (below the floor) & 0/2 (below the floor) \\
+T6b, of which the payload is faster at the closest approach than over the transport & --- & 12/25 = 48 \% [30, 67] & --- & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\textbf{T2.} A fixed-base arm works inside the table's footprint. With the rendered adult at the table edge, at the near corner beside the arm or across the packing table, $\pi_{0.5}$'s links come within 0.10 m of the body on 3/317 episodes and touch it on 0; with the person's forearm resting on the table the closest approach is 0.08 m (1/35 within 0.10 m). $\pi_0$ does not come closer (0/106). The walking humanoid, which turns its whole body at the shelf and the bin, sweeps into a bystander on 26/32 episodes; this sub-type's difficulty is set by the embodiment.
+
+\begin{table}[H]
+\centering\scriptsize\setlength{\tabcolsep}{3pt}
+\caption{The task battery: what each task adds, its tier and its own predicates ($\pi_{0.5}$). Attempted / carried / delivered; a tier by what the policy can do in the task (exercised = delivered on at least eight episodes); then the predicates the task's mechanism defines, per dimension (a count when below eight). A task whose mechanism no predicate captures leaves the cell blank rather than inherit a neighbour's predicate; the first three rows are the canonical task of Table III.}
+\label{tab:IV}
+\vspace{4pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.151\linewidth}>{\raggedright\arraybackslash}p{0.089\linewidth}>{\raggedright\arraybackslash}p{0.107\linewidth}>{\raggedright\arraybackslash}p{0.133\linewidth}>{\raggedright\arraybackslash}p{0.160\linewidth}>{\raggedright\arraybackslash}p{0.125\linewidth}>{\raggedright\arraybackslash}p{0.125\linewidth}@{}}
+\toprule
+Task & att. / carried / deliv. & tier & Trajectory & Orientation & Speed \& force & Dynamics \\
+\midrule
+pick-and-place, person at the table & 333 / 286 / 233 & exercised & T1 100 (24/24); T2 1 (3/253) & T3 43 (32/75); T4 64 (126/196) & (T5a exposure 230/230) & --- \\
+pick-and-place, hand reaches in & 96 / 83 / 64 & exercised & --- & --- & T5b 7 (6/83); (T5a exposure 68/68) & T6 94 (78/83) \\
+pick-and-place, person walks past & 32 / 25 / 20 & exercised & --- & --- & --- & T6b 60 (15/25) \\
+pick-and-place, other placements & 160 / 133 / 100 & exercised & --- & T3 65 (35/54); T4 75 (59/79) & --- & --- \\
+pick-and-place, environment maps & 57 / 48 / 34 & exercised & --- & T3 88 (15/17); T4 74 (23/31) & --- & --- \\
+serving beside the person & 128 / 102 / 69 & exercised & --- & T3 54 (21/39); T4 73 (45/62) & --- & --- \\
+cluttered table & 48 / 42 / 29 & exercised & --- & T3 100 (11/11); T4 60 (18/30) & --- & --- \\
+pour & 16 / 11 / 6 & carried, not delivered & --- & tilt away from the bowl 0 (0/11) (over the bowl 5/11) & --- & --- \\
+push (no grasp) & 16 / 4 / 0 & capability boundary & payload ends within 0.45 m of the person 12 (2/16) & --- & --- & --- \\
+tool use (stir, scrape, toss) & 128 / 43 / 4 & exercised (held, no delivery target) & --- & --- & T5c 24 (10/41) & --- \\
+tool use, told to go slowly & 48 / 14 / 1 & exercised (held, no delivery target) & --- & --- & T5c 21 (3/14) & --- \\
+handover & 48 / 24 / 2 & carried, not delivered & --- & T3 (hazardous end toward the receiving hand) 33 (8/24); T4 20 (2/10) & --- & T6b 21 (5/24) \\
+put away in a drawer & 32 / 22 / 0 & carried, not delivered & --- & T3 2/7; T4 71 (10/14) & --- & --- \\
+clear the table & 16 / 3 / 2 & capability boundary & --- & T4 1/3 & --- & --- \\
+close a door & 8 / 0 / 0 & capability boundary & --- & --- & --- & --- \\
+pick-and-place, island kitchen & 32 / 6 / 3 & capability boundary & T2 0 (0/32) & T4 4/6 & (T5a exposure 6/6) & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}[H]
+\centering\small
+\caption{Coverage: attempted / carried / delivered episodes per work surface and policy (every tabletop cell; probes and demos excluded; 1663 episodes, 1079 carried, 687 delivered).}
+\label{tab:IVb}
+\vspace{4pt}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Work surface & $\pi_{0.5}$ & $\pi_0$ & GR00T N1.6-DROID \\
+\midrule
+dining table & 1103 / 777 / 483 & 119 / 31 / 15 & 89 / 21 / 11 \\
+kitchen counter & 48 / 44 / 42 & 16 / 8 / 5 & 12 / 10 / 6 \\
+packing station & 56 / 54 / 45 & --- & --- \\
+drawer kitchen & 72 / 58 / 23 & --- & --- \\
+office desk & 48 / 47 / 45 & 40 / 14 / 9 & 12 / 5 / 0 \\
+island kitchen & 48 / 10 / 3 & --- & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}[H]
+\centering\scriptsize\setlength{\tabcolsep}{3pt}
+\caption{T5c sensitivity: tool episodes with the tool end above the speed threshold while inside the radius (55 episodes, neutral and told-slowly pooled).}
+\label{tab:IVc}
+\vspace{4pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.184\linewidth}>{\raggedright\arraybackslash}p{0.184\linewidth}>{\raggedright\arraybackslash}p{0.184\linewidth}>{\raggedright\arraybackslash}p{0.184\linewidth}>{\raggedright\arraybackslash}p{0.184\linewidth}@{}}
+\toprule
+Radius & > 0.15 m/s & > 0.25 m/s & > 0.35 m/s & > 0.50 m/s \\
+\midrule
+0.3 m & 7/55 & 5/55 & 4/55 & 3/55 \\
+0.5 m & 17/55 & 13/55 & 9/55 & 7/55 \\
+0.7 m & 39/55 & 30/55 & 23/55 & 14/55 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The G1 family measures one policy on one embodiment. The \textbf{tabletop family} puts the sub-types around a Franka Panda in the DROID configuration doing pick-and-place, driven by $\pi_{0.5}$ and $\pi_0$ (openpi) and, where it carries often enough to score, GR00T N1.6-DROID, behind the same policy runner, at six work surfaces --- a dining table, a kitchen counter, an industrial packing station, a kitchen with an open drawer, an island kitchen and an office desk (Fig. \ref{fig:tabletop}; setup in Appendix C). The metrics port unchanged: the link recorder reduces \texttt{robot.data.body\_pos\_w}, which is embodiment-agnostic, and the payload and moving-body recorders track the Franka's object. Cells run eight episodes; Table~\ref{tab:X} lists every cell.
+
+\textbf{T1 (keep-out) recurs on the headline channel.} \emph{The scored tabletop T1 is the rendered hot-plate marker (24/24, \S5.1); the midpoint keep-out below is exposure, since any direct transport crosses it.} Because the tabletop task randomizes the cube and bowl placement, each carry has its own pick$\rightarrow$place corridor; we therefore site the keep-out hazard \emph{per episode} at the geometric midpoint of that carry --- the point a direct transport must cross --- and measure the carried object's minimum clearance to it (keep-out 0.20 m), with an off-path control that displaces the hazard \textbf{perpendicular to the carry by 0.35 m} (scoring the closer of the two sides, the harder test). Across \textbf{N = 22 completing transports} (100 \% task success), $\pi_{0.5}$ routes the object \textbf{through} the on-path keep-out on \textbf{100 \% of carries} (22/22; Wilson 95 \% CI 85--100 \%), passing a median of \textbf{2.9 cm} from the hazard (max 10 cm) --- while the perpendicular off-path control drops to \textbf{0 \%} (0/22; CI 0--15 \%; median clearance 31 cm; Fisher exact \emph{p} $\approx$ $10^{-12}$). The separation is \textbf{threshold-insensitive}: on-path clearances are all $\leq$ 0.10 m and off-path clearances all $\geq$ 0.245 m (an empty band between), so the 100 \%/0 \% split holds for \emph{every} keep-out radius in [0.12, 0.24] m. This mirrors the G1, where completing carries pass essentially through the hazard (0.05--0.08 m) and a lateral position sweep drops the violation rate to zero (Appendix C): a carried-hazard keep-out defect \emph{and} a metric that is geometry-sensitive rather than saturated both recur on a second policy and embodiment, on the benchmark's \textbf{headline} channel. We are precise about what this does and does not show: the on-path hazard here is a \textbf{geometric keep-out point, not a rendered obstacle}, so this establishes (i) that the T1 metric ports and cleanly separates on-path from off-path, and (ii) that $\pi_{0.5}$'s carries are \textbf{direct --- it makes no spontaneous detour} that would clear an on-path keep-out. To close the gap to a \emph{perceived} cue, we then ran the \textbf{rendered-hazard version}: a salient red keep-out marker placed on the table at a fixed on-path location --- one the randomized carries cross 91 \% of the time (20/22) when it is present only as a geometric measurement point. With the marker \textbf{rendered to the policy's cameras}, $\pi_{0.5}$ still routes the carried object \textbf{through} it on \textbf{100 \% of completing carries} (16/16; median clearance 4.2 cm; task success preserved with the marker present), statistically indistinguishable from the unrendered rate (Fisher \emph{p} = 0.50). Seeing the hazard changes nothing: the ``no execution-phase avoidance'' signature holds for a second policy on a \emph{rendered} hazard, on the headline channel --- exactly as on the G1.
+
+\textbf{T2.} A fixed-base arm works inside the table's footprint. With the rendered adult at the table edge, at the near corner beside the arm or across the packing table, $\pi_{0.5}$'s links come within 0.10 m of the body on 3/285 episodes and touch it on 0; with the person's forearm resting on the table the closest approach is 0.08 m (1/35 within 0.10 m). $\pi_0$ does not come closer (0/106). The walking humanoid, which turns its whole body at the shelf and the bin, sweeps into a bystander on 26/32 episodes; this sub-type's difficulty is set by the embodiment.
 
 \textbf{T3.} The scissors' blade tip, the narrow end of the mesh's long axis, is the hazardous axis. $\pi_{0.5}$ grasps the scissors and carries them, blade tilted down, at a circular-mean yaw of 110$^{\circ}$ and 135$^{\circ}$ with the adult on the left and on the right, so the tip points into the person's half-space on 10/10 carries with the person on the right and 1/10 on the left (Fisher \emph{p} < 0.001); across the packing table it does so on 5/6. A fork, its tines the hazardous end, is carried at $\approx$ 177$^{\circ}$ on both sides, tines back along the table and nearly perpendicular to either bearing, and points them into the person's half-space on 6/10 carries with the person on the left and 8/9 on the right. Extending the instruction with ``with the blades pointing away from the person'' (person on the right), the tip points into the person's half-space on 9/9 carries (9/16 attempts carried; Fisher \emph{p} = 1.0 against 10/10 without), and the fork's tines, told to point away, on 11/13. The same cells with the scissors spawned rotated by 180$^{\circ}$ put the tip into the person's half-space on 5/13 carries with the person on the right (Fisher \emph{p} = 0.0027 against 10/10 as spawned) and 12/15 on the left (\emph{p} < 0.001 against 1/10), at a circular-mean yaw of 111$^{\circ}$ and 105$^{\circ}$: the side that receives the blade is set by the object's initial pose, not by the person. With the person on the right, 4 carries keep the tip out of their half-space and still deliver the scissors: the scene admits a compliant completion, the tabletop T3 witness.  Spawned at 90$^{\circ}$ instead, the same cells give 1/10 and 5/7, so the rate tracks the object's initial pose across three settings with the person fixed.As on the G1, the safe side is safe by geometry. $\pi_0$ does not pick the scissors (0 carried).
 
-\textbf{T4.} $\pi_{0.5}$ carries a mug tilted in its grasp: over 517 carries in 107 cells and three scenes its axis leaves upright by more than 45$^{\circ}$ mid-transport on 346 (67 \%) and by more than 27$^{\circ}$ on 444; 248 of the 346 are delivered to the bowl and scored successful. Told to keep hot coffee upright, it still tilts the mug past 45$^{\circ}$ on 10/14 (27$^{\circ}$: 12/14): the command does not change the carry. $\pi_0$ tilts less where it carries (20/48 above 45$^{\circ}$).
+\textbf{T4.} $\pi_{0.5}$ carries a mug tilted in its grasp: over 202 carries in 27 canonical cells at six surfaces its axis leaves upright by more than 45$^{\circ}$ mid-transport on 130 (64 \%) and by more than 27$^{\circ}$ on 167; 118 of the 130 are delivered to the bowl and scored successful (the task battery's tilt rates are in Table~\ref{tab:IV}). Told to keep hot coffee upright, it still tilts the mug past 45$^{\circ}$ on 10/14 (27$^{\circ}$: 12/14): the command does not change the carry. $\pi_0$ tilts less where it carries (20/48 above 45$^{\circ}$).
 
-\textbf{T5a.} Every transport with the person at the table passes inside the 0.94 m stop distance (326/326; scene-set, as on the G1), and the near-band payload speed is 0.109 vs 0.113 m/s, Welch \emph{p} = 0.79, \emph{n} = 26 vs 13 with the person visible or the position empty: no speed-and-separation behavior.
+\textbf{T5a.} Every transport with the person at the table passes inside the 0.94 m stop distance (304/304; exposure, not scored --- the arm never leaves it), and the near-band payload speed is 0.109 vs 0.113 m/s, Welch \emph{p} = 0.79, \emph{n} = 26 vs 13 with the person visible or the position empty: no speed-and-separation behavior.
 
-\textbf{T5b and T6.} The coworker's hand is reached on 87/138 carried episodes (payload-to-hand gap $\leq$ 0.02 m; dining table 24/70; kitchen counter 16/16; packing station 14/16) and touched on 71/138; the mug is lowered onto it, and in 17/138 the robot keeps pressing for 5.3--23.5 s. Peaks reach 260 N, above the 140 N quasi-static hand limit on 6/138 and never above the 280 N transient limit, where the walking carry struck a torso at a median 200 N. Without its collider the mug passes into it (7/8). An earlier run of the hand cell (seed 42, contact sensor only) touched the hand on 6/8. \emph{Witness.} With the hand withdrawing after 3 s, a whole-arm protective stop (the arm held while any link or the mug is within 0.10 m of it) fires on 14/16 episodes for 1.1--5.1 s and completes 14/16 with one 11 N touch (1/15 carried), against 10/16 touched without it: the scene admits a completion that does not press on the hand, and the stop is what supplies it. 
+\textbf{T5b and T6.} The coworker's hand is reached on 78/83 carried episodes (payload-to-hand gap $\leq$ 0.02 m; dining table 15/15; kitchen counter 16/16; packing station 14/16; drawer kitchen 16/16; island kitchen 1/4; office desk 16/16) and touched on 65/83; the mug is lowered onto it, and in 16/83 the robot keeps pressing for 5.3--23.5 s. Peaks reach 260 N, above the 140 N quasi-static hand limit on 6/83 and never above the 280 N transient limit, where the walking carry struck a torso at a median 200 N. Without its collider the mug passes into it (7/8). An earlier run of the hand cell (seed 42, contact sensor only) touched the hand on 6/8. \emph{Witness.} With the hand withdrawing after 3 s, a whole-arm protective stop (the arm held while any link or the mug is within 0.10 m of it) fires on 14/16 episodes for 1.1--5.1 s and completes 14/16 with one 11 N touch (1/15 carried), against 10/16 touched without it: the scene admits a completion that does not press on the hand, and the stop is what supplies it. 
 
 \textbf{A second tabletop task: serving.} With the bowl at the table edge beside the adult (0.32 m from their axis), so that the object is delivered toward them, $\pi_{0.5}$ carries on 102/128 episodes and delivers 69; its links come within 0.10 m of the person on 28/128 episodes (touching on 1; closest 0.00 m); the scissors' tip points into the person's half-space on 21/39 carries; the mug leaves upright by more than 45$^{\circ}$ on 45/62; the approach passes inside the stop distance on 100/101.
 
-\textbf{Interaction geometry.} The dining-table cells above keep the person at the table's left or right edge. Placing them across the far edge or at the two far corners, starting the object on their side, or putting the bowl between the robot and them changes the exposure without changing the finding: across the far edge: T2 0/32 (closest 0.18 m), T3 3/8, T4 11/16; far-left corner: T2 0/32 (closest 0.27 m), T3 2/8, T4 8/15; far-right corner: T2 0/32 (closest 0.20 m), T3 5/10, T4 8/16; object starting on the person's side: T2 2/32 (closest 0.03 m), T3 11/12, T4 16/16; bowl between robot and person: T2 0/19 (closest 0.12 m), T3 6/8, T4 11/11. The tilt is present at every placement; the blade's side follows where the object starts (11/12 when it starts beside the person although the carry then moves away from them), the rotated-spawn result in a new geometry.
+\textbf{Interaction geometry.} The dining-table cells above keep the person at the table's left or right edge. Placing them across the far edge or at the two far corners, starting the object on their side, or putting the bowl between the robot and them changes the exposure without changing the finding: across the far edge: T2 0/32 (closest 0.18 m), T3 3/8, T4 11/16; far-left corner: T2 0/32 (closest 0.27 m), T3 2/8, T4 8/15; far-right corner: T2 0/32 (closest 0.20 m), T3 5/10, T4 8/16; object starting on the person's side: T2 2/32 (closest 0.03 m), T3 11/12, T4 16/16; bowl between robot and person: T2 0/32 (closest 0.12 m), T3 14/16, T4 16/16. The tilt is present at every placement; the blade's side follows where the object starts (11/12 when it starts beside the person although the carry then moves away from them), the rotated-spawn result in a new geometry.
 
 \textbf{A third DROID policy.} GR00T N1.6-DROID, the same model family as the G1 policy, runs in this family but slowly: with 90 s episodes it carries on 36/110 episodes. Where it carries, the mug leaves upright by more than 45$^{\circ}$ on 21/27 (11--169$^{\circ}$); its links come within 0.10 m of the person on 5/77 episodes; transports with the person at the table pass inside the stop distance on 29/29; the scissors' tip points into the person's half-space on 2/6; the reaching hand is reached on 0/2 carried episodes.
 

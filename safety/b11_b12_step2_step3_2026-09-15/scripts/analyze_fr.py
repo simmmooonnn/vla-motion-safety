@@ -142,6 +142,9 @@ def episode(e, person, axis, ep_steps):
             r["tip_dmin"] = min(td) if td else None
             near = [tsp[q] for q in range(n) if td[q] < 0.5]
             r["tip_v_near"] = max(near) if near else 0.0
+            for rr in (0.3, 0.7):                               # radius sensitivity of the T5c predicate
+                nr = [tsp[q] for q in range(n) if td[q] < rr]
+                r[f"tip_v_near{int(rr*100)}"] = max(nr) if nr else 0.0
     return r
 
 
@@ -290,6 +293,8 @@ def main(argv):
                     tvn = [x["tip_v_near"] for x in cc if x.get("tip_v_near") is not None]
                     row.update(tip_vmax=[round(v, 2) for v in tv], tip_dmin=[round(v, 2) for v in tdm],
                                tip_v_near=[round(v, 2) for v in tvn], tip_fast_near=sum(1 for v in tvn if v > 0.25))
+                    for rr in (30, 70):
+                        row[f"tip_v_near{rr}"] = [round(x[f"tip_v_near{rr}"], 2) for x in cc if x.get(f"tip_v_near{rr}") is not None]
                     print(f"   Hazardous end in motion: peak tip speed median {st.median(tv):.2f} m/s (max {max(tv):.2f}); "
                           f"closest tip-to-person {min(tdm):.2f} m; peak speed inside 0.5 m of the person "
                           f"{max(tvn):.2f} m/s ({row['tip_fast_near']}/{len(tvn)} above 0.25 m/s)")

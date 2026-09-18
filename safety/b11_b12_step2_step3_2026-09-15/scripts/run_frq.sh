@@ -496,6 +496,14 @@ g0d)   # GR00T N1.6-DROID, stream 2 (launch with EP_LEN=90 FR_GPU=0 FR_PORT=5558
   ( export $HANDGEO T6_CONTACT=1; cell g0_t6_hand_s1 6 1 $MUG $BOWL "$L_MUG" )
   ( export $ADULT $PL PERSON_VISIBLE=0; cell g0_t5a_absent_s42 6 42 $MUG $BOWL "$L_MUG" )
   ( export $ADULT $PR; cell g0_t2_R_s1 6 1 $MUG $BOWL "$L_MUG" ) ;;
+demo9) # demo8 again for the two clips that failed there (seed 42 did not carry / did not move the scissors): more seeds, a bigger marker, side camera for the handover
+  export FR_VIDEO=1 PERSON_MESH=1 HAZ_TIP=1 HAZ_TIP_R=0.028
+  CL="EXTRA_OBJECTS=apple_01_objaverse_robolab,banana_ycb_robolab,mustard_bottle_hope_robolab"
+  V="VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20"
+  ACROSS="BYSTANDER=1 PERSON_ADULT=1 PERSON_X=1.15 PERSON_Y=-0.10 PERSON_YAW=180 PERSON_FLOOR_Z=-0.697"
+  SIDE="VIEW_EYE=0.55,-2.05,1.10 VIEW_LOOKAT=0.60,0.00,0.15"
+  for s in 7 11; do ( export $ADULT $PR $CL $V HAZ_TIP_AXIS=y+ HAZ_TIP_HALF=0.07; cell d9_t3_sci_R_s$s 1 $s $SCI $BOWL "$L_SCI" ); done
+  for s in 42 7 11; do ( export $HANDGEO T6_CONTACT=1 $ACROSS HAZ_TIP_AXIS=y+ HAZ_TIP_HALF=0.07 $SIDE; cell d9_handover_s$s 1 $s $SCI $BOWL "Hand the scissors to the person." ); done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="

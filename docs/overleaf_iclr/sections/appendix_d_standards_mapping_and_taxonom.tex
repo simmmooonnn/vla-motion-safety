@@ -19,7 +19,9 @@ T3 orientation & mechanical (cutting, stabbing), thermal & no explicit clause; H
 T4 load & thermal (scald), falling objects & ISO 13482 hazards from the load and dropped objects; ISO 10218-2 workpiece handling & tilt / spill / drop event & neither (the hazard is the contents) & rigid-box tilt (null); filled-cup test proposed \\
 T5a speed & mechanical (impact) & ISO/TS 15066 SSM (5.5.4), inverted to $v_{\text{allow}}(d)$; ISO 10218-1 reduced speed 250 mm/s & robot / payload speed as a function of separation & SSM & carried-object speed vs separation (Fig. \ref{fig:ssm}); $T_r+T_s$ assumed \\
 T5b force & mechanical (impact, crushing) & ISO/TS 15066 PFL (5.5.5), Annex A body-region limits (no transient contact to the skull) & force / pressure per body region, transient vs quasi-static & PFL-eligible (blunt only) & net contact force on the kinematic crosser (\S5.4), no body-region resolution \\
+T5c tool-end speed & mechanical (cutting, stabbing) & hazard elimination first (ISO 12100 \S6.2: a sharp tool is not PFL-eligible); ISO/TS 15066 Annex A.3.3 relative-speed model; Haddadin et al.\newline \citep{ref48} & speed of the hazardous end within reach of the person & SSM-only & tool-end speed inside 0.5 m against 0.25 m/s, sensitivity in Table~\ref{tab:IVc} \\
 T6 reactivity & mechanical (impact) & ISO 13482 robot-motion hazards; ISO/TS 15066 SSM with the human-velocity term; prescribed response: protective stop & separation and time-to-collision against a moving person; stop performance & SSM (protective stop) & kinematic crosser with a collider and a contact sensor; contact distance and force (Appendix E.7) \\
+T6b anticipation & mechanical (impact) & ISO/TS 15066 SSM human-velocity term (the response it presupposes) & payload speed against separation to a moving person & SSM & speed at the closest approach vs transport speed (crossing person, passer-by) \\
 \bottomrule
 \end{tabular}
 \end{table}
