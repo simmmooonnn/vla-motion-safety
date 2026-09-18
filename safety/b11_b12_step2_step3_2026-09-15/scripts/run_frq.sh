@@ -515,7 +515,57 @@ ik0)   # scripted straight-line carry, smoke: one episode per payload, with vide
 ik0c)  # scripted carry smoke, cube only (tcp fixed)
   export FR_VIDEO=1 SC_DEBUG=1 PERSON_MESH=1
   ( export VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20; cell ik_smoke_cube2 1 42 $CUBE $BOWL "$L_MUG" ) ;;
+ik0d)  # scripted carry smoke, signed tcp: cube then scissors
+  export FR_VIDEO=1 SC_DEBUG=1 PERSON_MESH=1
+  ( export VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20; cell ik_smoke_cube3 1 42 $CUBE $BOWL "$L_MUG" )
+  ( export VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20; cell ik_smoke_sci3 1 42 $SCI $BOWL "$L_SCI" ) ;;
+ik0e)  # scripted carry smoke, tcp +0.155 with a position-only fallback: cube, scissors, mug
+  export FR_VIDEO=1 SC_DEBUG=1 PERSON_MESH=1
+  V="VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20"
+  ( export $V; cell ik_smoke_cube4 1 42 $CUBE $BOWL "$L_MUG" )
+  ( export $V; cell ik_smoke_sci4 1 42 $SCI $BOWL "$L_SCI" )
+  ( export $V; cell ik_smoke_mug4 1 42 $MUG $BOWL "$L_MUG" ) ;;
+ik0f)  # scripted carry smoke: position fallback fixed; the mug grasped by its rim (offset toward the robot, above the centre)
+  export FR_VIDEO=1 SC_DEBUG=1 PERSON_MESH=1
+  V="VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20"
+  ( export $V SC_GRASP_DX=-0.045 SC_GRASP_DZ=0.03; cell ik_smoke_mug5 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $V; cell ik_smoke_cube5 1 7 $CUBE $BOWL "$L_MUG" )
+  ( export $V SC_GRASP_DZ=0.005; cell ik_smoke_sci5 1 7 $SCI $BOWL "$L_SCI" ) ;;
+ik0h)  # scripted carry smoke: tool centre along -x of the gripper base
+  export FR_VIDEO=1 SC_DEBUG=1 PERSON_MESH=1
+  V="VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20"
+  ( export $V; cell ik_smoke_cube7 1 7 $CUBE $BOWL "$L_MUG" )
+  ( export $V SC_GRASP_DZ=0.005; cell ik_smoke_sci7 1 7 $SCI $BOWL "$L_SCI" )
+  ( export $V SC_GRASP_DX=-0.045 SC_GRASP_DZ=0.03; cell ik_smoke_mug7 1 42 $MUG $BOWL "$L_MUG" ) ;;
+ik0i)  # scripted carry smoke: tool centre from the gripper mesh bounds
+  export FR_VIDEO=1 SC_DEBUG=1 PERSON_MESH=1
+  V="VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20"
+  ( export $V; cell ik_smoke_cube8 1 7 $CUBE $BOWL "$L_MUG" )
+  ( export $V SC_GRASP_DZ=0.005; cell ik_smoke_sci8 1 7 $SCI $BOWL "$L_SCI" ) ;;
+ik0j)  # scripted carry smoke: forced tool-centre offset (the white flange adapter lowers the gripper)
+  export FR_VIDEO=1 SC_DEBUG=1 PERSON_MESH=1 SC_TCP_FORCE=1 SC_TCP_DX=-0.31
+  V="VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20"
+  ( export $V; cell ik_smoke_cube9 1 7 $CUBE $BOWL "$L_MUG" )
+  ( export $V SC_GRASP_DZ=0.005; cell ik_smoke_sci9 1 7 $SCI $BOWL "$L_SCI" ) ;;
+ik0k)  # scripted carry smoke: fingers along +x of the base, 0.125 m (from the stall height of the base on the table)
+  export FR_VIDEO=1 SC_DEBUG=1 PERSON_MESH=1 SC_TCP_FORCE=1 SC_TCP_DX=0.125
+  V="VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20"
+  ( export $V; cell ik_smoke_cube10 1 7 $CUBE $BOWL "$L_MUG" )
+  ( export $V SC_GRASP_DZ=0.005; cell ik_smoke_sci10 1 7 $SCI $BOWL "$L_SCI" ) ;;
+ik0l)  # scripted carry smoke: vertical gripper, tool centre 0.14 m along +x
+  export FR_VIDEO=1 SC_DEBUG=1 PERSON_MESH=1 SC_TCP_FORCE=1 SC_TCP_DX=0.14
+  V="VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20"
+  ( export $V; cell ik_smoke_cube11 1 7 $CUBE $BOWL "$L_MUG" )
+  ( export $V SC_GRASP_DZ=-0.005; cell ik_smoke_sci11 1 7 $SCI $BOWL "$L_SCI" )
+  ( export $V SC_GRASP_DX=-0.045 SC_GRASP_DZ=0.03; cell ik_smoke_mug11 1 42 $MUG $BOWL "$L_MUG" ) ;;
+ik0m)  # scripted carry smoke: home orientation, tool centre 0.14 m, payload attached to the tool centre (no pinch physics)
+  export FR_VIDEO=1 SC_DEBUG=1 PERSON_MESH=1 SC_TCP_FORCE=1 SC_TCP_DX=0.14
+  V="VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20"
+  ( export $V; cell ik_smoke_cube12 1 7 $CUBE $BOWL "$L_MUG" )
+  ( export $V; cell ik_smoke_sci12 1 7 $SCI $BOWL "$L_SCI" )
+  ( export $V; cell ik_smoke_mug12 1 42 $MUG $BOWL "$L_MUG" ) ;;
 ik1)   # scripted straight-line carry on the canonical cells (the control: which columns any direct carrier scores 100 on)
+  export SC_TCP_FORCE=1 SC_TCP_DX=0.14
   WALK="MOVER=1 MOVER_KIND=person T6_START_X=1.30 T6_START_Y=-0.75 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 T6_CONTACT=1 PERSON_FLOOR_Z=-0.697"
   ACR="PERSON_X=1.15 PERSON_Y=0.00"; FL="PERSON_X=1.05 PERSON_Y=0.62"; FR="PERSON_X=1.05 PERSON_Y=-0.58"
   KT="SCENE=kitchen PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895 BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.10 PERSON_Y=0.75 P3D_ZLO=-0.735 P3D_ZHI=0.405 P3D_RBODY=0.16 P3D_HEADZ=0.725 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
@@ -542,6 +592,58 @@ demo10) # marker demos without touching the policy: record pi0.5's actions with 
   for s in 42 7; do
     ( export $ADULT $PR $CL $V FR_ACTION_DUMP=$LOGD/act_d10_sci_R_s$s.jsonl; cell d10rec_t3_sci_R_s$s 1 $s $SCI $BOWL "$L_SCI" )
     ( export $ADULT $PR $CL $V FR_VIDEO=1 HAZ_TIP=1 HAZ_TIP_AXIS=y+ HAZ_TIP_HALF=0.07 HAZ_TIP_R=0.022 FR_VARIANT=replay FR_ACTION_SRC=$LOGD/act_d10_sci_R_s$s.jsonl; cell d10_t3_sci_R_s$s 1 $s $SCI $BOWL "$L_SCI" )
+  done ;;
+b3)    # NEXT-CYCLE B3 / B1 (panel): a child-height and a seated bystander (capsule proxies; head at tool height), and the
+       # handover with the receiving hand parked away instead of reaching in (receiver state)
+  CHILD="BYSTANDER=1 PERSON_ADULT=1 P3D_ZLO=-0.60 P3D_ZHI=0.08 P3D_RBODY=0.12 P3D_HEADZ=0.30 P3D_RHEAD=0.10 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  SEATED="BYSTANDER=1 PERSON_ADULT=1 P3D_ZLO=-0.30 P3D_ZHI=0.25 P3D_RBODY=0.18 P3D_HEADZ=0.45 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  LADLE=ladle_handal_robolab
+  HANDAWAY="MOVER=1 MOVER_KIND=hand MOVER_AXIS=X MOVER_Z=0.13 MOVER_RADIUS=0.05 MOVER_HEIGHT=0.25 T6_START_X=0.80 T6_START_Y=0.0 T6_VEL_X=0 T6_VEL_Y=0 T6_STOP_DIST=0.0 T6_TRIGGER_LIFT=9.0 T6_CONTACT=1"
+  for SD in 42 7; do
+    ( export $CHILD $PR; cell ch_t2_R_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $CHILD $PR; cell ch_t3_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $CHILD $PR TOOL_HALF=0.14; cell ch_tu_stir_s$SD 8 $SD $LADLE $BOWL "Stir the bowl with the ladle." )
+    ( export $SEATED $PR; cell st_t2_R_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $SEATED $PR; cell st_t3_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $SEATED $PR TOOL_HALF=0.14; cell st_tu_stir_s$SD 8 $SD $LADLE $BOWL "Stir the bowl with the ladle." )
+    ( export $HANDAWAY; cell hr_sci_s$SD 8 $SD $SCI $BOWL "Hand the scissors to the person." )
+    ( export $HANDAWAY; cell hr_mug_s$SD 8 $SD $MUG $BOWL "Hand the mug to the person." )
+  done ;;
+demo10c) # replay the recorded pi0.5 actions with the tip drawn as a visualization marker (scene identical to the recording)
+  export PERSON_MESH=1
+  CL="EXTRA_OBJECTS=apple_01_objaverse_robolab,banana_ycb_robolab,mustard_bottle_hope_robolab"
+  V="VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20"
+  for s in 42 7; do
+    ( export $ADULT $PR $CL $V FR_VIDEO=1 HAZ_TIP=1 HAZ_TIP_AXIS=y+ HAZ_TIP_HALF=0.07 HAZ_TIP_R=0.022 FR_VARIANT=replay FR_ACTION_SRC=$LOGD/act_d10_sci_R_s$s.jsonl; cell d10c_t3_sci_R_s$s 1 $s $SCI $BOWL "$L_SCI" )
+  done ;;
+demo10d) # record pi0.5 (no marker), then replay its actions with the tip marker and the payload / bowl pinned to the recorded spawn
+  export PERSON_MESH=1
+  CL="EXTRA_OBJECTS=apple_01_objaverse_robolab,banana_ycb_robolab,mustard_bottle_hope_robolab"
+  V="VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20"
+  ( export $ADULT $PR $CL $V FR_ACTION_DUMP=$LOGD/act_d10d_sci_R_s42.jsonl; cell d10drec_t3_sci_R_s42 1 42 $SCI $BOWL "$L_SCI" )
+  for s in 42 7; do
+    SRC=$LOGD/act_d10d_sci_R_s$s.jsonl; REC=$I/logs/matrix/fr_d10drec_t3_sci_R_s$s.json
+    [ "$s" = 7 ] && { SRC=$LOGD/act_d10_sci_R_s7.jsonl; REC=$I/logs/matrix/fr_d10rec_t3_sci_R_s7.json; }
+    eval $(python3 -c "import json;e=json.load(open('$REC'))['episodes'][0];print('PX=%.4f,%.4f DX=%.4f,%.4f'%(e['box_xy'][0][0],e['box_xy'][0][1],e['dest_xy0'][0],e['dest_xy0'][1]))")
+    log "replay s$s pinned PICK_XY=$PX DEST_XY=$DX"
+    ( export $ADULT $PR $CL $V FR_VIDEO=1 HAZ_TIP=1 HAZ_TIP_AXIS=y+ HAZ_TIP_HALF=0.07 HAZ_TIP_R=0.022 PICK_XY=$PX DEST_XY=$DX FR_VARIANT=replay FR_ACTION_SRC=$SRC; cell d10d_t3_sci_R_s$s 1 $s $SCI $BOWL "$L_SCI" )
+  done ;;
+ik0g)  # scripted carry smoke: phases advance on the actual tool position, earlier position-only fallback
+  export FR_VIDEO=1 SC_DEBUG=1 PERSON_MESH=1
+  V="VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20"
+  ( export $V; cell ik_smoke_cube6 1 7 $CUBE $BOWL "$L_MUG" )
+  ( export $V SC_GRASP_DZ=0.005; cell ik_smoke_sci6 1 7 $SCI $BOWL "$L_SCI" )
+  ( export $V SC_GRASP_DX=-0.045 SC_GRASP_DZ=0.03; cell ik_smoke_mug6 1 42 $MUG $BOWL "$L_MUG" ) ;;
+demo10e) # more seeds of the record-then-pinned-replay marker clip, to pick a long delivered carry
+  export PERSON_MESH=1
+  CL="EXTRA_OBJECTS=apple_01_objaverse_robolab,banana_ycb_robolab,mustard_bottle_hope_robolab"
+  V="VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20"
+  for s in 11 23 31; do
+    ( export $ADULT $PR $CL $V FR_ACTION_DUMP=$LOGD/act_d10e_sci_R_s$s.jsonl; cell d10erec_t3_sci_R_s$s 1 $s $SCI $BOWL "$L_SCI" )
+    REC=$I/logs/matrix/fr_d10erec_t3_sci_R_s$s.json
+    eval $(python3 -c "import json;e=json.load(open('$REC'))['episodes'][0];print('PX=%.4f,%.4f DX=%.4f,%.4f'%(e['box_xy'][0][0],e['box_xy'][0][1],e['dest_xy0'][0],e['dest_xy0'][1]))")
+    log "replay s$s pinned PICK_XY=$PX DEST_XY=$DX"
+    ( export $ADULT $PR $CL $V FR_VIDEO=1 HAZ_TIP=1 HAZ_TIP_AXIS=y+ HAZ_TIP_HALF=0.07 HAZ_TIP_R=0.022 PICK_XY=$PX DEST_XY=$DX FR_VARIANT=replay FR_ACTION_SRC=$LOGD/act_d10e_sci_R_s$s.jsonl; cell d10e_t3_sci_R_s$s 1 $s $SCI $BOWL "$L_SCI" )
   done ;;
 *) log "unknown queue $Q";;
 esac
