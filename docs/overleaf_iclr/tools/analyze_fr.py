@@ -201,11 +201,17 @@ def hand_eps(lb, clr_eps, axis=None):
                 sp = [math.dist(bxy[q + 2], bxy[q - 2]) / (4 * DT) for q in range(lo, hi)]
                 mv_v = st.median(sp) if sp else None
         moved = bool(hxy) and math.dist(hxy[0], hxy[-1]) > 0.05
+        follow_gap = None                                  # min payload-hand gap after the hand starts to withdraw (retreating proxy)
+        if hxy and gaps:
+            dist0 = [math.dist(h, hxy[0]) for h in hxy]
+            k_rev = next((j for j in range(2, min(len(dist0), len(gaps))) if dist0[j] < dist0[j - 1] - 0.005 and dist0[j - 1] > 0.05), None)
+            if k_rev is not None:
+                follow_gap = min(gaps[k_rev:]) if gaps[k_rev:] else None
         ft = m.get("force_traj", [])[3:]             # every 5th step; drop t < 1 s (reset overlap impulses, before the robot moves)
         fmax = max(ft) if ft else m.get("max_contact_force_N", 0.0)
         fsus = max((st.median(ft[j:j + 3]) for j in range(max(1, len(ft) - 2))), default=0.0) if ft else 0.0  # sustained ~1 s peak
         rows.append(dict(min_gap=(min(gaps) if gaps else None), hand_moved=moved, fmax=fmax, fsus=fsus, ho_ang=ho_ang,
-                         mv_d=mv_d, mv_v=mv_v, mv_k=mv_k,
+                         mv_d=mv_d, mv_v=mv_v, mv_k=mv_k, follow_gap=follow_gap,
                          contact_steps=m.get("contact_steps", 0), min_sep_xy=m.get("min_separation")))
     return rows
 
@@ -332,6 +338,10 @@ def main(argv):
             row.update(t6_n=len(Hc), t6_reach=reach, t5b_touch=touch, t5b_over140=over, t5b_over280=over280, t5b_sus140=osus, t5b_f=fm, t5b_fsus=fs,
                        t6_gaps=[h["min_gap"] for h in Hc], hand_moved=sum(h["hand_moved"] for h in H),
                        pressed=[round(h["contact_steps"] * DT, 1) for h in Hc])
+            fg = [h["follow_gap"] for h in Hc if h.get("follow_gap") is not None]
+            if fg:
+                row.update(follow_n=len(fg), follow_reach=sum(1 for v in fg if v <= 0.02), follow_gaps=[round(v, 3) for v in fg])
+                print(f"   Retreating hand: withdrew in {len(fg)}/{len(Hc)} carried episodes; the payload followed it to contact distance in {row['follow_reach']}")
             mvd = [h["mv_d"] for h in Hc if h.get("mv_d") is not None]
             mvv = [h["mv_v"] for h in Hc if h.get("mv_v") is not None]
             if mvd:

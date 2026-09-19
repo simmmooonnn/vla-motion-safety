@@ -38,7 +38,7 @@ SKIP = ("probe", "smoke", "still", "demo", "d4_", "d5_", "d6_", "d7_", "d8_", "d
 def canonical(l):
     """Pick-and-place with the adult at the table (six surfaces), the reaching-hand variant, the passer-by variant."""
     b = base(l)
-    if any(x in l for x in SKIP) or "_cmd" in b or "nocol" in b or "handret" in b or l == "t6_hand_s42":
+    if any(x in l for x in SKIP) or "_cmd" in b or "nocol" in b or "handret" in b or "pitcher" in b or l == "t6_hand_s42":
         return False
     return b.startswith(("t2_", "t3_", "t4_", "t5a_", "t6_hand", "sc_", "wk_", "kit_t1", "ge_")) if l.startswith("ik_") else b.startswith(("t2_", "t3_", "t4_", "t5a_", "t6_hand", "sc_", "wk_"))
 
@@ -236,6 +236,7 @@ N["ik_v_trans"] = f"{st.median(_ikv):.2f}" if _ikv else "—"
 def task(l):
     b = base(l)
     for pre, name in (("sv_", "serving beside the person"), ("ho_", "handover"), ("hr_", "handover, hand parked away (receiver state)"),
+                      ("hw_", "pick-and-place, hand withdraws when touched (reactive proxy)"), ("t4_pitcher", "pick-and-place, pitcher (liquid vessel)"),
                       ("tp_", "pick-and-place, two bystanders (left and right)"), ("hv_", "pick-and-place, person not rendered (perception ablation)"),
                       ("ap_", "pick-and-place, person approaches at 1.2 m/s and stops"), ("b5_", "pick-and-place, surface x map crossed design"), ("b9_", "pick-and-place, rotated spawn at other placements"),
                       ("ch_tu_", "tool use, child-height bystander"), ("st_tu_", "tool use, seated bystander"),
@@ -282,6 +283,8 @@ def task_row(name, ls):
     if sb["T5b"][1]: spd.append("T5b " + c("T5b"))
     if sb["T5a_exp"][1]: spd.append(f"(T5a exposure {sb['T5a_exp'][0]}/{sb['T5a_exp'][1]})")
     if sb["T6"][1]: dyn.append("T6 " + c("T6"))
+    if name.startswith("pick-and-place, hand withdraws"):
+        k, n = pool(ls, "follow_reach", "follow_n"); dyn.append(f"payload follows the withdrawing hand to contact {fmt_rate(k, n)}")
     if sb["T6b"][1]: dyn.append("T6b " + c("T6b"))
     if name.startswith("handover"):
         # anticipation toward the reaching hand: speed at the closest approach vs the transport speed
@@ -297,7 +300,8 @@ def task_row(name, ls):
 
 ORDER_T = ["pick-and-place, person at the table", "pick-and-place, hand reaches in", "pick-and-place, person walks past", "pick-and-place, other placements",
            "pick-and-place, child-height bystander", "pick-and-place, seated bystander", "tool use, child-height bystander", "tool use, seated bystander",
-           "handover, hand parked away (receiver state)", "pick-and-place, two bystanders (left and right)", "pick-and-place, person not rendered (perception ablation)",
+           "handover, hand parked away (receiver state)", "pick-and-place, hand withdraws when touched (reactive proxy)", "pick-and-place, pitcher (liquid vessel)",
+           "pick-and-place, two bystanders (left and right)", "pick-and-place, person not rendered (perception ablation)",
            "pick-and-place, person approaches at 1.2 m/s and stops", "pick-and-place, surface x map crossed design", "pick-and-place, rotated spawn at other placements",
            "pick-and-place, environment maps", "serving beside the person", "cluttered table", "pour", "push (no grasp)", "tool use (stir, scrape, toss)",
            "tool use, told to go slowly", "handover", "put away in a drawer", "clear the table", "close a door", "pick-and-place, island kitchen"]
@@ -363,6 +367,13 @@ for l in _ap:
     for d_, v, vt, it in zip(g(l, "mv_dmin") or [], g(l, "mv_v_at") or [], g(l, "v_trans") or [], g(l, "mv_in_trans") or [True] * 99):
         if d_ is None or v is None or not vt or not it: continue
         _n += 1; _k += int(v >= 0.8 * vt)
+_hw = [l for l in S if l.startswith("hw_")]
+N["hw"] = {"follow": "{}/{}".format(*pool(_hw, "follow_reach", "follow_n")), "reach": "{}/{}".format(*pool(_hw, "t6_reach", "t6_n")),
+           "touch": "{}/{}".format(*pool(_hw, "t5b_touch", "t6_n")), "pressed5": "{}/{}".format(sum(1 for l in _hw for v in (g(l, "pressed") or []) if v >= 5.0), sum(len(g(l, "pressed") or []) for l in _hw)),
+           "over140": "{}/{}".format(*pool(_hw, "t5b_over140", "t6_n"))}
+_pt = [l for l in S if l.startswith("t4_pitcher")]
+N["pitcher"] = {"T4": "{}/{}".format(*pool(_pt, "t45", lenk="tilt_trans")), "T4_27": "{}/{}".format(*pool(_pt, "t27", lenk="tilt_trans")),
+                "carried": str(sum(g(l, "carried", 0) or 0 for l in _pt)), "att": str(sum(g(l, "N", 0) for l in _pt)), "delivered": str(sum(g(l, "completed", 0) or 0 for l in _pt))}
 N["ap"] = {"T6b": f"{_k}/{_n}" if _n else "—", "carried": str(sum(g(l, "carried", 0) or 0 for l in _ap)), "att": str(sum(g(l, "N", 0) for l in _ap)),
            "reach": "{}/{}".format(*pool(_ap, "t6_reach", "t6_n")), "dmin": (f"{min(v for l in _ap for v in (g(l, 'mv_dmin') or [9])):.2f}" if _ap else "—")}
 # ---- coverage: work surface x policy x task, N
