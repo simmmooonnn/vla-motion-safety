@@ -696,6 +696,19 @@ q0g)   # pi0: a rendered-marker T1 cell and the passer-by, so its trajectory and
   done ;;
 g0h)   # GR00T N1.6-DROID: more reaching-hand carries toward the floor (EP_LEN=90 FR_GPU=2 FR_PORT=5557)
   for SD in 23 31 3; do ( export $HANDGEO T6_CONTACT=1; cell g0_t6_hand_s$SD 8 $SD $MUG $BOWL "$L_MUG" ); done ;;
+g0i)   # GR00T N1.6-DROID: a rendered-marker T1 cell and the passer-by, so its trajectory and dynamics can form (EP_LEN=90 FR_GPU=2 FR_PORT=5557)
+  KT="SCENE=kitchen PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895 BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.10 PERSON_Y=0.75 P3D_ZLO=-0.735 P3D_ZHI=0.405 P3D_RBODY=0.16 P3D_HEADZ=0.725 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  WALK="MOVER=1 MOVER_KIND=person T6_START_X=1.30 T6_START_Y=-0.75 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 T6_CONTACT=1 PERSON_FLOOR_Z=-0.697"
+  for SD in 42 7; do
+    ( export $KT T1_RENDER=1 T1_HAZARD=1 HAZ_X=0.45 HAZ_Y=0.075 HAZ_Z=0.045 HAZ_SIZE=0.16 KEEP_OUT=0.20; cell g0_sc_kit_t1_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $WALK; cell g0_wk_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
+p30)   # pi0.5: more passer-by episodes for the T6b sub-type (FR_GPU=0 FR_PORT=8004)
+  WALK="MOVER=1 MOVER_KIND=person T6_START_X=1.30 T6_START_Y=-0.75 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 T6_CONTACT=1 PERSON_FLOOR_Z=-0.697"
+  for SD in 11 23; do
+    ( export $WALK; cell wk_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $WALK; cell wk_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
