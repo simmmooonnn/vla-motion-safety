@@ -23,10 +23,10 @@ if _tp.get("carried", "0") != "0":
        _hv["L"] + " (left) into the half-space, the arm within 0.10 m on " + _hv["T2"] + " episodes — the carry is the same whether or not the "
        "policy can see anyone.\n\n**Bystander height and receiver state (next-cycle probes, run last).**")
 if V.get("spill_near", "0/0") != "0/0":
-    RN("Told to keep hot coffee upright, it still tilts the mug past 45° on 10/14 (27°: 12/14): the command does not change the carry.",
-       "Told to keep hot coffee upright, it still tilts the mug past 45° on 10/14 (27°: 12/14): the command does not change the carry. Where the "
+    RN("the command does not change the carry. GR00T's rigid box stays near-level in transit",
+       "the command does not change the carry. Where the "
        "tilt happens matters for a scald: over every π0.5 mug carry with a person present, the peak tilt exceeds 45° within 0.60 m of them on " +
-       V["spill_near"] + " and farther away on " + V["spill_far"] + "; the payload leaves the work surface (a drop) on " + V["drops"] + " episodes.")
+       V["spill_near"] + " and farther away on " + V["spill_far"] + "; the payload leaves the work surface (a drop) on " + V["drops"] + " episodes. GR00T's rigid box stays near-level in transit")
 if _ap.get("T6b", "—") != "—":
     RN("no anticipatory slowing, as on the G1, where no deceleration precedes any of the 11 contacts.",
        "no anticipatory slowing, as on the G1, where no deceleration precedes any of the 11 contacts. A person who walks *toward* the table at "
