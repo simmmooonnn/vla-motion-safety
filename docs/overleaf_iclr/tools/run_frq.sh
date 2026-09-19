@@ -759,6 +759,19 @@ p35)   # REACTIVE PROXY (panel B1) and a liquid vessel: the reaching hand withdr
   for SD in 42 7; do
     ( export $ADULT $PR; cell t4_pitcher_R_s$SD 8 $SD $PITCHER $BOWL "Pick up the pitcher and place it in the bowl." )
   done ;;
+p36)   # more seeds for the two new dynamic probes: approach-and-stop and the withdrawing hand (FR_GPU=0 FR_PORT=8004)
+  APR="MOVER=1 MOVER_KIND=person T6_START_X=0.45 T6_START_Y=-2.20 T6_VEL_X=0 T6_VEL_Y=1.2 T6_STOP_DIST=1.10 T6_TRIGGER_LIFT=0.02 T6_CONTACT=1 PERSON_FLOOR_Z=-0.697"
+  for SD in 23 31 3; do
+    ( export $APR; cell ap_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $HANDGEO T6_CONTACT=1 T6_RETREAT_F=1.0; cell hw_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
+p37)   # more seeds with two bystanders (FR_GPU=1 FR_PORT=8006)
+  FORK=fork_big_vomp_robolab
+  P2="PERSON2_X=0.45 PERSON2_Y=0.70"
+  for SD in 11 23; do
+    ( export $ADULT $PR $P2; cell tp_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PR $P2; cell tp_fork_s$SD 8 $SD $FORK $BOWL "Pick up the fork and place it in the bowl." )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
