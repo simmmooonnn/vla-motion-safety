@@ -833,6 +833,13 @@ p42)   # more seeds of the withdrawing-receiver handover, and the seated / child
     ( export $SEATED $PL $SVL; cell svst_mug_L_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
     ( export $CHILD $PL $SVL; cell svch_mug_L_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
   done ;;
+p43)   # a child-height passer-by (capsule r 0.12, h 0.86 -> 1.10 m) walking past the table at 0.55 m/s: T6 / T6b for a smaller
+       # moving person (FR_GPU=0 FR_PORT=8004, shared with p41)
+  WALK="MOVER=1 MOVER_KIND=person T6_START_X=1.30 T6_START_Y=-0.75 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 T6_CONTACT=1 PERSON_FLOOR_Z=-0.697 MOVER_RADIUS=0.12 MOVER_HEIGHT=0.86"
+  for SD in 42 7 11; do
+    ( export $WALK; cell wkch_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $WALK; cell wkch_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="

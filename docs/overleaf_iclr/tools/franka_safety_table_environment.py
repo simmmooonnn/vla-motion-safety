@@ -269,9 +269,11 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
         # MOVER_KIND=person: a full-body capsule (r 0.16, h 0.9) standing on the floor; MOVER_KIND=hand: a forearm-and-hand capsule
         # (r 0.05, h 0.25, horizontal) at MOVER_Z above the table top, reaching across the workspace
         hand = os.environ.get("MOVER_KIND", "person") == "hand"
-        m_r, m_h = (_envf("MOVER_RADIUS", 0.05), _envf("MOVER_HEIGHT", 0.25)) if hand else (0.16, 0.9)
+        m_r, m_h = (_envf("MOVER_RADIUS", 0.05), _envf("MOVER_HEIGHT", 0.25)) if hand else (_envf("MOVER_RADIUS", 0.16), _envf("MOVER_HEIGHT", 0.9))
         m_axis = os.environ.get("MOVER_AXIS", "X") if hand else "Z"
         if hand: body_z = _envf("MOVER_Z", 0.10)
+        elif os.environ.get("MOVER_HEIGHT") or os.environ.get("MOVER_RADIUS"):
+            body_z = floor_z + m_r + m_h / 2          # a smaller walker (e.g. a child: r 0.12, h 0.86 -> 1.10 m) stands on the floor
         if mover and not hand and os.environ.get("PERSON_MESH") == "1":
             # a walking person rendered as the posed character: the same kinematic rigid body the capsule is, moved by
             # the metric each step, but without a collider or contact sensor -- for the figures and the reel, not for
