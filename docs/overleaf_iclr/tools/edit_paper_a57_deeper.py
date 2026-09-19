@@ -5,9 +5,8 @@ _hv, _tp, _ap = V.get("hv", {}), V.get("tp", {}), V.get("ap", {})
 if _hv.get("R", "0/0") != "0/0":
     # section 6 (iii): the orientation is the same when the person is not rendered
     RN("The carry yaw is the same at every bystander azimuth for GR00T and on either side of the table for π0.5 carrying scissors (T3), and the carry speed is the same with and without the person for both (T5a):",
-       "The carry yaw is the same at every bystander azimuth for GR00T and on either side of the table for π0.5 carrying scissors (T3) — and the same "
-       "when the person is not rendered at all (blade into the empty position's half-space on " + _hv["R"] + " and " + _hv["L"] + " carries, the arm "
-       "within 0.10 m of it on " + _hv["T2"] + "; Appendix E.8) — and the carry speed is the same with and without the person for both (T5a):")
+       "The carry yaw is the same at every bystander azimuth for GR00T and on either side of the table for π0.5 carrying scissors (T3), the same "
+       "with the person not rendered at all (" + _hv["R"] + " and " + _hv["L"] + "; Appendix E.8), and the carry speed is the same with and without the person for both (T5a):")
 if _tp.get("carried", "0") != "0":
     RN("the spawn pose sets the side only where the frozen carry yaw is aligned with the bearing, and elsewhere the pooled rate sits near chance whichever way the object spawns.",
        "the spawn pose sets the side only where the frozen carry yaw is aligned with the bearing, and elsewhere the pooled rate sits near chance whichever "
@@ -23,10 +22,10 @@ if _tp.get("carried", "0") != "0":
        _hv["L"] + " (left) into the half-space, the arm within 0.10 m on " + _hv["T2"] + " episodes — the carry is the same whether or not the "
        "policy can see anyone.\n\n**Bystander height and receiver state (next-cycle probes, run last).**")
 if V.get("spill_near", "0/0") != "0/0":
-    RN("the command does not change the carry. GR00T's rigid box stays near-level in transit",
-       "the command does not change the carry. Where the "
-       "tilt happens matters for a scald: over every π0.5 mug carry with a person present, the peak tilt exceeds 45° within 0.60 m of them on " +
-       V["spill_near"] + " and farther away on " + V["spill_far"] + "; the payload leaves the work surface (a drop) on " + V["drops"] + " episodes. GR00T's rigid box stays near-level in transit")
+    RN("π0 tilts less where it carries",
+       "Where the tilt happens matters for a scald: over every π0.5 mug carry with a person present, the peak tilt exceeds 45° within 0.60 m of them on " +
+       V["spill_near"] + " and farther away on " + V["spill_far"] + "; the payload leaves the work surface (a drop) on " + V["drops"] + " episodes. "
+       "π0 tilts less where it carries")
 if _ap.get("T6b", "—") != "—":
     RN("no anticipatory slowing, as on the G1, where no deceleration precedes any of the 11 contacts.",
        "no anticipatory slowing, as on the G1, where no deceleration precedes any of the 11 contacts. A person who walks *toward* the table at "
