@@ -38,7 +38,7 @@ SKIP = ("probe", "smoke", "still", "demo", "d4_", "d5_", "d6_", "d7_", "d8_", "d
 def canonical(l):
     """Pick-and-place with the adult at the table (six surfaces), the reaching-hand variant, the passer-by variant."""
     b = base(l)
-    if any(x in l for x in SKIP) or "_cmd" in b or "nocol" in b or "handret" in b or "pitcher" in b or l == "t6_hand_s42":
+    if any(x in l for x in SKIP) or "_cmd" in b or "nocol" in b or "handret" in b or "pitcher" in b or "drill" in b or l == "t6_hand_s42":
         return False
     return b.startswith(("t2_", "t3_", "t4_", "t5a_", "t6_hand", "sc_", "wk_", "kit_t1", "ge_")) if l.startswith("ik_") else b.startswith(("t2_", "t3_", "t4_", "t5a_", "t6_hand", "sc_", "wk_"))
 
@@ -236,7 +236,7 @@ N["ik_v_trans"] = f"{st.median(_ikv):.2f}" if _ikv else "—"
 def task(l):
     b = base(l)
     for pre, name in (("sv_", "serving beside the person"), ("ho_", "handover"), ("hr_", "handover, hand parked away (receiver state)"),
-                      ("hw_", "pick-and-place, hand withdraws when touched (reactive proxy)"), ("t4_pitcher", "pick-and-place, pitcher (liquid vessel)"),
+                      ("hw_", "pick-and-place, hand withdraws when touched (reactive proxy)"), ("t3_drill", "pick-and-place, cordless drill (third hazardous object)"), ("t4_pitcher", "pick-and-place, pitcher (liquid vessel)"),
                       ("tp_", "pick-and-place, two bystanders (left and right)"), ("hv_", "pick-and-place, person not rendered (perception ablation)"),
                       ("ap_", "pick-and-place, person approaches at 1.2 m/s and stops"), ("b5_", "pick-and-place, surface x map crossed design"), ("b9_", "pick-and-place, rotated spawn at other placements"),
                       ("ch_tu_", "tool use, child-height bystander"), ("st_tu_", "tool use, seated bystander"),
@@ -300,7 +300,7 @@ def task_row(name, ls):
 
 ORDER_T = ["pick-and-place, person at the table", "pick-and-place, hand reaches in", "pick-and-place, person walks past", "pick-and-place, other placements",
            "pick-and-place, child-height bystander", "pick-and-place, seated bystander", "tool use, child-height bystander", "tool use, seated bystander",
-           "handover, hand parked away (receiver state)", "pick-and-place, hand withdraws when touched (reactive proxy)", "pick-and-place, pitcher (liquid vessel)",
+           "handover, hand parked away (receiver state)", "pick-and-place, hand withdraws when touched (reactive proxy)", "pick-and-place, cordless drill (third hazardous object)", "pick-and-place, pitcher (liquid vessel)",
            "pick-and-place, two bystanders (left and right)", "pick-and-place, person not rendered (perception ablation)",
            "pick-and-place, person approaches at 1.2 m/s and stops", "pick-and-place, surface x map crossed design", "pick-and-place, rotated spawn at other placements",
            "pick-and-place, environment maps", "serving beside the person", "cluttered table", "pour", "push (no grasp)", "tool use (stir, scrape, toss)",
@@ -361,6 +361,13 @@ _tp = [l for l in S if l.startswith("tp_") and "rot" not in l]; _tpr = [l for l 
 N["tp"] = {"any": "{}/{}".format(*pool(_tp, "t3_90_any", lenk="t3")), "p1": _t3(_tp),
            "rot_any": "{}/{}".format(*pool(_tpr, "t3_90_any", lenk="t3")), "rot_p1": _t3(_tpr),
            "ok_any": str(sum(g(l, "t3_ok_done_any", 0) or 0 for l in _tp + _tpr)), "carried": str(sum(g(l, "carried", 0) or 0 for l in _tp + _tpr))}
+_iktp = [l for l in S if l.startswith("ik_tp_sci")]; _iktpw = [l for l in S if l.startswith("ik_tpw_sci")]
+N["ik_tp"] = {"any": "{}/{}".format(*pool(_iktp, "t3_90_any", lenk="t3")), "p1": _t3(_iktp),
+              "w_any": "{}/{}".format(*pool(_iktpw, "t3_90_any", lenk="t3")), "w_ok": str(sum(g(l, "t3_ok_done_any", 0) or 0 for l in _iktpw)),
+              "w_carried": str(sum(g(l, "carried", 0) or 0 for l in _iktpw))}
+_dr = [l for l in S if l.startswith("t3_drill_")]
+N["drill"] = {"R": _t3([l for l in _dr if "_R_" in l]), "L": _t3([l for l in _dr if "_L_" in l]), "carried": str(sum(g(l, "carried", 0) or 0 for l in _dr)),
+              "att": str(sum(g(l, "N", 0) for l in _dr))}
 _ap = [l for l in S if l.startswith("ap_")]
 _k = _n = 0
 for l in _ap:

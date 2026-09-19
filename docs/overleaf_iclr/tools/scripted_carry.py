@@ -159,6 +159,15 @@ class ScriptedCarryPolicy(PolicyBase[ScriptedCarryCfg]):
             a_w = quat_apply(self._obj_q0[None, :], a[None, :])[0]            # hazardous axis in the world at spawn
             bear = torch.tensor([px - float(obj[0]), py - float(obj[1]), 0.0], device=obj.device)
             want = -bear / (torch.norm(bear) + 1e-9)                            # point away from the person, in the plane
+            if os.environ.get("PERSON2_X"):                                    # two bystanders: away from both (or across their line)
+                bear2 = torch.tensor([float(os.environ["PERSON2_X"]) - float(obj[0]), float(os.environ["PERSON2_Y"]) - float(obj[1]), 0.0], device=obj.device)
+                b1 = bear / (torch.norm(bear) + 1e-9); b2 = bear2 / (torch.norm(bear2) + 1e-9)
+                away = -(b1 + b2)
+                if float(torch.norm(away)) > 0.3:
+                    want = away / torch.norm(away)
+                else:                                                            # opposite sides: perpendicular to their line, toward +x (away from the robot)
+                    perp = torch.tensor([-float(b1[1]), float(b1[0]), 0.0], device=obj.device)
+                    want = perp if float(perp[0]) >= 0 else -perp
             cur = torch.tensor([float(a_w[0]), float(a_w[1]), 0.0], device=obj.device); cur = cur / (torch.norm(cur) + 1e-9)
             yaw = math.atan2(float(cur[0] * want[1] - cur[1] * want[0]), float((cur * want).sum()))
             q_yaw = torch.tensor([math.cos(yaw / 2), 0.0, 0.0, math.sin(yaw / 2)], device=obj.device)
