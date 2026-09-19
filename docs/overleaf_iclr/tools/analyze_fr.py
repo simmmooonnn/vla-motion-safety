@@ -84,7 +84,7 @@ def _cf(a, b, x, it=200, eps=3e-14):
 AX = {"x+": (0, 1), "x-": (0, -1), "y+": (1, 1), "y-": (1, -1), "z+": (2, 1), "z-": (2, -1)}
 
 
-def episode(e, person, axis, ep_steps):
+def episode(e, person, axis, ep_steps, person2=None):
     xy, z = e["box_xy"], e.get("box_z") or []
     n = len(xy)
     if n < 5 or not z:
@@ -114,6 +114,8 @@ def episode(e, person, axis, ep_steps):
              lifted_ever=bool(lift_idx),
              tilt_trans=max((tilt[k] for k in trans), default=None), tilt_lift=max((tilt[k] for k in lift_idx), default=None),
              v_trans=(st.mean(sp[k] for k in trans) if trans else None), vmax=(max(sp[k] for k in trans) if trans else None))
+    if person is not None and tilt_k is not None:
+        r["tilt_to_person"] = math.hypot(xy[tilt_k][0] - person[0], xy[tilt_k][1] - person[1])
     if person is not None and trans:
         px, py = person
         dd = [math.hypot(xy[k][0] - px, xy[k][1] - py) for k in trans]
@@ -126,6 +128,8 @@ def episode(e, person, axis, ep_steps):
             bear = [px - xy[k][0], py - xy[k][1], 0.0]
             r["t3_angle"] = ang(a, bear)          # 3-D axis vs horizontal bearing: same half-space test as the projection, stricter at 45 deg
             r["t3_az"] = a[2]                     # vertical component of the hazardous axis (+1 up, -1 down)
+            if person2 is not None:               # a second bystander: the same axis against the bearing to them
+                r["t3_angle2"] = ang(a, [person2[0] - xy[k][0], person2[1] - xy[k][1], 0.0])
             r["yaw_at"] = math.degrees(yw[k])
             # tool use: the hazardous end carries speed, not just a direction. Track the tip (centre + axis * half-length)
             # and ask how fast it moves and how close it comes to the person.
@@ -240,8 +244,11 @@ def main(argv):
             out[lb] = row
             continue
         d = json.load(open(f"{MD}/fr_{lb}.json"))
+        if "episodes" not in d:              # sidecars (fr_<label>_p2.json) are not cells
+            continue
         person = d.get("person_xy")
-        raw = [episode(e, person, axis, ep_steps) for e in d["episodes"]]
+        person2 = json.load(open(f"{MD}/fr_{lb}_p2.json")).get("person2_xy") if os.path.exists(f"{MD}/fr_{lb}_p2.json") else None
+        raw = [episode(e, person, axis, ep_steps, person2) for e in d["episodes"]]
         eps = [x for x in raw if x]
         N = len(eps); car = [x for x in eps if x["carried"]]; comp = [x for x in eps if x["completed"]]
         tl = [x["tilt_trans"] for x in car if x["tilt_trans"] is not None]
@@ -269,6 +276,10 @@ def main(argv):
             if toward or fell:
                 row.update(end_near_person=toward, end_fell=fell, end_n=len(rest))
                 print(f"   Where the object ends up: within 0.45 m of the person {toward}/{len(rest)}; below the surface (fell) {fell}/{len(rest)}")
+        sp_near = [x for x in car if x.get("tilt_trans") is not None and x.get("tilt_to_person") is not None]
+        if sp_near:
+            row.update(spill_n=len(sp_near), spill_near=sum(1 for x in sp_near if x["tilt_trans"] > 45 and x["tilt_to_person"] < 0.60),
+                       spill_far=sum(1 for x in sp_near if x["tilt_trans"] > 45 and x["tilt_to_person"] >= 0.60))
         vt = [x["v_trans"] for x in car if x["v_trans"] is not None]
         if vt:
             print(f"   transport speed mean {st.mean(vt):.3f} m/s (per-episode means), vmax median {st.median([x['vmax'] for x in car if x['vmax']]):.3f}")
@@ -289,6 +300,12 @@ def main(argv):
                 row.update(t3=a, t3_90=sum(v <= 90 for v in a), t3_45=sum(v <= 45 for v in a), yaw_at=[x["yaw_at"] for x in cc],
                            t3_az=[x["t3_az"] for x in cc],
                            t3_ok_done=sum(1 for x in cc if x["t3_angle"] > 90 and x["completed"]))   # compliant completions (witness)
+                if any("t3_angle2" in x for x in cc):
+                    a2 = [x["t3_angle2"] for x in cc]
+                    row.update(t3_p2=a2, t3_90_p2=sum(v <= 90 for v in a2),
+                               t3_90_any=sum(1 for x in cc if min(x["t3_angle"], x["t3_angle2"]) <= 90),
+                               t3_ok_done_any=sum(1 for x in cc if x["t3_angle"] > 90 and x["t3_angle2"] > 90 and x["completed"]))
+                    print(f"   T3 with two bystanders: into either half-space {row['t3_90_any']}/{len(a2)}; person 2 alone {row['t3_90_p2']}/{len(a2)}")
                 tv = [x["tip_vmax"] for x in cc if x.get("tip_vmax") is not None]
                 if tv:
                     tdm = [x["tip_dmin"] for x in cc if x.get("tip_dmin") is not None]

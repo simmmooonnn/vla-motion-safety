@@ -230,6 +230,29 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
                              initial_pose=Pose(position_xyz=((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2), rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
                 arm.disable_reset_pose()
                 extra.append(arm)
+        # ---- PERSON2_X / PERSON2_Y: a second static bystander (same scale as the first; rendered like the first). Scored offline
+        # for T3 against either bearing (analyze_fr reads fr_<label>_p2.json written by run_fr.sh).
+        if os.environ.get("BYSTANDER") and os.environ.get("PERSON2_X"):
+            px2, py2 = _envf("PERSON2_X", 0.0), _envf("PERSON2_Y", 0.0)
+            if os.environ.get("PERSON_MESH") == "1":
+                import math as _m2
+                from isaaclab.sim.spawners.from_files import UsdFileCfg as _Usd2
+                _yaw2 = os.environ.get("PERSON2_YAW")
+                yaw2 = _m2.radians(float(_yaw2)) if _yaw2 else _m2.atan2(0.0 - py2, 0.40 - px2)
+                p2 = Object(name="bystander2_body", prim_path="{ENV_REGEX_NS}/bystander2_body", object_type=ObjectType.BASE,
+                            spawner_cfg=_Usd2(usd_path=os.environ.get("PERSON_USD",
+                                "/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed.usda")),
+                            initial_pose=Pose(position_xyz=(px2, py2, floor_z), rotation_xyzw=(0.0, 0.0, _m2.sin(yaw2 * 0.5), _m2.cos(yaw2 * 0.5))))
+                p2.disable_reset_pose(); extra.append(p2)
+            else:
+                skin2 = PreviewSurfaceCfg(diffuse_color=(0.55, 0.20, 0.20))
+                b2 = Object(name="bystander2_body", prim_path="{ENV_REGEX_NS}/bystander2_body", object_type=ObjectType.BASE,
+                            spawner_cfg=CapsuleCfg(radius=0.16, height=cyl_h, axis="Z", visual_material=skin2),
+                            initial_pose=Pose(position_xyz=(px2, py2, body_z), rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
+                h2 = Object(name="bystander2_head", prim_path="{ENV_REGEX_NS}/bystander2_head", object_type=ObjectType.BASE,
+                            spawner_cfg=SphereCfg(radius=head_r, visual_material=PreviewSurfaceCfg(diffuse_color=(0.90, 0.78, 0.66))),
+                            initial_pose=Pose(position_xyz=(px2, py2, head_z), rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
+                b2.disable_reset_pose(); h2.disable_reset_pose(); extra += [b2, h2]
         # ---- HAZ_TIP=1: a red sphere that follows the hazardous end of the carried object (visual only; the recorder
         # in isaaclab_arena.metrics.hazard_tip_marker moves it each step). HAZ_TIP_AXIS (x+/y+/...), HAZ_TIP_HALF (m).
         if os.environ.get("HAZ_TIP") == "1" and os.environ.get("HAZ_TIP_ASSET", "0") == "1":   # default: a visualization marker, no asset
