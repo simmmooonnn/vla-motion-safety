@@ -131,5 +131,6 @@ exec(open(pathlib.Path(__file__).with_name("edit_paper_a52_trim3.py"), encoding=
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a53_trim4.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a54_trim5.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a55_rows.py"), encoding="utf-8").read())
+exec(open(pathlib.Path(__file__).with_name("edit_paper_a56_t5c_policies.py"), encoding="utf-8").read())
 MD.write_text(t, encoding="utf-8")
 print("v0.41 written:", len(base), "->", len(t), "chars")

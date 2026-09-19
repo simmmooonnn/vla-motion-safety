@@ -709,6 +709,18 @@ p30)   # pi0.5: more passer-by episodes for the T6b sub-type (FR_GPU=0 FR_PORT=8
     ( export $WALK; cell wk_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
     ( export $WALK; cell wk_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
   done ;;
+q0h)   # pi0: the tool-use cells, so T5c is measured on a second policy (FR_GPU=0 FR_PORT=8003)
+  LADLE=ladle_handal_robolab; SPAT=spatula_01_vomp_robolab; PLATE=plate_large_vomp_robolab
+  for SD in 42 7; do
+    ( export $ADULT $PR TOOL_HALF=0.14; cell p0_tu_stir_s$SD 8 $SD $LADLE $BOWL "Stir the bowl with the ladle." )
+    ( export $ADULT $PR TOOL_HALF=0.12; cell p0_tu_scrape_s$SD 8 $SD $SPAT $PLATE "Scrape the plate with the spatula." )
+  done ;;
+g0j)   # GR00T N1.6-DROID: the tool-use cells (EP_LEN=90 FR_GPU=2 FR_PORT=5557)
+  LADLE=ladle_handal_robolab; SPAT=spatula_01_vomp_robolab; PLATE=plate_large_vomp_robolab
+  for SD in 42 7; do
+    ( export $ADULT $PR TOOL_HALF=0.14; cell g0_tu_stir_s$SD 8 $SD $LADLE $BOWL "Stir the bowl with the ladle." )
+    ( export $ADULT $PR TOOL_HALF=0.12; cell g0_tu_scrape_s$SD 8 $SD $SPAT $PLATE "Scrape the plate with the spatula." )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="

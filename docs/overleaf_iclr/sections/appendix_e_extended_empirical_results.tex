@@ -327,14 +327,14 @@ pick-and-place, island kitchen & 32 / 6 / 3 & capability boundary & T2 0 (0/32) 
 
 \begin{table}[H]
 \centering\small
-\caption{Coverage: attempted / carried / delivered episodes per work surface and policy (every tabletop cell; probes and demos excluded; 2424 episodes, 1642 carried, 1053 delivered).}
+\caption{Coverage: attempted / carried / delivered episodes per work surface and policy (every tabletop cell; probes and demos excluded; 2457 episodes, 1642 carried, 1053 delivered).}
 \label{tab:IVb}
 \vspace{4pt}
 \begin{tabular}{@{}llll@{}}
 \toprule
 Work surface & $\pi_{0.5}$ & $\pi_0$ & GR00T N1.6-DROID \\
 \midrule
-dining table & 1431 / 1010 / 640 & 199 / 53 / 22 & 137 / 33 / 13 \\
+dining table & 1431 / 1010 / 640 & 231 / 53 / 22 & 138 / 33 / 13 \\
 kitchen counter & 48 / 44 / 42 & 40 / 24 / 18 & 15 / 12 / 7 \\
 packing station & 56 / 54 / 45 & --- & --- \\
 drawer kitchen & 72 / 58 / 23 & --- & --- \\
@@ -379,7 +379,7 @@ The G1 family measures one policy on one embodiment. The \textbf{tabletop family
 
 \textbf{Interaction geometry.} The dining-table cells above keep the person at the table's left or right edge. Placing them across the far edge or at the two far corners, starting the object on their side, or putting the bowl between the robot and them changes the exposure without changing the finding: across the far edge: T2 0/32 (closest 0.18 m), T3 3/8, T4 11/16; far-left corner: T2 0/32 (closest 0.27 m), T3 2/8, T4 8/15; far-right corner: T2 0/32 (closest 0.20 m), T3 5/10, T4 8/16; object starting on the person's side: T2 2/32 (closest 0.03 m), T3 11/12, T4 16/16; bowl between robot and person: T2 0/32 (closest 0.12 m), T3 14/16, T4 16/16. The tilt is present at every placement; the blade's side follows where the object starts (11/12 when it starts beside the person although the carry then moves away from them), the rotated-spawn result in a new geometry.
 
-\textbf{A third DROID policy.} GR00T N1.6-DROID, the same model family as the G1 policy, runs in this family but slowly: with 90 s episodes it carries on 50/161 episodes. Where it carries, the mug leaves upright by more than 45$^{\circ}$ on 29/37 (11--169$^{\circ}$); its links come within 0.10 m of the person on 10/106 episodes; transports with the person at the table pass inside the stop distance on 35/35; the scissors' tip points into the person's half-space on 2/10; the reaching hand is reached on 5/10 carried episodes.
+\textbf{A third DROID policy.} GR00T N1.6-DROID, the same model family as the G1 policy, runs in this family but slowly: with 90 s episodes it carries on 50/162 episodes. Where it carries, the mug leaves upright by more than 45$^{\circ}$ on 29/37 (11--169$^{\circ}$); its links come within 0.10 m of the person on 10/107 episodes; transports with the person at the table pass inside the stop distance on 35/35; the scissors' tip points into the person's half-space on 2/10; the reaching hand is reached on 5/10 carried episodes.
 
 \textbf{A crossed surface $\times$ map design (next-cycle probe).} Two work surfaces under three environment maps, one seed, eight episodes per cell (Table IVd): every mug carry completes under every map, and the map is not always inert --- at the counter the mug leaves upright by more than 45$^{\circ}$ on 8/8 carries under the lounge map and 3/8 under the outdoor courtyard map, at the packing station on 4/8--6/8; the scissors' presentation is too sparse per cell to compare (9/28 pooled). A surface $\times$ map effect on tilt is therefore a live hypothesis for the next cycle, not a result.
 
