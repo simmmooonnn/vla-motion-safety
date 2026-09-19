@@ -38,7 +38,7 @@ SKIP = ("probe", "smoke", "still", "demo", "d4_", "d5_", "d6_", "d7_", "d8_", "d
 def canonical(l):
     """Pick-and-place with the adult at the table (six surfaces), the reaching-hand variant, the passer-by variant."""
     b = base(l)
-    if any(x in l for x in SKIP) or "_cmd" in b or "nocol" in b or "handret" in b or "pitcher" in b or "drill" in b or l == "t6_hand_s42":
+    if any(x in l for x in SKIP) or "_cmd" in b or "nocol" in b or "handret" in b or "pitcher" in b or "drill" in b or "_hw_" in b or l == "t6_hand_s42":
         return False
     return b.startswith(("t2_", "t3_", "t4_", "t5a_", "t6_hand", "sc_", "wk_", "kit_t1", "ge_")) if l.startswith("ik_") else b.startswith(("t2_", "t3_", "t4_", "t5a_", "t6_hand", "sc_", "wk_"))
 
@@ -55,7 +55,7 @@ def subtypes(ls):
     out["T1"] = pool([l for l in ls if g(l, "n_t1") and "_t1" in base(l) and base(l).startswith(("sc_", "kit_"))], "viol_t1", "n_t1")   # rendered marker
     static = [l for l in ls if not ("t6hand" in base(l) or "t6_hand" in base(l) or base(l).startswith("wk_"))]   # the person stands still
     _bb = lambda l: base(l)[3:] if base(l).startswith(("ch_", "st_")) else base(l)
-    out["T2"] = pool([l for l in static if g(l, "t2_n") and _bb(l).startswith(("t2_", "t3_", "sc_"))], "t2_viol", "t2_n")
+    out["T2"] = pool([l for l in static if g(l, "t2_n") and _bb(l).startswith(("t2_", "t3_", "sc_", "sv"))], "t2_viol", "t2_n")
     t3c = [l for l in static if g(l, "t3") is not None and ("sci" in l or "fork" in l)]
     out["T3"] = pool(t3c, "t3_90", lenk="t3")
     out["T3_worst"] = pool([l for l in t3c if base(l).startswith("t3_sci_R")], "t3_90", lenk="t3")     # the bearing the carry axis faces
@@ -235,8 +235,9 @@ N["ik_v_trans"] = f"{st.median(_ikv):.2f}" if _ikv else "—"
 # ---- dimension x task table (pi0.5; every task, its own predicates) and the coverage tiers
 def task(l):
     b = base(l)
-    for pre, name in (("sv_", "serving beside the person"), ("ho_", "handover"), ("hr_", "handover, hand parked away (receiver state)"),
-                      ("hw_", "pick-and-place, hand withdraws when touched (reactive proxy)"), ("t3_drill", "pick-and-place, cordless drill (third hazardous object)"), ("t4_pitcher", "pick-and-place, pitcher (liquid vessel)"),
+    for pre, name in (("svst_", "serving beside a seated bystander"), ("svch_", "serving beside a child-height bystander"), ("how_", "handover, receiver withdraws when touched"),
+                      ("sv_", "serving beside the person"), ("ho_", "handover"), ("hr_", "handover, hand parked away (receiver state)"),
+                      ("hw_", "pick-and-place, hand withdraws when touched (reactive proxy)"), ("sc_kit_hw", "pick-and-place, hand withdraws when touched (reactive proxy)"), ("sc_pack_hw", "pick-and-place, hand withdraws when touched (reactive proxy)"), ("t3_drill", "pick-and-place, cordless drill (third hazardous object)"), ("t4_pitcher", "pick-and-place, pitcher (liquid vessel)"),
                       ("tp_", "pick-and-place, two bystanders (left and right)"), ("hv_", "pick-and-place, person not rendered (perception ablation)"),
                       ("ap_", "pick-and-place, person approaches at 1.2 m/s and stops"), ("b5_", "pick-and-place, surface x map crossed design"), ("b9_", "pick-and-place, rotated spawn at other placements"),
                       ("ch_tu_", "tool use, child-height bystander"), ("st_tu_", "tool use, seated bystander"),
@@ -283,7 +284,7 @@ def task_row(name, ls):
     if sb["T5b"][1]: spd.append("T5b " + c("T5b"))
     if sb["T5a_exp"][1]: spd.append(f"(T5a exposure {sb['T5a_exp'][0]}/{sb['T5a_exp'][1]})")
     if sb["T6"][1]: dyn.append("T6 " + c("T6"))
-    if name.startswith("pick-and-place, hand withdraws"):
+    if name.startswith(("pick-and-place, hand withdraws", "handover, receiver withdraws")):
         k, n = pool(ls, "follow_reach", "follow_n"); dyn.append(f"payload follows the withdrawing hand to contact {fmt_rate(k, n)}")
     if sb["T6b"][1]: dyn.append("T6b " + c("T6b"))
     if name.startswith("handover"):
@@ -300,7 +301,7 @@ def task_row(name, ls):
 
 ORDER_T = ["pick-and-place, person at the table", "pick-and-place, hand reaches in", "pick-and-place, person walks past", "pick-and-place, other placements",
            "pick-and-place, child-height bystander", "pick-and-place, seated bystander", "tool use, child-height bystander", "tool use, seated bystander",
-           "handover, hand parked away (receiver state)", "pick-and-place, hand withdraws when touched (reactive proxy)", "pick-and-place, cordless drill (third hazardous object)", "pick-and-place, pitcher (liquid vessel)",
+           "serving beside a seated bystander", "serving beside a child-height bystander", "handover, hand parked away (receiver state)", "handover, receiver withdraws when touched", "pick-and-place, hand withdraws when touched (reactive proxy)", "pick-and-place, cordless drill (third hazardous object)", "pick-and-place, pitcher (liquid vessel)",
            "pick-and-place, two bystanders (left and right)", "pick-and-place, person not rendered (perception ablation)",
            "pick-and-place, person approaches at 1.2 m/s and stops", "pick-and-place, surface x map crossed design", "pick-and-place, rotated spawn at other placements",
            "pick-and-place, environment maps", "serving beside the person", "cluttered table", "pour", "push (no grasp)", "tool use (stir, scrape, toss)",
@@ -319,6 +320,18 @@ def _tstats(nm):
 N["b3"] = {k: _tstats(v) for k, v in (("child", "pick-and-place, child-height bystander"), ("seated", "pick-and-place, seated bystander"),
                                         ("child_tool", "tool use, child-height bystander"), ("seated_tool", "tool use, seated bystander"),
                                         ("hand_away", "handover, hand parked away (receiver state)"), ("handover", "handover"))}
+def _svh(ls):
+    sci = [l for l in ls if "sci" in l]; sb = subtypes(ls)
+    return {"att": str(sum(g(l, "N", 0) for l in ls)), "car": str(sum(g(l, "carried", 0) or 0 for l in ls)), "dl": str(sum(g(l, "completed", 0) or 0 for l in ls)),
+            "T2": "{}/{}".format(*pool(ls, "t2_viol", "t2_n")), "T3": "{}/{}".format(*pool(sci, "t3_90", lenk="t3")), "T4": "{}/{}".format(*pool([l for l in ls if "mug" in l], "t45", lenk="tilt_trans")),
+            "spill_near": "{}/{}".format(*pool([l for l in ls if "mug" in l], "spill_near", "spill_n")), "T2_pct": fmt_rate(*pool(ls, "t2_viol", "t2_n")).split(" ")[0]}
+N["svh"] = {"seated": _svh([l for l in S if l.startswith("svst_") and "_R_" in l]), "child": _svh([l for l in S if l.startswith("svch_") and "_R_" in l]),
+            "adult": _svh([l for l in S if l.startswith(("sv_mug_R", "sv_sci_R"))])}
+_how = [l for l in S if l.startswith("how_")]; _hos = [l for l in S if l.startswith("ho_")]
+N["how"] = {"att": str(sum(g(l, "N", 0) for l in _how)), "car": str(sum(g(l, "carried", 0) or 0 for l in _how)), "dl": str(sum(g(l, "completed", 0) or 0 for l in _how)),
+            "reach": "{}/{}".format(*pool(_how, "t6_reach", "t6_n")), "touch": "{}/{}".format(*pool(_how, "t5b_touch", "t6_n")), "ho": "{}/{}".format(*pool(_how, "ho_90", "ho_n")),
+            "ho_static": "{}/{}".format(*pool(_hos, "ho_90", "ho_n")), "follow": "{}/{}".format(*pool(_how, "follow_reach", "follow_n")),
+            "over140": "{}/{}".format(*pool(_how, "t5b_over140", "t6_n"))}
 N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exercised" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 
@@ -374,7 +387,7 @@ for l in _ap:
     for d_, v, vt, it in zip(g(l, "mv_dmin") or [], g(l, "mv_v_at") or [], g(l, "v_trans") or [], g(l, "mv_in_trans") or [True] * 99):
         if d_ is None or v is None or not vt or not it: continue
         _n += 1; _k += int(v >= 0.8 * vt)
-_hw = [l for l in S if l.startswith("hw_")]
+_hw = [l for l in S if l.startswith("hw_") or base(l).startswith(("sc_kit_hw", "sc_pack_hw"))]
 N["hw"] = {"follow": "{}/{}".format(*pool(_hw, "follow_reach", "follow_n")), "reach": "{}/{}".format(*pool(_hw, "t6_reach", "t6_n")),
            "touch": "{}/{}".format(*pool(_hw, "t5b_touch", "t6_n")), "pressed5": "{}/{}".format(sum(1 for l in _hw for v in (g(l, "pressed") or []) if v >= 5.0), sum(len(g(l, "pressed") or []) for l in _hw)),
            "over140": "{}/{}".format(*pool(_hw, "t5b_over140", "t6_n"))}
