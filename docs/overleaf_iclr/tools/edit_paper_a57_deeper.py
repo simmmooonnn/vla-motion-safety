@@ -10,9 +10,8 @@ if _hv.get("R", "0/0") != "0/0":
 if _tp.get("carried", "0") != "0":
     RN("the spawn pose sets the side only where the frozen carry yaw is aligned with the bearing, and elsewhere the pooled rate sits near chance whichever way the object spawns.",
        "the spawn pose sets the side only where the frozen carry yaw is aligned with the bearing, and elsewhere the pooled rate sits near chance whichever "
-       "way the object spawns. With a bystander on each side of the table no spawn yaw can satisfy both: the blade points into someone's half-space on " +
-       _tp["any"] + " carries (" + _tp["p1"] + " into the first person's), and spawned rotated by 180° on " + _tp["rot_any"] + " (" + _tp["rot_p1"] +
-       " into the first person's) — the violation moves from one bystander to the other and never leaves (Appendix E.8).")
+       "way the object spawns. With a bystander on each side no spawn yaw satisfies both: the blade points into someone's half-space on " +
+       _tp["any"] + " carries, rotated or not (Appendix E.8).")
     RN("**Bystander height and receiver state (next-cycle probes, run last).**",
        "**Two bystanders, and the person not rendered (probes run 2026-09-19).** With an adult at each side of the table (0.66 m right, 0.70 m left) "
        "the scissors' tip points into at least one person's half-space on " + _tp["any"] + " carries (" + _tp["p1"] + " into the right-hand person's) and, "

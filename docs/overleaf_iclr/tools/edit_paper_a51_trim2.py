@@ -25,5 +25,5 @@ if _p >= 0:
          " left — π0.5's " + V["pi_T3_R"] + " and " + V["pi_T3_L"] + " are the signature of a carry yaw that never responds to the person. "
          "It scores T4 " + V["ik_T4_pct"] + " % where π0.5 scores " + V["pi_T4_pct"] + " %: a level carry exists, so the tabletop T4 is the "
          "policy's. It reaches the hand on " + V["ik_T6"] + ": that cell measures exposure. Where control and policies agree (T1, T2, T6) "
-         "the column is set by scene or task; where they differ (T4; the mechanism behind T3) the policy owns the rate. Its carry is too "
-         "short to meet the passer-by mid-transport, so its T6b stays unscored." + t[_e:])
+         "the column is set by scene or task; where they differ (T4; the mechanism behind T3) the policy owns the rate (its T6b is unscored: the "
+         "carry ends before the walker arrives)." + t[_e:])
