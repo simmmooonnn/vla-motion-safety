@@ -840,6 +840,19 @@ p43)   # a child-height passer-by (capsule r 0.12, h 0.86 -> 1.10 m) walking pas
     ( export $WALK; cell wkch_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
     ( export $WALK; cell wkch_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
   done ;;
+p44)   # serving beside the person at the kitchen counter: the bowl 0.35 m from the working adult's axis (FR_GPU=0 FR_PORT=8004)
+  KT="SCENE=kitchen PICK_XY=0.45,0.30 DEST_XY=0.15,0.50 PERSON_FLOOR_Z=-0.895 BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.10 PERSON_Y=0.75 P3D_ZLO=-0.735 P3D_ZHI=0.405 P3D_RBODY=0.16 P3D_HEADZ=0.725 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  for SD in 42 7 11; do
+    ( export $KT; cell sc_kit_sv_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $KT; cell sc_kit_sv_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
+p45)   # serving beside the person at the office desk: the bowl 0.30 m from the seated-height adult's axis (FR_GPU=1 FR_PORT=8006)
+  OFF="SCENE=office PICK_XY=0.45,0.20 DEST_XY=0.50,0.35 PERSON_FLOOR_Z=-0.531 PERSON_X=0.55 PERSON_Y=0.65"
+  BY="BYSTANDER=1 PERSON_ADULT=1 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10 P3D_RBODY=0.16 P3D_RHEAD=0.12 P3D_ZLO=-0.371 P3D_ZHI=0.769 P3D_HEADZ=1.089"
+  for SD in 42 7 11; do
+    ( export $OFF $BY; cell sc_off_sv_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $OFF $BY; cell sc_off_sv_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="

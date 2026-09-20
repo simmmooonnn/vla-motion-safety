@@ -38,7 +38,7 @@ SKIP = ("probe", "smoke", "still", "demo", "d4_", "d5_", "d6_", "d7_", "d8_", "d
 def canonical(l):
     """Pick-and-place with the adult at the table (six surfaces), the reaching-hand variant, the passer-by variant."""
     b = base(l)
-    if any(x in l for x in SKIP) or "_cmd" in b or "nocol" in b or "handret" in b or "pitcher" in b or "drill" in b or "_hw_" in b or l == "t6_hand_s42":
+    if any(x in l for x in SKIP) or "_cmd" in b or "nocol" in b or "handret" in b or "pitcher" in b or "drill" in b or "_hw_" in b or "_sv_" in b or l == "t6_hand_s42":
         return False
     return b.startswith(("t2_", "t3_", "t4_", "t5a_", "t6_hand", "sc_", "wk_", "kit_t1", "ge_")) if l.startswith("ik_") else b.startswith(("t2_", "t3_", "t4_", "t5a_", "t6_hand", "sc_", "wk_"))
 
@@ -236,7 +236,7 @@ N["ik_v_trans"] = f"{st.median(_ikv):.2f}" if _ikv else "—"
 def task(l):
     b = base(l)
     for pre, name in (("svst_", "serving beside a seated bystander"), ("svch_", "serving beside a child-height bystander"), ("how_", "handover, receiver withdraws when touched"),
-                      ("sv_", "serving beside the person"), ("ho_", "handover"), ("hr_", "handover, hand parked away (receiver state)"),
+                      ("sv_", "serving beside the person"), ("sc_kit_sv", "serving beside the person, kitchen counter"), ("sc_off_sv", "serving beside the person, office desk"), ("ho_", "handover"), ("hr_", "handover, hand parked away (receiver state)"),
                       ("hw_", "pick-and-place, hand withdraws when touched (reactive proxy)"), ("sc_kit_hw", "pick-and-place, hand withdraws when touched (reactive proxy)"), ("sc_pack_hw", "pick-and-place, hand withdraws when touched (reactive proxy)"), ("t3_drill", "pick-and-place, cordless drill (third hazardous object)"), ("t4_pitcher", "pick-and-place, pitcher (liquid vessel)"),
                       ("tp_", "pick-and-place, two bystanders (left and right)"), ("hv_", "pick-and-place, person not rendered (perception ablation)"),
                       ("ap_", "pick-and-place, person approaches at 1.2 m/s and stops"), ("b5_", "pick-and-place, surface x map crossed design"), ("b9_", "pick-and-place, rotated spawn at other placements"),
@@ -304,7 +304,7 @@ ORDER_T = ["pick-and-place, person at the table", "pick-and-place, hand reaches 
            "serving beside a seated bystander", "serving beside a child-height bystander", "handover, hand parked away (receiver state)", "handover, receiver withdraws when touched", "pick-and-place, hand withdraws when touched (reactive proxy)", "pick-and-place, cordless drill (third hazardous object)", "pick-and-place, pitcher (liquid vessel)",
            "pick-and-place, two bystanders (left and right)", "pick-and-place, person not rendered (perception ablation)",
            "pick-and-place, person approaches at 1.2 m/s and stops", "pick-and-place, surface x map crossed design", "pick-and-place, rotated spawn at other placements",
-           "pick-and-place, environment maps", "serving beside the person", "cluttered table", "pour", "push (no grasp)", "tool use (stir, scrape, toss)",
+           "pick-and-place, environment maps", "serving beside the person", "serving beside the person, kitchen counter", "serving beside the person, office desk", "cluttered table", "pour", "push (no grasp)", "tool use (stir, scrape, toss)",
            "tool use, told to go slowly", "handover", "put away in a drawer", "clear the table", "close a door", "pick-and-place, island kitchen"]
 N["tab4_rows"] = "\n".join(task_row(nm, groups[nm]) for nm in ORDER_T if nm in groups)
 # per-task numbers used in the text (next-cycle B3 / B1 cells)
@@ -347,6 +347,8 @@ N["wkch"] = {"T6b": f"{_k}/{_n}" if _n else "—", "car": str(sum(g(l, "carried"
              "touch": "{}/{}".format(*pool(_wc, "t5b_touch", "t6_n")), "dmin": (f"{min(v for l in _wc for v in (g(l, 'mv_dmin') or [9])):.2f}" if _wc else "—")}
 N["svh_L"] = {"seated": _svh([l for l in S if l.startswith("svst_") and "_L_" in l]), "child": _svh([l for l in S if l.startswith("svch_") and "_L_" in l]),
               "adult": _svh([l for l in S if l.startswith(("sv_mug_L", "sv_sci_L"))])}
+N["sv_surf"] = {"counter": _svh([l for l in S if base(l).startswith("sc_kit_sv")]), "office": _svh([l for l in S if base(l).startswith("sc_off_sv")])}
+N["sv_T2"] = "{}/{}".format(*pool([l for l in S if l.startswith("sv_")], "t2_viol", "t2_n"))
 N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exercised" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 
