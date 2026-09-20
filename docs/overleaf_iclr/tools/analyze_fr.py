@@ -348,7 +348,11 @@ def main(argv):
                 mvin = [bool(h.get("mv_k") is not None and x.get("k_lift") is not None
                              and x["k_lift"] <= h["mv_k"] <= (x["k_place"] if x.get("k_place") is not None else 10 ** 9))
                         for h, x in zip(Hc, car) if h.get("mv_d") is not None]      # closest approach during the transport?
-                row.update(mv_dmin=mvd, mv_v_at=mvv, mv_in_trans=mvin)
+                # ... and at least 1 s (15 steps) before the place, so a payload slowing to be set down is not read as yielding
+                mvcore = [bool(h.get("mv_k") is not None and x.get("k_lift") is not None and x.get("k_place") is not None
+                               and x["k_lift"] <= h["mv_k"] <= x["k_place"] - 15)
+                          for h, x in zip(Hc, car) if h.get("mv_d") is not None]
+                row.update(mv_dmin=mvd, mv_v_at=mvv, mv_in_trans=mvin, mv_in_core=mvcore)
                 _vt = row.get("v_trans") or []
                 print(f"   Passer-by: closest payload-to-person distance median {st.median(mvd):.2f} m (min {min(mvd):.2f}); "
                       f"payload speed there median {st.median(mvv):.3f} m/s" + (f" vs {st.mean(_vt):.3f} m/s over the transport" if _vt else ""))
