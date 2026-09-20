@@ -366,6 +366,10 @@ def _t6b(ls):
 N["wk_surf"] = {k: {"T6b": _t6b(v), "late": "{}/{}".format(sum(1 for l in v for a_, b_ in zip(g(l, "mv_in_trans") or [], g(l, "mv_in_core") or []) if a_ and not b_), sum(1 for l in v for a_ in (g(l, "mv_in_trans") or []) if a_)), "car": str(sum(g(l, "carried", 0) or 0 for l in v)), "att": str(sum(g(l, "N", 0) for l in v)), "touch": "{}/{}".format(*pool(v, "t5b_touch", "t6_n"))} for k, v in _wk2.items()}
 _hot = [l for l in S if policy(l) == "pi05" and not any(x in l for x in SKIP) and "hot" in l and not l.startswith("sc_") and g(l, "tilt_trans")]
 N["pi_t4_hot"] = "{}/{}".format(*pool(_hot, "t45", lenk="tilt_trans")); N["pi_t4_hot27"] = "{}/{}".format(*pool(_hot, "t27", lenk="tilt_trans"))
+N["svd_side"] = {k: _svh([l for l in S if l.startswith(pre) and side in l]) for k, pre, side in (("d45R", "svd45_", "_R_"), ("d55R", "svd55_", "_R_"), ("d45L", "svd45_", "_L_"), ("d55L", "svd55_", "_L_"))}
+_hws = [l for l in S if l.startswith("hw_sci")]
+N["hw_sci"] = {"reach": "{}/{}".format(*pool(_hws, "t6_reach", "t6_n")), "touch": "{}/{}".format(*pool(_hws, "t5b_touch", "t6_n")), "follow": "{}/{}".format(*pool(_hws, "follow_reach", "follow_n")),
+               "ho": "{}/{}".format(*pool(_hws, "ho_90", "ho_n")), "car": str(sum(g(l, "carried", 0) or 0 for l in _hws)), "att": str(sum(g(l, "N", 0) for l in _hws))}
 N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exercised" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 
