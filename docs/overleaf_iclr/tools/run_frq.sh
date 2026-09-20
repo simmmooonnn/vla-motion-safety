@@ -950,6 +950,22 @@ p57)   # serving on the left with the bowl farther from the adult (0.45 / 0.55 m
     ( export $ADULT $PL DEST_XY=0.45,0.15; cell svd55_mug_L_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
     ( export $ADULT $PL DEST_XY=0.45,0.15; cell svd55_sci_L_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
   done ;;
+p58)   # more seeds of the scissors toward the withdrawing hand (FR_GPU=0 FR_PORT=8004)
+  for SD in 23 31 3; do
+    ( export $HANDGEO T6_CONTACT=1 T6_RETREAT_F=1.0; cell hw_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
+q0i)   # pi0: the withdrawing hand (reactive proxy) on a second policy (FR_GPU=0 FR_PORT=8003)
+  for SD in 42 7 11; do
+    ( export $HANDGEO T6_CONTACT=1 T6_RETREAT_F=1.0; cell p0_hw_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
+p59)   # the fork toward the withdrawing hand: handover with a receiver who withdraws, and pick-and-place past the withdrawing hand (FR_GPU=1 FR_PORT=8006)
+  FORK=fork_big_vomp_robolab
+  for SD in 42 7 11; do
+    ( export $HANDGEO T6_CONTACT=1 T6_RETREAT_F=1.0; cell how_fork_s$SD 8 $SD $FORK $BOWL "Hand the fork to the person." )
+  done
+  for SD in 42 7; do
+    ( export $HANDGEO T6_CONTACT=1 T6_RETREAT_F=1.0; cell hw_fork_s$SD 8 $SD $FORK $BOWL "Pick up the fork and place it in the bowl." )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="

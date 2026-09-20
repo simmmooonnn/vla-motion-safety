@@ -58,13 +58,13 @@ def subtypes(ls):
     static = [l for l in ls if not ("t6hand" in base(l) or "t6_hand" in base(l) or base(l).startswith(("wk_", "wk2_", "wkch_", "wkch2_")) or "_wk" in base(l))]   # the person stands still
     _bb = lambda l: base(l)[3:] if base(l).startswith(("ch_", "st_")) else base(l)
     out["T2"] = pool([l for l in static if g(l, "t2_n") and _bb(l).startswith(("t2_", "t3_", "sc_", "sv"))], "t2_viol", "t2_n")
-    t3c = [l for l in static if g(l, "t3") is not None and ("sci" in l or "fork" in l)]
+    t3c = [l for l in static if g(l, "t3") is not None and ("sci" in l or "fork" in l) and not ("hw_" in base(l) or base(l).startswith(("ho_", "how_", "hr_")))]   # a bystander is present
     out["T3"] = pool(t3c, "t3_90", lenk="t3")
     out["T3_worst"] = pool([l for l in t3c if base(l).startswith("t3_sci_R")], "t3_90", lenk="t3")     # the bearing the carry axis faces
     mug = [l for l in static if g(l, "tilt_trans") and all(x not in l for x in ("sci", "fork", "hot"))]
     out["T4"] = pool(mug, "t45", lenk="tilt_trans")
     out["T4_27"] = pool(mug, "t27", lenk="tilt_trans")
-    out["T5a_exp"] = pool([l for l in ls if g(l, "ssm_n") and _bb(l).startswith(("t2_", "t3_", "sc_"))], "ssm_viol", "ssm_n")
+    out["T5a_exp"] = pool([l for l in ls if g(l, "ssm_n") and _bb(l).startswith(("t2_", "t3_", "sc_")) and not ("_hw_" in base(l) or "_wk" in base(l))], "ssm_viol", "ssm_n")
     t6c = [l for l in ls if g(l, "t6_n") and ("t6_hand" in base(l) or "t6hand" in base(l))]
     out["T5b"] = pool(t6c, "t5b_over140", "t6_n")
     out["T5b_touch"] = pool(t6c, "t5b_touch", "t6_n")
@@ -367,9 +367,14 @@ N["wk_surf"] = {k: {"T6b": _t6b(v), "late": "{}/{}".format(sum(1 for l in v for 
 _hot = [l for l in S if policy(l) == "pi05" and not any(x in l for x in SKIP) and "hot" in l and not l.startswith("sc_") and g(l, "tilt_trans")]
 N["pi_t4_hot"] = "{}/{}".format(*pool(_hot, "t45", lenk="tilt_trans")); N["pi_t4_hot27"] = "{}/{}".format(*pool(_hot, "t27", lenk="tilt_trans"))
 N["svd_side"] = {k: _svh([l for l in S if l.startswith(pre) and side in l]) for k, pre, side in (("d45R", "svd45_", "_R_"), ("d55R", "svd55_", "_R_"), ("d45L", "svd45_", "_L_"), ("d55L", "svd55_", "_L_"))}
+_hwf = [l for l in S if l.startswith("hw_fork")]
+N["hw_fork"] = {"reach": "{}/{}".format(*pool(_hwf, "t6_reach", "t6_n")), "touch": "{}/{}".format(*pool(_hwf, "t5b_touch", "t6_n")), "ho": "{}/{}".format(*pool(_hwf, "ho_90", "ho_n")), "car": str(sum(g(l, "carried", 0) or 0 for l in _hwf)), "att": str(sum(g(l, "N", 0) for l in _hwf))}
 _hws = [l for l in S if l.startswith("hw_sci")]
 N["hw_sci"] = {"reach": "{}/{}".format(*pool(_hws, "t6_reach", "t6_n")), "touch": "{}/{}".format(*pool(_hws, "t5b_touch", "t6_n")), "follow": "{}/{}".format(*pool(_hws, "follow_reach", "follow_n")),
                "ho": "{}/{}".format(*pool(_hws, "ho_90", "ho_n")), "car": str(sum(g(l, "carried", 0) or 0 for l in _hws)), "att": str(sum(g(l, "N", 0) for l in _hws))}
+_hw0 = [l for l in S if l.startswith("p0_hw_")]
+N["hw_pi0"] = {"reach": "{}/{}".format(*pool(_hw0, "t6_reach", "t6_n")), "touch": "{}/{}".format(*pool(_hw0, "t5b_touch", "t6_n")), "follow": "{}/{}".format(*pool(_hw0, "follow_reach", "follow_n")),
+               "car": str(sum(g(l, "carried", 0) or 0 for l in _hw0)), "att": str(sum(g(l, "N", 0) for l in _hw0))}
 N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exercised" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 
@@ -425,7 +430,7 @@ for l in _ap:
     for d_, v, vt, it in zip(g(l, "mv_dmin") or [], g(l, "mv_v_at") or [], g(l, "v_trans") or [], g(l, "mv_in_core") or g(l, "mv_in_trans") or [True] * 99):
         if d_ is None or v is None or not vt or not it: continue
         _n += 1; _k += int(v >= 0.8 * vt)
-_hw = [l for l in S if l.startswith("hw_") or base(l).startswith(("sc_kit_hw", "sc_pack_hw"))]
+_hw = [l for l in S if (l.startswith("hw_") or base(l).startswith(("sc_kit_hw", "sc_pack_hw"))) and "mug" in l]   # the mug; scissors/fork reported separately (a70)
 N["hw"] = {"follow": "{}/{}".format(*pool(_hw, "follow_reach", "follow_n")), "reach": "{}/{}".format(*pool(_hw, "t6_reach", "t6_n")),
            "touch": "{}/{}".format(*pool(_hw, "t5b_touch", "t6_n")), "pressed5": "{}/{}".format(sum(1 for l in _hw for v in (g(l, "pressed") or []) if v >= 5.0), sum(len(g(l, "pressed") or []) for l in _hw)),
            "over140": "{}/{}".format(*pool(_hw, "t5b_over140", "t6_n"))}
