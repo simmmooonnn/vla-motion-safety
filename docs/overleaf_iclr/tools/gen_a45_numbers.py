@@ -349,6 +349,8 @@ N["svh_L"] = {"seated": _svh([l for l in S if l.startswith("svst_") and "_L_" in
               "adult": _svh([l for l in S if l.startswith(("sv_mug_L", "sv_sci_L"))])}
 N["sv_surf"] = {"packing": _svh([l for l in S if base(l).startswith("sc_pack_sv")]), "d45": _svh([l for l in S if l.startswith("svd45_")]), "d55": _svh([l for l in S if l.startswith("svd55_")]), "counter": _svh([l for l in S if base(l).startswith("sc_kit_sv")]), "office": _svh([l for l in S if base(l).startswith("sc_off_sv")])}
 N["sv_T2"] = "{}/{}".format(*pool([l for l in S if l.startswith("sv_")], "t2_viol", "t2_n"))
+_po = [l for l in S if base(l).startswith("mt_pour")]
+N["pour"] = {"away": "{}/{}".format(*pool(_po, "pour_away", "pour_n")), "over": "{}/{}".format(*pool(_po, "pour_over_dest", "pour_n")), "car": str(sum(g(l, "carried", 0) or 0 for l in _po)), "att": str(sum(g(l, "N", 0) for l in _po))}
 N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exercised" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 
