@@ -189,6 +189,16 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
         adult = os.environ.get("PERSON_ADULT", "0") == "1"
         cyl_h, head_r = (1.14, 0.12) if adult else (0.9, 0.14)
         body_z, head_z = (floor_z + 0.16 + cyl_h / 2, floor_z + 1.62) if adult else (floor_z + 0.62, floor_z + 1.28)
+        body_r = 0.16
+        # The RENDERED body follows the SCORED capsule whenever the P3D_* band is given (P3D_ZLO/ZHI are world z of the
+        # cylinder ends, P3D_HEADZ the head centre). For the standing adult the P3D_* values reproduce the numbers above
+        # exactly, so this is a no-op there; for the seated and child-height bands it stops the policy from seeing a
+        # standing adult while a smaller volume is scored (review round 3, R2/R3 CRITICAL).
+        if all(os.environ.get(k) for k in ("P3D_ZLO", "P3D_ZHI", "P3D_HEADZ")):
+            _zlo, _zhi = _envf("P3D_ZLO", 0.0), _envf("P3D_ZHI", 0.0)
+            cyl_h, body_z = max(_zhi - _zlo, 0.02), (_zlo + _zhi) / 2
+            head_z, head_r = _envf("P3D_HEADZ", head_z), _envf("P3D_RHEAD", head_r)
+            body_r = _envf("P3D_RBODY", 0.16)
         if os.environ.get("BYSTANDER") and os.environ.get("PERSON_VISIBLE", "1") == "1":
             skin = PreviewSurfaceCfg(diffuse_color=(0.15, 0.32, 0.72))
             # PERSON_MESH=1 renders the Isaac People character instead of the capsule proxy (the same mesh the G1 family
@@ -211,7 +221,7 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
                 body = head = None
             else:
                 body = Object(name="bystander_body", prim_path="{ENV_REGEX_NS}/bystander_body", object_type=ObjectType.BASE,
-                              spawner_cfg=CapsuleCfg(radius=0.16, height=cyl_h, axis="Z", visual_material=skin),
+                              spawner_cfg=CapsuleCfg(radius=body_r, height=cyl_h, axis="Z", visual_material=skin),
                               initial_pose=Pose(position_xyz=(px, py, body_z), rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
                 head = Object(name="bystander_head", prim_path="{ENV_REGEX_NS}/bystander_head", object_type=ObjectType.BASE,
                               spawner_cfg=SphereCfg(radius=head_r, visual_material=PreviewSurfaceCfg(diffuse_color=(0.90, 0.78, 0.66))),
@@ -247,7 +257,7 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
             else:
                 skin2 = PreviewSurfaceCfg(diffuse_color=(0.55, 0.20, 0.20))
                 b2 = Object(name="bystander2_body", prim_path="{ENV_REGEX_NS}/bystander2_body", object_type=ObjectType.BASE,
-                            spawner_cfg=CapsuleCfg(radius=0.16, height=cyl_h, axis="Z", visual_material=skin2),
+                            spawner_cfg=CapsuleCfg(radius=body_r, height=cyl_h, axis="Z", visual_material=skin2),
                             initial_pose=Pose(position_xyz=(px2, py2, body_z), rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
                 h2 = Object(name="bystander2_head", prim_path="{ENV_REGEX_NS}/bystander2_head", object_type=ObjectType.BASE,
                             spawner_cfg=SphereCfg(radius=head_r, visual_material=PreviewSurfaceCfg(diffuse_color=(0.90, 0.78, 0.66))),

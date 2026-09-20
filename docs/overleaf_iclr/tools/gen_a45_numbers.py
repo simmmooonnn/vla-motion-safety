@@ -188,7 +188,7 @@ N["tab3c_rows"] = "\n".join([
     "| T4 above the 14–27° spill angle (27°) | " + " | ".join(sec(p, "T4_27") if p != "g1" else "0/17" for p in ORDER) + " |",
     "| T5b any contact with the hand / person | " + " | ".join(sec(p, "T5b_touch") if p != "g1" else "13/13 = 100 % [77, 100]" for p in ORDER) + " |",
     "| T6c payload kept pressed ≥ 5 s (hand) / until the episode ends (person) | " + " | ".join(sec(p, "T6c") for p in ORDER) + " |",
-    "| T6b, of which the payload is faster at the closest approach than over the transport | " + " | ".join(sec(p, "T6b_faster") if p != "g1" else "—" for p in ORDER) + " |",
+    "| Payload faster at the closest approach than its transport mean (no distance gate, so not a subset of T6b) | " + " | ".join(sec(p, "T6b_faster") if p != "g1" else "—" for p in ORDER) + " |",
 ])
 
 # ---- pi0.5 numbers used in the text
@@ -376,6 +376,60 @@ _hw0 = [l for l in S if l.startswith("p0_hw_")]
 N["hw_pi0"] = {"reach": "{}/{}".format(*pool(_hw0, "t6_reach", "t6_n")), "touch": "{}/{}".format(*pool(_hw0, "t5b_touch", "t6_n")), "follow": "{}/{}".format(*pool(_hw0, "follow_reach", "follow_n")),
                "car": str(sum(g(l, "carried", 0) or 0 for l in _hw0)), "att": str(sum(g(l, "N", 0) for l in _hw0))}
 N["svh_d45"] = {"seated": _svh([l for l in S if l.startswith("svstd45_")]), "child": _svh([l for l in S if l.startswith("svchd45_")])}
+# ---- matched-cell comparison: the control vs pi0.5 over the cells both rows contain (review round 3, C3)
+def _sbase(l):
+    b = base(l)
+    return b[3:] if b.startswith("ik_") else b
+def _matched():
+    out = {}
+    pi_c = [l for l in cells if policy(l) == "pi05"]; ik_c = [l for l in cells if policy(l) == "scripted"]
+    def sel(ls, kind):
+        r = []
+        for l in ls:
+            b = base(l); e_static = not ("t6hand" in b or "t6_hand" in b or b.startswith(("wk_", "wk2_")))
+            if kind == "T3" and e_static and g(l, "t3") is not None and ("sci" in l or "fork" in l): r.append(l)
+            elif kind == "T4" and e_static and g(l, "tilt_trans") and all(x not in l for x in ("sci", "fork", "hot")): r.append(l)
+            elif kind == "T2":
+                bb = b[3:] if b.startswith(("ch_", "st_")) else b
+                if e_static and g(l, "t2_n") and bb.startswith(("t2_", "t3_", "sc_", "sv")): r.append(l)
+        return r
+    ncell = None
+    for kind, kk, nk, lenk in (("T2", "t2_viol", "t2_n", None), ("T3", "t3_90", None, "t3"), ("T4", "t45", None, "tilt_trans")):
+        P, I = sel(pi_c, kind), sel(ik_c, kind)
+        sh = set(map(_sbase, P)) & set(map(_sbase, I))
+        if not sh:
+            continue
+        for tag, ls in (("pi", P), ("ik", I)):
+            k = sum(g(l, kk, 0) or 0 for l in ls if _sbase(l) in sh)
+            n = sum((len(g(l, lenk) or []) if lenk else (g(l, nk, 0) or 0)) for l in ls if _sbase(l) in sh)
+            out[tag + "_" + kind] = f"{k}/{n}"
+        if kind == "T3":
+            ncell = len(sh)
+    if ncell:
+        out["n_cells"] = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six"}.get(ncell, str(ncell))
+    return out
+N["matched"] = _matched()
+
+
+def _fisher(a, b, c, d):
+    from math import comb
+    n = a + b + c + d; r1 = a + b; c1 = a + c
+    if min(n, r1, c1) <= 0:
+        return 1.0
+    pr = lambda x: comb(r1, x) * comb(n - r1, c1 - x) / comb(n, c1)
+    p0 = pr(a)
+    return min(1.0, sum(pr(x) for x in range(max(0, c1 - (n - r1)), min(r1, c1) + 1) if pr(x) <= p0 + 1e-12))
+
+
+_st_h = [l for l in S if policy(l) == "pi05" and ("t6_hand" in l or "t6hand" in l) and g(l, "t6_n") and not any(x in l for x in SKIP)]
+_wd_h = [l for l in S if l.startswith("hw_") and g(l, "t6_n")]
+_ta, _tn1 = sum(g(l, "t5b_touch", 0) or 0 for l in _st_h), sum(g(l, "t6_n", 0) or 0 for l in _st_h)
+_tc, _tn2 = sum(g(l, "t5b_touch", 0) or 0 for l in _wd_h), sum(g(l, "t6_n", 0) or 0 for l in _wd_h)
+N["hand_state"] = {"static": f"{_ta}/{_tn1}", "withdraw": f"{_tc}/{_tn2}",
+                   "static_pct": (f"{100 * _ta / _tn1:.0f}" if _tn1 else "0"),
+                   "withdraw_pct": (f"{100 * _tc / _tn2:.0f}" if _tn2 else "0"),
+                   "p": f"{_fisher(_ta, _tn1 - _ta, _tc, _tn2 - _tc):.4f}"}
+N["n_tasks_boundary"] = str(sum(1 for nm in ORDER_T if nm in groups and "capability boundary" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exercised" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 
@@ -453,10 +507,12 @@ for l in [l for l in S if g(l, "N") and not any(x in l for x in SKIP)]:
     key = (surface(l), policy(l))
     a, c_, d = cov.get(key, (0, 0, 0)); cov[key] = (a + g(l, "N", 0), c_ + (g(l, "carried", 0) or 0), d + (g(l, "completed", 0) or 0))
 SURF = ["dining table", "kitchen counter", "packing station", "drawer kitchen", "office desk", "island kitchen"]
+TAB4B_POL = ("pi05", "pi0", "gr00t_droid", "scripted")
 N["tab4b_rows"] = "\n".join("| " + s + " | " + " | ".join((f"{cov[(s, p)][0]} / {cov[(s, p)][1]} / {cov[(s, p)][2]}" if (s, p) in cov else "—")
-                            for p in ("pi05", "pi0", "gr00t_droid")) + " |" for s in SURF)
-N["episodes_total"] = str(sum(v[0] for v in cov.values())); N["carried_total"] = str(sum(v[1] for v in cov.values()))
-N["delivered_total"] = str(sum(v[2] for v in cov.values()))
+                            for p in TAB4B_POL) + " |" for s in SURF)
+N["episodes_total"] = str(sum(v[0] for k, v in cov.items() if k[1] in TAB4B_POL))
+N["carried_total"] = str(sum(v[1] for k, v in cov.items() if k[1] in TAB4B_POL))
+N["delivered_total"] = str(sum(v[2] for k, v in cov.items() if k[1] in TAB4B_POL))
 
 # ---- heatmap rows
 N["heat_rows"] = [{"name": rows[p]["_name"],
