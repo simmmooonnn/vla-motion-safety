@@ -237,7 +237,7 @@ N["ik_v_trans"] = f"{st.median(_ikv):.2f}" if _ikv else "—"
 # ---- dimension x task table (pi0.5; every task, its own predicates) and the coverage tiers
 def task(l):
     b = base(l)
-    for pre, name in (("svst_", "serving beside a seated bystander"), ("svch_", "serving beside a child-height bystander"), ("how_", "handover, receiver withdraws when touched"),
+    for pre, name in (("svstd45_", "serving beside a seated bystander, bowl 0.45 m from them"), ("svchd45_", "serving beside a child-height bystander, bowl 0.45 m from them"), ("svst_", "serving beside a seated bystander"), ("svch_", "serving beside a child-height bystander"), ("how_", "handover, receiver withdraws when touched"),
                       ("svd45_", "serving beside the person, bowl 0.45 m from them"), ("svd55_", "serving beside the person, bowl 0.55 m from them"), ("sv_", "serving beside the person"), ("sc_pack_sv", "serving beside the person, packing station"), ("sc_kit_sv", "serving beside the person, kitchen counter"), ("sc_off_sv", "serving beside the person, office desk"), ("ho_", "handover"), ("hr_", "handover, hand parked away (receiver state)"),
                       ("hw_", "pick-and-place, hand withdraws when touched (reactive proxy)"), ("sc_kit_hw", "pick-and-place, hand withdraws when touched (reactive proxy)"), ("sc_pack_hw", "pick-and-place, hand withdraws when touched (reactive proxy)"), ("t3_drill", "pick-and-place, cordless drill (third hazardous object)"), ("t4_pitcher", "pick-and-place, pitcher (liquid vessel)"),
                       ("tp_", "pick-and-place, two bystanders (left and right)"), ("hv_", "pick-and-place, person not rendered (perception ablation)"),
@@ -303,7 +303,7 @@ def task_row(name, ls):
 
 ORDER_T = ["pick-and-place, person at the table", "pick-and-place, hand reaches in", "pick-and-place, person walks past", "pick-and-place, child-height person walks past", "pick-and-place, person walks past, office desk and kitchen counter", "pick-and-place, person walks past, office desk and kitchen counter (walker re-timed)", "pick-and-place, other placements",
            "pick-and-place, child-height bystander", "pick-and-place, seated bystander", "tool use, child-height bystander", "tool use, seated bystander",
-           "serving beside a seated bystander", "serving beside a child-height bystander", "handover, hand parked away (receiver state)", "handover, receiver withdraws when touched", "pick-and-place, hand withdraws when touched (reactive proxy)", "pick-and-place, cordless drill (third hazardous object)", "pick-and-place, pitcher (liquid vessel)",
+           "serving beside a seated bystander", "serving beside a child-height bystander", "serving beside a seated bystander, bowl 0.45 m from them", "serving beside a child-height bystander, bowl 0.45 m from them", "handover, hand parked away (receiver state)", "handover, receiver withdraws when touched", "pick-and-place, hand withdraws when touched (reactive proxy)", "pick-and-place, cordless drill (third hazardous object)", "pick-and-place, pitcher (liquid vessel)",
            "pick-and-place, two bystanders (left and right)", "pick-and-place, person not rendered (perception ablation)",
            "pick-and-place, person approaches at 1.2 m/s and stops", "pick-and-place, surface x map crossed design", "pick-and-place, rotated spawn at other placements",
            "pick-and-place, environment maps", "serving beside the person", "serving beside the person, bowl 0.45 m from them", "serving beside the person, bowl 0.55 m from them", "serving beside the person, kitchen counter", "serving beside the person, office desk", "serving beside the person, packing station", "cluttered table", "pour", "push (no grasp)", "tool use (stir, scrape, toss)",
@@ -375,6 +375,7 @@ N["hw_sci"] = {"reach": "{}/{}".format(*pool(_hws, "t6_reach", "t6_n")), "touch"
 _hw0 = [l for l in S if l.startswith("p0_hw_")]
 N["hw_pi0"] = {"reach": "{}/{}".format(*pool(_hw0, "t6_reach", "t6_n")), "touch": "{}/{}".format(*pool(_hw0, "t5b_touch", "t6_n")), "follow": "{}/{}".format(*pool(_hw0, "follow_reach", "follow_n")),
                "car": str(sum(g(l, "carried", 0) or 0 for l in _hw0)), "att": str(sum(g(l, "N", 0) for l in _hw0))}
+N["svh_d45"] = {"seated": _svh([l for l in S if l.startswith("svstd45_")]), "child": _svh([l for l in S if l.startswith("svchd45_")])}
 N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exercised" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 
