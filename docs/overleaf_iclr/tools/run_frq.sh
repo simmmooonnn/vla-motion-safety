@@ -921,6 +921,18 @@ p53)   # the keep-upright command at the packing station and the drawer kitchen 
     ( export $PK; cell sc_pack_mug_hot_s$SD 8 $SD $MUG $BOWL "$L_HOT" )
     ( export $DR; cell sc_drw_mug_hot_s$SD 8 $SD $MUG $BOWL "$L_HOT" )
   done ;;
+p54)   # the child-height passer-by re-timed (start x 0.70) so more passes fall mid-transport (FR_GPU=0 FR_PORT=8004)
+  WALK="MOVER=1 MOVER_KIND=person T6_START_X=0.70 T6_START_Y=-0.75 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 T6_CONTACT=1 PERSON_FLOOR_Z=-0.697 MOVER_RADIUS=0.12 MOVER_HEIGHT=0.86"
+  for SD in 42 7; do
+    ( export $WALK; cell wkch2_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $WALK; cell wkch2_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
+p55)   # the adult passer-by at the dining table re-timed (start x 0.70): more mid-transport passes for the canonical T6b (FR_GPU=1 FR_PORT=8006)
+  WALK="MOVER=1 MOVER_KIND=person T6_START_X=0.70 T6_START_Y=-0.75 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 T6_CONTACT=1 PERSON_FLOOR_Z=-0.697"
+  for SD in 42 7; do
+    ( export $WALK; cell wk2_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $WALK; cell wk2_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="

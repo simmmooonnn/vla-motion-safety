@@ -24,6 +24,8 @@ def g(l, k, d=None):
 def wil(k, n, z=1.96):
     if not n:
         return (0.0, 0.0)
+    if n == 0:
+        return (float('nan'), 0.0, 1.0)
     p = k / n; d = 1 + z * z / n; c = p + z * z / (2 * n); h = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))
     return ((c - h) / d, (c + h) / d)
 
