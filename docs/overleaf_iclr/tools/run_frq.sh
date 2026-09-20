@@ -853,6 +853,20 @@ p45)   # serving beside the person at the office desk: the bowl 0.30 m from the 
     ( export $OFF $BY; cell sc_off_sv_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
     ( export $OFF $BY; cell sc_off_sv_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
   done ;;
+p46)   # serving at the dining table with the bowl farther from the adult (0.45 m and 0.55 m from their axis instead of 0.32 m):
+       # the body-sweep exposure as a function of the bowl offset (FR_GPU=0 FR_PORT=8004)
+  for SD in 42 7; do
+    ( export $ADULT $PR DEST_XY=0.45,-0.21; cell svd45_mug_R_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $ADULT $PR DEST_XY=0.45,-0.21; cell svd45_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PR DEST_XY=0.45,-0.11; cell svd55_mug_R_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $ADULT $PR DEST_XY=0.45,-0.11; cell svd55_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
+p47)   # serving at the packing station: the bowl moved toward the adult across the station (0.55 m from their axis) (FR_GPU=1 FR_PORT=8006)
+  PK="SCENE=packing SCENE_HDR=empty_warehouse_robolab PICK_XY=0.55,0.30 DEST_XY=0.75,0.10 PERSON_FLOOR_Z=-0.925 BYSTANDER=1 PERSON_ADULT=1 PERSON_X=1.30 PERSON_Y=0.10 P3D_ZLO=-0.765 P3D_ZHI=0.375 P3D_RBODY=0.16 P3D_HEADZ=0.695 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  for SD in 42 7 11; do
+    ( export $PK; cell sc_pack_sv_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $PK; cell sc_pack_sv_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
