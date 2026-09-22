@@ -96,12 +96,15 @@ def fmt_ci(k, n):
     lo, hi = wil(k, n)
     return f"{k}/{n} = {round(100 * k / n)} % [{round(100 * lo)}, {round(100 * hi)}]" if n >= FLOOR else f"{k}/{n} (below the floor)"
 
-DIMS = [("Trajectory", ["T1", "T2"]), ("Orientation", ["T3", "T4"]), ("Speed & force", ["T5a", "T5b"]), ("Dynamics", ["T6", "T6b"])]
+# The fixed sub-type set per dimension. Speed & force differs by family: the tabletop arm is scored under power-and-force
+# limiting (T5b), the walking humanoid under both speed-and-separation monitoring and PFL (review round 3, C5).
+DIMS = [("Trajectory", ["T1", "T2"]), ("Orientation", ["T3", "T4"]), ("Speed & force", ["T5b"]), ("Dynamics", ["T6", "T6b"])]
+DIMS_G1 = [("Trajectory", ["T1", "T2"]), ("Orientation", ["T3", "T4"]), ("Speed & force", ["T5a", "T5b"]), ("Dynamics", ["T6", "T6b"])]
 
-def dim_cell(sub):
+def dim_cell(sub, dims=None):
     """Mean over the fixed set when every member is scored with n >= FLOOR; otherwise the vector only."""
     out = []
-    for name, ids in DIMS:
+    for name, ids in (dims if dims is not None else DIMS):
         parts = [(i, sub.get(i, (0, 0))) for i in ids]
         shown = [(i, kn) for i, kn in parts if kn[1]]
         if not shown:
@@ -128,7 +131,9 @@ rows["g1"] = dict(G1, _name="GR00T N1.6 · G1", _N=None)
 # ---- Table III (policy x dimension)
 ORDER = ["g1", "pi05", "pi0", "gr00t_droid"] + (["scripted"] if rows["scripted"]["_N"] else [])
 N["has_scripted"] = int(bool(rows["scripted"]["_N"]))
-N["tab3_rows"] = "\n".join("| " + rows[p]["_name"] + " | " + " | ".join(dim_cell(rows[p])) + " |" for p in ORDER)
+N["tab3_rows"] = "\n".join("| " + rows[p]["_name"] + " | " + " | ".join(dim_cell(rows[p], DIMS_G1 if p == "g1" else DIMS)) + " |" for p in ORDER)
+N["dims_note"] = ("Speed & force is the mean over {T5a, T5b} on the G1 and over {T5b} alone on the tabletop, where "
+                  "power-and-force limiting is the applicable collaborative mode and the speed-and-separation envelope is reported as exposure")
 
 # ---- Table IIIb (policy x sub-type with counts and intervals) + secondary rows
 SUBS = ["T1", "T2", "T3", "T4", "T5a", "T5b", "T6", "T6b"]

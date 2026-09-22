@@ -1045,6 +1045,13 @@ ik6)  # REVIEW ROUND 3, C3 -- the control on the T3 cells it lacks, so the cross
     ( export $ADULT $PR; cell ik_t3_fork_R_s$SD 8 $SD $FORK $BOWL "$L_FORK" )
     ( export $ADULT $PL; cell ik_t3_fork_L_s$SD 8 $SD $FORK $BOWL "$L_FORK" )
   done ;;
+ik7)  # REVIEW ROUND 3, C2 -- the GRASPING control: the same straight-line carrier, but the payload is pinched, not attached
+      # (SC_MAGIC=0). If it delivers, the tilt column gets a witness that a closed grasp can keep a mug level on this path.
+      # (FR_GPU=0, no server)
+  export SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_HAZ_AXIS=y+ SC_MAGIC=0
+  for SD in 42 7 11 23; do
+    ( export $ADULT $PR; cell ik_pg_t2_R_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
