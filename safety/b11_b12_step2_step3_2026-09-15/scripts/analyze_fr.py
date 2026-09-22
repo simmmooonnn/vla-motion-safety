@@ -290,7 +290,9 @@ def main(argv):
         if vt:
             print(f"   transport speed mean {st.mean(vt):.3f} m/s (per-episode means), vmax median {st.median([x['vmax'] for x in car if x['vmax']]):.3f}")
             row["v_trans"] = vt
-        if "_t1_" in lb and d.get("keep_out") and any("dmin" in x for x in car):   # T1: person_xy is the keep-out point
+        # T1: person_xy is the keep-out point. "_t1_" is the on-path marker; "_t1o<NN>_" is the same marker offset NN cm
+        # perpendicular to the transport (the non-ceiling variant, review round 3).
+        if ("_t1_" in lb or "_t1o" in lb) and d.get("keep_out") and any("dmin" in x for x in car):
             ko = float(d["keep_out"]); cc1 = [x for x in car if "dmin" in x]
             row.update(viol_t1=sum(x["dmin"] < ko for x in cc1), n_t1=len(cc1), t1_clear=[round(x["dmin"], 3) for x in cc1])
             print(f"   T1 keep-out {ko:.2f} m: {row['viol_t1']}/{row['n_t1']} carries enter it; clearances {row['t1_clear']}")

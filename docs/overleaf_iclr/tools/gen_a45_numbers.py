@@ -54,7 +54,7 @@ def pool(ls, kk, nk=None, lenk=None):
 def subtypes(ls):
     """k/n per sub-type over a list of cells. Returns dict id -> (k, n) (n = 0 when not run)."""
     out = {}
-    out["T1"] = pool([l for l in ls if g(l, "n_t1") and "_t1" in base(l) and base(l).startswith(("sc_", "kit_"))], "viol_t1", "n_t1")   # rendered marker
+    out["T1"] = pool([l for l in ls if g(l, "n_t1") and "_t1" in base(l) and "_t1o" not in base(l) and base(l).startswith(("sc_", "kit_"))], "viol_t1", "n_t1")   # rendered marker, on the path
     static = [l for l in ls if not ("t6hand" in base(l) or "t6_hand" in base(l) or base(l).startswith(("wk_", "wk2_", "wkch_", "wkch2_")) or "_wk" in base(l))]   # the person stands still
     _bb = lambda l: base(l)[3:] if base(l).startswith(("ch_", "st_")) else base(l)
     out["T2"] = pool([l for l in static if g(l, "t2_n") and _bb(l).startswith(("t2_", "t3_", "sc_", "sv"))], "t2_viol", "t2_n")
@@ -409,6 +409,45 @@ def _matched():
         out["n_cells"] = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six"}.get(ncell, str(ncell))
     return out
 N["matched"] = _matched()
+# ---- appearance of the scored bystander: capsule proxy / photorealistic human mesh / not rendered (review round 3, C2)
+APPEAR_SEEDS = ("s42", "s7")
+def _ap_pool(pre, kind, side=None):
+    """The same cells and seeds at each appearance level: t3_sci_{R,L} for T3, t2_R for T2."""
+    out_k = out_n = 0
+    for sd in APPEAR_SEEDS:
+        lb = pre + ("_t3_sci_" + side + "_" if kind == "T3" else "_t2_R_") + sd
+        lb = lb.lstrip("_")
+        e = S.get(lb)
+        if not e:
+            continue
+        if kind == "T3" and e.get("t3") is not None:
+            out_k += e.get("t3_90", 0) or 0; out_n += len(e["t3"])
+        elif kind == "T2" and e.get("t2_n"):
+            out_k += e.get("t2_viol", 0) or 0; out_n += e["t2_n"]
+    return f"{out_k}/{out_n}" if out_n else "—"
+N["appear"] = {tag: {"T3_R": _ap_pool(pre, "T3", "R"), "T3_L": _ap_pool(pre, "T3", "L"), "T2": _ap_pool(pre, "T2")}
+               for tag, pre in (("capsule", ""), ("mesh", "hm"), ("hidden", "hv"))}
+# ---- the small bystanders before and after the rendered body was made to follow the scored band (review round 3, C6)
+def _sv_pair(old, new):
+    out = {}
+    for tag, pre in (("old", old), ("new", new)):
+        t2 = [l for l in S if base(l).startswith(pre + "_t2") and g(l, "t2_n")]
+        t3 = [l for l in S if base(l).startswith(pre + "_t3_sci") and g(l, "t3") is not None]
+        sv = [l for l in S if base(l).startswith(pre.replace("ch", "svch").replace("st", "svst") + "_mug_R") and g(l, "tilt_trans")]
+        out[tag + "_T2"] = "{}/{}".format(*pool(t2, "t2_viol", "t2_n")) if t2 else "—"
+        out[tag + "_T3"] = "{}/{}".format(*pool(t3, "t3_90", lenk="t3")) if t3 else "—"
+        out[tag + "_T4"] = "{}/{}".format(*pool(sv, "t45", lenk="tilt_trans")) if sv else "—"
+    return out
+N["small_vis"] = {"child": _sv_pair("ch", "chv"), "seated": _sv_pair("st", "stv")}
+# ---- the non-ceiling T1 series: the same marker offset perpendicular to the transport (review round 3, C4)
+N["t1_off"] = {}
+for _tag, _pat in (("on", "_t1_"), ("d12", "_t1o12"), ("d28", "_t1o28")):
+    _ls = [l for l in S if policy(l) == "pi05" and g(l, "n_t1") and _pat in base(l) and base(l).startswith("sc_")]
+    _k, _n = pool(_ls, "viol_t1", "n_t1")
+    _cl = [v for l in _ls for v in (g(l, "t1_clear") or [])]
+    N["t1_off"][_tag] = {"rate": f"{_k}/{_n}", "pct": (f"{100 * _k / _n:.0f}" if _n else "0"),
+                         "dmin": (f"{min(_cl):.2f}" if _cl else "—"), "dmed": (f"{st.median(_cl):.2f}" if _cl else "—"),
+                         "cells": str(len(_ls))}
 
 
 def _fisher(a, b, c, d):
