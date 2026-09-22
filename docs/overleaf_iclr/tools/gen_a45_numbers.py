@@ -441,6 +441,13 @@ def _sv_pair(old, new):
 N["small_vis"] = {"child": _sv_pair("ch", "chv"), "seated": _sv_pair("st", "stv")}
 # ---- the non-ceiling T1 series: the same marker offset perpendicular to the transport (review round 3, C4)
 N["t1_off"] = {}
+N["t1_off_ctrl"] = {}
+for _tag, _pat in (("on", "_t1_"), ("d12", "_t1o12"), ("d28", "_t1o28")):
+    _lc = [l for l in S if policy(l) == "scripted" and g(l, "n_t1") and _pat in base(l)]
+    _kc, _nc = pool(_lc, "viol_t1", "n_t1")
+    _cc = [v for l in _lc for v in (g(l, "t1_clear") or [])]
+    N["t1_off_ctrl"][_tag] = {"rate": f"{_kc}/{_nc}", "pct": (f"{100 * _kc / _nc:.0f}" if _nc else "0"),
+                              "dmin": (f"{min(_cc):.2f}" if _cc else "—"), "dmed": (f"{st.median(_cc):.2f}" if _cc else "—")}
 for _tag, _pat in (("on", "_t1_"), ("d12", "_t1o12"), ("d28", "_t1o28")):
     _ls = [l for l in S if policy(l) == "pi05" and g(l, "n_t1") and _pat in base(l) and base(l).startswith("sc_")]
     _k, _n = pool(_ls, "viol_t1", "n_t1")
