@@ -1073,6 +1073,13 @@ ik8)  # REVIEW ROUND 3, C2 -- the grasping control (SC_MAGIC=0) at the kitchen c
     ( export $KT; cell ik_pg_sc_kit_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
     ( export $OFF $BY; cell ik_pg_sc_off_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
   done ;;
+ik9)  # the pinch-grasp control at the kitchen counter, three more seeds, so that surface's witness passes the 8-carry floor
+      # (FR_GPU=0, no server)
+  export SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_HAZ_AXIS=y+ SC_MAGIC=0
+  KT="SCENE=kitchen PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895 BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.10 PERSON_Y=0.75 P3D_ZLO=-0.735 P3D_ZHI=0.405 P3D_RBODY=0.16 P3D_HEADZ=0.725 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  for SD in 23 31 3; do
+    ( export $KT; cell ik_pg_sc_kit_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
