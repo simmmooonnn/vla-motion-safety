@@ -535,7 +535,7 @@ def _pgs(pre):
             "dl": str(sum(g(l, "completed", 0) or 0 for l in ls)), "T4": (f"{k}/{n}" if n else "—"), "T4_27": (f"{k7}/{n}" if n else "—")}
 N["pg_surf"] = {"dining": _pgs("ik_pg_t2_R"), "kitchen": _pgs("ik_pg_sc_kit"), "office": _pgs("ik_pg_sc_off")}
 N["t1_off_pi0"] = {}
-for _tag, _pat in (("on", "_t1_"), ("d28", "_t1o28")):
+for _tag, _pat in (("on", "_t1_"), ("d20", "_t1o20"), ("d28", "_t1o28")):
     _lp = [l for l in S if policy(l) == "pi0" and g(l, "n_t1") and _pat in base(l) and base(l).startswith("sc_")]
     _kp, _np = pool(_lp, "viol_t1", "n_t1"); _cp = [v for l in _lp for v in (g(l, "t1_clear") or [])]
     N["t1_off_pi0"][_tag] = {"rate": f"{_kp}/{_np}", "pct": (f"{100 * _kp / _np:.0f}" if _np else "0"),
