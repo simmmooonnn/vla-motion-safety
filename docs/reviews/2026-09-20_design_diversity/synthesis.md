@@ -153,17 +153,17 @@ The editor verified the code-level claims before writing this decision, and two 
 - **C4**: non-ceiling T1 cells launched with the marker offset 0.12 m and 0.28 m perpendicular to the transport at two work surfaces (`sc_kit_t1o12` / `o28`, `sc_off_t1o12` / `o28`).
 - **C2, appearance level**: `hm_` cells launched with the photorealistic human mesh on the T2 / T3 scored cells, completing a three-level appearance ablation together with the capsule cells and the not-rendered `hv_` cells.
 
-These do not discharge C1, C3, C5, C7, C8 or C9, which are text and re-analysis.
+At launch these did not discharge C1, C3, C5, C7, C8 or C9, which required text, re-analysis or the physical-grasp follow-up below.
 
 **Status as of 2026-09-22 (author response in progress).**
 
-- **C1 discharged**: §5.5 and Appendix C now state that the control's payload is held kinematically (pose written each step, orientation pinned); the T4 attribution is retracted and §8 marks T4 unattributed.
+- **C1 discharged**: §5.5 and Appendix C state that the geometric control's payload is held kinematically (pose written each step, orientation pinned), and its T4 result carries no attribution. T4 now uses the separate physical pinch-grasp control below.
 - **C3 discharged**: the control was run on the cells it lacked (four work surfaces with the scissors, the fork on both sides), so the cross-row pool is matched by construction — 14 shared cells, on which T2 is 2/205 against 3/208 and T3 43 % against 41 %, indistinguishable. Table III's control T3 moved 59 → 47 as a result, removing the misleading contrast.
 - **C4 discharged with a witness**: the keep-out was re-sited off the transport. π0.5 violates 56/56 on the path, 32/32 at 0.12 m and 12/32 at 0.28 m; the person-blind control violates 24/24, 32/32 and **0/32**, passing at exactly the offset each time. The 0.28 m cell is therefore a non-ceiling, witnessed trajectory measurement, and the 0.12 m clearances (control 0.12 m, π0.5 0.04 m) quantify the attraction of §6 (ii).
 - **C6 discharged**: the re-rendered small bystanders give the same rates as the adult-rendered version, and both are reported.
 - **C7, C8, C9 discharged** in text and in the generator (T6b secondary relabelled, coverage total closed with a control column, capability-boundary count data-driven, the withdrawing-hand sentence corrected to 43 % against 63 %, Fisher *p* = 0.0041).
-- **C2 open**: the replacement T4 witness (a pinch-grasp control, or the wrist orientation logged on the same trajectories).
-- **C5 open**: the Speed-and-force fixed set ({T5b} on the tabletop, {T5a, T5b} on the G1, printed per row).
+- **C2 discharged with a physical witness**: the same straight-line controller was run with the kinematic attachment disabled (`SC_MAGIC=0`) and a physical pinch grasp. Across five seeds it attempted 40 episodes, carried 10 and delivered 9; 1/10 carries exceeded 45°, 5/10 exceeded 27° and 10/10 exceeded 14° (median 28.8°, maximum 83.0°). Table III uses this control for T4 only; it is a feasibility witness, not a matched policy comparison.
+- **C5 discharged**: Speed-and-force is {T5b} on the tabletop and {T5a, T5b} on the G1, and the set is printed per row; the tabletop T5a remains explicitly labelled exposure.
 - **A new finding from C2's appearance level**: the presentation rate is the same whether the bystander is rendered as a capsule (10/10), as a photorealistic articulated human (12/12) or not at all (8/8), so person-blindness is not an artefact of an impoverished proxy.
 
 ---

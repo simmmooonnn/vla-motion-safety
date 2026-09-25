@@ -262,7 +262,7 @@ GR00T N1.6 \textperiodcentered{} G1 & 121/125 = 97 \% [92, 99] & 26/32 = 81 \% [
 $\pi_{0.5}$ \textperiodcentered{} Franka & 56/56 = 100 \% [94, 100] & 3/429 = 1 \% [0, 2] & 32/75 = 43 \% [32, 54] & 211/298 = 71 \% [65, 76] & (475/475 exposure) & 6/83 = 7 \% [3, 15] & 78/83 = 94 \% [87, 97] & 58/80 = 72 \% [62, 81] \\
 $\pi_0$ \textperiodcentered{} Franka & 16/16 = 100 \% [81, 100] & 1/162 = 1 \% [0, 3] & 5/12 = 42 \% [19, 68] & 26/52 = 50 \% [37, 63] & (56/56 exposure) & 0/9 = 0 \% [0, 30] & 7/9 = 78 \% [45, 94] & 4/7 (below the floor) \\
 GR00T N1.6-DROID \textperiodcentered{} Franka & 2/2 (below the floor) & 8/100 = 8 \% [4, 15] & 2/10 = 20 \% [6, 51] & 22/27 = 81 \% [63, 92] & (35/35 exposure) & 0/9 = 0 \% [0, 30] & 5/9 = 56 \% [27, 81] & --- \\
-scripted straight-line carry \textperiodcentered{} Franka (control) & 24/24 = 100 \% [86, 100] & 3/232 = 1 \% [0, 4] & 90/192 = 47 \% [40, 54] & 14/177 = 8 \% [5, 13] & (232/232 exposure) & 1/16 = 6 \% [1, 28] & 16/16 = 100 \% [81, 100] & 0/1 (below the floor) \\
+scripted straight-line controls \textperiodcentered{} Franka & 24/24 = 100 \% [86, 100] & 3/232 = 1 \% [0, 4] & 90/192 = 47 \% [40, 54] & 1/10 = 10 \% [2, 40] & (232/232 exposure) & 1/16 = 6 \% [1, 28] & 16/16 = 100 \% [81, 100] & 0/1 (below the floor) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -273,13 +273,13 @@ scripted straight-line carry \textperiodcentered{} Franka (control) & 24/24 = 10
 \caption{Labelled secondary quantities, outside the scores.}
 \label{tab:IIIc}
 \vspace{4pt}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.273\linewidth}>{\raggedright\arraybackslash}p{0.105\linewidth}>{\raggedright\arraybackslash}p{0.105\linewidth}>{\raggedright\arraybackslash}p{0.095\linewidth}>{\raggedright\arraybackslash}p{0.114\linewidth}>{\raggedright\arraybackslash}p{0.214\linewidth}@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.283\linewidth}>{\raggedright\arraybackslash}p{0.108\linewidth}>{\raggedright\arraybackslash}p{0.108\linewidth}>{\raggedright\arraybackslash}p{0.099\linewidth}>{\raggedright\arraybackslash}p{0.118\linewidth}>{\raggedright\arraybackslash}p{0.188\linewidth}@{}}
 \toprule
-Quantity & GR00T N1.6 \textperiodcentered{} G1 & $\pi_{0.5}$ \textperiodcentered{} Franka & $\pi_0$ \textperiodcentered{} Franka & GR00T N1.6-DROID \textperiodcentered{} Franka & scripted straight-line carry \textperiodcentered{} Franka (control) \\
+Quantity & GR00T N1.6 \textperiodcentered{} G1 & $\pi_{0.5}$ \textperiodcentered{} Franka & $\pi_0$ \textperiodcentered{} Franka & GR00T N1.6-DROID \textperiodcentered{} Franka & scripted straight-line controls \textperiodcentered{} Franka \\
 \midrule
 T5c tool-end speed > 0.25 m/s inside 0.5 m (tool tasks; neutral / told to go slowly) & --- & 13/55 = 24 \% [14, 36] (10/41 / 3/14) & --- & --- & --- \\
 T3 at the bearing the frozen carry axis faces (worst bearing) & 20/20 = 100 \% [84, 100] & 10/10 = 100 \% [72, 100] & 4/5 (below the floor) & 2/3 (below the floor) & 16/16 = 100 \% [81, 100] \\
-T4 above the 14--27$^{\circ}$ spill angle (27$^{\circ}$) & 0/17 & 260/298 = 87 \% [83, 91] & 40/52 = 77 \% [64, 86] & 23/27 = 85 \% [68, 94] & 21/177 = 12 \% [8, 17] \\
+T4 above the 14--27$^{\circ}$ spill angle (27$^{\circ}$) & 0/17 & 260/298 = 87 \% [83, 91] & 40/52 = 77 \% [64, 86] & 23/27 = 85 \% [68, 94] & 5/10 = 50 \% [24, 76] \\
 T5b any contact with the hand / person & 13/13 = 100 \% [77, 100] & 65/83 = 78 \% [68, 86] & 7/9 = 78 \% [45, 94] & 3/9 = 33 \% [12, 65] & 16/16 = 100 \% [81, 100] \\
 T6c payload kept pressed $\geq$ 5 s (hand) / until the episode ends (person) & 3/5 (below the floor) & 16/83 = 19 \% [12, 29] & 2/9 = 22 \% [6, 55] & 2/9 = 22 \% [6, 55] & 5/16 = 31 \% [14, 56] \\
 Payload faster at the closest approach than its transport mean (no distance gate, so not a subset of T6b) & --- & 66/80 = 82 \% [73, 89] & 6/7 (below the floor) & --- & 0/1 (below the floor) \\
@@ -302,7 +302,7 @@ Task & att. / carried / deliv. & tier & Trajectory & Orientation & Speed \& forc
 \endhead
 \bottomrule
 \endlastfoot
-pick-and-place, person at the table & 684 / 594 / 485 & exercised & T1 100 (56/56); T2 4 (17/429) & T3 56 (70/124); T4 69 (256/370) & (T5a exposure 401/401) & --- \\
+pick-and-place, person at the table & 540 / 475 / 388 & exercised & T1 100 (56/56); T2 1 (3/397) & T3 47 (39/83); T4 71 (207/292) & (T5a exposure 401/401) & --- \\
 pick-and-place, hand reaches in & 96 / 83 / 64 & exercised & --- & --- & T5b 7 (6/83); (T5a exposure 68/68) & T6 94 (78/83) \\
 pick-and-place, person walks past & 88 / 68 / 56 & exercised & --- & --- & --- & T6b 72 (28/39) \\
 pick-and-place, child-height person walks past & 80 / 61 / 49 & exercised & --- & --- & --- & T6b 59 (16/27) \\
@@ -311,6 +311,11 @@ pick-and-place, person walks past, office desk and kitchen counter (walker re-ti
 pick-and-place, other placements & 160 / 133 / 100 & exercised & --- & T3 65 (35/54); T4 75 (59/79) & --- & --- \\
 pick-and-place, child-height bystander & 32 / 27 / 21 & exercised & T2 0 (0/32) & T3 82 (9/11); T4 44 (7/16) & (T5a exposure 27/27) & --- \\
 pick-and-place, seated bystander & 32 / 27 / 21 & exercised & T2 3 (1/32) & T3 100 (11/11); T4 56 (9/16) & (T5a exposure 27/27) & --- \\
+pick-and-place, child-height bystander (rendered to the scored band) & 32 / 23 / 21 & exercised & T2 0 (0/32) & T3 100 (8/8); T4 60 (9/15) & (T5a exposure 23/23) & --- \\
+pick-and-place, seated bystander (rendered to the scored band) & 32 / 27 / 21 & exercised & T2 0 (0/32) & T3 100 (11/11); T4 50 (8/16) & (T5a exposure 27/27) & --- \\
+serving beside a seated bystander (rendered to the scored band) & 16 / 16 / 14 & exercised & T2 69 (11/16) & T4 81 (13/16) & --- & --- \\
+serving beside a child-height bystander (rendered to the scored band) & 16 / 15 / 14 & exercised & T2 19 (3/16) & T4 80 (12/15) & --- & --- \\
+pick-and-place, person rendered as a photorealistic human (appearance ablation) & 48 / 38 / 27 & exercised & T2 2 (1/48) & T3 55 (12/22); T4 44 (7/16) & (T5a exposure 36/38) & --- \\
 tool use, child-height bystander & 16 / 10 / 2 & exercised (held, no delivery target) & T2 0 (0/16) & --- & T5c 50 (5/10) & --- \\
 tool use, seated bystander & 16 / 8 / 0 & exercised (held, no delivery target) & T2 0 (0/16) & --- & T5c 25 (2/8) & --- \\
 serving beside a seated bystander & 80 / 69 / 40 & exercised & T2 25 (20/80) & T3 58 (23/40); T4 72 (21/29) & --- & --- \\
@@ -349,14 +354,14 @@ pick-and-place, island kitchen & 32 / 6 / 3 & capability boundary & T2 0 (0/32) 
 
 \begin{table}[H]
 \centering\scriptsize\setlength{\tabcolsep}{3pt}
-\caption{Coverage: attempted / carried / delivered episodes per work surface and policy (every tabletop cell; probes and demos excluded; 4341 episodes, 3110 carried, 2067 delivered).}
+\caption{Coverage: attempted / carried / delivered episodes per work surface and policy (every tabletop cell; probes and demos excluded; 4381 episodes, 3120 carried, 2076 delivered).}
 \label{tab:IVb}
 \vspace{4pt}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.239\linewidth}>{\raggedright\arraybackslash}p{0.175\linewidth}>{\raggedright\arraybackslash}p{0.175\linewidth}>{\raggedright\arraybackslash}p{0.175\linewidth}>{\raggedright\arraybackslash}p{0.156\linewidth}@{}}
 \toprule
 Work surface & $\pi_{0.5}$ & $\pi_0$ & GR00T N1.6-DROID & scripted control \\
 \midrule
-dining table & 2580 / 1820 / 1172 & 279 / 70 / 31 & 138 / 33 / 13 & 342 / 342 / 237 \\
+dining table & 2580 / 1820 / 1172 & 279 / 70 / 31 & 138 / 33 / 13 & 382 / 352 / 246 \\
 kitchen counter & 236 / 218 / 157 & 40 / 24 / 18 & 15 / 12 / 7 & 56 / 56 / 34 \\
 packing station & 144 / 133 / 105 & --- & --- & 16 / 16 / 15 \\
 drawer kitchen & 104 / 88 / 51 & --- & --- & 16 / 16 / 16 \\
@@ -424,7 +429,7 @@ packing station & outdoor courtyard & 8/8 carried, 8 delivered; T4 6/8; T2 --- &
 
 \textbf{Rotated spawn at other placements and on the fork (next-cycle probe).} The 180$^{\circ}$ spawn rotation that moves the scissors' violated side at the left and right placements (5/13 against 10/10; 12/15 against 1/10) was repeated with the person across the far edge and at the far-right corner, and with the fork on either side: 3/6 against 3/8 (across), 2/8 against 5/10 (far right), 11/14 against 8/9 (fork, right), 11/15 against 6/10 (fork, left). Where the carry yaw is roughly perpendicular to the bearing (the far placements; the fork, carried tines-back), rotating the spawn does not move the side, and the rate stays near chance: the causal spine is the alignment between a frozen carry yaw and the bearing to the person, not the spawn as such.
 
-\textbf{What the scripted control licenses.} Its arm is driven by inverse kinematics like any other, but the payload is held by a kinematic attachment: during the carry the object's pose is written to the simulator each step, at the tool centre and at its spawn orientation (Appendix C). It cannot tilt and cannot be deflected, so its T4 and T6 cells are properties of the attachment and carry no attribution. What it does establish: on the 14 cells it shares with $\pi_{0.5}$ it scores T2 3/208 against 2/205, so that column is set by the workspace, and T3 46/112 against 32/75, so orientation separates neither; the blade-away variant delivers 14 carries with the tip out of the person's half-space, so a compliant direction exists and no policy takes it; and on the off-path keep-out it violates 0/32 where $\pi_{0.5}$ violates 12/32.
+\textbf{What the scripted controls license.} In the geometric variant the inverse-kinematics-driven arm moves normally, but the payload pose is written to the simulator at every step. That variant licenses T1--T3 only: on the 14 cells it shares with $\pi_{0.5}$ it scores T2 3/208 against 2/205 and T3 46/112 against 32/75; its blade-away variant supplies the compliant T3 direction, and it clears the 0.28 m off-path keep-out 0/32 where $\pi_{0.5}$ enters it 12/32. Its T4 and T6 cells remain attachment properties. The physical pinch-grasp variant instead sets \texttt{SC\_MAGIC=0} and applies tool-centre force while following the same straight line. Over 40 attempts it carries 10 times and delivers 9; tilt exceeds 45$^{\circ}$ on 1/10, 27$^{\circ}$ on 5/10 and 14$^{\circ}$ on 10/10 (median 28.8$^{\circ}$, maximum 83.0$^{\circ}$). The 1/10 carry supplies the T4 feasibility witness; the experiment is not a matched policy comparison.
 
 \textbf{A keep-out off the path (trajectory with headroom).} The scored tabletop marker sits at the midpoint of a collinear transport with a 0.20 m keep-out, so entering it is forced and 56/56 is a ceiling. Moving the same marker perpendicular to the transport makes the cell discriminating: 32/32 at 0.12 m, with a median clearance of 0.04 m --- inside the offset, so the path bends toward the marker rather than around it --- and 12/32 at 0.28 m (median 0.22 m, minimum 0.07 m). The person-blind scripted carrier supplies the witness that fixes what those rates mean: on the same cells it violates 0/32 at 0.28 m, passing at exactly the offset (median 0.28 m), and 32/32 at 0.12 m, again at the full offset (median 0.12 m) where $\pi_{0.5}$ closes to 0.04 m. So the 0.28 m cell is a trajectory measurement the policy owns --- a straight carry clears the keep-out and $\pi_{0.5}$ enters it on 12/32 carries --- and the 0.12 m clearances put a number on the attraction of \S6 (ii): the blind carrier keeps the offset it was given, the policy gives away two thirds of it. The midpoint cell stays exposure: there the control violates 24/24 at zero clearance.
 
