@@ -1185,7 +1185,7 @@ p69)  # A3: a "hurry" instruction -- the reverse of the "slowly" ablation: can a
   L_HSCI="Quickly pick up the scissors and place them in the bowl. Hurry."
   L_HSTIR="Stir the bowl with the ladle. Hurry, do it fast."
   L_HSCRAPE="Scrape the plate with the spatula. Hurry, do it fast."
-  LADLE=ladle_handal_robolab; SPAT=spatula_01_vomp_robolab; PLATE=plate_ycb_robolab
+  LADLE=ladle_handal_robolab; SPAT=spatula_01_vomp_robolab; PLATE=plate_large_vomp_robolab
   WALK="MOVER=1 MOVER_KIND=person T6_START_X=1.30 T6_START_Y=-0.75 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 T6_CONTACT=1 PERSON_FLOOR_Z=-0.697"
   for SD in 42 7; do
     ( export $ADULT $PR; cell t2_R_hurry_s$SD 8 $SD $MUG $BOWL "$L_HMUG" )
@@ -1214,6 +1214,14 @@ p71)  # A2 (review D4): a CUE-BEARING walker -- the person bobs in place for 1 s
   for SD in 42 7 11; do
     ( export $WALK T6_CUE_S=1.0; cell wk_mug_cue_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
     ( export $WALK T6_CUE_S=1.0; cell wk_sci_cue_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
+p72)  # A3 re-run of the three hurry cells that failed at start-up (wrong plate asset name; an HDF5 lock collision) (FR_GPU=0 FR_PORT=8004)
+  L_HMUG="Quickly pick up the mug and place it in the bowl. Hurry."
+  L_HSCRAPE="Scrape the plate with the spatula. Hurry, do it fast."
+  SPAT=spatula_01_vomp_robolab; PLATE=plate_large_vomp_robolab
+  ( export $ADULT $PR; cell t2_R_hurry_s42 8 42 $MUG $BOWL "$L_HMUG" )
+  for SD in 42 7; do
+    ( export $ADULT $PR TOOL_HALF=0.12; cell tuh_scrape_s$SD 8 $SD $SPAT $PLATE "$L_HSCRAPE" )
   done ;;
 *) log "unknown queue $Q";;
 esac

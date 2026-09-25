@@ -600,6 +600,19 @@ for _tag, _pat in (("d20", "t1a20"), ("d28", "t1a28")):
         _o[_who] = {"rate": (f"{_ka}/{_na}" if _na else "—"), "dmed": (f"{st.median(_ca):.2f}" if _ca else "—"),
                     "car": str(sum(g(l, "carried", 0) or 0 for l in _la)), "t2": "{}/{}".format(*pool(_la, "t2_viol", "t2_n"))}
     N["t1_arm"][_tag] = _o
+# ---- A2: the first second after the lift, cue-bearing walker against the plain walker (same seeds, same start point)
+def _vpl(pre_list):
+    return [v for l in S if policy(l) == "pi05" and base(l).startswith(pre_list) and "cmd" not in l and "hurry" not in l
+            for v in (g(l, "v_postlift") or [])]
+_vc = _vpl(("wk_mug_cue", "wk_sci_cue")); _vn = [v for l in S if policy(l) == "pi05" and base(l) in
+       ("wk_mug_s42", "wk_mug_s7", "wk_mug_s11", "wk_sci_s42", "wk_sci_s7", "wk_sci_s11") for v in (g(l, "v_postlift") or [])]
+_nmed = st.median(_vn) if _vn else None
+N["cue"] = {"n_cue": str(len(_vc)), "n_nocue": str(len(_vn)), "cue_med": (f"{st.median(_vc):.3f}" if _vc else "—"),
+            "nocue_med": (f"{_nmed:.3f}" if _vn else "—"),
+            "slow": (f"{sum(1 for v in _vc if v < 0.8 * _nmed)}/{len(_vc)}" if _vc and _nmed else "0/0"),
+            "slow_nocue": (f"{sum(1 for v in _vn if v < 0.8 * _nmed)}/{len(_vn)}" if _vn and _nmed else "0/0"),
+            "car": str(sum(g(l, "carried", 0) or 0 for l in S if base(l).startswith(("wk_mug_cue", "wk_sci_cue")))),
+            "att": str(sum(g(l, "N", 0) for l in S if base(l).startswith(("wk_mug_cue", "wk_sci_cue"))))}
 N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exercised" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 

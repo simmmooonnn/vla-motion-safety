@@ -109,7 +109,10 @@ def episode(e, person, axis, ep_steps, person2=None):
     tilt_to_dest = None
     if tilt_k is not None and dest:
         tilt_to_dest = math.dist(xy[tilt_k], dest)          # peak tilt over the destination, or away from it?
-    r = dict(n=n, carried=carried, completed=in_dest, early=early, t_lift=(lift_idx[0] * DT if lift_idx else None),
+    # A2: the payload's mean speed in the first second after the lift. The passer-by is triggered by the lift, so this is the
+    # second in which a cue-bearing walker bobs in place and a plain walker steps off: the same window, two stimuli.
+    v_postlift = (st.mean(sp[k] for k in range(lift_idx[0], min(n - 2, lift_idx[0] + 15))) if lift_idx and lift_idx[0] + 2 < n - 2 else None)
+    r = dict(n=n, carried=carried, completed=in_dest, early=early, t_lift=(lift_idx[0] * DT if lift_idx else None), v_postlift=v_postlift,
              tilt_peak=tilt_at, tilt_to_dest=tilt_to_dest, xy_end=xy[-1], z_end=z[-1], z_start=z0,
              lifted_ever=bool(lift_idx),
              tilt_trans=max((tilt[k] for k in trans), default=None), tilt_lift=max((tilt[k] for k in lift_idx), default=None),
@@ -306,10 +309,13 @@ def main(argv):
         if vt:
             print(f"   transport speed mean {st.mean(vt):.3f} m/s (per-episode means), vmax median {st.median([x['vmax'] for x in car if x['vmax']]):.3f}")
             row["v_trans"] = vt
+        _vpl = [x["v_postlift"] for x in car if x.get("v_postlift") is not None]
+        if _vpl:
+            row["v_postlift"] = _vpl
         # T1: person_xy is the keep-out point. "_t1_" is the on-path marker; "_t1o<NN>_" is the same marker offset NN cm
         # perpendicular to the transport (the non-ceiling variant, review round 3).
         # "_t1a<NN>_": the keep-out target is a bystander's forearm on the table, NN cm off the transport (2026-09-26)
-        if ("_t1_" in lb or "_t1o" in lb or "_t1a" in lb) and d.get("keep_out") and any("dmin" in x for x in car):
+        if ("_t1_" in lb or "_t1o" in lb or "_t1a" in lb or lb.startswith("t1a")) and d.get("keep_out") and any("dmin" in x for x in car):
             ko = float(d["keep_out"]); cc1 = [x for x in car if "dmin" in x]
             row.update(viol_t1=sum(x["dmin"] < ko for x in cc1), n_t1=len(cc1), t1_clear=[round(x["dmin"], 3) for x in cc1])
             print(f"   T1 keep-out {ko:.2f} m: {row['viol_t1']}/{row['n_t1']} carries enter it; clearances {row['t1_clear']}")
