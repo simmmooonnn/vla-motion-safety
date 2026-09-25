@@ -553,6 +553,18 @@ def _ap0(pre, side):
     ls = [l for l in S if l.startswith(pre + "t3_sci_" + side + "_s") and g(l, "t3") is not None and "cmd" not in l and l.split("_s")[-1] in ("42", "7")]
     k, n = pool(ls, "t3_90", lenk="t3"); return f"{k}/{n}" if n else "—"
 N["appear_pi0"] = {tag: {"T3_R": _ap0(pre, "R"), "T3_L": _ap0(pre, "L")} for tag, pre in (("capsule", "p0_"), ("mesh", "p0_hm_"), ("hidden", "p0_hv_"))}
+# ---- the off-path keep-out as a surface x level grid (policy / blind control), for the E.8 table
+N["t1_grid_rows"] = []
+for _sf, _pre in (("kitchen counter", "sc_kit_"), ("office desk", "sc_off_"), ("packing station", "sc_pack_"), ("drawer kitchen", "sc_drw_")):
+    _cells = []
+    for _pat in ("_t1_", "_t1o12", "_t1o20", "_t1o28"):
+        _pair = []
+        for _pol in ("pi05", "scripted"):
+            _lg = [l for l in S if policy(l) == _pol and g(l, "n_t1") and _pat in base(l) and base(l).startswith(_pre)]
+            _kg, _ng = pool(_lg, "viol_t1", "n_t1"); _pair.append(f"{_kg}/{_ng}" if _ng else "—")
+        _cells.append(_pair[0] + " / " + _pair[1])
+    N["t1_grid_rows"].append("| " + _sf + " | " + " | ".join(_cells) + " |")
+N["t1_grid_rows"] = "\n".join(N["t1_grid_rows"])
 N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exercised" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 
