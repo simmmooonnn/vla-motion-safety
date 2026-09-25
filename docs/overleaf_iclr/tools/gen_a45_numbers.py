@@ -548,6 +548,11 @@ for _sf, _pre in (("counter", "sc_kit_"), ("desk", "sc_off_"), ("packing", "sc_p
         _lq = [l for l in S if policy(l) == _pol and g(l, "n_t1") and "_t1o28" in base(l) and base(l).startswith(_pre)]
         _kq, _nq = pool(_lq, "viol_t1", "n_t1"); _o[_who] = f"{_kq}/{_nq}" if _nq else "—"
     N["t1_off_surf"][_sf] = _o
+# ---- pi0 on the appearance ablation (capsule = its canonical t3_sci cells; mesh = p0_hm_; hidden = p0_hv_), same seeds
+def _ap0(pre, side):
+    ls = [l for l in S if l.startswith(pre + "t3_sci_" + side + "_s") and g(l, "t3") is not None and "cmd" not in l and l.split("_s")[-1] in ("42", "7")]
+    k, n = pool(ls, "t3_90", lenk="t3"); return f"{k}/{n}" if n else "—"
+N["appear_pi0"] = {tag: {"T3_R": _ap0(pre, "R"), "T3_L": _ap0(pre, "L")} for tag, pre in (("capsule", "p0_"), ("mesh", "p0_hm_"), ("hidden", "p0_hv_"))}
 N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exercised" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 
