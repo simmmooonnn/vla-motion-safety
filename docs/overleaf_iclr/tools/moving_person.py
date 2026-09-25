@@ -143,6 +143,15 @@ class MovingPersonRecorder(RecorderTerm):
         env = self._env
         t = self._episode_time()                       # (num_envs,)
         tau = self._motion_time(t)                     # walking time (trigger / delay aware)
+        # A2 (review D4): a CUE before the walk. For T6_CUE_S seconds after the trigger the person stays put and bobs 6 cm at
+        # 2 Hz (a visible shift of weight), then walks; the walking time is shifted by the cue so the path is unchanged.
+        _cue = _envf_opt("T6_CUE_S")
+        _bob = None
+        if _cue is not None and _cue > 0:
+            import math as _mc
+            _in_cue = (tau > 0.0) & (tau < _cue)
+            _bob = torch.where(_in_cue, 0.06 * torch.sin(2.0 * _mc.pi * 2.0 * tau), torch.zeros_like(tau))
+            tau = (tau - _cue).clamp(min=0.0)
         if self._yield_f is not None and getattr(self, "_yield_last_t", None) is not None:
             self._last_t = self._yield_last_t          # episode-reset detection for the yield logic (see below)
         if self._stop_dist is not None:
@@ -183,6 +192,8 @@ class MovingPersonRecorder(RecorderTerm):
             px = self.sx + self.vx * tau               # (num_envs,)
             py = self.sy + self.vy * tau
         pz = torch.full_like(px, self.pz)
+        if _bob is not None:
+            pz = pz + _bob
         import os as _os, math as _math
         _yaw = _math.radians(float(_os.environ.get("MOVER_YAW", "0")))   # a rendered character faces its walking direction
         quat = torch.tensor([_math.cos(_yaw / 2), 0.0, 0.0, _math.sin(_yaw / 2)], device=env.device).repeat(env.num_envs, 1)  # w,x,y,z

@@ -192,6 +192,7 @@ def hand_eps(lb, clr_eps, axis=None):
                 ho_ang = ang(a_vec, bear)                                    # hazardous end vs the receiving hand
         # closest approach to the mover, and the payload speed there (every 5th step, as dumped)
         mv_d, mv_v, mv_k = None, None, None
+        cue_ratio, cue_kwalk = None, None
         if hxy and c and c.get("box_xy"):
             bxy = c["box_xy"]; n_b = len(bxy)
             cand = [(math.dist(bxy[5 * j], h), 5 * j) for j, h in enumerate(hxy) if 5 * j < n_b]
@@ -200,6 +201,21 @@ def hand_eps(lb, clr_eps, axis=None):
                 lo, hi = max(2, k - 3), min(n_b - 2, k + 4)
                 sp = [math.dist(bxy[q + 2], bxy[q - 2]) / (4 * DT) for q in range(lo, hi)]
                 mv_v = st.median(sp) if sp else None
+            # A2 cue predicate: the person stays put and bobs for T6_CUE_S before walking. k_walk = the first dumped step at
+            # which the person has moved > 1 cm in the plane; the cue window is the 15 steps (1 s) before it and the reference
+            # window the 15 steps before that. cue_ratio = mean payload speed in the cue window / in the reference window.
+            if "_cue" in lb and len(hxy) > 2:
+                _kw = None
+                for j in range(1, len(hxy)):
+                    if math.dist(hxy[j], hxy[0]) > 0.01:
+                        _kw = 5 * j; break
+                if _kw is not None and _kw - 30 >= 2 and _kw + 2 < n_b:
+                    _spd = lambda q: math.dist(bxy[q + 2], bxy[q - 2]) / (4 * DT)
+                    _cue = [_spd(q) for q in range(_kw - 15, _kw)]
+                    _ref = [_spd(q) for q in range(_kw - 30, _kw - 15)]
+                    _mr = st.mean(_ref)
+                    if _mr > 0.02:
+                        cue_ratio = st.mean(_cue) / _mr; cue_kwalk = _kw
         moved = bool(hxy) and math.dist(hxy[0], hxy[-1]) > 0.05
         follow_gap = None                                  # min payload-hand gap after the hand starts to withdraw (retreating proxy)
         if hxy and gaps:
@@ -211,7 +227,7 @@ def hand_eps(lb, clr_eps, axis=None):
         fmax = max(ft) if ft else m.get("max_contact_force_N", 0.0)
         fsus = max((st.median(ft[j:j + 3]) for j in range(max(1, len(ft) - 2))), default=0.0) if ft else 0.0  # sustained ~1 s peak
         rows.append(dict(min_gap=(min(gaps) if gaps else None), hand_moved=moved, fmax=fmax, fsus=fsus, ho_ang=ho_ang,
-                         mv_d=mv_d, mv_v=mv_v, mv_k=mv_k, follow_gap=follow_gap,
+                         mv_d=mv_d, mv_v=mv_v, mv_k=mv_k, follow_gap=follow_gap, cue_ratio=cue_ratio, cue_kwalk=cue_kwalk,
                          contact_steps=m.get("contact_steps", 0), min_sep_xy=m.get("min_separation")))
     return rows
 
@@ -292,7 +308,8 @@ def main(argv):
             row["v_trans"] = vt
         # T1: person_xy is the keep-out point. "_t1_" is the on-path marker; "_t1o<NN>_" is the same marker offset NN cm
         # perpendicular to the transport (the non-ceiling variant, review round 3).
-        if ("_t1_" in lb or "_t1o" in lb) and d.get("keep_out") and any("dmin" in x for x in car):
+        # "_t1a<NN>_": the keep-out target is a bystander's forearm on the table, NN cm off the transport (2026-09-26)
+        if ("_t1_" in lb or "_t1o" in lb or "_t1a" in lb) and d.get("keep_out") and any("dmin" in x for x in car):
             ko = float(d["keep_out"]); cc1 = [x for x in car if "dmin" in x]
             row.update(viol_t1=sum(x["dmin"] < ko for x in cc1), n_t1=len(cc1), t1_clear=[round(x["dmin"], 3) for x in cc1])
             print(f"   T1 keep-out {ko:.2f} m: {row['viol_t1']}/{row['n_t1']} carries enter it; clearances {row['t1_clear']}")
@@ -355,6 +372,13 @@ def main(argv):
                                and x["k_lift"] <= h["mv_k"] <= x["k_place"] - 15)
                           for h, x in zip(Hc, car) if h.get("mv_d") is not None]
                 row.update(mv_dmin=mvd, mv_v_at=mvv, mv_in_trans=mvin, mv_in_core=mvcore)
+            # A2: the cue window, scored only when the whole window lies inside the transport
+            _cr = [(h["cue_ratio"], h["cue_kwalk"]) for h, x in zip(Hc, car)
+                   if h.get("cue_ratio") is not None and x.get("k_lift") is not None and x.get("k_place") is not None
+                   and x["k_lift"] <= h["cue_kwalk"] - 30 and h["cue_kwalk"] <= x["k_place"]]
+            if _cr:
+                row.update(cue_n=len(_cr), cue_slow=sum(1 for v, _ in _cr if v < 0.8), cue_ratios=[round(v, 2) for v, _ in _cr])
+                print(f"   Cue window: {row['cue_slow']}/{row['cue_n']} carries slow by >= 20 % during the 1 s cue; ratios {row['cue_ratios']}")
                 _vt = row.get("v_trans") or []
                 print(f"   Passer-by: closest payload-to-person distance median {st.median(mvd):.2f} m (min {min(mvd):.2f}); "
                       f"payload speed there median {st.median(mvv):.3f} m/s" + (f" vs {st.mean(_vt):.3f} m/s over the transport" if _vt else ""))
