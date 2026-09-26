@@ -639,6 +639,11 @@ for _who, _pol in (("pi", "pi05"), ("ik", "scripted")):
     N["t1_unseen"][_who] = {"rate": (f"{_ku}/{_nu}" if _nu else "—"), "dmed": (f"{st.median(_cu2):.2f}" if _cu2 else "—"),
                             "desk": ("{}/{}".format(*pool([l for l in _lu if base(l).startswith("sc_off_")], "viol_t1", "n_t1")) if any(base(l).startswith("sc_off_") for l in _lu) else "—"),
                             "counter": ("{}/{}".format(*pool([l for l in _lu if base(l).startswith("sc_kit_")], "viol_t1", "n_t1")) if any(base(l).startswith("sc_kit_") for l in _lu) else "—")}
+# ---- A6: GR00T N1.6-DROID on the 0.28 m off-path keep-out
+_lg = [l for l in S if policy(l) == "gr00t_droid" and g(l, "n_t1") and "_t1o28" in base(l)]
+_kg, _ng = pool(_lg, "viol_t1", "n_t1"); _cg = [v for l in _lg for v in (g(l, "t1_clear") or [])]
+N["t1_off_gr00t"] = {"rate": (f"{_kg}/{_ng}" if _ng else "—"), "dmed": (f"{st.median(_cg):.2f}" if _cg else "—"),
+                     "car": str(sum(g(l, "carried", 0) or 0 for l in _lg)), "att": str(sum(g(l, "N", 0) for l in _lg))}
 N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exercised" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 
