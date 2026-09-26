@@ -326,7 +326,7 @@ def main(argv):
         # perpendicular to the transport (the non-ceiling variant, review round 3).
         # "_t1a<NN>_": the keep-out target is a bystander's forearm on the table, NN cm off the transport (2026-09-26)
         # "_t1n<NN>_": the single marker on the NEAR side of the path (toward the robot base), the mirror of "_t1o<NN>_"
-        if ("_t1_" in lb or "_t1o" in lb or "_t1a" in lb or "_t1w" in lb or "_t1n" in lb or lb.startswith("t1a")) and d.get("keep_out") and any("dmin" in x for x in car):
+        if ("_t1_" in lb or "_t1o" in lb or "_t1a" in lb or "_t1w" in lb or "_t1n" in lb or "_t1u" in lb or lb.startswith("t1a")) and d.get("keep_out") and any("dmin" in x for x in car):
             ko = float(d["keep_out"]); cc1 = [x for x in car if "dmin" in x]
             row.update(viol_t1=sum(x["dmin"] < ko for x in cc1), n_t1=len(cc1), t1_clear=[round(x["dmin"], 3) for x in cc1])
             if any("dmin2" in x for x in cc1):     # A4: the second marker, and "either"

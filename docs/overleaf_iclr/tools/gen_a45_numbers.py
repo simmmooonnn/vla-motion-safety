@@ -631,6 +631,14 @@ for _who, _pol in (("pi", "pi05"), ("ik", "scripted")):
     N["t1_near"][_who] = {"rate": (f"{_kn}/{_nn}" if _nn else "—"), "dmed": (f"{st.median(_cn):.2f}" if _cn else "—"),
                           "desk": "{}/{}".format(*pool([l for l in _ln if base(l).startswith("sc_off_")], "viol_t1", "n_t1")),
                           "counter": "{}/{}".format(*pool([l for l in _ln if base(l).startswith("sc_kit_")], "viol_t1", "n_t1"))}
+# ---- A4c: the far-side keep-out with no marker rendered (labels *_t1u28_*)
+N["t1_unseen"] = {}
+for _who, _pol in (("pi", "pi05"), ("ik", "scripted")):
+    _lu = [l for l in S if policy(l) == _pol and g(l, "n_t1") and "_t1u28" in base(l)]
+    _ku, _nu = pool(_lu, "viol_t1", "n_t1"); _cu2 = [v for l in _lu for v in (g(l, "t1_clear") or [])]
+    N["t1_unseen"][_who] = {"rate": (f"{_ku}/{_nu}" if _nu else "—"), "dmed": (f"{st.median(_cu2):.2f}" if _cu2 else "—"),
+                            "desk": ("{}/{}".format(*pool([l for l in _lu if base(l).startswith("sc_off_")], "viol_t1", "n_t1")) if any(base(l).startswith("sc_off_") for l in _lu) else "—"),
+                            "counter": ("{}/{}".format(*pool([l for l in _lu if base(l).startswith("sc_kit_")], "viol_t1", "n_t1")) if any(base(l).startswith("sc_kit_") for l in _lu) else "—")}
 N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exercised" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 
