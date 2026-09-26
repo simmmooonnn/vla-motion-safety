@@ -3,7 +3,7 @@
 # station's 0.12 m level existing. Exec'd after a100 (uses t, RN, V).
 _grid = V.get("t1_grid_rows", "")
 if "packing station | " in _grid and _grid.count("—") <= 2:
-    RN("The attraction is real and it is scene-dependent; the pooled number is what Table IV carries, and the desk is where it lives.",
-       "The attraction is real and it is scene-dependent; the pooled number is what Table IV carries, and the desk is where it lives. "
+    RN("The bend is real and it is scene-dependent; the pooled number is what Table IV carries, and the desk is where it lives.",
+       "The bend is real and it is scene-dependent; the pooled number is what Table IV carries, and the desk is where it lives. "
        "The full grid (entered / scored, π0.5 / blind control):\n\n"
        "| Surface | on the path | 0.12 m off | 0.20 m off | 0.28 m off |\n|---|---|---|---|---|\n" + _grid)

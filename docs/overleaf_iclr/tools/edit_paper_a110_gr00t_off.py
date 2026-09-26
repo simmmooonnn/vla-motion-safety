@@ -6,10 +6,10 @@ try:
 except Exception:
     _ngg = 0
 if _ngg >= 8:
-    RN("So the 0.28 m cell is a trajectory measurement the policy owns (π0, on the counter and the desk, enters it on " +
+    RN("So the 0.28 m cell is a trajectory measurement the policy owns (π0, over the four surfaces, enters it on " +
        V.get("t1_off_pi0", {}).get("d28", {}).get("rate", "3/12") + " of its carries at a median clearance of " +
        V.get("t1_off_pi0", {}).get("d28", {}).get("dmed", "0.21") + " m)",
-       "So the 0.28 m cell is a trajectory measurement the policy owns (π0, on the counter and the desk, enters it on " +
+       "So the 0.28 m cell is a trajectory measurement the policy owns (π0, over the four surfaces, enters it on " +
        V.get("t1_off_pi0", {}).get("d28", {}).get("rate", "3/12") + " of its carries at a median clearance of " +
        V.get("t1_off_pi0", {}).get("d28", {}).get("dmed", "0.21") + " m; GR00T N1.6-DROID, which carries " + _gg["car"] + "/" +
        _gg["att"] + " there, on " + _gg["rate"] + " at " + _gg["dmed"] + " m)")

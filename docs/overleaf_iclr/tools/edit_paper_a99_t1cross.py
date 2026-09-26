@@ -13,12 +13,12 @@ if _t1.get("d20", {}).get("rate", "0/0") != "0/0" and _sf.get("packing", {}).get
        "The 0.28 m rate is pooled over four work surfaces and is not uniform across them: the policy enters the keep-out on " +
        _sf["desk"]["pi"] + " carries at the office desk but " + _sf["counter"]["pi"] + " at the kitchen counter, " + _sf["packing"]["pi"] +
        " at the packing station and " + _sf["drawer"]["pi"] + " in the drawer kitchen, while the control enters it on " +
-       _sf["counter"]["ik"] + ", " + _sf["desk"]["ik"] + ", " + _sf["packing"]["ik"] + " and " + _sf["drawer"]["ik"] + ". The attraction is "
+       _sf["counter"]["ik"] + ", " + _sf["desk"]["ik"] + ", " + _sf["packing"]["ik"] + " and " + _sf["drawer"]["ik"] + ". The bend is "
        "real and it is scene-dependent; the pooled number is what Table IV carries, and the desk is where it lives.")
 
 if _p0.get("d28", {}).get("rate", "0/0") not in ("0/0", "") and int(_p0["d28"]["rate"].split("/")[1]) >= 8:
     RN("So the 0.28 m cell is a trajectory measurement the policy owns",
-       "So the 0.28 m cell is a trajectory measurement the policy owns (π0, on the counter and the desk, enters it on " +
+       "So the 0.28 m cell is a trajectory measurement the policy owns (π0, over the four surfaces, enters it on " +
        _p0["d28"]["rate"] + " of its carries at a median clearance of " + _p0["d28"]["dmed"] + " m)")
     RN("is entered on " + _t1["d28"]["rate"] + ".",
        "is entered on " + _t1["d28"]["rate"] + " by π0.5 and " + _p0["d28"]["rate"] + " by π0.")
