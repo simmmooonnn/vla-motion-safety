@@ -613,6 +613,24 @@ N["cue"] = {"n_cue": str(len(_vc)), "n_nocue": str(len(_vn)), "cue_med": (f"{st.
             "slow_nocue": (f"{sum(1 for v in _vn if v < 0.8 * _nmed)}/{len(_vn)}" if _vn and _nmed else "0/0"),
             "car": str(sum(g(l, "carried", 0) or 0 for l in S if base(l).startswith(("wk_mug_cue", "wk_sci_cue")))),
             "att": str(sum(g(l, "N", 0) for l in S if base(l).startswith(("wk_mug_cue", "wk_sci_cue"))))}
+# ---- A4: two hazards flanking the path (labels *_t1w28_*), policy against the blind control
+N["t1_two"] = {}
+for _who, _pol in (("pi", "pi05"), ("ik", "scripted")):
+    _lt = [l for l in S if policy(l) == _pol and g(l, "n_t1") and "_t1w28" in base(l)]
+    _o = {"one": "{}/{}".format(*pool(_lt, "viol_t1", "n_t1")), "two": "{}/{}".format(*pool(_lt, "viol_t1_2", "n_t1")),
+          "any": "{}/{}".format(*pool(_lt, "viol_t1_any", "n_t1"))}
+    for _sf, _pre in (("desk", "sc_off_"), ("counter", "sc_kit_")):
+        _ls2 = [l for l in _lt if base(l).startswith(_pre)]
+        _o[_sf] = "{}/{}".format(*pool(_ls2, "viol_t1_any", "n_t1")) if _ls2 else "—"
+    N["t1_two"][_who] = _o
+# ---- A4b: the single marker on the near side of the path (labels *_t1n28_*)
+N["t1_near"] = {}
+for _who, _pol in (("pi", "pi05"), ("ik", "scripted")):
+    _ln = [l for l in S if policy(l) == _pol and g(l, "n_t1") and "_t1n28" in base(l)]
+    _kn, _nn = pool(_ln, "viol_t1", "n_t1"); _cn = [v for l in _ln for v in (g(l, "t1_clear") or [])]
+    N["t1_near"][_who] = {"rate": (f"{_kn}/{_nn}" if _nn else "—"), "dmed": (f"{st.median(_cn):.2f}" if _cn else "—"),
+                          "desk": "{}/{}".format(*pool([l for l in _ln if base(l).startswith("sc_off_")], "viol_t1", "n_t1")),
+                          "counter": "{}/{}".format(*pool([l for l in _ln if base(l).startswith("sc_kit_")], "viol_t1", "n_t1"))}
 N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exercised" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 
@@ -622,12 +640,15 @@ N["ik_t3w"] = {side: {"t3": "{}/{}".format(*pool(ls, "t3_90", lenk="t3")), "ok_d
                       "carried": str(sum(g(l, "carried", 0) or 0 for l in ls)), "delivered": str(sum(g(l, "completed", 0) or 0 for l in ls))}
                for side, ls in _w.items()}
 # ---- B5 crossed design: surface x map cells
-_b5 = {}
+_b5 = {}; _b5c = {}
 for l in [l for l in S if l.startswith("b5_")]:
     _, sn, mp_, ob, _sd = l.split("_", 4)
-    sb = subtypes([l]); att = g(l, "N", 0); car = g(l, "carried", 0) or 0; dl = g(l, "completed", 0) or 0
-    _b5[(sn, mp_, ob)] = dict(att=att, car=car, dl=dl, T3="{}/{}".format(*sb["T3"]) if sb["T3"][1] else "—", T4="{}/{}".format(*sb["T4"]) if sb["T4"][1] else "—",
-                              T2="{}/{}".format(*sb["T2"]) if sb["T2"][1] else "—")
+    _b5c.setdefault((sn, mp_, ob), []).append(l)
+for _key, _ls in _b5c.items():                                # pooled over seeds
+    sb = subtypes(_ls); att = sum(g(l, "N", 0) for l in _ls); car = sum(g(l, "carried", 0) or 0 for l in _ls); dl = sum(g(l, "completed", 0) or 0 for l in _ls)
+    _b5[_key] = dict(att=att, car=car, dl=dl, T3="{}/{}".format(*sb["T3"]) if sb["T3"][1] else "—", T4="{}/{}".format(*sb["T4"]) if sb["T4"][1] else "—",
+                     T2="{}/{}".format(*sb["T2"]) if sb["T2"][1] else "—")
+N["b5_seeds"] = str(len(set(l.split("_s")[-1] for l in S if l.startswith("b5_"))))
 N["b5_rows"] = "\n".join("| " + {"kit": "kitchen counter", "pack": "packing station"}[sn] + " | " + {"lounge": "domestic lounge", "autosvc": "industrial auto shop", "courtyard": "outdoor courtyard"}[mp_]
                           + " | " + " | ".join((f'{_b5[(sn, mp_, ob)]["car"]}/{_b5[(sn, mp_, ob)]["att"]} carried, {_b5[(sn, mp_, ob)]["dl"]} delivered; ' +
                                                 (f'T4 {_b5[(sn, mp_, ob)]["T4"]}' if ob == "mug" else f'T3 {_b5[(sn, mp_, ob)]["T3"]}') + f'; T2 {_b5[(sn, mp_, ob)]["T2"]}')

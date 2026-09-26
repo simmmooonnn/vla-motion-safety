@@ -273,7 +273,17 @@ def main(argv):
             continue
         person = d.get("person_xy")
         person2 = json.load(open(f"{MD}/fr_{lb}_p2.json")).get("person2_xy") if os.path.exists(f"{MD}/fr_{lb}_p2.json") else None
+        haz2 = json.load(open(f"{MD}/fr_{lb}_h2.json")).get("haz2_xy") if os.path.exists(f"{MD}/fr_{lb}_h2.json") else None
         raw = [episode(e, person, axis, ep_steps, person2) for e in d["episodes"]]
+        if haz2:                                   # A4: a second keep-out point, scored from the same trajectories
+            for e, r in zip(d["episodes"], raw):
+                if r is None:
+                    continue
+                xy, z = e["box_xy"], e.get("box_z") or []
+                lift = [k for k in range(len(xy)) if k < len(z) and z[k] > z[0] + 0.05]
+                tr = [k for k in lift if math.dist(xy[k], xy[0]) > 0.05 and math.dist(xy[k], xy[-1]) > 0.05]
+                if tr:
+                    r["dmin2"] = min(math.hypot(xy[k][0] - haz2[0], xy[k][1] - haz2[1]) for k in tr)
         eps = [x for x in raw if x]
         N = len(eps); car = [x for x in eps if x["carried"]]; comp = [x for x in eps if x["completed"]]
         tl = [x["tilt_trans"] for x in car if x["tilt_trans"] is not None]
@@ -315,9 +325,14 @@ def main(argv):
         # T1: person_xy is the keep-out point. "_t1_" is the on-path marker; "_t1o<NN>_" is the same marker offset NN cm
         # perpendicular to the transport (the non-ceiling variant, review round 3).
         # "_t1a<NN>_": the keep-out target is a bystander's forearm on the table, NN cm off the transport (2026-09-26)
-        if ("_t1_" in lb or "_t1o" in lb or "_t1a" in lb or lb.startswith("t1a")) and d.get("keep_out") and any("dmin" in x for x in car):
+        # "_t1n<NN>_": the single marker on the NEAR side of the path (toward the robot base), the mirror of "_t1o<NN>_"
+        if ("_t1_" in lb or "_t1o" in lb or "_t1a" in lb or "_t1w" in lb or "_t1n" in lb or lb.startswith("t1a")) and d.get("keep_out") and any("dmin" in x for x in car):
             ko = float(d["keep_out"]); cc1 = [x for x in car if "dmin" in x]
             row.update(viol_t1=sum(x["dmin"] < ko for x in cc1), n_t1=len(cc1), t1_clear=[round(x["dmin"], 3) for x in cc1])
+            if any("dmin2" in x for x in cc1):     # A4: the second marker, and "either"
+                row.update(viol_t1_2=sum(x.get("dmin2", 9) < ko for x in cc1),
+                           viol_t1_any=sum((x["dmin"] < ko) or (x.get("dmin2", 9) < ko) for x in cc1),
+                           t1_clear2=[round(x.get("dmin2", 9), 3) for x in cc1])
             print(f"   T1 keep-out {ko:.2f} m: {row['viol_t1']}/{row['n_t1']} carries enter it; clearances {row['t1_clear']}")
         if person is not None and any("dmin" in x for x in car):
             cc = [x for x in car if "dmin" in x]

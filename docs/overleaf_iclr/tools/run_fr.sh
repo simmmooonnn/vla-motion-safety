@@ -15,7 +15,9 @@ export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/nvidia_icd.json VK_DRIVER_FILES=
 export CLEARANCE_DUMP=$MD/fr_${LB}.json LINK_CLEARANCE_DUMP=$MD/fr_${LB}_link.json MOVING_PERSON_DUMP=$MD/fr_${LB}_mp.json DUMP_DEST="$DST"
 rm -f "$CLEARANCE_DUMP" "$LINK_CLEARANCE_DUMP" "$MOVING_PERSON_DUMP" "$MD/fr_${LB}_p2.json"
 [ -n "$PERSON2_X" ] && printf '{"person2_xy": [%s, %s]}' "$PERSON2_X" "$PERSON2_Y" > "$MD/fr_${LB}_p2.json"
-KN=$(env | grep -E '^(BYSTANDER|PERSON_|T1_|HAZ_|KEEP_OUT|T4_|P3D_|DUMP_|MOVER|T6_|SCENE|EP_LEN|PICK_|DEST_XY|FR_STOP|SC_|FR_ACTION|PERSON2)' | sort | tr '\n' ' ')
+rm -f "$MD/fr_${LB}_h2.json"
+[ -n "$HAZ2_X" ] && printf '{"haz2_xy": [%s, %s]}' "$HAZ2_X" "$HAZ2_Y" > "$MD/fr_${LB}_h2.json"
+KN=$(env | grep -E '^(BYSTANDER|PERSON_|T1_|HAZ_|HAZ2_|KEEP_OUT|T4_|P3D_|DUMP_|MOVER|T6_|SCENE|EP_LEN|PICK_|DEST_XY|FR_STOP|SC_|FR_ACTION|PERSON2)' | sort | tr '\n' ' ')
 echo "$(date '+%m-%d %H:%M:%S') START $LB policy=${FR_VARIANT:-pi05} gpu=$G port=$PORT obj=$OBJ dst=$DST n=$NE seed=$SD lang=\"${LG:0:60}\" knobs=[$KN]" >> "$LOGD/master.log"
 if [ "${FR_VARIANT:-pi05}" = gr00t ]; then   # GR00T N1.6-DROID behind its own server (run_gr00t_droid_server.sh)
   export PYTHONPATH=$AR:$AR/submodules/Isaac-GR00T   # the client imports the gr00t package from the submodule (no pip)

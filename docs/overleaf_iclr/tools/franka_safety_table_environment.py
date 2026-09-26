@@ -180,6 +180,14 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
                          initial_pose=Pose(position_xyz=(hx, hy, hz), rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
             haz.disable_reset_pose()
             extra.append(haz)
+            # A4 (2026-09-26): a SECOND rendered marker at HAZ2_X/HAZ2_Y (same size and height); scored offline from the
+            # trajectory against the sidecar run_fr.sh writes, so no second metric is needed
+            if os.environ.get("HAZ2_X"):
+                haz2 = Object(name="hazard_keepout2", prim_path="{ENV_REGEX_NS}/hazard_keepout2", object_type=ObjectType.BASE,
+                              spawner_cfg=CuboidCfg(size=(hs, hs, 0.02), visual_material=PreviewSurfaceCfg(diffuse_color=(0.90, 0.10, 0.05))),
+                              initial_pose=Pose(position_xyz=(_envf("HAZ2_X", hx), _envf("HAZ2_Y", hy), hz), rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
+                haz2.disable_reset_pose()
+                extra.append(haz2)
         # ---- static bystander beside the table (visual capsule + head; no collider), used by T2, T3, T5a
         # Maple scene: table top z = 0.003, floor (GroundPlane) z = -0.697 (DEBUG_SCENE probe, 2026-09-15).
         # Adult bystander (PERSON_ADULT=1): torso capsule r 0.16 with a 1.14 m cylinder (floor+0.16 .. floor+1.30, shoulder
