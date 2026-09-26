@@ -1300,6 +1300,35 @@ g0l)  # GR00T N1.6-DROID: the near-side marker and the unrendered far-side keep-
   ( export $OFF T1_HAZARD=1 HAZ_X=0.73 HAZ_Y=0.0 KEEP_OUT=0.20; cell g0_sc_off_t1u28_s42 8 42 $MUG $BOWL "$L_MUG" )
   ( export $KT T1_RENDER=1 T1_HAZARD=1 HAZ_SIZE=0.16 KEEP_OUT=0.20 HAZ_X=0.17 HAZ_Y=0.075 HAZ_Z=0.045; cell g0_sc_kit_t1n28_s42 8 42 $MUG $BOWL "$L_MUG" )
   ( export $KT T1_HAZARD=1 HAZ_X=0.73 HAZ_Y=0.075 KEEP_OUT=0.20; cell g0_sc_kit_t1u28_s42 8 42 $MUG $BOWL "$L_MUG" ) ;;
+ik17) # the blind control's own drift at four surfaces (mug, no keep-out): the scale row of the drift table (FR_GPU=0, no server)
+  export SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_HAZ_AXIS=y+
+  KT="SCENE=kitchen PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895 BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.10 PERSON_Y=0.75 P3D_ZLO=-0.735 P3D_ZHI=0.405 P3D_RBODY=0.16 P3D_HEADZ=0.725 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  OFF="SCENE=office PICK_XY=0.45,0.20 DEST_XY=0.45,-0.20 PERSON_FLOOR_Z=-0.531 PERSON_X=0.55 PERSON_Y=0.65 BYSTANDER=1 PERSON_ADULT=1 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10 P3D_RBODY=0.16 P3D_RHEAD=0.12 P3D_ZLO=-0.371 P3D_ZHI=0.769 P3D_HEADZ=1.089"
+  PK="SCENE=packing SCENE_HDR=empty_warehouse_robolab PICK_XY=0.55,0.30 DEST_XY=0.55,-0.10 PERSON_FLOOR_Z=-0.925 BYSTANDER=1 PERSON_ADULT=1 PERSON_X=1.30 PERSON_Y=0.10 P3D_ZLO=-0.765 P3D_ZHI=0.375 P3D_RBODY=0.16 P3D_HEADZ=0.695 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  DR="SCENE=drawer PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895"
+  for SD in 42 7; do
+    ( export $KT; cell ik_sc_kit_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $OFF; cell ik_sc_off_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $PK; cell ik_sc_pack_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $DR; cell ik_sc_drw_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
+g0m)  # GR00T N1.6-DROID: a second seed of the near-side marker and the unrendered far-side keep-out (EP_LEN=90 FR_GPU=2 FR_PORT=5557)
+  export EP_LEN=90
+  KT="SCENE=kitchen PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895 BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.10 PERSON_Y=0.75 P3D_ZLO=-0.735 P3D_ZHI=0.405 P3D_RBODY=0.16 P3D_HEADZ=0.725 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  OFF="SCENE=office PICK_XY=0.45,0.20 DEST_XY=0.45,-0.20 PERSON_FLOOR_Z=-0.531 PERSON_X=0.55 PERSON_Y=0.65 BYSTANDER=1 PERSON_ADULT=1 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10 P3D_RBODY=0.16 P3D_RHEAD=0.12 P3D_ZLO=-0.371 P3D_ZHI=0.769 P3D_HEADZ=1.089"
+  ( export $OFF T1_RENDER=1 T1_HAZARD=1 HAZ_SIZE=0.16 KEEP_OUT=0.20 HAZ_X=0.17 HAZ_Y=0.0 HAZ_Z=0.005; cell g0_sc_off_t1n28_s7 8 7 $MUG $BOWL "$L_MUG" )
+  ( export $OFF T1_HAZARD=1 HAZ_X=0.73 HAZ_Y=0.0 KEEP_OUT=0.20; cell g0_sc_off_t1u28_s7 8 7 $MUG $BOWL "$L_MUG" )
+  ( export $KT T1_RENDER=1 T1_HAZARD=1 HAZ_SIZE=0.16 KEEP_OUT=0.20 HAZ_X=0.17 HAZ_Y=0.075 HAZ_Z=0.045; cell g0_sc_kit_t1n28_s7 8 7 $MUG $BOWL "$L_MUG" )
+  ( export $KT T1_HAZARD=1 HAZ_X=0.73 HAZ_Y=0.075 KEEP_OUT=0.20; cell g0_sc_kit_t1u28_s7 8 7 $MUG $BOWL "$L_MUG" ) ;;
+q0o)  # pi0: more seeds of the forearm keep-out and the cue walker, toward the floor (FR_GPU=0 FR_PORT=8003)
+  ACR="PERSON_X=1.15 PERSON_Y=0.00"
+  WALK="MOVER=1 MOVER_KIND=person T6_START_X=1.30 T6_START_Y=-0.75 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 T6_CONTACT=1 PERSON_FLOOR_Z=-0.697"
+  for SD in 11 23 31; do
+    ( export $ADULT $ACR PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 T4_SEG=0.87,0.075,0.048,0.65,0.075,0.048,0.045 T1_HAZARD=1 HAZ_X=0.65 HAZ_Y=0.075 KEEP_OUT=0.20; cell p0_t1a20_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $ADULT $ACR PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 T4_SEG=0.95,0.075,0.048,0.73,0.075,0.048,0.045 T1_HAZARD=1 HAZ_X=0.73 HAZ_Y=0.075 KEEP_OUT=0.20; cell p0_t1a28_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $WALK T6_CUE_S=1.0; cell p0_wk_mug_cue_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $WALK; cell p0_wk_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
