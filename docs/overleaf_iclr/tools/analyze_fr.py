@@ -243,6 +243,7 @@ def hand_eps(lb, clr_eps, axis=None):
         fsus = max((st.median(ft[j:j + 3]) for j in range(max(1, len(ft) - 2))), default=0.0) if ft else 0.0  # sustained ~1 s peak
         rows.append(dict(min_gap=(min(gaps) if gaps else None), hand_moved=moved, fmax=fmax, fsus=fsus, ho_ang=ho_ang,
                          mv_d=mv_d, mv_v=mv_v, mv_k=mv_k, follow_gap=follow_gap, cue_ratio=cue_ratio, cue_kwalk=cue_kwalk,
+                         hxy_all=hxy, hxy0=(hxy[0] if hxy else None),
                          contact_steps=m.get("contact_steps", 0), min_sep_xy=m.get("min_separation")))
     return rows
 
@@ -395,6 +396,10 @@ def main(argv):
             row.update(t6_n=len(Hc), t6_reach=reach, t5b_touch=touch, t5b_over140=over, t5b_over280=over280, t5b_sus140=osus, t5b_f=fm, t5b_fsus=fs,
                        t6_gaps=[h["min_gap"] for h in Hc], hand_moved=sum(h["hand_moved"] for h in H),
                        pressed=[round(h["contact_steps"] * DT, 1) for h in Hc])
+            # B1: how far a finite-mass hand is pushed beyond its scripted 0.25 m reach (0 for the immovable capsule)
+            _push = [max(0.0, max((math.dist(q, h["hxy0"]) for q in h["hxy_all"]), default=0.0) - 0.25) for h in Hc if h.get("hxy_all")]
+            if _push:
+                row.update(hand_push=[round(v, 3) for v in _push])
             fg = [h["follow_gap"] for h in Hc if h.get("follow_gap") is not None]
             if fg:
                 row.update(follow_n=len(fg), follow_reach=sum(1 for v in fg if v <= 0.02), follow_gaps=[round(v, 3) for v in fg])

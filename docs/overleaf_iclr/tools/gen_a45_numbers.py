@@ -40,7 +40,7 @@ SKIP = ("probe", "smoke", "still", "demo", "d4_", "d5_", "d6_", "d7_", "d8_", "d
 def canonical(l):
     """Pick-and-place with the adult at the table (six surfaces), the reaching-hand variant, the passer-by variant."""
     b = base(l)
-    if any(x in l for x in SKIP) or "_cmd" in b or "nocol" in b or "handret" in b or "pitcher" in b or "drill" in b or "_hw_" in b or "_sv_" in b or "hurry" in b or b.startswith("t1a") or l == "t6_hand_s42":
+    if any(x in l for x in SKIP) or "_cmd" in b or "nocol" in b or "handret" in b or "pitcher" in b or "drill" in b or "_hw_" in b or "_sv_" in b or "hurry" in b or b.startswith(("t1a", "dyn_")) or l == "t6_hand_s42":
         return False
     return b.startswith(("t2_", "t3_", "t4_", "t5a_", "t6_hand", "sc_", "wk_", "kit_t1", "ge_")) if l.startswith("ik_") else (b.startswith(("t2_", "t3_", "t4_", "t5a_", "t6_hand", "sc_", "wk_", "wk2_")) and not ("_wk_" in b))
 
@@ -276,7 +276,7 @@ def task(l):
     b = base(l)
     if "hurry" in b and not b.startswith("tuh_"):
         return "pick-and-place, told to hurry"
-    for pre, name in (("tuh_", "tool use, told to hurry"), ("t1a", "pick-and-place, a forearm on the table as the keep-out (off the path)"),
+    for pre, name in (("dyn_", "pick-and-place, hand reaches in (finite-mass hand)"), ("tuh_", "tool use, told to hurry"), ("t1a", "pick-and-place, a forearm on the table as the keep-out (off the path)"),
                       ("svstv_", "serving beside a seated bystander (rendered to the scored band)"), ("svchv_", "serving beside a child-height bystander (rendered to the scored band)"),
                       ("chv_", "pick-and-place, child-height bystander (rendered to the scored band)"), ("stv_", "pick-and-place, seated bystander (rendered to the scored band)"),
                       ("hm_", "pick-and-place, person rendered as a photorealistic human (appearance ablation)"),
@@ -352,7 +352,7 @@ ORDER_T = ["pick-and-place, person at the table", "pick-and-place, hand reaches 
            "pick-and-place, two bystanders (left and right)", "pick-and-place, person not rendered (perception ablation)",
            "pick-and-place, person approaches at 1.2 m/s and stops", "pick-and-place, surface x map crossed design", "pick-and-place, rotated spawn at other placements",
            "pick-and-place, environment maps", "serving beside the person", "serving beside the person, bowl 0.45 m from them", "serving beside the person, bowl 0.55 m from them", "serving beside the person, kitchen counter", "serving beside the person, office desk", "serving beside the person, packing station", "cluttered table", "pour", "push (no grasp)", "tool use (stir, scrape, toss)",
-           "tool use, told to go slowly", "tool use, told to hurry", "pick-and-place, told to hurry", "pick-and-place, a forearm on the table as the keep-out (off the path)", "handover", "put away in a drawer", "clear the table", "close a door", "pick-and-place, island kitchen"]
+           "tool use, told to go slowly", "tool use, told to hurry", "pick-and-place, hand reaches in (finite-mass hand)", "pick-and-place, told to hurry", "pick-and-place, a forearm on the table as the keep-out (off the path)", "handover", "put away in a drawer", "clear the table", "close a door", "pick-and-place, island kitchen"]
 N["tab4_rows"] = "\n".join(task_row(nm, groups[nm]) for nm in ORDER_T if nm in groups)
 # per-task numbers used in the text (next-cycle B3 / B1 cells)
 def _tstats(nm):
@@ -686,6 +686,27 @@ _vn0 = [v for l in S if policy(l) == "pi0" and base(l) in ("wk_mug_s42", "wk_mug
         for v in (g(l, "v_postlift") or [])]
 N["cue_pi0"] = {"n_cue": str(len(_vc0)), "n_nocue": str(len(_vn0)), "cue_med": (f"{st.median(_vc0):.3f}" if _vc0 else "—"),
                 "nocue_med": (f"{st.median(_vn0):.3f}" if _vn0 else "—")}
+# ---- B1: the finite-mass reaching hand against the immovable capsule on the same cells
+_dyn = [l for l in S if l.startswith("dyn_") and g(l, "t6_n") and policy(l) == "pi05"]
+_stat = [l for l in S if policy(l) == "pi05" and ("t6_hand" in l or "t6hand" in l) and g(l, "t6_n") and not l.startswith(("dyn_", "hw_")) and not any(x in l for x in SKIP)]
+_fd = [v for l in _dyn for v in (g(l, "t5b_f") or []) if v]; _fs = [v for l in _stat for v in (g(l, "t5b_f") or []) if v]
+_pu = [v for l in _dyn for v in (g(l, "hand_push") or [])]
+def _f_sorted(x):
+    return sorted(x)
+_touch_d = [(g(l, "pressed") or [], g(l, "t5b_f") or []) for l in _dyn]
+_touch_s = [(g(l, "pressed") or [], g(l, "t5b_f") or []) for l in _stat]
+def _contact_s(pairs):
+    v = [p for pr, ff in pairs for p, f in zip(pr, ff) if f and f > 0]
+    return f"{st.median(v):.1f}" if v else "—"
+_fd_s = _f_sorted(_fd)
+N["dynhand"] = {"car": str(sum(g(l, "carried", 0) or 0 for l in _dyn)), "att": str(sum(g(l, "N", 0) for l in _dyn)),
+                "reach": "{}/{}".format(*pool(_dyn, "t6_reach", "t6_n")), "touch": "{}/{}".format(*pool(_dyn, "t5b_touch", "t6_n")),
+                "reach_static": "{}/{}".format(*pool(_stat, "t6_reach", "t6_n")), "touch_static": "{}/{}".format(*pool(_stat, "t5b_touch", "t6_n")),
+                "over140": "{}/{}".format(*pool(_dyn, "t5b_over140", "t6_n")),
+                "f_med": (f"{st.median(_fd):.0f}" if _fd else "—"), "f_max": (f"{max(_fd):.0f}" if _fd else "—"),
+                "f_p95": (f"{_fd_s[-2]:.0f}" if len(_fd_s) >= 2 else "—"),
+                "f_med_static": (f"{st.median(_fs):.0f}" if _fs else "—"),
+                "contact_s": _contact_s(_touch_d), "contact_s_static": _contact_s(_touch_s)}
 N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exercised" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 

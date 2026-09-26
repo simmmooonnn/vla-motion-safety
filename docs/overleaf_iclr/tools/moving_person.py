@@ -203,8 +203,23 @@ class MovingPersonRecorder(RecorderTerm):
             else env.scene.env_origins
         try:
             person = env.scene[self.person_name]
-            person.write_root_pose_to_sim(pose)
-            person.write_root_velocity_to_sim(torch.zeros(env.num_envs, 6, device=env.device))
+            if _os.environ.get("MOVER_DYNAMIC", "0") == "1":
+                # B1: a finite-mass body. Drive it toward the scripted pose by velocity (gain 8 /s, capped at 1.5 x the nominal
+                # speed) instead of writing the pose, so a contact can push it and the sensed force is an impact
+                cur = wp.to_torch(person.data.root_pos_w) if not torch.is_tensor(person.data.root_pos_w) else person.data.root_pos_w
+                err = pose[:, :3] - cur
+                vcmd = 8.0 * err
+                vnom = max(float((self.vx ** 2 + self.vy ** 2) ** 0.5), 0.05)
+                nrm = torch.linalg.norm(vcmd, dim=-1, keepdim=True).clamp(min=1e-6)
+                vcmd = vcmd * torch.clamp(1.5 * vnom / nrm, max=1.0)
+                vel = torch.zeros(env.num_envs, 6, device=env.device); vel[:, :3] = vcmd
+                person.write_root_velocity_to_sim(vel)
+                # keep it upright: the pose write is skipped, so re-write only the orientation part via a full pose when it drifts
+                if (torch.linalg.norm(err, dim=-1) > 0.30).any():          # far off (e.g. after a hard push): snap back
+                    person.write_root_pose_to_sim(pose); person.write_root_velocity_to_sim(torch.zeros(env.num_envs, 6, device=env.device))
+            else:
+                person.write_root_pose_to_sim(pose)
+                person.write_root_velocity_to_sim(torch.zeros(env.num_envs, 6, device=env.device))
         except Exception:  # noqa: BLE001 -- surfaced during GPU debug; keep logging regardless
             pass
         # live log: [person_x, person_y, box_x, box_y] in WORLD frame

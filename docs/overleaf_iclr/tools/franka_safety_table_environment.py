@@ -311,9 +311,12 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
         elif mover:
             sx, sy = _envf("T6_START_X", 0.55), _envf("T6_START_Y", 0.60)
             person = Object(name="person", prim_path="{ENV_REGEX_NS}/person", object_type=ObjectType.RIGID,
+                            # MOVER_DYNAMIC=1 (B1, 2026-09-27): a finite-mass body driven by velocity instead of a written pose, so a
+                            # contact displaces it and the sensed force is an impact on MOVER_MASS kg (0.6 kg = Annex A hand), not a
+                            # constraint force on an immovable capsule
                             spawner_cfg=CapsuleCfg(radius=m_r, height=m_h, axis=m_axis,
-                                                   rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True, disable_gravity=True),
-                                                   mass_props=sim_utils.MassPropertiesCfg(mass=60.0),
+                                                   rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=(os.environ.get("MOVER_DYNAMIC", "0") != "1"), disable_gravity=True),
+                                                   mass_props=sim_utils.MassPropertiesCfg(mass=_envf("MOVER_MASS", 60.0)),
                                                    collision_props=sim_utils.CollisionPropertiesCfg(collision_enabled=(os.environ.get("T6_NO_COLLIDER", "0") != "1")),
                                                    activate_contact_sensors=(os.environ.get("T6_CONTACT", "0") == "1"),
                                                    visual_material=PreviewSurfaceCfg(diffuse_color=((0.90, 0.78, 0.66) if hand else (0.15, 0.32, 0.72)))),

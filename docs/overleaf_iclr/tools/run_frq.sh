@@ -1329,6 +1329,21 @@ q0o)  # pi0: more seeds of the forearm keep-out and the cue walker, toward the f
     ( export $WALK T6_CUE_S=1.0; cell p0_wk_mug_cue_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
     ( export $WALK; cell p0_wk_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
   done ;;
+dyn0) # B1 smoke: the reaching hand as a FINITE-MASS body (0.6 kg, velocity-driven) -- does it reach the bowl, does contact
+      # displace it, is the sensed force an impact? One cell, video on (FR_GPU=0 FR_PORT=8004)
+  ( export $HANDGEO T6_CONTACT=1 MOVER_DYNAMIC=1 MOVER_MASS=0.6 FR_VIDEO=1 VIEW_EYE=1.85,-1.25,1.15 VIEW_LOOKAT=0.45,-0.05,0.12; cell dyn_t6_hand_smoke 4 42 $MUG $BOWL "$L_MUG" ) ;;
+dyn1) # B1: the reaching hand as a finite-mass body (0.6 kg), dining table, six seeds (FR_GPU=0 FR_PORT=8004)
+  for SD in 42 7 11 23 31 3; do
+    ( export $HANDGEO T6_CONTACT=1 MOVER_DYNAMIC=1 MOVER_MASS=0.6; cell dyn_t6_hand_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
+dyn2) # B1: the finite-mass hand at the kitchen counter and the packing station (FR_GPU=2, server on :8004)
+  KT="SCENE=kitchen PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15"
+  PK="SCENE=packing SCENE_HDR=empty_warehouse_robolab PICK_XY=0.55,0.30 DEST_XY=0.55,-0.10"
+  HANDC="MOVER=1 MOVER_KIND=hand MOVER_AXIS=X MOVER_RADIUS=0.05 MOVER_HEIGHT=0.25 T6_AIM_DEST=1 T6_START_X=0.45 T6_START_Y=0.0 T6_VEL_X=-0.10 T6_VEL_Y=0 T6_STOP_DIST=0.25 T6_TRIGGER_LIFT=0.05 T6_CONTACT=1"
+  for SD in 42 7; do
+    ( export $KT $HANDC MOVER_Z=0.17 MOVER_DYNAMIC=1 MOVER_MASS=0.6; cell dyn_sc_kit_t6hand_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $PK $HANDC MOVER_Z=0.20 MOVER_DYNAMIC=1 MOVER_MASS=0.6; cell dyn_sc_pack_t6hand_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
