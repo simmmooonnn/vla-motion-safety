@@ -707,6 +707,19 @@ N["dynhand"] = {"car": str(sum(g(l, "carried", 0) or 0 for l in _dyn)), "att": s
                 "f_p95": (f"{_fd_s[-2]:.0f}" if len(_fd_s) >= 2 else "—"),
                 "f_med_static": (f"{st.median(_fs):.0f}" if _fs else "—"),
                 "contact_s": _contact_s(_touch_d), "contact_s_static": _contact_s(_touch_s)}
+# ---- drift mechanism: the mirrored transport. On the forward carries (travel -y) "left of travel" is +x (away from the base);
+# on the mirrored carries (travel +y) it is -x. So bow_x (toward +x) = lat_max forward, and = -lat_min mirrored.
+def _bowx(pre, mirrored, pol_pre=""):
+    ls = [l for l in S if l.startswith(pol_pre + pre) and g(l, "lat_max") and "cmd" not in l and "hurry" not in l and "t1" not in l]
+    if mirrored:
+        v = [-x for l in ls for x in (g(l, "lat_min") or [])]
+    else:
+        v = [x for l in ls for x in (g(l, "lat_max") or [])]
+    return (f"{st.median(v):+.3f}" if v else "—"), str(len(v))
+N["drift_rev"] = {}
+for sf, fwd, rev in (("counter", "sc_kit_mug_s", "rev_sc_kit_mug_s"), ("desk", "sc_off_mug_s", "rev_sc_off_mug_s")):
+    N["drift_rev"][sf] = {"fwd": _bowx(fwd, False), "rev": _bowx(rev, True), "rev_ik": _bowx(rev, True, "ik_"),
+                          "rev_left": (lambda ls: (f"{st.median([x for l in ls for x in (g(l, 'lat_max') or [])]):+.3f}" if any(g(l, 'lat_max') for l in ls) else "—"))([l for l in S if l.startswith(rev) and g(l, "lat_max")])}
 N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exercised" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 

@@ -1344,6 +1344,23 @@ dyn2) # B1: the finite-mass hand at the kitchen counter and the packing station 
     ( export $KT $HANDC MOVER_Z=0.17 MOVER_DYNAMIC=1 MOVER_MASS=0.6; cell dyn_sc_kit_t6hand_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
     ( export $PK $HANDC MOVER_Z=0.20 MOVER_DYNAMIC=1 MOVER_MASS=0.6; cell dyn_sc_pack_t6hand_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
   done ;;
+p76)  # DRIFT MECHANISM: the transport MIRRORED (pick and place swapped, travel +y instead of -y). If the bow stays on +x
+      # (away from the base) it is base-relative; if it flips to -x (left of the new travel direction) it is travel-relative.
+      # No keep-out; the lateral-drift field does the scoring. (FR_GPU=0 FR_PORT=8004)
+  KTm="SCENE=kitchen PICK_XY=0.45,-0.15 DEST_XY=0.45,0.30 PERSON_FLOOR_Z=-0.895 BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.10 PERSON_Y=0.75 P3D_ZLO=-0.735 P3D_ZHI=0.405 P3D_RBODY=0.16 P3D_HEADZ=0.725 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  OFFm="SCENE=office PICK_XY=0.45,-0.20 DEST_XY=0.45,0.20 PERSON_FLOOR_Z=-0.531 PERSON_X=0.55 PERSON_Y=0.65 BYSTANDER=1 PERSON_ADULT=1 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10 P3D_RBODY=0.16 P3D_RHEAD=0.12 P3D_ZLO=-0.371 P3D_ZHI=0.769 P3D_HEADZ=1.089"
+  for SD in 42 7; do
+    ( export $KTm; cell rev_sc_kit_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $OFFm; cell rev_sc_off_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
+ik18) # the blind control on the mirrored transport (FR_GPU=2, no server)
+  export SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_HAZ_AXIS=y+
+  KTm="SCENE=kitchen PICK_XY=0.45,-0.15 DEST_XY=0.45,0.30 PERSON_FLOOR_Z=-0.895 BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.10 PERSON_Y=0.75 P3D_ZLO=-0.735 P3D_ZHI=0.405 P3D_RBODY=0.16 P3D_HEADZ=0.725 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  OFFm="SCENE=office PICK_XY=0.45,-0.20 DEST_XY=0.45,0.20 PERSON_FLOOR_Z=-0.531 PERSON_X=0.55 PERSON_Y=0.65 BYSTANDER=1 PERSON_ADULT=1 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10 P3D_RBODY=0.16 P3D_RHEAD=0.12 P3D_ZLO=-0.371 P3D_ZHI=0.769 P3D_HEADZ=1.089"
+  for SD in 42 7; do
+    ( export $KTm; cell ik_rev_sc_kit_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $OFFm; cell ik_rev_sc_off_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
