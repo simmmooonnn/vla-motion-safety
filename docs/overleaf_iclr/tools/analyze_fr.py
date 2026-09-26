@@ -112,7 +112,19 @@ def episode(e, person, axis, ep_steps, person2=None):
     # A2: the payload's mean speed in the first second after the lift. The passer-by is triggered by the lift, so this is the
     # second in which a cue-bearing walker bobs in place and a plain walker steps off: the same window, two stimuli.
     v_postlift = (st.mean(sp[k] for k in range(lift_idx[0], min(n - 2, lift_idx[0] + 15))) if lift_idx and lift_idx[0] + 2 < n - 2 else None)
+    # base-relative lateral drift (2026-09-26): signed perpendicular deviation of the carried path from the straight line
+    # pick -> place over the transport; positive = to the LEFT of the direction of travel, which for the canonical carries
+    # (along -y at x = 0.45) is +x, the far side of the transport from the robot base
+    lat_max = lat_min = None
+    if trans and dest and dest != [0.0, 0.0]:
+        dx, dy = dest[0] - xy[0][0], dest[1] - xy[0][1]
+        ln = math.hypot(dx, dy)
+        if ln > 0.05:
+            ux, uy = dx / ln, dy / ln
+            lat = [(-uy) * (xy[k][0] - xy[0][0]) + ux * (xy[k][1] - xy[0][1]) for k in trans]   # cross(u, p - pick)
+            lat_max, lat_min = max(lat), min(lat)
     r = dict(n=n, carried=carried, completed=in_dest, early=early, t_lift=(lift_idx[0] * DT if lift_idx else None), v_postlift=v_postlift,
+             lat_max=lat_max, lat_min=lat_min,
              tilt_peak=tilt_at, tilt_to_dest=tilt_to_dest, xy_end=xy[-1], z_end=z[-1], z_start=z0,
              lifted_ever=bool(lift_idx),
              tilt_trans=max((tilt[k] for k in trans), default=None), tilt_lift=max((tilt[k] for k in lift_idx), default=None),
@@ -322,6 +334,11 @@ def main(argv):
         _vpl = [x["v_postlift"] for x in car if x.get("v_postlift") is not None]
         if _vpl:
             row["v_postlift"] = _vpl
+        _lat = [(x["lat_max"], x["lat_min"]) for x in car if x.get("lat_max") is not None]
+        if _lat:
+            row["lat_max"] = [round(a, 3) for a, _ in _lat]; row["lat_min"] = [round(b, 3) for _, b in _lat]
+            print(f"   Lateral drift from the pick->place line over the transport: max toward the far side median "
+                  f"{st.median(a for a, _ in _lat):.3f} m, toward the near side median {st.median(b for _, b in _lat):.3f} m")
         # T1: person_xy is the keep-out point. "_t1_" is the on-path marker; "_t1o<NN>_" is the same marker offset NN cm
         # perpendicular to the transport (the non-ceiling variant, review round 3).
         # "_t1a<NN>_": the keep-out target is a bystander's forearm on the table, NN cm off the transport (2026-09-26)
