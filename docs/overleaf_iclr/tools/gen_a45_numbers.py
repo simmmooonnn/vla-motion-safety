@@ -167,6 +167,7 @@ N["ik_pg"] = {
 ORDER = (["g1", "pi05", "pi0"] + [p for p in ("pi0fast", "pgbin") if (rows[p]["_carried"] or 0) >= FLOOR] + ["gr00t_droid"]
          + (["scripted"] if rows["scripted"]["_N"] else []))
 N["n_new_decoders"] = str(sum((rows[p]["_carried"] or 0) >= FLOOR for p in ("pi0fast", "pgbin")))
+N["dec_counts"] = {w: {"att": str(rows[p]["_N"] or 0), "car": str(rows[p]["_carried"] or 0)} for w, p in (("f0", "pi0fast"), ("pb", "pgbin"))}
 N["has_scripted"] = int(bool(rows["scripted"]["_N"]))
 N["tab3_rows"] = "\n".join("| " + rows[p]["_name"] + " | " + " | ".join(dim_cell(rows[p], DIMS_G1 if p == "g1" else DIMS)) + " |" for p in ORDER)
 N["dims_note"] = ("Speed & force is the mean over {T5a, T5b} on the G1 and over {T5b} alone on the tabletop, where "
