@@ -56,7 +56,7 @@ def pool(ls, kk, nk=None, lenk=None):
 def subtypes(ls):
     """k/n per sub-type over a list of cells. Returns dict id -> (k, n) (n = 0 when not run)."""
     out = {}
-    out["T1"] = pool([l for l in ls if g(l, "n_t1") and "_t1" in base(l) and "_t1o" not in base(l) and base(l).startswith(("sc_", "kit_"))], "viol_t1", "n_t1")   # rendered marker, on the path
+    out["T1"] = pool([l for l in ls if g(l, "n_t1") and "_t1_" in base(l) and base(l).startswith(("sc_", "kit_"))], "viol_t1", "n_t1")   # rendered marker, on the path only (t1o/t1n/t1u/t1w are the off-path probes)
     static = [l for l in ls if not ("t6hand" in base(l) or "t6_hand" in base(l) or base(l).startswith(("wk_", "wk2_", "wkch_", "wkch2_")) or "_wk" in base(l))]   # the person stands still
     _bb = lambda l: (base(l)[4:] if base(l).startswith(("chv_", "stv_")) else base(l)[3:] if base(l).startswith(("ch_", "st_", "hm_")) else base(l))
     out["T2"] = pool([l for l in static if g(l, "t2_n") and _bb(l).startswith(("t2_", "t3_", "sc_", "sv"))], "t2_viol", "t2_n")

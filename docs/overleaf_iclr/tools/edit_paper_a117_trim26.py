@@ -63,3 +63,8 @@ RNI("Scenes, recorders, scripts and every per-episode log are released anonymous
 RNI(" The on-path ablations are **ceiling-limited**; the non-ceiling ablation detects only large effects.", "")
 RNI("T2 has **no witness**; T3 has a geometric scripted witness on the tabletop, T4 a physical pinch-grasp witness based on 31 carried episodes, and T1 a witness on the G1 only.",
     "T2 has **no witness**; T3's is geometric, T4's a physical pinch grasp (31 carries), T1's on the G1 only.")
+
+# fifth pass, when the decoder clause in (ii) fires: compact it, and the conclusion's second sentence
+RNI(", and the bend recurs under a FAST-token decoder of the same data (Appendix E.8).", " (a FAST-token decoder alike; Appendix E.8).")
+RNI("We defined that \"how\" as a third axis with four dimensions, and a benchmark that scores each policy on each.",
+    "We defined that \"how\" as a third axis with four dimensions and scored each policy on each.")

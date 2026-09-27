@@ -93,6 +93,15 @@ if _have:
             nr, ur = _tn.get(w, {}).get("rate", "—"), _tu.get(w, {}).get("rate", "—")
             if _n(nr) >= 8 and _n(ur) >= 8:
                 s += " (the near-side marker " + nr + ", the unrendered far-side keep-out " + ur + ")"
+        # the entry rate follows the bow: a desk bow short of the keep-out's 0.08 m edge enters rarely, one beyond it often
+        _bd = _fl(_far(w, "desk"))
+        if _bd is not None and _n(d28) >= 8:
+            _k28 = int(str(d28).split("/")[0])
+            if _bd < 0.08 and _k28 <= _n(d28) // 4:
+                s += (" — its desk bow sits short of the keep-out's 0.08 m edge, which is why it enters on " + d28 + " where π0.5's "
+                      "0.089 m entered 12/64 (11/16 at the desk): the entry rate follows the bow, as the drift reading predicts")
+            elif _bd >= 0.08 and _k28 >= _n(d28) // 3:
+                s += " — a bow past the keep-out's 0.08 m edge, entered accordingly"
         _parts.append(s)
     if _agree and not _flat:
         _verdict = ("The decoders trained on one dataset agree with each other and with GR00T N1.6-DROID, whose backbone and decoder "
