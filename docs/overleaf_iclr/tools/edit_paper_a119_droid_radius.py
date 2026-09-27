@@ -41,7 +41,7 @@ if len(_ok) >= 4 and "35" in _ok and "75" in _ok:
     if _far["75"] <= 0.5 * _far["35"] and _far["35"] >= 0.02:
         _flip = [x for x in _ok if _near[x] is not None and _near[x] <= -0.02 and _far[x] < 0.02]
         _verdict = ("The outward bow falls from " + f"{_far['35']:.3f}" + " m at 0.35 m to " + f"{_far['75']:.3f}" + " m at 0.75 m" +
-                    (" and turns inward at " + " and ".join(x[0] + "." + x[1:] + " m" for x in _flip) if _flip else "") +
+                    (" and turns inward at " + " and ".join("0." + x + " m" for x in _flip) if _flip else "") +
                     ": the drift is a pull toward the radius at which the demonstrations were given, not a fixed bend of the arm. "
                     "The keep-out entries of the trajectory dimension are therefore the benchmark's transports sitting inside the "
                     "demonstrations' workspace, and a scene laid out farther from the base would see the bow reverse.")
@@ -57,3 +57,10 @@ if len(_ok) >= 4 and "35" in _ok and "75" in _ok:
 
 if _add:
     RN(_anchor_end, _anchor_end + _add)
+
+# section 6 (ii): the mechanism in one clause, only in the falls branch (the bow drops by half or more from 0.35 m to 0.75 m)
+if len(_ok) >= 4 and "35" in _ok and "75" in _ok and _far["75"] <= 0.5 * _far["35"] and _far["35"] >= 0.02:
+    RN("The arm's bend is a base-relative drift a hazard may lie in, not a pull toward what is seen;",
+       "The arm's bend is a pull toward its demonstrations' radius (Appendix E.8) that a hazard may lie in, not toward what is seen;")
+    if "on 9/32 (a FAST-token decoder alike; Appendix E.8)." in t:
+        RN("on 9/32 (a FAST-token decoder alike; Appendix E.8).", "on 9/32 (a FAST-token decoder alike).")

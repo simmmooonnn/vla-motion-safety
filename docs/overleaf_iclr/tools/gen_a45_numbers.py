@@ -689,7 +689,7 @@ for _x in ("35", "45", "55", "65", "75"):
         _o[_who] = {"far": (f"{st.median(_mx):+.3f}" if _mx else "—"), "near": (f"{st.median(_mn):+.3f}" if _mn else "—"),
                     "n": str(len(_mx)), "car": str(sum(g(l, "carried", 0) or 0 for l in _lr))}
     N["drift_rad"][_x] = _o
-N["drift_rad_rows"] = "\n".join("| " + _x[0] + "." + _x[1:] + " m | " + " | ".join(
+N["drift_rad_rows"] = "\n".join("| 0." + _x + " m | " + " | ".join(
     (N["drift_rad"][_x][w]["far"] + " / " + N["drift_rad"][_x][w]["near"] + " (n=" + N["drift_rad"][_x][w]["n"] + ")") if N["drift_rad"][_x][w]["far"] != "—" else "—"
     for w in ("pi", "f0")) + " |" for _x in ("35", "45", "55", "65", "75"))
 # ---- Annex A.3.3 transient force from the speed at the closest approach to the reaching hand
