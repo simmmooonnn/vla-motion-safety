@@ -460,7 +460,7 @@ def main(argv):
                   f"mins {[round(m, 3) for m in mins]}  closest {[x.get('closest_link') for x in L]}")
         out[lb] = row
     # present vs absent near-band speed (T5a), per policy (label prefix: '' pi0.5, 'p0_' pi0, 'g0_' GR00T-DROID)
-    for pre, name in (("", "pi0.5"), ("p0_", "pi0"), ("g0_", "GR00T N1.6-DROID")):
+    for pre, name in (("", "pi0.5"), ("p0_", "pi0"), ("g0_", "GR00T N1.6-DROID"), ("f0_", "pi0-FAST"), ("pb_", "PaliGemma-binning")):
         pres = [v for lb, r in out.items() if lb.startswith((pre + "t2_L", pre + "t3_sci_L")) for v in r.get("near_v", [])]
         absn = [v for lb, r in out.items() if lb.startswith(pre + "t5a_absent") for v in r.get("near_v", [])]
         if pres and absn:

@@ -502,6 +502,8 @@ MAIN = r"""%% ICLR 2027 submission — seed generated from the markdown draft (v
 \usepackage{tikz}
 \usetikzlibrary{positioning}
 \usepackage[utf8]{inputenc}
+\DeclareUnicodeCharacter{221A}{\ensuremath{\surd}}
+\DeclareUnicodeCharacter{03BC}{\ensuremath{\mu}}
 \usepackage[T1]{fontenc}
 \usepackage{hyperref}
 \graphicspath{{./}{figures/}}

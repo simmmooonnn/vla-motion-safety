@@ -30,9 +30,11 @@ def wil(k, n, z=1.96):
     return ((c - h) / d, (c + h) / d)
 
 def base(l):
-    return l[3:] if l.startswith(("p0_", "g0_", "ik_")) else l
+    return l[3:] if l.startswith(("p0_", "g0_", "ik_", "f0_", "pb_")) else l
 
 def policy(l):
+    if l.startswith("f0_"): return "pi0fast"      # pi0-FAST DROID jointpos (PolaRiS): same PaliGemma backbone and DROID data, autoregressive FAST tokens
+    if l.startswith("pb_"): return "pgbin"        # PaliGemma binning DROID jointpos (PolaRiS): RT-2-style binned action tokens
     return "pi0" if l.startswith("p0_") else ("gr00t_droid" if l.startswith("g0_") else ("scripted" if l.startswith("ik_") else "pi05"))
 
 SKIP = ("probe", "smoke", "still", "demo", "d4_", "d5_", "d6_", "d7_", "d8_", "d9_", "posetest", "oak")
@@ -128,7 +130,8 @@ G1 = {"T1": (121, 125), "T2": (26, 32), "T3": (14, 27), "T3_worst": (20, 20), "T
 
 N = {}
 rows = {}
-for pol, name in (("pi05", "π0.5 · Franka"), ("pi0", "π0 · Franka"), ("gr00t_droid", "GR00T N1.6-DROID · Franka"), ("scripted", "scripted straight-line carry · Franka (control)")):
+for pol, name in (("pi05", "π0.5 · Franka"), ("pi0", "π0 · Franka"), ("pi0fast", "π0-FAST-DROID · Franka"), ("pgbin", "PaliGemma-binning-DROID · Franka"),
+                  ("gr00t_droid", "GR00T N1.6-DROID · Franka"), ("scripted", "scripted straight-line carry · Franka (control)")):
     ls = [l for l in cells if policy(l) == pol]
     rows[pol] = subtypes(ls)
     rows[pol]["_N"] = sum(g(l, "N", 0) for l in ls); rows[pol]["_carried"] = sum(g(l, "carried", 0) or 0 for l in ls)
@@ -161,7 +164,9 @@ N["ik_pg"] = {
 }
 
 # ---- Table III (policy x dimension)
-ORDER = ["g1", "pi05", "pi0", "gr00t_droid"] + (["scripted"] if rows["scripted"]["_N"] else [])
+ORDER = (["g1", "pi05", "pi0"] + [p for p in ("pi0fast", "pgbin") if (rows[p]["_carried"] or 0) >= FLOOR] + ["gr00t_droid"]
+         + (["scripted"] if rows["scripted"]["_N"] else []))
+N["n_new_decoders"] = str(sum((rows[p]["_carried"] or 0) >= FLOOR for p in ("pi0fast", "pgbin")))
 N["has_scripted"] = int(bool(rows["scripted"]["_N"]))
 N["tab3_rows"] = "\n".join("| " + rows[p]["_name"] + " | " + " | ".join(dim_cell(rows[p], DIMS_G1 if p == "g1" else DIMS)) + " |" for p in ORDER)
 N["dims_note"] = ("Speed & force is the mean over {T5a, T5b} on the G1 and over {T5b} alone on the tabletop, where "
@@ -544,10 +549,20 @@ for _tag, _pat in (("on", "_t1_"), ("d20", "_t1o20"), ("d28", "_t1o28")):
     N["t1_off_pi0"][_tag] = {"rate": f"{_kp}/{_np}", "pct": (f"{100 * _kp / _np:.0f}" if _np else "0"),
                              "dmed": (f"{st.median(_cp):.2f}" if _cp else "—"), "car": str(sum(g(l, "carried", 0) or 0 for l in _lp)),
                              "att": str(sum(g(l, "N", 0) for l in _lp))}
+# ---- the off-path series per policy (on / 0.20 / 0.28 m), for the added action decoders and the earlier rows alike
+N["t1_off_by"] = {}
+for _who, _pol in (("pi", "pi05"), ("ik", "scripted"), ("pi0", "pi0"), ("g0", "gr00t_droid"), ("f0", "pi0fast"), ("pb", "pgbin")):
+    _o = {}
+    for _tag, _pat in (("on", "_t1_"), ("d20", "_t1o20"), ("d28", "_t1o28")):
+        _lb = [l for l in S if policy(l) == _pol and g(l, "n_t1") and _pat in base(l) and base(l).startswith("sc_")]
+        _kb, _nb = pool(_lb, "viol_t1", "n_t1"); _cb = [v for l in _lb for v in (g(l, "t1_clear") or [])]
+        _o[_tag] = {"rate": (f"{_kb}/{_nb}" if _nb else "—"), "dmed": (f"{st.median(_cb):.2f}" if _cb else "—"),
+                    "car": str(sum(g(l, "carried", 0) or 0 for l in _lb)), "att": str(sum(g(l, "N", 0) for l in _lb))}
+    N["t1_off_by"][_who] = _o
 N["t1_off_surf"] = {}
 for _sf, _pre in (("counter", "sc_kit_"), ("desk", "sc_off_"), ("packing", "sc_pack_"), ("drawer", "sc_drw_")):
     _o = {}
-    for _who, _pol in (("pi", "pi05"), ("ik", "scripted"), ("pi0", "pi0"), ("g0", "gr00t_droid")):
+    for _who, _pol in (("pi", "pi05"), ("ik", "scripted"), ("pi0", "pi0"), ("g0", "gr00t_droid"), ("f0", "pi0fast"), ("pb", "pgbin")):
         _lq = [l for l in S if policy(l) == _pol and g(l, "n_t1") and "_t1o28" in base(l) and base(l).startswith(_pre)]
         _kq, _nq = pool(_lq, "viol_t1", "n_t1"); _o[_who] = f"{_kq}/{_nq}" if _nq else "—"
     N["t1_off_surf"][_sf] = _o
@@ -594,7 +609,7 @@ N["hurry"] = {"v_mug": _hpair("t2_R_s", "t2_R_hurry_s", "v"), "v_sci": _hpair("t
 N["t1_arm"] = {}
 for _tag, _pat in (("d20", "t1a20"), ("d28", "t1a28")):
     _o = {}
-    for _who, _pol in (("pi", "pi05"), ("ik", "scripted"), ("pi0", "pi0"), ("g0", "gr00t_droid")):
+    for _who, _pol in (("pi", "pi05"), ("ik", "scripted"), ("pi0", "pi0"), ("g0", "gr00t_droid"), ("f0", "pi0fast"), ("pb", "pgbin")):
         _la = [l for l in S if policy(l) == _pol and g(l, "n_t1") and base(l).startswith(_pat)]
         _ka, _na = pool(_la, "viol_t1", "n_t1"); _ca = [v for l in _la for v in (g(l, "t1_clear") or [])]
         _o[_who] = {"rate": (f"{_ka}/{_na}" if _na else "—"), "dmed": (f"{st.median(_ca):.2f}" if _ca else "—"),
@@ -615,7 +630,7 @@ N["cue"] = {"n_cue": str(len(_vc)), "n_nocue": str(len(_vn)), "cue_med": (f"{st.
             "att": str(sum(g(l, "N", 0) for l in S if base(l).startswith(("wk_mug_cue", "wk_sci_cue"))))}
 # ---- A4: two hazards flanking the path (labels *_t1w28_*), policy against the blind control
 N["t1_two"] = {}
-for _who, _pol in (("pi", "pi05"), ("ik", "scripted"), ("pi0", "pi0"), ("g0", "gr00t_droid")):
+for _who, _pol in (("pi", "pi05"), ("ik", "scripted"), ("pi0", "pi0"), ("g0", "gr00t_droid"), ("f0", "pi0fast"), ("pb", "pgbin")):
     _lt = [l for l in S if policy(l) == _pol and g(l, "n_t1") and "_t1w28" in base(l)]
     _o = {"one": "{}/{}".format(*pool(_lt, "viol_t1", "n_t1")), "two": "{}/{}".format(*pool(_lt, "viol_t1_2", "n_t1")),
           "any": "{}/{}".format(*pool(_lt, "viol_t1_any", "n_t1"))}
@@ -625,7 +640,7 @@ for _who, _pol in (("pi", "pi05"), ("ik", "scripted"), ("pi0", "pi0"), ("g0", "g
     N["t1_two"][_who] = _o
 # ---- A4b: the single marker on the near side of the path (labels *_t1n28_*)
 N["t1_near"] = {}
-for _who, _pol in (("pi", "pi05"), ("ik", "scripted"), ("pi0", "pi0"), ("g0", "gr00t_droid")):
+for _who, _pol in (("pi", "pi05"), ("ik", "scripted"), ("pi0", "pi0"), ("g0", "gr00t_droid"), ("f0", "pi0fast"), ("pb", "pgbin")):
     _ln = [l for l in S if policy(l) == _pol and g(l, "n_t1") and "_t1n28" in base(l)]
     _kn, _nn = pool(_ln, "viol_t1", "n_t1"); _cn = [v for l in _ln for v in (g(l, "t1_clear") or [])]
     N["t1_near"][_who] = {"rate": (f"{_kn}/{_nn}" if _nn else "—"), "dmed": (f"{st.median(_cn):.2f}" if _cn else "—"),
@@ -633,7 +648,7 @@ for _who, _pol in (("pi", "pi05"), ("ik", "scripted"), ("pi0", "pi0"), ("g0", "g
                           "counter": "{}/{}".format(*pool([l for l in _ln if base(l).startswith("sc_kit_")], "viol_t1", "n_t1"))}
 # ---- A4c: the far-side keep-out with no marker rendered (labels *_t1u28_*)
 N["t1_unseen"] = {}
-for _who, _pol in (("pi", "pi05"), ("ik", "scripted"), ("pi0", "pi0"), ("g0", "gr00t_droid")):
+for _who, _pol in (("pi", "pi05"), ("ik", "scripted"), ("pi0", "pi0"), ("g0", "gr00t_droid"), ("f0", "pi0fast"), ("pb", "pgbin")):
     _lu = [l for l in S if policy(l) == _pol and g(l, "n_t1") and "_t1u28" in base(l)]
     _ku, _nu = pool(_lu, "viol_t1", "n_t1"); _cu2 = [v for l in _lu for v in (g(l, "t1_clear") or [])]
     N["t1_unseen"][_who] = {"rate": (f"{_ku}/{_nu}" if _nu else "—"), "dmed": (f"{st.median(_cu2):.2f}" if _cu2 else "—"),
@@ -649,7 +664,7 @@ def _drift(pol_pre, cell_pre):
     ls = [l for l in S if l.startswith(pol_pre + cell_pre) and g(l, "lat_max") and "cmd" not in l and "hurry" not in l and "t1" not in l]
     mx = [v for l in ls for v in (g(l, "lat_max") or [])]; mn = [v for l in ls for v in (g(l, "lat_min") or [])]
     return {"far": (f"{st.median(mx):.3f}" if mx else "—"), "near": (f"{st.median(mn):+.3f}" if mn else "—"), "n": str(len(mx))}
-N["drift"] = {sf: {"pi": _drift("", pre), "pi0": _drift("p0_", pre), "ik": _drift("ik_", pre)}
+N["drift"] = {sf: {"pi": _drift("", pre), "pi0": _drift("p0_", pre), "ik": _drift("ik_", pre), "f0": _drift("f0_", pre), "pb": _drift("pb_", pre)}
               for sf, pre in (("dining", "t2_R_s"), ("counter", "sc_kit_mug_s"), ("desk", "sc_off_mug_s"), ("packing", "sc_pack_mug_s"), ("drawer", "sc_drw_mug_s"))}
 N["drift_rows"] = "\n".join("| " + sf + " | " + " | ".join(N["drift"][sf][w]["far"] + (" (n=" + N["drift"][sf][w]["n"] + ")" if N["drift"][sf][w]["far"] != "—" else "") for w in ("pi", "pi0", "ik")) + " |"
                             for sf in ("dining", "counter", "desk", "packing", "drawer"))

@@ -28,6 +28,6 @@ through `_scratch/rebuild_a45.sh pull`. GPU 1 belongs to another user's job; GPU
 | # | Item |
 |---|---|
 | C1 | Rebuild the G1 corridor family on chaowei (ARCH is gone): fills the G1 T5a blank, enables walking-speed approach on the humanoid |
-| C2 | A third policy family (e.g. OpenVLA-OFT) so "recurs across policies" spans three architectures |
+| C2 | More action decoders on the same backbone and data: PolaRiS DROID joint-position checkpoints of π0-FAST (autoregressive FAST tokens, `f0_` labels, server :8007) and PaliGemma-binning (RT-2-style bins, `pb_`, :8008) beside π0 / π0.5 (flow matching) — if the base-relative drift recurs across decoders it is inherited from the DROID data, not from one action head (review D6's motion-prior question). Deployed 2026-09-26 22:10 EDT; queues f0a/f0b, pba/pbb running |
 | C3 | Scald / drop as scored events (liquid or deformable assets) |
 | C4 | A person with attention and intent (another paper) |
