@@ -669,6 +669,29 @@ N["drift"] = {sf: {"pi": _drift("", pre), "pi0": _drift("p0_", pre), "ik": _drif
               for sf, pre in (("dining", "t2_R_s"), ("counter", "sc_kit_mug_s"), ("desk", "sc_off_mug_s"), ("packing", "sc_pack_mug_s"), ("drawer", "sc_drw_mug_s"))}
 N["drift_rows"] = "\n".join("| " + sf + " | " + " | ".join(N["drift"][sf][w]["far"] + (" (n=" + N["drift"][sf][w]["n"] + ")" if N["drift"][sf][w]["far"] != "—" else "") for w in ("pi", "pi0", "ik")) + " |"
                             for sf in ("dining", "counter", "desk", "packing", "drawer"))
+# ---- where the drift comes from: (a) the human demonstrations (droid_100 sample, outward vs inward bow per transport, from
+#      droid_bow_summary.json written by the chaowei analysis), (b) the radius probe (labels rad{35,45,55,65,75}_mug_s*, f0_rad*)
+import os as _os
+N["droid"] = {}
+if _os.path.exists("droid_bow_summary.json"):
+    _dj = json.load(open("droid_bow_summary.json", encoding="utf-8"))
+    N["droid"] = {"eps": str(_dj["episodes"]), "n": str(_dj["transports"]), "out": f"{_dj['out_med']:.3f}", "in": f"{_dj['in_med']:.3f}",
+                  "frac_out": f"{100 * _dj['frac_out_gt_in']:.0f}", "rmid": f"{_dj['rmid_med']:.2f}", "rq1": f"{_dj['rmid_q1']:.2f}",
+                  "rq3": f"{_dj['rmid_q3']:.2f}", "inner_n": str(_dj["inner_n"]), "inner_out": f"{_dj['inner_out']:.3f}",
+                  "inner_in": f"{_dj['inner_in']:.3f}", "outer_n": str(_dj["outer_n"]), "outer_out": f"{_dj['outer_out']:.3f}",
+                  "outer_in": f"{_dj['outer_in']:.3f}", "eef_r": f"{_dj['eef_r_med']:.2f}", "chord": f"{_dj['chord_med']:.2f}"}
+N["drift_rad"] = {}
+for _x in ("35", "45", "55", "65", "75"):
+    _o = {}
+    for _who, _pre in (("pi", "rad" + _x + "_mug_s"), ("f0", "f0_rad" + _x + "_mug_s")):
+        _lr = [l for l in S if l.startswith(_pre) and g(l, "lat_max")]
+        _mx = [v for l in _lr for v in (g(l, "lat_max") or [])]; _mn = [v for l in _lr for v in (g(l, "lat_min") or [])]
+        _o[_who] = {"far": (f"{st.median(_mx):+.3f}" if _mx else "—"), "near": (f"{st.median(_mn):+.3f}" if _mn else "—"),
+                    "n": str(len(_mx)), "car": str(sum(g(l, "carried", 0) or 0 for l in _lr))}
+    N["drift_rad"][_x] = _o
+N["drift_rad_rows"] = "\n".join("| " + _x[0] + "." + _x[1:] + " m | " + " | ".join(
+    (N["drift_rad"][_x][w]["far"] + " / " + N["drift_rad"][_x][w]["near"] + " (n=" + N["drift_rad"][_x][w]["n"] + ")") if N["drift_rad"][_x][w]["far"] != "—" else "—"
+    for w in ("pi", "f0")) + " |" for _x in ("35", "45", "55", "65", "75"))
 # ---- Annex A.3.3 transient force from the speed at the closest approach to the reaching hand
 _MH, _K, _MR = 0.6, 75000.0, 2.0
 _mu = 1.0 / (1.0 / _MR + 1.0 / _MH)

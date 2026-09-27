@@ -105,7 +105,7 @@ if _have:
         _parts.append(s)
     if _agree and not _flat:
         _verdict = ("The decoders trained on one dataset agree with each other and with GR00T N1.6-DROID, whose backbone and decoder "
-                    "both differ: the drift is inherited from the demonstrations, not from any one action head.")
+                    "both differ: the drift is learned from the demonstrations, not added by any one action head.")
     elif _agree and _flat:
         _verdict = (" and ".join(_NAME[w] for w in _flat) + " carries no such bow, so the drift is not a property of the data alone: "
                     "it depends on the decoder that reads it.")
