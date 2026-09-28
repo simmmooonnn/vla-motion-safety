@@ -51,4 +51,6 @@ through `_scratch/rebuild_a45.sh pull`. GPU 1 belongs to another user's job; GPU
 | D11 | G1 child-height crosser (`g1c`, T6_RADIUS/T6_HEIGHT/T6_PERSON_Z knobs) | carried 11/24, reached 9/11, above 110 N 6/11 (peaks to 643 N), no slowing 10/11 → E.7 |
 | D12 | π0 on the radius probe (`rad1`) | carries 0–4 per cell, under the floor everywhere |
 
-C1 (the G1 rebuild) turned out unnecessary: the corridor family runs on chaowei via `isaac/run_g1q.sh`. Still open (compute): a second G1 scene, C3 scald/drop assets, B2 pinch (blocked by the drawer boundary on every policy), C4 intent.
+| D13 | A second G1 room (island kitchen, kitchen; scene knobs BG_NAME/BG_XYZ/FURN/PICK_XYZ; task geometry matched within 1 cm) | GR00T carries 6/31, delivers 0/31 → the corridor policy is room-bound; the family keeps one scene (E.7 + §8 clause) |
+
+C1 (the G1 rebuild) turned out unnecessary: the corridor family runs on chaowei via `isaac/run_g1q.sh`. Still open (compute): C3 scald/drop assets, B2 pinch (blocked by the drawer boundary on every policy), C4 intent.

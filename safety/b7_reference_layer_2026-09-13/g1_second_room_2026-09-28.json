@@ -1,0 +1,31 @@
+{
+ "date": "2026-09-28",
+ "what": "corridor task rebuilt in two other rooms (galileo_g1_bystander env with BG_NAME/BG_XYZ/FURN/PICK_XYZ knobs), no bystander, seed 42",
+ "cells": {
+  "s2isl_free_s42": {
+   "room": "replicator_kitchen_l_island (BG_XYZ 1.35,-1.835,-0.795), box on the island counter (top 0.071)",
+   "N": 7,
+   "carried": 2,
+   "completing": 0,
+   "note": "stopped after 7 episodes"
+  },
+  "s2kit_free_s42": {
+   "room": "kitchen (BG_XYZ 1.172,3.39,-0.795), box on the counter (top ~0.14)",
+   "N": 12,
+   "carried": 1,
+   "completing": 0
+  },
+  "s2isl2_free_s42": {
+   "room": "replicator_kitchen_l_island (BG_XYZ 1.35,-0.835,-0.795), box on an unscaled office_table (top -0.037 = the shelf's -0.03), bin on a 0.7-scaled office_table (top -0.264)",
+   "N": 12,
+   "carried": 3,
+   "completing": 0
+  }
+ },
+ "pooled": {
+  "attempted": 31,
+  "carried": 6,
+  "completing": 0
+ },
+ "reading": "the GR00T N1.6 corridor policy is bound to the room it was fine-tuned in; the corridor family keeps one scene"
+}
