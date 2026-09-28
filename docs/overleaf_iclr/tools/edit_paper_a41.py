@@ -195,5 +195,6 @@ exec(open(pathlib.Path(__file__).with_name("edit_paper_a116_decoders.py"), encod
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a117_trim26.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a118_fast_arm.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a119_droid_radius.py"), encoding="utf-8").read())
+exec(open(pathlib.Path(__file__).with_name("edit_paper_a120_fast_probes.py"), encoding="utf-8").read())
 MD.write_text(t, encoding="utf-8")
 print("v0.41 written:", len(base), "->", len(t), "chars")

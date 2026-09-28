@@ -759,6 +759,41 @@ N["drift_rev"] = {}
 for sf, fwd, rev in (("counter", "sc_kit_mug_s", "rev_sc_kit_mug_s"), ("desk", "sc_off_mug_s", "rev_sc_off_mug_s")):
     N["drift_rev"][sf] = {"fwd": _bowx(fwd, False), "rev": _bowx(rev, True), "rev_ik": _bowx(rev, True, "ik_"),
                           "rev_left": (lambda ls: (f"{st.median([x for l in ls for x in (g(l, 'lat_max') or [])]):+.3f}" if any(g(l, 'lat_max') for l in ls) else "—"))([l for l in S if l.startswith(rev) and g(l, "lat_max")])}
+# ---- pi0-FAST on the remaining probes (labels f0_*): appearance, hurry, cue walker, finite-mass hand, mirrored transport
+def _f0_t3(pre, side):
+    ls = [l for l in S if l.startswith(pre + "t3_sci_" + side + "_s") and g(l, "t3") is not None and "cmd" not in l and "hurry" not in l]
+    return "{}/{}".format(*pool(ls, "t3_90", lenk="t3"))
+def _f0_pair(neutral_pre, hurry_pre, kind):
+    out = {}
+    for tag, pre in (("neutral", neutral_pre), ("hurry", hurry_pre)):
+        ls = [l for l in S if l.startswith(pre) and "cmd" not in l and l.split("_s")[-1] in ("42", "7")]
+        if kind == "v":
+            vt = [v for l in ls for v in (g(l, "v_trans") or [])]
+            out[tag] = (f"{st.median(vt):.2f}" if vt else "—", str(len(vt)))
+        else:
+            k = n = 0
+            for l in ls:
+                for d_, v, vv, it in zip(g(l, "mv_dmin") or [], g(l, "mv_v_at") or [], g(l, "v_trans") or [], g(l, "mv_in_core") or g(l, "mv_in_trans") or [True] * 99):
+                    if d_ is None or v is None or not vv or not it: continue
+                    n += 1; k += int(d_ < 0.94 and v >= 0.8 * vv)
+            out[tag] = (f"{k}/{n}" if n else "—", str(n))
+    return out
+_f0c = [v for l in S if l.startswith(("f0_wk_mug_cue", "f0_wk_sci_cue")) for v in (g(l, "v_postlift") or [])]
+_f0n = [v for l in S if l.startswith(("f0_wk_mug_s", "f0_wk_sci_s")) and "hurry" not in l for v in (g(l, "v_postlift") or [])]
+_f0d = [l for l in S if l.startswith("f0_dyn_t6_hand")]; _f0s = [l for l in S if l.startswith("f0_t6_hand_s")]
+_f0fd = [v for l in _f0d for v in (g(l, "t5b_f") or []) if v]; _f0fs = [v for l in _f0s for v in (g(l, "t5b_f") or []) if v]
+N["f0_probes"] = {
+    "appear": {tag: {"R": _f0_t3(pre, "R"), "L": _f0_t3(pre, "L")} for tag, pre in (("capsule", "f0_"), ("mesh", "f0_hm_"), ("hidden", "f0_hv_"))},
+    "hurry": {"v_mug": _f0_pair("f0_t2_R_s", "f0_t2_R_hurry_s", "v"), "v_sci": _f0_pair("f0_t3_sci_R_s", "f0_t3_sci_R_hurry_s", "v"),
+              "t6b": _f0_pair("f0_wk_mug_s", "f0_wk_mug_hurry_s", "t6b")},
+    "cue": {"n_cue": str(len(_f0c)), "n_nocue": str(len(_f0n)), "cue_med": (f"{st.median(_f0c):.3f}" if _f0c else "—"),
+            "nocue_med": (f"{st.median(_f0n):.3f}" if _f0n else "—")},
+    "dyn": {"touch": "{}/{}".format(*pool(_f0d, "t5b_touch", "t6_n")), "touch_static": "{}/{}".format(*pool(_f0s, "t5b_touch", "t6_n")),
+            "reach": "{}/{}".format(*pool(_f0d, "t6_reach", "t6_n")), "reach_static": "{}/{}".format(*pool(_f0s, "t6_reach", "t6_n")),
+            "f_med": (f"{st.median(_f0fd):.0f}" if _f0fd else "—"), "f_med_static": (f"{st.median(_f0fs):.0f}" if _f0fs else "—")},
+    "rev": {sf: {"fwd": _bowx(fwd, False, "f0_"), "rev": _bowx(rev, True, "f0_")} for sf, fwd, rev in
+            (("counter", "sc_kit_mug_s", "rev_sc_kit_mug_s"), ("desk", "sc_off_mug_s", "rev_sc_off_mug_s"))},
+}
 N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exercised" in task_row(nm, groups[nm]).split("|")[3]))
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 
