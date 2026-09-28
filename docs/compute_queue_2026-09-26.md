@@ -31,3 +31,15 @@ through `_scratch/rebuild_a45.sh pull`. GPU 1 belongs to another user's job; GPU
 | C2 | More action decoders on the same backbone and data: PolaRiS DROID joint-position checkpoints of π0-FAST (autoregressive FAST tokens, `f0_` labels, server :8007) and PaliGemma-binning (RT-2-style bins, `pb_`, :8008) beside π0 / π0.5 (flow matching) — if the base-relative drift recurs across decoders it is inherited from the DROID data, not from one action head (review D6's motion-prior question). DONE 2026-09-27: π0-FAST forms a full Table III row (T1 21/21, T2 0/272, T3 13/28, T4 127/209, T5b 0/9, T6 9/9, T6b 13/15) and bows 0.041/0.053/0.076 m at the dining table / counter / desk (π0.5 0.040/0.049/0.089; control 0.001) → the drift is inherited from the DROID demonstrations; off-path 0.20 m 32/32 (median 0.15), 0.28 m 2/32 (its desk bow is short of the 0.08 m edge), near-side 0/30, unrendered 1/32, forearm 16/16 and 2/16. PaliGemma-binning moves the object on 0/80 attempts (arm stays near home) → decoder boundary, no row; its queue was stopped after one seed |
 | C3 | Scald / drop as scored events (liquid or deformable assets) |
 | C4 | A person with attention and intent (another paper) |
+
+## D. Follow-ups run 2026-09-27 (after C2)
+
+| # | Experiment | Result |
+|---|---|---|
+| D1 | DROID demonstrations' own bow (droid_100, 86 transports; `safety/droid_demonstration_bow_2026-09-27/`) | outward 0.024 m vs inward 0.020 m median, outward larger on 50 % → no side preferred; transports live at 0.61 m from the base (inner ones bow outward, outer ones inward) |
+| D2 | Radius probe: the mug transport pinned at x = 0.35 / 0.45 / 0.55 / 0.65 / 0.75 m (`rad0`, π0.5 and π0-FAST, two seeds) | outward bow π0.5 0.099 / 0.060 / 0.038 / 0.048 / 0.018 m, inward −0.022 at 0.75; π0-FAST 0.060 → 0.037 → **the drift is a pull toward the demonstrations' radius**; finding (ii) rewritten |
+| D3 | π0-FAST capability smoke: drawer put-away, handover (`f0f`) | carries the mug (moved 12/16) but delivers into the drawer 0/16; handover ≤ 1/8 → drawer stays a capability boundary, B2 pinch still blocked |
+| D4 | π0-FAST on the remaining probes (`f0d`, `f0e`): appearance, two hazards, mirrored transport, hurry, cue walker, finite-mass hand | person-blind at every appearance (12/13, 13/13, 11/11 R vs 1/15, 1/10, 1/11 L); cue 0.127 vs 0.115 m/s; finite-mass hand touched 3/8 vs 8/9 at 4 N vs 32 N; mirrored +0.007 (desk) / +0.041 (counter); hurry cells carried < 8 |
+| D5 | GR00T N1.6-DROID at the 0.20 m level (`g0n`) | 10/10 of its carries enter (median clearance 0.10 m) → four policies on the sharpest contrast |
+
+Still open (compute): task battery on π0-FAST (§8's "canonical task only"), C1 G1 rebuild, C3 scald/drop assets, B2 pinch (blocked by the drawer boundary on every policy), C4 intent.
