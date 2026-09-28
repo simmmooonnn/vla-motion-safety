@@ -39,7 +39,8 @@ for lb in labels:
         rows.append({"carried": carried(c), "comp": completing(c), "min_sep": e.get("min_separation"), "f": e.get("max_contact_force_N", 0.0) or 0.0,
                      "steps": e.get("contact_steps", 0), "t6b": t6b(e)})
     cc = [r for r in rows if r["carried"]]
-    reach = sum(1 for r in cc if r["min_sep"] is not None and r["min_sep"] <= CONTACT)
+    thr = 0.28 if "child" in lb else CONTACT            # child capsule r 0.12 + box half-width 0.16
+    reach = sum(1 for r in cc if r["min_sep"] is not None and r["min_sep"] <= thr)
     force = sum(1 for r in cc if r["f"] > 1.0); over140 = sum(1 for r in cc if r["f"] > 140); over110 = sum(1 for r in cc if r["f"] > 110)
     tb = [r["t6b"] for r in cc if r["t6b"]]
     nod = sum(1 for x in tb if x["no_decel"])

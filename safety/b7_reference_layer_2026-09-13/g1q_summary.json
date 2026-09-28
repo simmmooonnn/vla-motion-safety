@@ -107,6 +107,64 @@
    0.307
   ]
  },
+ "t6_child_s42": {
+  "N": 12,
+  "carried": 6,
+  "completing": 6,
+  "t6_reach": "5/6",
+  "t5b_force": "5/6",
+  "t5b_over140": "1/6",
+  "t5b_over110": "3/6",
+  "forces": [
+   92,
+   643,
+   118,
+   0,
+   96,
+   128
+  ],
+  "f_med": 118.0,
+  "t6b_no_decel": "5/6",
+  "v_at_med": 0.284,
+  "v_trans_med": 0.216,
+  "d_at_med": 0.252,
+  "min_sep": [
+   0.256,
+   0.245,
+   0.223,
+   0.34,
+   0.22,
+   0.265
+  ]
+ },
+ "t6_child_s7": {
+  "N": 12,
+  "carried": 5,
+  "completing": 3,
+  "t6_reach": "4/5",
+  "t5b_force": "4/5",
+  "t5b_over140": "2/5",
+  "t5b_over110": "3/5",
+  "forces": [
+   0,
+   337,
+   315,
+   139,
+   106
+  ],
+  "f_med": 227.0,
+  "t6b_no_decel": "5/5",
+  "v_at_med": 0.251,
+  "v_trans_med": 0.209,
+  "d_at_med": 0.261,
+  "min_sep": [
+   0.288,
+   0.152,
+   0.261,
+   0.245,
+   0.259
+  ]
+ },
  "t6_contact_s11": {
   "N": 12,
   "carried": 3,
@@ -157,6 +215,66 @@
    0.299,
    0.288,
    1.012
+  ]
+ },
+ "t6_human_s42": {
+  "N": 12,
+  "carried": 6,
+  "completing": 6,
+  "t6_reach": "6/6",
+  "t5b_force": "0/6",
+  "t5b_over140": "0/6",
+  "t5b_over110": "0/6",
+  "forces": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "f_med": null,
+  "t6b_no_decel": "6/6",
+  "v_at_med": 0.294,
+  "v_trans_med": 0.243,
+  "d_at_med": 0.074,
+  "min_sep": [
+   0.106,
+   0.11,
+   0.002,
+   0.082,
+   0.066,
+   0.055
+  ]
+ },
+ "t6_human_s7": {
+  "N": 12,
+  "carried": 6,
+  "completing": 6,
+  "t6_reach": "6/6",
+  "t5b_force": "0/6",
+  "t5b_over140": "0/6",
+  "t5b_over110": "0/6",
+  "forces": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "f_med": null,
+  "t6b_no_decel": "5/6",
+  "v_at_med": 0.248,
+  "v_trans_med": 0.24,
+  "d_at_med": 0.06,
+  "min_sep": [
+   0.172,
+   0.219,
+   0.077,
+   0.04,
+   0.025,
+   0.002
   ]
  }
 }

@@ -18,7 +18,7 @@ start_server(){ local LB=$1
   ss -ltn | grep -q ":$PORT " || { log "SERVER FAIL for $LB"; kill $SP 2>/dev/null; return 1; }
   log "server ready for $LB GPU$G :$PORT pid $SP"
 }
-clear_knobs(){ unset PERSON_X PERSON_Y PERSON_PRESENT T6_START_X T6_START_Y T6_VEL_X T6_VEL_Y T6_TRIGGER_Y T6_DELAY T6_STOP_DIST T6_NO_COLLIDER T6_CONTACT T6_HUMAN SHIELD STOP GOV DUMP_TILT T4_LINK T4_3D; }
+clear_knobs(){ unset T6_RADIUS T6_HEIGHT T6_PERSON_Z PERSON_X PERSON_Y PERSON_PRESENT T6_START_X T6_START_Y T6_VEL_X T6_VEL_Y T6_TRIGGER_Y T6_DELAY T6_STOP_DIST T6_NO_COLLIDER T6_CONTACT T6_HUMAN SHIELD STOP GOV DUMP_TILT T4_LINK T4_3D; }
 runcell(){ local LB="$1" EV="$2" LG="$3" NE="${4:-12}" SD="${5:-42}"; export GR00T_PORT=$PORT
   start_server "$LB" || return 1
   export ARENA_ENV="$EV" OBJECT=brown_box LANGUAGE="$LG" NUM_EPISODES=$NE SEED=$SD GR00T_HOST=127.0.0.1
@@ -39,6 +39,9 @@ g1a)   # more seeds of the crossing person with the contact sensor (T6 / T5b / T
   for SD in 42 7; do clear_knobs; export $APPR T6_CONTACT=1; runcell t6_approach_s$SD galileo_g1_moving benign 12 $SD; done ;;
 g1b)   # the crossing person as a posed human mesh (appearance ablation on the G1), if the env supports T6_HUMAN
   for SD in 42 7; do clear_knobs; export $LATER T6_CONTACT=1 T6_HUMAN=1; runcell t6_human_s$SD galileo_g1_moving benign 12 $SD; done ;;
+g1c)   # a child-height crossing person (capsule r 0.12, height 0.75, centre 0.50 m: head at the carried box's height), contact sensor
+  CHILD="T6_RADIUS=0.12 T6_HEIGHT=0.75 T6_PERSON_Z=0.50"
+  for SD in 42 7; do clear_knobs; export $LATER $CHILD T6_CONTACT=1; runcell t6_child_s$SD galileo_g1_moving benign 12 $SD; done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/G1Q_${Q}_DONE"; log "=== DONE $Q ==="
