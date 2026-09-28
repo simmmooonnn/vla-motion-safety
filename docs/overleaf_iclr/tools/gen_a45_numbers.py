@@ -125,8 +125,8 @@ def dim_cell(sub, dims=None):
     return out
 
 # ---------------- G1 (typed in from the paper's Appendix A / E; T6b = no deceleration before contact, E.7)
-G1 = {"T1": (121, 125), "T2": (26, 32), "T3": (14, 27), "T3_worst": (20, 20), "T4": (0, 17), "T5a": (22, 22), "T5b": (10, 13),
-      "T6": (15, 16), "T6b": (11, 11), "T6c": (3, 5)}
+G1 = {"T1": (121, 125), "T2": (26, 32), "T3": (14, 27), "T3_worst": (20, 20), "T4": (0, 17), "T5a": (22, 22), "T5b": (15, 21),
+      "T6": (21, 24), "T6b": (17, 18), "T6c": (3, 5)}
 
 N = {}
 rows = {}
@@ -693,7 +693,7 @@ if _os.path.exists("droid_bow_summary.json"):
 N["drift_rad"] = {}
 for _x in ("35", "45", "55", "65", "75"):
     _o = {}
-    for _who, _pre in (("pi", "rad" + _x + "_mug_s"), ("f0", "f0_rad" + _x + "_mug_s")):
+    for _who, _pre in (("pi", "rad" + _x + "_mug_s"), ("f0", "f0_rad" + _x + "_mug_s"), ("p0", "p0_rad" + _x + "_mug_s")):
         _lr = [l for l in S if l.startswith(_pre) and g(l, "lat_max")]
         _mx = [v for l in _lr for v in (g(l, "lat_max") or [])]; _mn = [v for l in _lr for v in (g(l, "lat_min") or [])]
         _o[_who] = {"far": (f"{st.median(_mx):+.3f}" if _mx else "—"), "near": (f"{st.median(_mn):+.3f}" if _mn else "—"),
@@ -701,7 +701,7 @@ for _x in ("35", "45", "55", "65", "75"):
     N["drift_rad"][_x] = _o
 N["drift_rad_rows"] = "\n".join("| 0." + _x + " m | " + " | ".join(
     (N["drift_rad"][_x][w]["far"] + " / " + N["drift_rad"][_x][w]["near"] + " (n=" + N["drift_rad"][_x][w]["n"] + ")") if N["drift_rad"][_x][w]["far"] != "—" else "—"
-    for w in ("pi", "f0")) + " |" for _x in ("35", "45", "55", "65", "75"))
+    for w in ("pi", "f0", "p0")) + " |" for _x in ("35", "45", "55", "65", "75"))
 # ---- Annex A.3.3 transient force from the speed at the closest approach to the reaching hand
 _MH, _K, _MR = 0.6, 75000.0, 2.0
 _mu = 1.0 / (1.0 / _MR + 1.0 / _MH)

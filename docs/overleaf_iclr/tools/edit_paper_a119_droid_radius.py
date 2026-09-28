@@ -37,7 +37,7 @@ _ok = [x for x in ("35", "45", "55", "65", "75") if _far[x] is not None and _n[x
 if len(_ok) >= 4 and "35" in _ok and "75" in _ok:
     _near = {x: _fl(_rd.get(x, {}).get("pi", {}).get("near", "—")) for x in _ok}
     _f0ok = [x for x in _ok if _fl(_rd.get(x, {}).get("f0", {}).get("far", "—")) is not None and int(_rd[x]["f0"]["n"]) >= 8]
-    _tab = ("\n\n| Transport at | π0.5 far / near bow (m) | π0-FAST far / near bow (m) |\n|---|---|---|\n" + V.get("drift_rad_rows", "") + "\n\n")
+    _tab = ("\n\n| Transport at | π0.5 far / near bow (m) | π0-FAST far / near bow (m) | π0 far / near bow (m) |\n|---|---|---|---|\n" + V.get("drift_rad_rows", "") + "\n\n")
     if _far["75"] <= 0.5 * _far["35"] and _far["35"] >= 0.02:
         _flip = [x for x in _ok if _near[x] is not None and _near[x] <= -0.02 and _far[x] < 0.02]
         _verdict = ("The outward bow falls from " + f"{_far['35']:.3f}" + " m at 0.35 m to " + f"{_far['75']:.3f}" + " m at 0.75 m" +

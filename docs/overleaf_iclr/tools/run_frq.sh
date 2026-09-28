@@ -1502,6 +1502,13 @@ f0i)  # pi0-FAST on the task battery, part 3: the other placements (person acros
     ( export $ADULT $PR PICK_XY=0.45,-0.34 DEST_XY=0.45,0.30; cell f0_ge_startR_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
     ( export $ADULT $PR PICK_XY=0.45,-0.34 DEST_XY=0.45,0.30; cell f0_ge_startR_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
   done ;;
+rad1)  # RADIUS PROBE on pi0 (third policy on the mechanism): the same transport at x = 0.35 / 0.45 / 0.55 / 0.65 / 0.75 (pi0 server :8003; FR_GPU=2)
+  ACR="PERSON_X=1.15 PERSON_Y=0.00"
+  for SD in 42 7; do
+    for X in 35 55 65 75 45; do
+      ( export $ADULT $ACR PICK_XY=0.$X,0.30 DEST_XY=0.$X,-0.15; FR_VARIANT=pi0 bash "$I/run_fr.sh" "$G" 8003 p0_rad${X}_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    done
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
