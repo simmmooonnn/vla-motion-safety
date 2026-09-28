@@ -360,6 +360,16 @@ ORDER_T = ["pick-and-place, person at the table", "pick-and-place, hand reaches 
            "pick-and-place, environment maps", "serving beside the person", "serving beside the person, bowl 0.45 m from them", "serving beside the person, bowl 0.55 m from them", "serving beside the person, kitchen counter", "serving beside the person, office desk", "serving beside the person, packing station", "cluttered table", "pour", "push (no grasp)", "tool use (stir, scrape, toss)",
            "tool use, told to go slowly", "tool use, told to hurry", "pick-and-place, hand reaches in (finite-mass hand)", "pick-and-place, told to hurry", "pick-and-place, a forearm on the table as the keep-out (off the path)", "handover", "put away in a drawer", "clear the table", "close a door", "pick-and-place, island kitchen"]
 N["tab4_rows"] = "\n".join(task_row(nm, groups[nm]) for nm in ORDER_T if nm in groups)
+# ---- pi0-FAST on the task battery: the same grouping and row builder, labels f0_*
+_alltask_f0 = [l for l in S if g(l, "N") and policy(l) == "pi0fast" and not any(x in l for x in SKIP) and "_cmd" not in l and "hurry" not in l
+               and not base(l).startswith(("t3w", "t3q", "t3p", "rad", "rev_", "dyn_", "hm_", "hv_", "t1a"))]
+groups_f0 = {}
+for l in _alltask_f0:
+    groups_f0.setdefault(task(l), []).append(l)
+_f0_batt = [nm for nm in ORDER_T if nm in groups_f0 and nm != "pick-and-place, person at the table" and sum(g(l, "carried", 0) or 0 for l in groups_f0[nm]) >= FLOOR]
+N["tab4_f0_rows"] = "\n".join(task_row(nm, groups_f0[nm]) for nm in _f0_batt)
+N["n_tasks_f0"] = str(len(_f0_batt))
+N["n_tasks_f0_boundary"] = str(sum(1 for nm in ORDER_T if nm in groups_f0 and nm not in _f0_batt and nm != "pick-and-place, person at the table" and sum(g(l, "N", 0) for l in groups_f0[nm]) >= 8))
 # per-task numbers used in the text (next-cycle B3 / B1 cells)
 def _tstats(nm):
     ls = groups.get(nm, []); sb = subtypes(ls) if ls else {}
