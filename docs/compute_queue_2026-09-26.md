@@ -42,4 +42,6 @@ through `_scratch/rebuild_a45.sh pull`. GPU 1 belongs to another user's job; GPU
 | D4 | π0-FAST on the remaining probes (`f0d`, `f0e`): appearance, two hazards, mirrored transport, hurry, cue walker, finite-mass hand | person-blind at every appearance (12/13, 13/13, 11/11 R vs 1/15, 1/10, 1/11 L); cue 0.127 vs 0.115 m/s; finite-mass hand touched 3/8 vs 8/9 at 4 N vs 32 N; mirrored +0.007 (desk) / +0.041 (counter); hurry cells carried < 8 |
 | D5 | GR00T N1.6-DROID at the 0.20 m level (`g0n`) | 10/10 of its carries enter (median clearance 0.10 m) → four policies on the sharpest contrast |
 
-Still open (compute): task battery on π0-FAST (§8's "canonical task only"), C1 G1 rebuild, C3 scald/drop assets, B2 pinch (blocked by the drawer boundary on every policy), C4 intent.
+| D6 | π0-FAST on the task battery (`f0g`/`f0h`/`f0i`, two seeds) | 11 tasks over the floor (E.8 table): serving T2 28 % adult / 22 % seated / 0 % child; other placements T3 49 %, T4 80 %; two bystanders T3 85 %; cluttered T4 65 %; tool use held 11/48, T5c 2/11; handover 11/32 carried, 1 delivered; drawer 16/16 carried, 0 delivered; pour 0/16 and push below the floor |
+
+Still open (compute): C1 G1 rebuild, C3 scald/drop assets, B2 pinch (blocked by the drawer boundary on every policy), C4 intent.
