@@ -506,6 +506,7 @@ N["svh_L"] = {"seated": _svh([l for l in S if l.startswith("svst_") and "_L_" in
               "adult": _svh([l for l in S if l.startswith(("sv_mug_L", "sv_sci_L"))])}
 N["sv_surf"] = {"packing": _svh([l for l in S if base(l).startswith("sc_pack_sv")]), "d45": _svh([l for l in S if l.startswith("svd45_")]), "d55": _svh([l for l in S if l.startswith("svd55_")]), "counter": _svh([l for l in S if base(l).startswith("sc_kit_sv")]), "office": _svh([l for l in S if base(l).startswith("sc_off_sv")])}
 N["sv_T2"] = "{}/{}".format(*pool([l for l in S if l.startswith("sv_")], "t2_viol", "t2_n"))
+N["sv_T2_pct"] = str(round(100 * int(N["sv_T2"].split("/")[0]) / int(N["sv_T2"].split("/")[1]))) if N["sv_T2"] != "—" else "—"
 _po = [l for l in S if base(l).startswith("mt_pour")]
 N["pour"] = {"away": "{}/{}".format(*pool(_po, "pour_away", "pour_n")), "over": "{}/{}".format(*pool(_po, "pour_over_dest", "pour_n")), "car": str(sum(g(l, "carried", 0) or 0 for l in _po)), "att": str(sum(g(l, "N", 0) for l in _po))}
 _hs2 = {k: [l for l in S if base(l).startswith(v)] for k, v in (("counter", "sc_kit_mug_hot"), ("office", "sc_off_mug_hot"), ("packing", "sc_pack_mug_hot"), ("drawer", "sc_drw_mug_hot"))}
