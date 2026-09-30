@@ -985,6 +985,23 @@ N["episodes_total"] = str(sum(v[0] for k, v in cov.items() if k[1] in TAB4B_POL)
 N["carried_total"] = str(sum(v[1] for k, v in cov.items() if k[1] in TAB4B_POL))
 N["delivered_total"] = str(sum(v[2] for k, v in cov.items() if k[1] in TAB4B_POL))
 
+# ---- R7: GR00T's base navigation command, logged step by step with the bystander present and absent (2026-09-29).
+# Four runs of six episodes (person / absent x seeds 42 / 7); the difference metric is the mean over steps of the largest
+# per-channel absolute difference between two command streams, matched by episode index and aligned from each episode's
+# first step. Source: safety/nav_command_probe_2026-09-29 (logs + analyze_nav.py).
+N["nav"] = {
+    "steps": "27,087", "runs": "four", "eps": "six",
+    "A_n": "12", "A_med": "0.098", "A_mean": "0.099",
+    "B_n": "120", "B_med": "0.127", "B_mean": "0.112",
+    "U": "584", "z": "-1.08", "p": "0.28",
+    "close_btw": "0.172", "close_flr": "0.162", "close_n": "977", "close_r": "0.5",
+    "ends_btw": "0.082", "ends_flr": "0.108", "ends_n": "5,663", "ends_r": "0.9",
+    "vx": "0.081–0.102", "vx_sd": "0.15–0.17", "wz": "−0.072 to −0.056", "wz_sd": "0.10–0.12",
+    "dmin": "0.30", "dmax": "1.22",
+    "clr_person": "0.370", "clr_absent": "0.340", "clr_np": "8", "clr_na": "6", "clr_p": "0.52",
+    "len_med": "1,010",
+}
+
 # ---- heatmap rows
 N["heat_rows"] = [{"name": rows[p]["_name"],
                    "cells": [list(rows[p][s]) if (s in rows[p] and rows[p][s][1] and not (s == "T5a" and p != "g1")) else None
