@@ -19,7 +19,7 @@ Let a task be an instruction $\ell$ and a goal predicate $g$ on terminal states.
 
 where $\psi_h$ is a violation predicate. A trajectory can satisfy the instruction and the goal ($\ell$ safe, $g(s_T)$ true) while violating $\psi_h$ at some intermediate $t$. Execution-phase safety is the conjunction of such per-step properties.
 
-This is why success-conditioning is the default for transport hazards: a carry that never traverses never reaches a hazard on the path, so its non-violation is not evidence of safety. We condition on completion when non-completion removes exposure and report over all episodes when it does not --- as for the pick-phase body sweep of T2 --- isolating ``harmful how'' from ``failed what.''
+Success-conditioning is therefore the default for transport hazards: a carry that never traverses never reaches a hazard, so its non-violation is not evidence of safety. We condition on completion when non-completion removes exposure and report over all episodes when it does not --- as for T2's pick-phase sweep --- isolating ``harmful how'' from ``failed what.''
 
 
 \subsection{Four parallel dimensions}
@@ -31,7 +31,7 @@ A motion near a person has three properties the person experiences --- where it 
 \subsection{Six sub-types and why each predicate}
 
 
-Within the dimensions we define six sub-types (Table~\ref{tab:II}), each specified by a harm channel, a task phase, a measured quantity, an unsafe predicate, a success-conditioned metric and a fixability class (Appendix B). Appendix D gives the reason for each predicate: where a standard fixes the value we adopt it, and where none does we state the choice and report the rate's sensitivity to it. The fixability class turns a failure into a claim about the intervention it needs: a failure that persists when the hazard is named (prompting) and when it is shown or hidden (perception) is, by elimination, a missing behavioral competence (\S6). Six sub-types were fixed before any tabletop cell ran; T5c was added on 2026-09-17 after the tool-use cells and stays outside the speed-and-force score until its sensitivity is settled (Appendix E.8).
+Within the dimensions we define six sub-types (Table~\ref{tab:II}), each specified by a harm channel, a task phase, a measured quantity, an unsafe predicate, a success-conditioned metric and a fixability class (Appendix B). Appendix D gives the reason for each predicate: where a standard fixes the value we adopt it, and where none does we state the choice and report the rate's sensitivity. The fixability class turns a failure into a claim about the intervention it needs: one that persists when the hazard is named (prompting) and when it is shown or hidden (perception) is, by elimination, a missing behavioral competence (\S6). Six sub-types were fixed before any tabletop cell ran; T5c was added after the tool-use cells and stays outside the speed-and-force score until its sensitivity is settled (E.8).
 
 
 \begin{table}[t]
@@ -44,7 +44,7 @@ Within the dimensions we define six sub-types (Table~\ref{tab:II}), each specifi
 Dimension & ID & Sub-type & Measured quantity & Unsafe when \\
 \midrule
 Trajectory & T1 & Payload path & min carried-object $\rightarrow$ hazard clearance & clearance < keep-out (0.20 m strip, person; 0.30 m stove) \\
-Trajectory & T2 & Body sweep & min robot-link $\rightarrow$ body-surface distance (capsule + head) & < 0.10 m; contact reported \\
+Trajectory & T2 & Body sweep & min robot-link $\rightarrow$ body-surface distance (capsule + head) & < 0.10 m, contact reported; tabletop: at the serving destination \\
 Orientation & T3 & Hazard presentation & angle of the payload's hazardous axis to the bearing of the person & within 90$^{\circ}$ of the bearing \\
 Orientation & T4 & Load tilt & peak tilt of the load in transport (a cup: its axis from upright) & > 45$^{\circ}$ \\
 Speed \& force & T5a & Speed near a person & payload speed vs separation & speed > $v_{\text{allow}}(d)$ \\

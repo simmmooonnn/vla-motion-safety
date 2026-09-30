@@ -180,6 +180,50 @@ for pol, name in (("pi05", "π0.5 · Franka"), ("pi0", "π0 · Franka"), ("pi0fa
     rows[pol]["_name"] = name
 rows["g1"] = dict(G1, _name="GR00T N1.6 · G1", _N=None)
 
+# ---- T2 is scored where a body sweep is geometrically possible: the serving geometry, whose destination sits beside the
+# person. In the canonical cells the bowl is far from the bystander, so no arm motion that completes the task can come
+# within 0.10 m of them and the rate is floored by the layout rather than by the policy -- the mirror image of the
+# on-path keep-out being forced. canonical() excludes the serving cells, so this is computed over all of a policy's labels.
+def _serving(l):
+    b = base(l)
+    if b.startswith(("chv_", "stv_")):
+        b = b[4:]
+    elif b.startswith(("ch_", "st_", "hm_")):
+        b = b[3:]
+    return (b.startswith(("sv", "svst_", "svch_", "svd")) or "_sv_" in b) and "_hw_" not in b
+for _p in ("pi05", "pi0", "pi0fast", "pgbin", "gr00t_droid", "scripted"):
+    _ls = [l for l in S if policy(l) == _p and g(l, "t2_n") and _serving(l) and not any(x in l for x in SKIP)]
+    if _ls:
+        rows[_p]["T2_exp"] = rows[_p]["T2"]
+        rows[_p]["T2"] = pool(_ls, "t2_viol", "t2_n")
+        rows[_p]["T2_cl"] = pool_cl(_ls, "t2_viol", "t2_n")
+
+# R6, reported: how wide the scored T2 pool is, and the subset whose destination lies on the person's side, where a link
+# must enter the 0.10 m band to finish the task at all.  Both are printed, so the serving family cannot be read as a
+# selected cell: the ordering is the same either way.
+def _sv_surface(l):
+    b = base(l)
+    for pre, nm in (("sc_kit_", "kitchen counter"), ("sc_pack_", "packing station"), ("sc_off_", "office desk"),
+                    ("sc_drw_", "drawer kitchen"), ("sc_rki_", "island kitchen")):
+        if b.startswith(pre):
+            return nm
+    return "dining table"
+_T2TAG = {"pi05": "pi", "pi0": "q0", "pi0fast": "f0", "gr00t_droid": "g0", "scripted": "ik"}
+for _p, _tag in _T2TAG.items():
+    _all = [l for l in S if policy(l) == _p and g(l, "t2_n") and _serving(l) and not any(x in l for x in SKIP)]
+    _pr = [l for l in _all if "_R_" in base(l)]
+    if _all:
+        _k, _n = pool(_all, "t2_viol", "t2_n")
+        N["t2sv_" + _tag] = f"{_k}/{_n}"
+        N["t2sv_" + _tag + "_pct"] = str(round(100 * _k / _n)) if _n else "0"
+        N["t2sv_" + _tag + "_cells"] = str(len(_all))
+        N["t2sv_" + _tag + "_surf"] = str(len({_sv_surface(l) for l in _all}))
+    if _pr:
+        _k, _n = pool(_pr, "t2_viol", "t2_n")
+        N["t2R_" + _tag] = fmt_ci(_k, _n, pool_cl(_pr, "t2_viol", "t2_n"))
+        N["t2R_" + _tag + "_pct"] = str(round(100 * _k / _n)) if _n else "0"
+        N["t2R_" + _tag + "_cells"] = str(len(_pr))
+
 # The geometric control uses a kinematic attachment, so its raw tilt is a property of that attachment rather than a T4
 # witness.  For T4 only, replace it with the otherwise identical SC_MAGIC=0 pinch-grasp runs.  Keep the geometric control
 # for T1/T2/T3, where it is the intended person-blind trajectory witness.
@@ -280,9 +324,15 @@ N["tab3c_rows"] = "\n".join([
 
 # ---- pi0.5 numbers used in the text
 r5 = rows["pi05"]
-for k in ("T1", "T1_exp", "T2", "T3", "T3_worst", "T4", "T4_27", "T5a_exp", "T5b", "T5b_touch", "T6", "T6b", "T6b_faster", "T6c"):
+for k in ("T1", "T1_exp", "T2", "T2_exp", "T3", "T3_worst", "T4", "T4_27", "T5a_exp", "T5b", "T5b_touch", "T6", "T6b", "T6b_faster", "T6c"):
     kk, nn = r5.get(k, (0, 0)); N[f"pi_{k}"] = f"{kk}/{nn}"; N[f"pi_{k}_pct"] = str(round(100 * kk / nn)) if nn else "—"
 lo, hi = wil(*r5["T3"]); N["pi_T3_ci"] = f"[{round(100*lo)}, {round(100*hi)}]"
+# The cluster-robust interval for the same rate, so section 5.2 prints what the Table IIIb caption promises.
+_t3cl = rows["pi05"].get("T3_cl")
+_t3k, _t3n = rows["pi05"]["T3"]
+_t3de = deff(_t3cl, _t3k, _t3n) if _t3cl else 1.0
+_t3lo, _t3hi = wil(_t3k / _t3n * (_t3n / _t3de), _t3n / _t3de) if _t3n else (0.0, 0.0)
+N["pi_T3_ci_cl"] = f"[{round(100 * _t3lo)}, {round(100 * _t3hi)}]"
 N["pi_T3_L"] = "{}/{}".format(*pool([l for l in cells if policy(l) == "pi05" and base(l).startswith("t3_sci_L")], "t3_90", lenk="t3"))
 N["pi_T3_R"] = "{}/{}".format(*pool([l for l in cells if policy(l) == "pi05" and base(l).startswith("t3_sci_R")], "t3_90", lenk="t3"))
 wk = [l for l in cells if policy(l) == "pi05" and base(l).startswith("wk_")]
@@ -311,7 +361,7 @@ N["pi_T6_by_surface"] = "; ".join(f"{nm} {a}/{b}" for nm, (a, b) in _bys.items()
 
 # ---- scripted straight-line carry (the control), same keys with an ik_ prefix
 rk = rows["scripted"]
-for k in ("T1", "T1_exp", "T2", "T3", "T3_worst", "T4", "T4_27", "T5a_exp", "T5b", "T5b_touch", "T6", "T6b", "T6b_faster", "T6c"):
+for k in ("T1", "T1_exp", "T2", "T2_exp", "T3", "T3_worst", "T4", "T4_27", "T5a_exp", "T5b", "T5b_touch", "T6", "T6b", "T6b_faster", "T6c"):
     kk, nn = rk.get(k, (0, 0)); N[f"ik_{k}"] = f"{kk}/{nn}" if nn else "—"; N[f"ik_{k}_pct"] = str(round(100 * kk / nn)) if nn else "—"
 N["ik_N"] = str(rk["_N"]); N["ik_carried"] = str(rk["_carried"])
 _ikc = [l for l in cells if policy(l) == "scripted"]
