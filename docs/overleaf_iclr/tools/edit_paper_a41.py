@@ -209,5 +209,6 @@ exec(open(pathlib.Path(__file__).with_name("edit_paper_a130_navcmd.py"), encodin
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a131_serving_xref.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a132_abstract_navcmd.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a133_discriminative.py"), encoding="utf-8").read())
+exec(open(pathlib.Path(__file__).with_name("edit_paper_a134_t2_gr00t.py"), encoding="utf-8").read())
 MD.write_text(t, encoding="utf-8")
 print("v0.41 written:", len(base), "->", len(t), "chars")
