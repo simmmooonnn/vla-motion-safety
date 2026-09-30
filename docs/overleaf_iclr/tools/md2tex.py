@@ -111,8 +111,8 @@ def esc_text(t):
     # section refs like §5.9 -> \S5.9
     t = t.replace("§", r"\S")
     # table cross-references: "Table I" / "Tables III--IV" -> \ref by roman label (captions carry "Table N.")
-    t = re.sub(r"\bTables ([IVX]+[a-c]?)--([IVX]+[a-c]?)", r"Tables~\\ref{tab:\1}--\\ref{tab:\2}", t)
-    t = re.sub(r"\bTable ([IVX]+[a-c]?)\b(?!\.)", r"Table~\\ref{tab:\1}", t)
+    t = re.sub(r"\bTables ([IVX]+[a-e]?)--([IVX]+[a-e]?)", r"Tables~\\ref{tab:\1}--\\ref{tab:\2}", t)
+    t = re.sub(r"\bTable ([IVX]+[a-e]?)\b(?!\.)", r"Table~\\ref{tab:\1}", t)
     for i, r in enumerate(refs): t = t.replace("@@REF%d@@" % i, r)
     return t
 
@@ -176,7 +176,7 @@ def convert_table(rows, caption, label):
     else:
         colspec = "@{}" + "l" * ncol + "@{}"
         size = r"\small"
-    cap = re.sub(r"^Table\s+[IVXL]+[a-c]?\.\s*", "", caption or "")   # markdown carried its own "Table I." prefix
+    cap = re.sub(r"^Table\s+[IVXL]+[a-e]?\.\s*", "", caption or "")   # markdown carried its own "Table I." prefix
     def cell(c):
         """In a narrow p{} column a trailing '[N]' citation prints as '(Author et al., 2026)': put it on its own line."""
         if wide: c = re.sub(r"^(\S.*?)\s+(\[\d+\](?:[–-]+\[\d+\])?)$", r"\1@@NL@@\2", c)
@@ -215,6 +215,7 @@ def convert_table(rows, caption, label):
     return "\n".join(lines)
 IN_APPENDIX = [False]
 WIDTHS = {"tab:I": [18, 14, 16, 17, 13, 13, 16], "tab:II": [12, 5, 14, 34, 35], "tab:II6": [10, 4, 12, 18, 17, 39], "tab:III": [20, 20, 20, 20, 20], "tab:IIIb": [15, 11, 11, 11, 11, 10, 10, 10, 11], "tab:IIIc": [36, 16, 16, 16, 16], "tab:IV": [17, 10, 12, 15, 18, 14, 14], "tab:IVb": [26, 19, 19, 19, 17], "tab:IVc": [20, 20, 20, 20, 20],
+          "tab:IVe": [10, 5, 27, 12, 9, 12, 14, 11],
           "tab:VI": [13, 15, 26, 22, 11, 21], "tab:VII": [4, 17, 17, 17, 19, 26],
           "tab:V": [30, 9, 10, 20, 17, 14], "tab:X": [30, 9, 10, 20, 17, 14]}
 
@@ -254,7 +255,7 @@ def convert_block(content):
         ln = content[j]
         s = ln.strip()
         # table caption line: "**Table X. ...**" possibly followed by blank then table
-        mcap = re.match(r"^\*\*(Table [IVX0-9]+[a-c]?\.)\s*(.*?)\*\*\s*(.*)$", s)
+        mcap = re.match(r"^\*\*(Table [IVX0-9]+[a-e]?\.)\s*(.*?)\*\*\s*(.*)$", s)
         if mcap and (j + 1 < len(content)) and any(content[k].lstrip().startswith("|") for k in range(j+1, min(j+3, len(content)))):
             pending_caption = (mcap.group(1) + " " + mcap.group(2) + " " + mcap.group(3)).strip()
             j += 1; continue
@@ -263,7 +264,7 @@ def convert_block(content):
             while j < len(content) and content[j].strip().startswith("|"):
                 rows.append(content[j]); j += 1
             tcount[0] += 1
-            rm = re.match(r"Table\s+([IVX]+[a-c]?)\.", pending_caption or "")
+            rm = re.match(r"Table\s+([IVX]+[a-e]?)\.", pending_caption or "")
             lab = "tab:" + (rm.group(1) if rm else "t%d" % tcount[0])
             out.append(convert_table(rows, pending_caption, lab)); pending_caption = None
             continue
