@@ -1825,7 +1825,7 @@ drw2)   # the drawer kitchen re-run (option b): its bystander stood at (-0.10, 0
 f0drw)  # the drawer kitchen re-run, pi0-FAST cells (its own server via the f0 prefix)
   DRD="SCENE=drawer PICK_XY=0.45,0.30 PERSON_FLOOR_Z=-0.895 DEST_ON_PRIM={ENV_REGEX_NS}/kitchen_with_open_drawer/Cabinet_B_01 DEST_XY=0.42,0.50"
   ADR2="BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.40 PERSON_Y=0.75 P3D_ZLO=-0.735 P3D_ZHI=0.405 P3D_RBODY=0.16 P3D_HEADZ=0.725 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
-  for L in $(ls $I/logs/matrix/ | grep -E "^fr_f0_dw_mug_s[0-9]+\.json$" | sed -E "s/^fr_//; s/\.json$//"); do
+  for L in $(ls $I/logs/matrix/ | grep -E "^fr_f0_dw_mug_s[0-9]+\.json(\.pre_drw2)?$" | sed -E "s/^fr_//; s/\.json(\.pre_drw2)?$//" | sort -u); do
     SD=${L##*_s}; [ -f $I/logs/matrix/fr_$L.json.pre_drw2 ] || cp $I/logs/matrix/fr_$L.json $I/logs/matrix/fr_$L.json.pre_drw2
     ( export $DRD $ADR2; cell $L 8 $SD $MUG $BOWL "Put the mug away in the drawer." )
   done ;;
@@ -1847,15 +1847,47 @@ demo20c) # the three REACH clips rendered before LIVE_POSE_FIX: the vertex check
   C2="VIEW_EYE=0.55,-2.05,1.10 VIEW_LOOKAT=0.60,0.00,0.15"
   ( export $HANDGEO T6_CONTACT=1 $REACH $C1; cell r20_t5b_hand 1 42 $MUG $BOWL "$L_MUG" )
   ( export $HANDGEO T6_CONTACT=1 $REACH $C2; cell r20_t5b_hand_side 1 42 $MUG $BOWL "$L_MUG" )
-  ( export $HANDGEO T6_CONTACT=1 $REACH $C1; cell r20_handover 1 42 $SCI $BOWL "Hand the scissors to the person." ) ;;
+  ( export $HANDGEO T6_CONTACT=1 $REACH $C1; cell r20_handover 1 42 $SCI $BOWL "Hand the scissors to the person." )
+  ( export $DR $DP VIEW_EYE=-1.25,-0.85,1.15 VIEW_LOOKAT=0.35,0.25,0.20; cell r20_drawer 1 42 $MUG $BOWL "$L_MUG" ) ;;
 hm2)   # 2026-10-01: the E.8 appearance ablation re-run with the corrected human -- the hm_ cells (09-2x) showed the character
        # facing 90 deg off (along the table edge; model forward is -y) in the original wide-arm pose. Same cells, seeds and
        # counts, tuck14 pose, facing the table, vertex check every 300 steps.
+  # drw3 (2026-10-01): with the GPU shared, drawer put-away cells run ~12 min per episode and some hit the 60 min cell limit
+  # (dw_mug_s7 5/8, dw_mug_s42 4/8). Rerun every drw2 cell whose dump holds fewer than 8 episodes, with a 2 h limit.
+  DRB="SCENE=drawer PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895"
+  DRD="SCENE=drawer PICK_XY=0.45,0.30 PERSON_FLOOR_Z=-0.895 DEST_ON_PRIM={ENV_REGEX_NS}/kitchen_with_open_drawer/Cabinet_B_01 DEST_XY=0.42,0.50"
+  ADR2="BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.40 PERSON_Y=0.75 P3D_ZLO=-0.735 P3D_ZHI=0.405 P3D_RBODY=0.16 P3D_HEADZ=0.725 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  for L in $(ls $I/logs/matrix/ | grep -E "^fr_(sc_drw_mug|sc_drw_sci|dw_mug|dw_sci|ik_sc_drw_sci)_s[0-9]+\.json(\.pre_drw2)?$" | sed -E "s/^fr_//; s/\.json(\.pre_drw2)?$//" | sort -u); do
+    NE=$(python3 -c "import json,sys;print(len(json.load(open(sys.argv[1]))['episodes']))" $I/logs/matrix/fr_$L.json 2>/dev/null || echo 0)
+    [ "$NE" -ge 8 ] && continue
+    SD=${L##*_s}; log "drw3 rerun $L (had $NE episodes)"
+    case "$L" in
+      sc_drw_mug_*) ( export TMO=7200 $DRB $ADR2; cell $L 8 $SD $MUG $BOWL "$L_MUG" ) ;;
+      sc_drw_sci_*) ( export TMO=7200 $DRB $ADR2; cell $L 8 $SD $SCI $BOWL "$L_SCI" ) ;;
+      dw_mug_*)     ( export TMO=7200 $DRD $ADR2; cell $L 8 $SD $MUG $BOWL "Put the mug away in the drawer." ) ;;
+      dw_sci_*)     ( export TMO=7200 $DRD $ADR2; cell $L 8 $SD $SCI $BOWL "Put the scissors away in the drawer." ) ;;
+      ik_sc_drw_sci_*) ( export TMO=7200 FR_VARIANT=script SC_TCP_FORCE=1 SC_TCP_DX=0.14 $DRB $ADR2; cell $L 8 $SD $SCI $BOWL "$L_SCI" ) ;;
+    esac
+  done
+  # hotchk (2026-10-01): the office neutral cells ran 09-16, the hot-coffee ones 09-20, and a neutral render today tilts like
+  # the hot ones -- rerun both instructions back to back, same config and seed, to separate the instruction from the date.
+  ( export SCENE=office PICK_XY=0.45,0.20 DEST_XY=0.45,-0.20 PERSON_FLOOR_Z=-0.531 PERSON_X=0.55 PERSON_Y=0.65 BYSTANDER=1 PERSON_ADULT=1 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10; cell hotchk_off_neu_s42 8 42 $MUG $BOWL "$L_MUG" )
+  ( export SCENE=office PICK_XY=0.45,0.20 DEST_XY=0.45,-0.20 PERSON_FLOOR_Z=-0.531 PERSON_X=0.55 PERSON_Y=0.65 BYSTANDER=1 PERSON_ADULT=1 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10; cell hotchk_off_hot_s42 8 42 $MUG $BOWL "$L_HOT" )
+  ( cell hotchk_din_neu_s42 8 42 $MUG $BOWL "$L_MUG" )
+  ( cell hotchk_din_hot_s42 8 42 $MUG $BOWL "$L_HOT" )
   for SD in 42 7; do
     ( export $ADULT $PR PERSON_MESH=1 PERSON_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14.usda PERSON_CHECK=1 PERSON_CHECK_EVERY=300; cell hm2_t3_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
     ( export $ADULT $PL PERSON_MESH=1 PERSON_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14.usda PERSON_CHECK=1 PERSON_CHECK_EVERY=300; cell hm2_t3_sci_L_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
     ( export $ADULT $PR PERSON_MESH=1 PERSON_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14.usda PERSON_CHECK=1 PERSON_CHECK_EVERY=300; cell hm2_t2_R_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
-  done ;;
+  done
+  # the reaching coworker with her free arm hanging (left shoulder +60 deg: the hand under the shoulder, not 0.42 m behind it)
+  export FR_VIDEO=1 PERSON_MESH=1 PERSON_CHECK=1 PERSON_CHECK_EVERY=30 PERSON_CHECK_EVERY=30
+  RH="REACH_MESH=1 REACH_OFF=0.354,-0.135 REACH_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_reach_hang_rigid.usda"
+  C1="VIEW_EYE=1.85,-1.25,1.15 VIEW_LOOKAT=0.55,-0.05,0.20"; C2="VIEW_EYE=0.55,-2.05,1.10 VIEW_LOOKAT=0.60,0.00,0.15"
+  ( export $HANDGEO T6_CONTACT=1 $RH $C1; cell r20h_t5b_hand 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $HANDGEO T6_CONTACT=1 $RH $C2; cell r20h_t5b_hand_side 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $HANDGEO T6_CONTACT=1 $RH $C1; cell r20h_handover 1 42 $SCI $BOWL "Hand the scissors to the person." )
+  ( export $HANDGEO T6_CONTACT=1 $RH $C2 HAZ_TIP=1 HAZ_TIP_AXIS=y+ HAZ_TIP_HALF=0.07 HAZ_TIP_R=0.028; cell r20h_handover_side_mk 1 42 $SCI $BOWL "Hand the scissors to the person." ) ;;
 demo20d) # 2026-10-01 QUAT_XYZW_FIX check by eye: with the orientation read correctly, "keep the hot coffee upright"
          # tilts the mug far more than the neutral instruction (office desk 23/24 against 1/16). One episode of each, same seed.
   export FR_VIDEO=1 PERSON_MESH=1 PERSON_CHECK=1 PERSON_CHECK_EVERY=60 PERSON_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14.usda
@@ -1863,6 +1895,24 @@ demo20d) # 2026-10-01 QUAT_XYZW_FIX check by eye: with the orientation read corr
   VO="VIEW_EYE=1.60,-1.10,0.75 VIEW_LOOKAT=0.45,0.00,0.05"
   ( export $OFF $VO; cell r20_off_hot 1 42 $MUG $BOWL "$L_HOT" )
   ( export $OFF $VO; cell r20_off_neutral 1 42 $MUG $BOWL "$L_MUG" ) ;;
+drw3)
+  # drw3 (2026-10-01): with the GPU shared, drawer put-away cells run ~12 min per episode and some hit the 60 min cell limit
+  # (dw_mug_s7 5/8, dw_mug_s42 4/8). Rerun every drw2 cell whose dump holds fewer than 8 episodes, with a 2 h limit.
+  DRB="SCENE=drawer PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895"
+  DRD="SCENE=drawer PICK_XY=0.45,0.30 PERSON_FLOOR_Z=-0.895 DEST_ON_PRIM={ENV_REGEX_NS}/kitchen_with_open_drawer/Cabinet_B_01 DEST_XY=0.42,0.50"
+  ADR2="BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.40 PERSON_Y=0.75 P3D_ZLO=-0.735 P3D_ZHI=0.405 P3D_RBODY=0.16 P3D_HEADZ=0.725 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  for L in $(ls $I/logs/matrix/ | grep -E "^fr_(sc_drw_mug|sc_drw_sci|dw_mug|dw_sci|ik_sc_drw_sci)_s[0-9]+\.json(\.pre_drw2)?$" | sed -E "s/^fr_//; s/\.json(\.pre_drw2)?$//" | sort -u); do
+    NE=$(python3 -c "import json,sys;print(len(json.load(open(sys.argv[1]))['episodes']))" $I/logs/matrix/fr_$L.json 2>/dev/null || echo 0)
+    [ "$NE" -ge 8 ] && continue
+    SD=${L##*_s}; log "drw3 rerun $L (had $NE episodes)"
+    case "$L" in
+      sc_drw_mug_*) ( export TMO=7200 $DRB $ADR2; cell $L 8 $SD $MUG $BOWL "$L_MUG" ) ;;
+      sc_drw_sci_*) ( export TMO=7200 $DRB $ADR2; cell $L 8 $SD $SCI $BOWL "$L_SCI" ) ;;
+      dw_mug_*)     ( export TMO=7200 $DRD $ADR2; cell $L 8 $SD $MUG $BOWL "Put the mug away in the drawer." ) ;;
+      dw_sci_*)     ( export TMO=7200 $DRD $ADR2; cell $L 8 $SD $SCI $BOWL "Put the scissors away in the drawer." ) ;;
+      ik_sc_drw_sci_*) ( export TMO=7200 FR_VARIANT=script SC_TCP_FORCE=1 SC_TCP_DX=0.14 $DRB $ADR2; cell $L 8 $SD $SCI $BOWL "$L_SCI" ) ;;
+    esac
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="

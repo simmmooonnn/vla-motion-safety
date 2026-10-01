@@ -47,22 +47,29 @@ _mk = sum(_S3[l]["t45"] for l in ("t4_mug_hot_s42", "t4_mug_hot_s7")); _mn = sum
 _uk = sum(_S3[l]["t45"] for l in ("t4_mug_neutral_s42", "t4_mug_neutral_s7")); _un = sum(len(_S3[l]["tilt_trans"]) for l in ("t4_mug_neutral_s42", "t4_mug_neutral_s7"))
 _mp = _fisher3(_mk, _mn - _mk, _uk, _un - _uk); _mps = "< 0.001" if _mp < 0.001 else "= %.2g" % _mp
 _MATCH = f"{_mk}/{_mn}"; _MNEU = f"{_uk}/{_un}"
+# the same-session rerun (hotchk, 2026-10-01): both instructions back to back, office desk and dining table, seed 42
+_hc = lambda ls: (sum(_S3[l]["t45"] for l in ls if l in _S3), sum(len(_S3[l]["tilt_trans"]) for l in ls if l in _S3))
+_xk, _xn = _hc(("hotchk_off_hot_s42", "hotchk_din_hot_s42")); _yk, _yn = _hc(("hotchk_off_neu_s42", "hotchk_din_neu_s42"))
+_xd = sum(_S3[l].get("completed", 0) or 0 for l in ("hotchk_off_hot_s42", "hotchk_din_hot_s42") if l in _S3)
+_yd = sum(_S3[l].get("completed", 0) or 0 for l in ("hotchk_off_neu_s42", "hotchk_din_neu_s42") if l in _S3)
+_xp = _fisher3(_xk, _xn - _xk, _yk, _yn - _yk); _xps = "< 0.001" if _xp < 0.001 else "= %.2g" % _xp
+_SAME = f"{_xk}/{_xn}"; _SNEU = f"{_yk}/{_yn}"
 _g0t4 = V["t4task_g0"].split(" = ")[0]; _g0t4p = V["t4task_g0_pct"]
 _ik4 = V["ik_T4"]
 
 # ---------------- abstract (EN, ZH)
 _rn2("π0.5 tilts a mug past 45° on 9 % of carries across 20 tasks, most still scored successful;",
-     f"π0.5 tilts a mug past 45° on {V['pi_T4_pct']} % of carries across 20 tasks, a blind carrier's level, GR00T N1.6-DROID "
-     f"on {_g0t4p} %;")
+     f"π0.5 tilts a mug past 45° on {V['pi_T4_pct']} % of carries across 20 tasks — a blind carrier's level — but on "
+     f"{_xk}/{_xn} when told to keep hot coffee upright;")
 _rn2("GR00T 20/20、π0.5 的剪刀刀尖 1/21 指向人", f"GR00T 20/20、π0.5 的剪刀刀尖 {N['pi_t3_lo']} 指向人")
 _rn2("π0.5 在 9% 的搬运中把杯子倾斜超过 45°（跨 20 个任务，其中大多数仍判为成功）",
      f"π0.5 只在 {V['pi_T4_pct']}% 的搬运中把杯子倾斜超过 45°（跨 20 个任务，与看不见人的脚本搬运器相当），GR00T N1.6-DROID 为 "
-     f"{_g0t4p}%")
+     f"{_g0t4p}%；而被要求“保持热咖啡竖直”时，π0.5 反而 {_xk}/{_xn} 次倾斜超过 45°（同时运行的中性指令 {_yk}/{_yn}）")
 
 # ---------------- §1 contributions and §3
 _rn2("and the arm tilts a cup where the box stays level.", "and one arm policy tilts a cup where the box stays level.")
 _rn2("a safety command changes whether the task gets done, not how;",
-     "a safety command does not make the motion safer — it costs completion, and keeping a cup upright, asked for, is not kept;")
+     "a safety command does not make the motion safer — it costs completion, and asked to keep a cup upright π0.5 tilts it more;")
 _rn2("π0.5 tilts its mug on 9 % while its arm stays clear (Table III)",
      f"π0.5 points a blade into the person's half-space on {V['pi_T3_pct']} % while its arm stays clear (Table III)")
 
@@ -84,8 +91,8 @@ _rn2("**T4: the load tilts where success cannot see it.** π0.5 carries a mug ti
      "**T4: an upright carry, until upright is asked for.** π0.5 mostly carries a mug upright: pooled over every task in which it "
      f"carries a spillable vessel past a still bystander (20 tasks) its axis leaves upright by more than 45° mid-transport on "
      f"{V['t4task_pi']}, and by more than a full cup's 14–27° spill angle on {V['pi_T4_27']} ({V['pi_T4_27_pct']} %); GR00T "
-     f"N1.6-DROID on {_g0t4}. Told to keep hot coffee upright, π0.5 tilts the mug more, not less: {_MATCH} against {_MNEU} for "
-     f"the neutral instruction run the same day (Fisher *p* {_mps}; E.8).")
+     f"N1.6-DROID on {_g0t4}. Told to keep hot coffee upright, π0.5 tilts the mug more, not less: {_SAME} against {_SNEU} with "
+     f"both instructions run back to back (Fisher *p* {_xps}; E.8).")
 _rn2("across 112 attempts it carries 31 and exceeds 45° on 4/31 (median 31.0°; 18/31 above 27°) — the tabletop T4 feasibility "
      "witness, not a matched comparison",
      f"across 112 attempts it carries 31 and exceeds 45° on {_ik4} (median 21.0°; {V['ik_T4_27']} above 27°) — the tabletop T4 "
@@ -111,14 +118,14 @@ _rn2("Trajectory separates every policy from that blind line through T1, and ori
 # ---------------- §6 (i)
 _rn2("**(i) A safety command changes whether the task gets done, not how.**", "**(i) A safety command does not make the motion safer.**")
 _rn2("keep-upright leaves the tilt as it was (22/39) and blades-away the presentation (20/20).",
-     f"and keep-the-hot-coffee-upright makes the tilt worse ({_MNEU} → {_MATCH} past 45°, *p* {_mps}).")
+     f"and keep-the-hot-coffee-upright makes the tilt worse ({_SNEU} → {_SAME} past 45°, *p* {_xps}).")
 
 # ---------------- Appendix B
 _rn2("### T4 · Load tilt / spill — *measured (null on GR00T's rigid box; π0.5 tilts a mug)*",
      "### T4 · Load tilt / spill — *measured (null on GR00T's rigid box and π0.5's mug; GR00T N1.6-DROID tilts it)*")
 _rn2("and by more than a full cup's 14–27° spill angle on 634/2419, the task still scored a success (§5.2, Appendix E.8).",
      f"and by more than a full cup's 14–27° spill angle on {N['pi_t4_27']}; told to keep hot coffee upright it tilts more "
-     f"({_MATCH} against {_MNEU}; §5.2, Appendix E.8).")
+     f"({_SAME} against {_SNEU}; §5.2, Appendix E.8).")
 
 # ---------------- Appendix E.8
 _rn2("π0.5 grasps the scissors and carries them, blade tilted down, at a circular-mean yaw",
@@ -134,7 +141,10 @@ _rn2("Told to keep hot coffee upright, it still tilts the mug past 45° on 15/24
      f"{_MNEU} with the neutral instruction run the same day, seeds 42 and 7 (Fisher *p* {_mps}): the instruction that names the "
      f"load's safety makes the carry less safe. At the other surfaces the hot-coffee cells ({_hot_by}) ran four to five days after "
      f"the neutral ones ({_neu_by}), and a neutral carry rendered at the office desk on 2026-10-01 is held on its side as well, so "
-     "those contrasts are confounded by the date and are not counted; a same-day rerun is queued.")
+     "those contrasts are confounded by the date and are not counted. Rerun back to back on 2026-10-01 (office desk and dining "
+     f"table, seed 42, same configuration), the two instructions give {_SAME} against {_SNEU} past 45° (Fisher *p* {_xps}), the "
+     f"hot-coffee carries held near their side (median 80–84°) and delivered on {_xd}/16 episodes against {_yd}/16: the "
+     "effect is the instruction's, and the date moves the neutral rate only a little (office 0/8 on 2026-09-16, 2/8 now).")
 _rn2("π0 tilts less where it carries (34/232 above 45°).", "π0 tilts about as often where it carries (34/232 above 45°).")
 _rn2("the scissors' tip points into the person's half-space on 21/39 carries; the mug leaves upright by more than 45° on 45/62;",
      f"the scissors' tip points into the person's half-space on {N['sv']['t3'][0]}/{N['sv']['t3'][1]} carries; the mug leaves upright "
