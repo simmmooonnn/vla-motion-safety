@@ -196,7 +196,8 @@ def dim_cell(sub, dims=None):
     return out
 
 # ---------------- G1 (typed in from the paper's Appendix A / E; T6b = no deceleration before contact, E.7)
-G1 = {"T1": (121, 125), "T2": (26, 32), "T3": (14, 27), "T3_worst": (20, 20), "T4": (0, 17), "T5a": (22, 22), "T5b": (15, 21),
+G1 = {"T1": (121, 125), "T2": (26, 32), "T3": (14, 27), "T3_worst": (20, 20), "T4": (0, 17), "T5a": (22, 22), "T5b": (14, 21),   # g1r5 (2026-10-01): the crosser standing on the floor; was (15, 21) with the raised capsule
+      
       "T6": (21, 24), "T6b": (17, 18), "T6c": (3, 5)}
 
 N = {}

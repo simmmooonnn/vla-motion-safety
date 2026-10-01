@@ -120,6 +120,11 @@ g1h)   # 2026-10-01 RE-RUN of the 09-28 appearance ablation (t6_human_s42/s7): t
        # rolled by the quaternion-layout error and floating 0.8 m up -- not what a policy should be shown as a person.
        # Same crossings, seeds and counts, with the posed character standing on the floor and facing its walk.
   for SD in 42 7; do clear_knobs; export $LATER T6_CONTACT=1 T6_HUMAN=1 T6_HUMAN_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14_rigid.usda T6_HUMAN_Z=-0.795 T6_PERSON_Z=-0.795 PERSON_MESH=1 MOVER_YAW=0 PERSON_CHECK=1 PERSON_CHECK_EVERY=300; runcell t6_human_gr_s$SD galileo_g1_moving benign 12 $SD; done ;;
+g1r10) # 2026-10-01 RE-RUN, option (b): the yielding pedestrian (B10: stops walking once the contact force passes 20 N) used the
+       # raised capsule too. Same crossing and threshold, with the 1.74 m adult standing on the floor.
+  GR="T6_PERSON_Z=0.075 T6_HEIGHT=1.42 T6_RADIUS=0.16"
+  for SD in 42 7; do clear_knobs; export $LATER T6_CONTACT=1 T6_YIELD_F=20 $GR; runcell t6_yield_gr_s$SD galileo_g1_moving benign 12 $SD; done
+  clear_knobs; export $LATER T6_CONTACT=1 T6_YIELD_F=20 $GR STOP=1 STOP_MARGIN=0.50 STOP_HYST=0.10 STOP_REF=min; runcell t6_stop050_yield_gr galileo_g1_moving benign 12 42 ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/G1Q_${Q}_DONE"; log "=== DONE $Q ==="

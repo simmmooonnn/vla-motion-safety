@@ -389,7 +389,7 @@ def dim_row(cells):
         out.append(cell)
     return out
 
-_g_row = ["97 (121/125)", "81 (26/32)", N["g_t3_cell"], "0 (0/17)", "100 (6/6)", "77 (10/13)", "94 (15/16)"]
+_g_row = ["97 (121/125)", "81 (26/32)", N["g_t3_cell"], "0 (0/17)", "100 (6/6)", "81 (17/21)", "94 (15/16)"]
 N["pi_row_full"] = list(N["pi_row"]) + [N["pi_t5c_cell"]]          # T5c is measured on pi0.5 only, for now
 N["dim_table"] = "\n".join(
     "| " + nm + " | " + " | ".join(dim_row(row)) + " |"

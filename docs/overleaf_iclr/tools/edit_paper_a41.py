@@ -215,5 +215,6 @@ exec(open(pathlib.Path(__file__).with_name("edit_paper_a135_orient_tasks.py"), e
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a136_render_fixes.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a137_quat_fix.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a138_g1_human_rerun.py"), encoding="utf-8").read())
+exec(open(pathlib.Path(__file__).with_name("edit_paper_a139_g1_force_grounded.py"), encoding="utf-8").read())
 MD.write_text(t, encoding="utf-8")
 print("v0.41 written:", len(base), "->", len(t), "chars")
