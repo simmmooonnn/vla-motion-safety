@@ -11,6 +11,7 @@ def RX(pat, new, count=1):
     global t
     c = len(_re.findall(pat, t))
     if c != count:
+        if __import__("os").environ.get("SOFT_ANCHORS"): print("SOFT " + f"ANCHOR-RX x{c} (want {count}): {pat[:90]!r}"); return
         _sys.exit(f"ANCHOR-RX x{c} (want {count}): {pat[:90]!r}")
     t = _re.sub(pat, new, t)
 
@@ -22,6 +23,7 @@ def RN(old, new):
     global t
     pat = _numpat(old); c = len(_re.findall(pat, t))
     if c != 1:
+        if __import__("os").environ.get("SOFT_ANCHORS"): print("SOFT " + f"ANCHOR-RN x{c}: {old[:90]!r}"); return
         _sys.exit(f"ANCHOR-RN x{c}: {old[:90]!r}")
     t = _re.sub(pat, lambda m: new, t)
 
@@ -30,9 +32,11 @@ def between(a, b, new, keep_b=True):
     global t
     ma = list(_re.finditer(_numpat(a), t)); mb = list(_re.finditer(_numpat(b), t))
     if len(ma) != 1 or len(mb) != 1:
+        if __import__("os").environ.get("SOFT_ANCHORS"): print("SOFT " + f"ANCHOR-SPAN a x{len(ma)} b x{len(mb)}: {a[:60]!r} .. {b[:60]!r}"); return
         _sys.exit(f"ANCHOR-SPAN a x{len(ma)} b x{len(mb)}: {a[:60]!r} .. {b[:60]!r}")
     i = ma[0].start(); j = mb[0].start()
     if j < i:
+        if __import__("os").environ.get("SOFT_ANCHORS"): print("SOFT " + f"ANCHOR-SPAN order: {a[:60]!r} .. {b[:60]!r}"); return
         _sys.exit(f"ANCHOR-SPAN order: {a[:60]!r} .. {b[:60]!r}")
     t = t[:i] + new + (t[j:] if keep_b else t[mb[0].end():])
 

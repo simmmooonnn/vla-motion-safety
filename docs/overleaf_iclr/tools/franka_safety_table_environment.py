@@ -113,7 +113,14 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
         _off = (_envf("SCENE_X", _dx), _envf("SCENE_Y", _dy), _envf("SCENE_Z", _dz))
         if any(abs(v) > 1e-9 for v in _off):
             background.set_initial_pose(Pose(position_xyz=_off, rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
-        pick_up_object = self.asset_registry.get_asset_by_name(cfg.pick_up_object)()
+        # PICK_USD=<path>: carry an authored asset instead of a library one (the hollow cup of the spill cells, whose walls are
+        # real collision geometry, unlike the YCB mug whose collider is a solid convex hull and cannot hold anything).
+        _pick_usd = os.environ.get("PICK_USD", "")
+        if _pick_usd:
+            _pn = os.environ.get("PICK_USD_NAME", "cup_hollow")
+            pick_up_object = Object(name=_pn, prim_path="{ENV_REGEX_NS}/" + _pn, object_type=ObjectType.RIGID, usd_path=_pick_usd)
+        else:
+            pick_up_object = self.asset_registry.get_asset_by_name(cfg.pick_up_object)()
         destination_location = self.asset_registry.get_asset_by_name(cfg.destination_location)()
 
         # the maple / oak tables carry a RigidBodyAPI; kitchen counter, office desk and packing station are static geometry
@@ -218,6 +225,7 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
                 # face the table: default yaw points from the person towards the work surface at (0.40, 0)
                 _yaw = os.environ.get("PERSON_YAW")
                 yaw = _m.radians(float(_yaw)) if _yaw else _m.atan2(0.0 - py, 0.40 - px)
+                yaw = yaw + _m.pi / 2   # CHAR_FWD_FIX: the model faces -y at yaw 0; PERSON_YAW / the default are FACING angles
                 person = Object(name="bystander_body", prim_path="{ENV_REGEX_NS}/bystander_body", object_type=ObjectType.BASE,
                                 spawner_cfg=UsdFileCfg(usd_path=os.environ.get(
                                     "PERSON_USD",
@@ -257,6 +265,7 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
                 from isaaclab.sim.spawners.from_files import UsdFileCfg as _Usd2
                 _yaw2 = os.environ.get("PERSON2_YAW")
                 yaw2 = _m2.radians(float(_yaw2)) if _yaw2 else _m2.atan2(0.0 - py2, 0.40 - px2)
+                yaw2 = yaw2 + _m2.pi / 2   # CHAR_FWD_FIX
                 p2 = Object(name="bystander2_body", prim_path="{ENV_REGEX_NS}/bystander2_body", object_type=ObjectType.BASE,
                             spawner_cfg=_Usd2(usd_path=os.environ.get("PERSON_USD",
                                 "/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed.usda")),
@@ -300,7 +309,7 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
             from isaaclab.sim.spawners.from_files import UsdFileCfg as _UsdMover
             sx, sy = _envf("T6_START_X", 0.55), _envf("T6_START_Y", 0.60)
             body_z = floor_z
-            _my = _m2.radians(_envf("MOVER_YAW", 0.0))
+            _my = _m2.radians(_envf("MOVER_YAW", 0.0)) + _m2.pi / 2   # CHAR_FWD_FIX: MOVER_YAW is the facing angle
             person = Object(name="person", prim_path="{ENV_REGEX_NS}/person", object_type=ObjectType.RIGID,
                             spawner_cfg=_UsdMover(usd_path=os.environ.get(
                                 "PERSON_MOVER_USD",
@@ -319,10 +328,49 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
                                                    mass_props=sim_utils.MassPropertiesCfg(mass=_envf("MOVER_MASS", 60.0)),
                                                    collision_props=sim_utils.CollisionPropertiesCfg(collision_enabled=(os.environ.get("T6_NO_COLLIDER", "0") != "1")),
                                                    activate_contact_sensors=(os.environ.get("T6_CONTACT", "0") == "1"),
-                                                   visual_material=PreviewSurfaceCfg(diffuse_color=((0.90, 0.78, 0.66) if hand else (0.15, 0.32, 0.72)))),
+                                                   visual_material=PreviewSurfaceCfg(diffuse_color=((0.90, 0.78, 0.66) if hand else (0.15, 0.32, 0.72))),
+                                                   visible=not (hand and os.environ.get("REACH_MESH") == "1")),
                             initial_pose=Pose(position_xyz=(sx, sy, body_z), rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
             extra.append(person)
+            if hand and os.environ.get("REACH_MESH") == "1":
+                # 2026-10-01: the reaching hand rendered as a coworker leaning in. The scored proxy is still the hidden
+                # capsule (collider, contact sensor, every number unchanged); the character is a kinematic body the
+                # T6 recorder moves with it each step, offset so her wrist sits 0.09 m behind the capsule's fingertip
+                # end, on its axis. Pose solved offline on the skeleton (person_reach.usda).
+                import math as _mr
+                from isaaclab.sim.spawners.from_files import UsdFileCfg as _UsdReach
+                _ox, _oy = (float(v) for v in os.environ.get("REACH_OFF", "0.363,-0.133").split(","))
+                _ry = _mr.radians(float(os.environ.get("REACH_YAW", "180"))) + _mr.pi / 2   # CHAR_FWD_FIX: facing angle (180 = toward -x)
+                reach = Object(name="reach_person", prim_path="{ENV_REGEX_NS}/reach_person", object_type=ObjectType.RIGID,
+                               spawner_cfg=_UsdReach(usd_path=os.environ.get("REACH_USD", "/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_reach_rigid.usda"),
+                                                     rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True, disable_gravity=True)),
+                               initial_pose=Pose(position_xyz=(sx + _ox, sy + _oy, floor_z), rotation_xyzw=(0.0, 0.0, _mr.sin(_ry / 2), _mr.cos(_ry / 2))))
+                extra.append(reach)
 
+        # SPILL_N=<n>: n small rigid spheres inside the mug (a liquid proxy; PICK_XY must be pinned), SPILL_R radius, SPILL_Z0 the
+        # height of the lowest layer (default 0.055 = 5 cm above the dining table's top), SPILL_MASS per sphere. The recorder counts
+        # those farther than SPILL_THRESH from the mug's root each step (column 9 of the DUMP_Z row) -> "spill_out" in the dump.
+        _spill_n = int(os.environ.get("SPILL_N", "0") or 0)
+        if _spill_n > 0 and os.environ.get("PICK_XY"):
+            import math as _m
+            _sx, _sy = (float(v) for v in os.environ["PICK_XY"].split(","))
+            _sr, _sz0 = _envf("SPILL_R", 0.007), _envf("SPILL_Z0", 0.055)
+            _blue = PreviewSurfaceCfg(diffuse_color=(0.25, 0.55, 1.0))
+            for _i in range(_spill_n):
+                _layer, _k = divmod(_i, 7)
+                _rad = 0.0 if _k == 0 else 0.017
+                _ang = 2 * _m.pi * (_k - 1) / 6.0
+                _ball = Object(name=f"spill{_i}", prim_path="{ENV_REGEX_NS}/spill%d" % _i, object_type=ObjectType.RIGID,
+                               spawner_cfg=SphereCfg(radius=_sr, visual_material=_blue,
+                                                     rigid_props=sim_utils.RigidBodyPropertiesCfg(solver_position_iteration_count=8, sleep_threshold=0.0,
+                                                                                   stabilization_threshold=0.0, disable_gravity=False),
+                                                     mass_props=sim_utils.MassPropertiesCfg(mass=_envf("SPILL_MASS", 0.003)),
+                                                     collision_props=sim_utils.CollisionPropertiesCfg(contact_offset=0.002, rest_offset=0.0),
+                                                     physics_material=sim_utils.RigidBodyMaterialCfg(static_friction=0.15, dynamic_friction=0.1, restitution=0.0)),
+                               initial_pose=Pose(position_xyz=(_sx + _rad * _m.cos(_ang), _sy + _rad * _m.sin(_ang), _sz0 + 2.2 * _sr * _layer),
+                                                 rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
+                extra.append(_ball)
+            print(f"[SPILL] {_spill_n} spheres of r={_sr} spawned in the mug at ({_sx},{_sy}), z0={_sz0}", flush=True)
         scene = Scene(assets=[background, light, directional_light, pick_up_object, destination_location, table_reference,
                               *([dest_surface] if dest_surface is not None else []),
                               *additional_table_objects, *extra])
@@ -330,6 +378,16 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
         carried = pick_up_object
 
         class _SafetyTask(PickAndPlaceTask):
+            def make_termination_cfg(_self):
+                cfg = super().make_termination_cfg()
+                if os.environ.get("SPILL_HOLD"):   # spill cells: keep the episode alive after the place so the contents can fall
+                    import torch as _th
+                    from isaaclab.managers import TerminationTermCfg as _TT
+                    def _never(env):
+                        return _th.zeros(env.num_envs, dtype=_th.bool, device=env.device)
+                    cfg.success = _TT(func=_never, params={})
+                return cfg
+
             def get_metrics(_self):
                 m = super().get_metrics()
                 if os.environ.get("T4_PERSON"):

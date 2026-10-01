@@ -198,7 +198,9 @@ class MovingPersonRecorder(RecorderTerm):
         _yaw = _math.radians(float(_os.environ.get("MOVER_YAW", "0")))   # a rendered character faces its walking direction
         quat = torch.tensor([_math.cos(_yaw / 2), 0.0, 0.0, _math.sin(_yaw / 2)], device=env.device).repeat(env.num_envs, 1)  # w,x,y,z
         pose = torch.cat([torch.stack([px, py, pz], dim=-1), quat], dim=-1)  # (num_envs, 7) xyz + wxyz
-        # NOTE write_root_pose_to_sim expects (x,y,z, qw,qx,qy,qz) in IsaacLab; env-origin offset:
+        # NOTE (2026-10-01, QUAT_XYZW_FIX): this IsaacLab's write_root_pose_to_sim takes (x, y, z, qx, qy, qz, qw). The
+        # capsule writes below keep their historical (w,x,y,z) layout -- for a symmetric capsule that is a 180 deg roll
+        # about its own centre, the same shape -- so no scored number changes; rendered meshes are written correctly.
         pose[:, :3] += wp.to_torch(env.scene.env_origins) if not torch.is_tensor(env.scene.env_origins) \
             else env.scene.env_origins
         try:
@@ -217,9 +219,32 @@ class MovingPersonRecorder(RecorderTerm):
                 # keep it upright: the pose write is skipped, so re-write only the orientation part via a full pose when it drifts
                 if (torch.linalg.norm(err, dim=-1) > 0.30).any():          # far off (e.g. after a hard push): snap back
                     person.write_root_pose_to_sim(pose); person.write_root_velocity_to_sim(torch.zeros(env.num_envs, 6, device=env.device))
+            elif _os.environ.get("PERSON_MESH") == "1" and _os.environ.get("MOVER_KIND", "person") != "hand":
+                _wy = _yaw + _math.pi / 2   # the walking character: facing angle MOVER_YAW, model forward -y, xyzw layout
+                _wp = pose.clone()
+                _wp[:, 3:] = torch.tensor([0.0, 0.0, _math.sin(_wy / 2), _math.cos(_wy / 2)], device=env.device)
+                person.write_root_pose_to_sim(_wp)
+                person.write_root_velocity_to_sim(torch.zeros(env.num_envs, 6, device=env.device))
             else:
                 person.write_root_pose_to_sim(pose)
                 person.write_root_velocity_to_sim(torch.zeros(env.num_envs, 6, device=env.device))
+            if _os.environ.get("REACH_MESH") == "1":   # the rendered coworker follows the scored hand
+                try:
+                    _ox, _oy = (float(v) for v in _os.environ.get("REACH_OFF", "0.363,-0.133").split(","))
+                    _ry = _math.radians(float(_os.environ.get("REACH_YAW", "180"))) + _math.pi / 2
+                    _fz = float(_os.environ.get("PERSON_FLOOR_Z", "-0.697"))
+                    _rp = pose.clone()
+                    _rp[:, 0] += _ox; _rp[:, 1] += _oy
+                    _org = wp.to_torch(env.scene.env_origins) if not torch.is_tensor(env.scene.env_origins) else env.scene.env_origins
+                    _rp[:, 2] = _fz + _org[:, 2]
+                    _rp[:, 3:] = torch.tensor([0.0, 0.0, _math.sin(_ry / 2), _math.cos(_ry / 2)], device=env.device)   # xyzw
+                    _rch = env.scene["reach_person"]
+                    _rch.write_root_pose_to_sim(_rp)
+                    _rch.write_root_velocity_to_sim(torch.zeros(env.num_envs, 6, device=env.device))
+                except Exception as _e:  # noqa: BLE001
+                    if not getattr(self, "_reach_err", False):
+                        self._reach_err = True
+                        print("[REACH] could not move reach_person: " + repr(_e), flush=True)
         except Exception:  # noqa: BLE001 -- surfaced during GPU debug; keep logging regardless
             pass
         # live log: [person_x, person_y, box_x, box_y] in WORLD frame

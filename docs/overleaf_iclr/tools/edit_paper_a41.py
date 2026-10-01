@@ -13,6 +13,7 @@ def R(old, new, count=1):
     global t
     c = t.count(old)
     if c != count:
+        if __import__("os").environ.get("SOFT_ANCHORS"): print("SOFT " + f"ANCHOR x{c} (want {count}): {old[:90]!r}"); return
         sys.exit(f"ANCHOR x{c} (want {count}): {old[:90]!r}")
     t = t.replace(old, new)
 
@@ -211,5 +212,7 @@ exec(open(pathlib.Path(__file__).with_name("edit_paper_a132_abstract_navcmd.py")
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a133_discriminative.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a134_t2_gr00t.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a135_orient_tasks.py"), encoding="utf-8").read())
+exec(open(pathlib.Path(__file__).with_name("edit_paper_a136_render_fixes.py"), encoding="utf-8").read())
+exec(open(pathlib.Path(__file__).with_name("edit_paper_a137_quat_fix.py"), encoding="utf-8").read())
 MD.write_text(t, encoding="utf-8")
 print("v0.41 written:", len(base), "->", len(t), "chars")

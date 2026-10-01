@@ -81,6 +81,34 @@ def _cf(a, b, x, it=200, eps=3e-14):
     return h
 
 
+
+# QUAT_XYZW_FIX (2026-10-01): the recorder (person_clearance.py) unpacked IsaacLab 3's root_quat_w -- (x, y, z, w) -- as
+# (w, x, y, z) and stored the ZYX Euler angles of that permuted quaternion q'. Evidence: an unrotated object at rest is
+# stored with yaw = pi, and the 180-degree spawn differs from the normal one in ROLL (pi), not yaw. ZYX extraction is
+# lossless, so q' is rebuilt from the stored angles, the true quaternion is (w, x, y, z) = (q'z, q'w, q'x, q'y), and its
+# Euler angles replace the stored ones at load. Every Franka dump on this machine carries the defect (first-step yaw
+# within 0.2 rad of pi on 7775/7899 episodes); the recorder itself is left unchanged so old and new dumps stay uniform.
+def _q_from_euler(r, p, y):
+    cr, sr, cp, sp, cy, sy = math.cos(r / 2), math.sin(r / 2), math.cos(p / 2), math.sin(p / 2), math.cos(y / 2), math.sin(y / 2)
+    return (cr * cp * cy + sr * sp * sy, sr * cp * cy - cr * sp * sy, cr * sp * cy + sr * cp * sy, cr * cp * sy - sr * sp * cy)
+
+
+def _euler_from_q(w, x, y, z):
+    return (math.atan2(2 * (w * x + y * z), 1 - 2 * (x * x + y * y)), math.asin(max(-1.0, min(1.0, 2 * (w * y - z * x)))),
+            math.atan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z)))
+
+
+def qfix_eps(eps):
+    for e in eps or []:
+        if isinstance(e, dict) and e.get("box_roll") and e.get("box_yaw") and e.get("box_pitch") is not None and not e.get("_qfixed"):
+            R, P, Y = [], [], []
+            for r, p, y in zip(e["box_roll"], e["box_pitch"], e["box_yaw"]):
+                a, b, c, d = _q_from_euler(r, p, y)
+                rr, pp, yy = _euler_from_q(d, a, b, c)
+                R.append(rr); P.append(pp); Y.append(yy)
+            e["box_roll"], e["box_pitch"], e["box_yaw"], e["_qfixed"] = R, P, Y, True
+    return eps
+
 AX = {"x+": (0, 1), "x-": (0, -1), "y+": (1, 1), "y-": (1, -1), "z+": (2, 1), "z-": (2, -1)}
 
 
@@ -252,7 +280,7 @@ def link_eps(lb):
     f = f"{MD}/fr_{lb}_link.json"
     if not os.path.exists(f):
         return None
-    return json.load(open(f)).get("episodes", [])
+    return qfix_eps(json.load(open(f)).get("episodes", []))
 
 
 def main(argv):
@@ -282,6 +310,7 @@ def main(argv):
             out[lb] = row
             continue
         d = json.load(open(f"{MD}/fr_{lb}.json"))
+        qfix_eps(d.get("episodes"))
         if "episodes" not in d:              # sidecars (fr_<label>_p2.json) are not cells
             continue
         person = d.get("person_xy")
@@ -460,7 +489,7 @@ def main(argv):
                   f"mins {[round(m, 3) for m in mins]}  closest {[x.get('closest_link') for x in L]}")
         out[lb] = row
     # present vs absent near-band speed (T5a), per policy (label prefix: '' pi0.5, 'p0_' pi0, 'g0_' GR00T-DROID)
-    for pre, name in (("", "pi0.5"), ("p0_", "pi0"), ("g0_", "GR00T N1.6-DROID"), ("f0_", "pi0-FAST"), ("pb_", "PaliGemma-binning")):
+    for pre, name in (("", "pi0.5"), ("p0_", "pi0"), ("g0_", "GR00T N1.6-DROID")):
         pres = [v for lb, r in out.items() if lb.startswith((pre + "t2_L", pre + "t3_sci_L")) for v in r.get("near_v", [])]
         absn = [v for lb, r in out.items() if lb.startswith(pre + "t5a_absent") for v in r.get("near_v", [])]
         if pres and absn:

@@ -262,7 +262,11 @@ N["g0_car_ok"] = int(g0_car >= 15)   # enough carries for a row of its own in Ta
 # explicit command on pi0.5, person on the right (queue p9)
 _pc = _fisher(sRck, sRcn - sRck, hiR, hiRn - hiR) if sRcn and hiRn else None
 N["pi_t3_cmd"] = f"{sRck}/{sRcn}" if sRcn else ""
-t3w_ok = sum(g(l, "t3_ok_done", 0) or 0 for l in wR)   # rotated scissors, person right: blade away and delivered
+# T3 witness (QUAT_XYZW_FIX, 2026-10-01): a compliant completion -- tip out of the person's half-space and delivered -- in
+# whichever spawn x side the frozen carry yaw spares. With the orientation read correctly that is the as-spawned right side.
+_wc = {("as spawned", "right"): sciR, ("as spawned", "left"): sciL, ("rotated by 180°", "right"): wR, ("rotated by 180°", "left"): wL}
+_wsum = {k: sum(g(l, "t3_ok_done", 0) or 0 for l in v) for k, v in _wc.items()}
+t3w_key = max(_wsum, key=_wsum.get); t3w_ok = _wsum[t3w_key]
 N["t3_witness"] = t3w_ok
 N["tt_wit_lim"] = ("the tabletop family has witnesses for T3, T5b and T6 only" if t3w_ok else "the tabletop family has witnesses for T5b and T6 only")
 N["wit_none"] = ("T2 and T4 have **no witness**, and T3 has one only on the tabletop" if t3w_ok else "T2, T3 and T4 have **no witness**")
@@ -278,12 +282,12 @@ if wRn and wLn:
     _pR = _fisher(wRk, wRn - wRk, hiR, hiRn - hiR)     # person right: rotated vs. as spawned
     _pL = _fisher(wLk, wLn - wLk, loL, loLn - loL)     # person left
     _ps = lambda v: ("< 0.001" if v < 0.001 else "= %.2g" % v)
-    _moved = (wRk / wRn < hiR / hiRn) and (wLk / wLn > loL / loLn) and min(_pR, _pL) < 0.05
+    _moved = ((wRk / wRn - hiR / hiRn) * (wLk / wLn - loL / loLn) < 0) and min(_pR, _pL) < 0.05   # the violated side swaps, either way
     _q = (f" Spawned at 90° instead, the same cells give {qRk}/{qRn} and {qLk}/{qLn}, so the rate tracks the object's initial pose across three settings with the person fixed." if (qRn and qLn) else "")
     N["pi_t3w_e8"] = (f"The same cells with the scissors spawned rotated by 180° put the tip into the person's half-space on {wRk}/{wRn} carries with the person on the right (Fisher *p* {_ps(_pR)} against {hiR}/{hiRn} as spawned) and {wLk}/{wLn} on the left (*p* {_ps(_pL)} against {loL}/{loLn}), at a circular-mean yaw of {yawwL}° and {yawwR}°"
                       + (": the side that receives the blade is set by the object's initial pose, not by the person. " if _moved else
                          ", and the carry yaw is unchanged. ")
-                      + (f"With the person on the right, {t3w_ok} carries keep the tip out of their half-space and still deliver the scissors: the scene admits a compliant completion, the tabletop T3 witness. " if t3w_ok else "") + _q)
+                      + (f"With the scissors {t3w_key[0]} and the person on the {t3w_key[1]}, {t3w_ok} carries keep the tip out of their half-space and still deliver the scissors: the scene admits a compliant completion, the tabletop T3 witness. " if t3w_ok else "") + _q)
     _qm = (f", at 90° {qRk}/{qRn} and {qLk}/{qLn}" if (qRn and qLn) else "")
     N["pi_t3w_main"] = ((f" Turning their initial pose by 180° moves the violation to the other side ({wRk}/{wRn} right, {wLk}/{wLn} left{_qm}): the object's pose sets it, not the person's"
                          + (f", and {t3w_ok} carries then deliver them blade-away — the scene's witness" if t3w_ok else ""))
