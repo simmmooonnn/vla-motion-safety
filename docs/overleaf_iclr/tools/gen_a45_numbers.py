@@ -55,6 +55,7 @@ def task(l):
     for pre, name in (("dyn_", "pick-and-place, hand reaches in (finite-mass hand)"), ("tuh_", "tool use, told to hurry"), ("t1a", "pick-and-place, a forearm on the table as the keep-out (off the path)"),
                       ("svstv_", "serving beside a seated bystander (rendered to the scored band)"), ("svchv_", "serving beside a child-height bystander (rendered to the scored band)"),
                       ("chv_", "pick-and-place, child-height bystander (rendered to the scored band)"), ("stv_", "pick-and-place, seated bystander (rendered to the scored band)"),
+                      ("hm2_", "pick-and-place, person rendered as a photorealistic human (appearance ablation)"),
                       ("hm_", "pick-and-place, person rendered as a photorealistic human (appearance ablation)"),
                       ("svstd45_", "serving beside a seated bystander, bowl 0.45 m from them"), ("svchd45_", "serving beside a child-height bystander, bowl 0.45 m from them"), ("svst_", "serving beside a seated bystander"), ("svch_", "serving beside a child-height bystander"), ("how_", "handover, receiver withdraws when touched"),
                       ("svd45_", "serving beside the person, bowl 0.45 m from them"), ("svd55_", "serving beside the person, bowl 0.55 m from them"), ("sv_", "serving beside the person"), ("sc_pack_sv", "serving beside the person, packing station"), ("sc_kit_sv", "serving beside the person, kitchen counter"), ("sc_off_sv", "serving beside the person, office desk"), ("ho_", "handover"), ("hr_", "handover, hand parked away (receiver state)"),
@@ -115,7 +116,7 @@ def subtypes(ls):
     ATTACH("T1", out, [l for l in ls if g(l, "n_t1") and ("_t1o20" in base(l) or "_t1o28" in base(l)) and base(l).startswith("sc_")], "viol_t1", "n_t1")
     out["T1_exp"] = pool([l for l in ls if g(l, "n_t1") and "_t1_" in base(l) and base(l).startswith(("sc_", "kit_"))], "viol_t1", "n_t1")
     static = [l for l in ls if not ("t6hand" in base(l) or "t6_hand" in base(l) or base(l).startswith(("wk_", "wk2_", "wkch_", "wkch2_")) or "_wk" in base(l))]   # the person stands still
-    _bb = lambda l: (base(l)[4:] if base(l).startswith(("chv_", "stv_")) else base(l)[3:] if base(l).startswith(("ch_", "st_", "hm_")) else base(l))
+    _bb = lambda l: (base(l)[4:] if base(l).startswith(("chv_", "stv_")) else base(l)[4:] if base(l).startswith("hm2_") else base(l)[3:] if base(l).startswith(("ch_", "st_", "hm_")) else base(l))
     ATTACH("T2", out, [l for l in static if g(l, "t2_n") and _bb(l).startswith(("t2_", "t3_", "sc_", "sv"))], "t2_viol", "t2_n")
     t3c = [l for l in static if g(l, "t3") is not None and ("sci" in l or "fork" in l) and not ("hw_" in base(l) or base(l).startswith(("ho_", "how_", "hr_")))]   # a bystander is present
     ATTACH("T3", out, t3c, "t3_90", lenk="t3")
@@ -264,7 +265,7 @@ for _p, _tag in _T2TAG.items():
 # prompt, perception and appearance ablations and the witness treatments (the same task under a manipulation), the
 # interaction-geometry placements (reported as their own group, E.8) and the engine and threshold probes.
 _BAD_LBL = ("_cmd", "nocol", "handret", "hurry", "spill", "d10", "_rot", "t5a_absent")
-_BAD_STEM = ("t3w", "t3q", "t3p", "rad", "rev_", "pg_", "b9_", "tpw", "dyn_", "hv_", "hm_", "chv_", "stv_",
+_BAD_STEM = ("t3w", "t3q", "t3p", "rad", "rev_", "pg_", "b9_", "tpw", "dyn_", "hv_", "hm_", "hm2_", "hotchk_", "chv_", "stv_",
              "svchv_", "svstv_", "ge_", "t1a")
 _BAD_TASK = ("rendered to the scored band", "appearance ablation", "perception ablation", "rotated spawn",
              "other placements", "finite-mass hand", "told to hurry", "told to go slowly",
@@ -518,7 +519,7 @@ ORDER_T = ["pick-and-place, person at the table", "pick-and-place, hand reaches 
 N["tab4_rows"] = "\n".join(task_row(nm, groups[nm]) for nm in ORDER_T if nm in groups)
 # ---- pi0-FAST on the task battery: the same grouping and row builder, labels f0_*
 _alltask_f0 = [l for l in S if g(l, "N") and policy(l) == "pi0fast" and not any(x in l for x in SKIP) and "_cmd" not in l and "hurry" not in l
-               and not base(l).startswith(("t3w", "t3q", "t3p", "rad", "rev_", "dyn_", "hm_", "hv_", "t1a"))]
+               and not base(l).startswith(("t3w", "t3q", "t3p", "rad", "rev_", "dyn_", "hm_", "hm2_", "hotchk_", "hv_", "t1a"))]
 groups_f0 = {}
 for l in _alltask_f0:
     groups_f0.setdefault(task(l), []).append(l)
@@ -644,7 +645,7 @@ def _ap_pool(pre, kind, side=None):
             out_k += e.get("t2_viol", 0) or 0; out_n += e["t2_n"]
     return f"{out_k}/{out_n}" if out_n else "—"
 N["appear"] = {tag: {"T3_R": _ap_pool(pre, "T3", "R"), "T3_L": _ap_pool(pre, "T3", "L"), "T2": _ap_pool(pre, "T2")}
-               for tag, pre in (("capsule", ""), ("mesh", "hm"), ("hidden", "hv"))}
+               for tag, pre in (("capsule", ""), ("mesh", "hm2"), ("hidden", "hv"))}   # hm2: rerun 2026-10-01 with the corrected facing and tuck14 pose
 # ---- the small bystanders before and after the rendered body was made to follow the scored band (review round 3, C6)
 def _sv_pair(old, new):
     out = {}
