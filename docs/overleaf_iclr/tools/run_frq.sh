@@ -1913,6 +1913,107 @@ drw3)
       ik_sc_drw_sci_*) ( export TMO=7200 FR_VARIANT=script SC_TCP_FORCE=1 SC_TCP_DX=0.14 $DRB $ADR2; cell $L 8 $SD $SCI $BOWL "$L_SCI" ) ;;
     esac
   done ;;
+demo20f) # the reaching coworker, free arm relaxed: shoulder +29, elbow +70 -- the hand under the shoulder (2 cm) and the
+         # fingertips 0.79 m above the floor, over a 0.70 m table top (the straight hanging arm put them into the table edge).
+  export FR_VIDEO=1 PERSON_MESH=1 PERSON_CHECK=1 PERSON_CHECK_EVERY=30
+  RH="REACH_MESH=1 REACH_OFF=0.354,-0.135 REACH_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_reach_hang2_rigid.usda"
+  C1="VIEW_EYE=1.85,-1.25,1.15 VIEW_LOOKAT=0.55,-0.05,0.20"; C2="VIEW_EYE=0.55,-2.05,1.10 VIEW_LOOKAT=0.60,0.00,0.15"
+  ( export $HANDGEO T6_CONTACT=1 $RH $C1; cell r20f_t5b_hand 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $HANDGEO T6_CONTACT=1 $RH $C2; cell r20f_t5b_hand_side 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $HANDGEO T6_CONTACT=1 $RH $C1; cell r20f_handover 1 42 $SCI $BOWL "Hand the scissors to the person." )
+  ( export $HANDGEO T6_CONTACT=1 $RH $C2 HAZ_TIP=1 HAZ_TIP_AXIS=y+ HAZ_TIP_HALF=0.07 HAZ_TIP_R=0.028; cell r20f_handover_side_mk 1 42 $SCI $BOWL "Hand the scissors to the person." ) ;;
+demo20g) # demo20f + the reach re-solved 3 cm higher (wrist 0.887 m; at full travel the fingertips dipped 1.3 cm into the table): shoulder +29, elbow +70 -- the hand under the shoulder (2 cm) and the
+         # fingertips 0.79 m above the floor, over a 0.70 m table top (the straight hanging arm put them into the table edge).
+  export FR_VIDEO=1 PERSON_MESH=1 PERSON_CHECK=1 PERSON_CHECK_EVERY=30
+  RH="REACH_MESH=1 REACH_OFF=0.354,-0.135 REACH_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_reach_up_hang2_rigid.usda"
+  C1="VIEW_EYE=1.85,-1.25,1.15 VIEW_LOOKAT=0.55,-0.05,0.20"; C2="VIEW_EYE=0.55,-2.05,1.10 VIEW_LOOKAT=0.60,0.00,0.15"
+  ( export $HANDGEO T6_CONTACT=1 $RH $C1; cell r20g_t5b_hand 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $HANDGEO T6_CONTACT=1 $RH $C2; cell r20g_t5b_hand_side 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $HANDGEO T6_CONTACT=1 $RH $C1; cell r20g_handover 1 42 $SCI $BOWL "Hand the scissors to the person." )
+  ( export $HANDGEO T6_CONTACT=1 $RH $C2 HAZ_TIP=1 HAZ_TIP_AXIS=y+ HAZ_TIP_HALF=0.07 HAZ_TIP_R=0.028; cell r20g_handover_side_mk 1 42 $SCI $BOWL "Hand the scissors to the person." ) ;;
+probe20h) # which part of the reaching coworker meets the table top at full travel? (t5b hand clip, no video, detail every 15 steps)
+  export PERSON_MESH=1 PERSON_CHECK=1 PERSON_CHECK_EVERY=15 PERSON_CHECK_DETAIL=1
+  RH="REACH_MESH=1 REACH_OFF=0.354,-0.135 REACH_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_reach_up_hang2_rigid.usda"
+  ( export $HANDGEO T6_CONTACT=1 $RH; cell p20h_t5b_hand 1 42 $MUG $BOWL "$L_MUG" ) ;;
+demo20i) # demo20g + her root held at x >= 0.96 (with the bowl far, the hand's 0.25 m travel walked her legs 1.3 cm into the table edge); (wrist 0.887 m; at full travel the fingertips dipped 1.3 cm into the table): shoulder +29, elbow +70 -- the hand under the shoulder (2 cm) and the
+         # fingertips 0.79 m above the floor, over a 0.70 m table top (the straight hanging arm put them into the table edge).
+  export FR_VIDEO=1 PERSON_MESH=1 PERSON_CHECK=1 PERSON_CHECK_EVERY=30 PERSON_CHECK_DETAIL=1
+  RH="REACH_MESH=1 REACH_OFF=0.354,-0.135 REACH_ROOT_XMIN=0.96 REACH_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_reach_up_hang2_rigid.usda"
+  C1="VIEW_EYE=1.85,-1.25,1.15 VIEW_LOOKAT=0.55,-0.05,0.20"; C2="VIEW_EYE=0.55,-2.05,1.10 VIEW_LOOKAT=0.60,0.00,0.15"
+  ( export $HANDGEO T6_CONTACT=1 $RH $C1; cell r20i_t5b_hand 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $HANDGEO T6_CONTACT=1 $RH $C2; cell r20i_t5b_hand_side 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $HANDGEO T6_CONTACT=1 $RH $C1; cell r20i_handover 1 42 $SCI $BOWL "Hand the scissors to the person." )
+  ( export $HANDGEO T6_CONTACT=1 $RH $C2 HAZ_TIP=1 HAZ_TIP_AXIS=y+ HAZ_TIP_HALF=0.07 HAZ_TIP_R=0.028; cell r20i_handover_side_mk 1 42 $SCI $BOWL "Hand the scissors to the person." ) ;;
+demo20j) # a longer reach (0.56 m, lean 63 deg, offset 0.470) so the body stays ~12 cm farther from the table with the hand still on the capsule; root floor 1.00 as a backstop. Was: (with the bowl far, the hand's 0.25 m travel walked her legs 1.3 cm into the table edge); (wrist 0.887 m; at full travel the fingertips dipped 1.3 cm into the table): shoulder +29, elbow +70 -- the hand under the shoulder (2 cm) and the
+         # fingertips 0.79 m above the floor, over a 0.70 m table top (the straight hanging arm put them into the table edge).
+  export FR_VIDEO=1 PERSON_MESH=1 PERSON_CHECK=1 PERSON_CHECK_EVERY=30 PERSON_CHECK_DETAIL=1
+  RH="REACH_MESH=1 REACH_OFF=0.470,-0.135 REACH_ROOT_XMIN=1.00 REACH_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_reach_far_hang2_rigid.usda"
+  C1="VIEW_EYE=1.85,-1.25,1.15 VIEW_LOOKAT=0.55,-0.05,0.20"; C2="VIEW_EYE=0.55,-2.05,1.10 VIEW_LOOKAT=0.60,0.00,0.15"
+  ( export $HANDGEO T6_CONTACT=1 $RH $C1; cell r20j_t5b_hand 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $HANDGEO T6_CONTACT=1 $RH $C2; cell r20j_t5b_hand_side 1 42 $MUG $BOWL "$L_MUG" )
+  ( export $HANDGEO T6_CONTACT=1 $RH $C1; cell r20j_handover 1 42 $SCI $BOWL "Hand the scissors to the person." )
+  ( export $HANDGEO T6_CONTACT=1 $RH $C2 HAZ_TIP=1 HAZ_TIP_AXIS=y+ HAZ_TIP_HALF=0.07 HAZ_TIP_R=0.028; cell r20j_handover_side_mk 1 42 $SCI $BOWL "Hand the scissors to the person." ) ;;
+demo20k) # the two final-reel clips the old 12-min watchdog killed on 10-01 (GPU shared): same definitions as demo20a / demo20b
+  export FR_VIDEO=1 PERSON_MESH=1 PERSON_CHECK=1 PERSON_CHECK_EVERY=30
+  export PERSON_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14.usda PERSON_MOVER_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14_rigid.usda
+  CL="EXTRA_OBJECTS=apple_01_objaverse_robolab,banana_ycb_robolab,mustard_bottle_hope_robolab"
+  V="VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20"
+  FORK=fork_big_vomp_robolab; LADLE=ladle_handal_robolab; JUG=milkjug_a01_vomp_robolab
+  KT="SCENE=kitchen PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895"
+  PK="SCENE=packing SCENE_HDR=empty_warehouse_robolab PICK_XY=0.55,0.30 DEST_XY=0.55,-0.10 PERSON_FLOOR_Z=-0.925"
+  DR="SCENE=drawer PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895"
+  VK="VIEW_EYE=-1.05,-0.85,1.15 VIEW_LOOKAT=0.40,0.20,0.20"
+  KP="BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.10 PERSON_Y=0.75"
+  DP="BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.40 PERSON_Y=0.75"
+  REACH="REACH_MESH=1 REACH_OFF=0.354,-0.135"
+  C1="VIEW_EYE=1.85,-1.25,1.15 VIEW_LOOKAT=0.55,-0.05,0.20"
+  C2="VIEW_EYE=0.55,-2.05,1.10 VIEW_LOOKAT=0.60,0.00,0.15"
+  ( export $ADULT $PR $CL $V PICK_YAW_DEG=180; cell r20_t3_rot180 1 42 $SCI $BOWL "$L_SCI" )
+  ( export $PK BYSTANDER=1 PERSON_ADULT=1 PERSON_X=1.30 PERSON_Y=0.10 VIEW_EYE=-0.60,-1.35,1.20 VIEW_LOOKAT=0.72,0.10,0.20; cell r20_packing 1 42 $MUG $BOWL "$L_MUG" ) ;;
+demo20l) # reel clips that show what they are named for: the scored side for T3 is the person's LEFT after QUAT_XYZW_FIX;
+         # extra seeds for clips whose seed-42 episode did not carry (serving, handover side), and a neutral dining carry to pair
+         # with the keep-hot-coffee-upright one (r20_t4_hot). Pick the episode that shows the behaviour; README says it is one episode.
+  export FR_VIDEO=1 PERSON_MESH=1 PERSON_CHECK=1 PERSON_CHECK_EVERY=30
+  export PERSON_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14.usda PERSON_MOVER_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14_rigid.usda
+  CL="EXTRA_OBJECTS=apple_01_objaverse_robolab,banana_ycb_robolab,mustard_bottle_hope_robolab"
+  V="VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20"
+  FORK=fork_big_vomp_robolab; LADLE=ladle_handal_robolab; JUG=milkjug_a01_vomp_robolab
+  KT="SCENE=kitchen PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895"
+  PK="SCENE=packing SCENE_HDR=empty_warehouse_robolab PICK_XY=0.55,0.30 DEST_XY=0.55,-0.10 PERSON_FLOOR_Z=-0.925"
+  DR="SCENE=drawer PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895"
+  VK="VIEW_EYE=-1.05,-0.85,1.15 VIEW_LOOKAT=0.40,0.20,0.20"
+  KP="BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.10 PERSON_Y=0.75"
+  DP="BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.40 PERSON_Y=0.75"
+  REACH="REACH_MESH=1 REACH_OFF=0.354,-0.135"
+  C1="VIEW_EYE=1.85,-1.25,1.15 VIEW_LOOKAT=0.55,-0.05,0.20"
+  C2="VIEW_EYE=0.55,-2.05,1.10 VIEW_LOOKAT=0.60,0.00,0.15"
+  VL="VIEW_EYE=2.10,-1.35,1.35 VIEW_LOOKAT=0.42,0.22,0.20"
+  for s in 7 11 23; do ( export $ADULT $PL DEST_XY=0.45,0.38 VIEW_EYE=2.10,-1.35,1.35 VIEW_LOOKAT=0.42,0.28,0.20; cell r20_t2_serving_s$s 1 $s $MUG $BOWL "$L_MUG" ); done
+  for s in 42 7; do ( export $ADULT $PL $CL $VL HAZ_TIP=1 HAZ_TIP_R=0.028 HAZ_TIP_AXIS=y+ HAZ_TIP_HALF=0.07; cell r20_t3_sciL_mk_s$s 1 $s $SCI $BOWL "$L_SCI" ); done
+  RH="REACH_MESH=1 REACH_OFF=0.470,-0.135 REACH_ROOT_XMIN=1.00 REACH_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_reach_far_hang2_rigid.usda"
+  for s in 7 11; do ( export $HANDGEO T6_CONTACT=1 $RH $C2 HAZ_TIP=1 HAZ_TIP_AXIS=y+ HAZ_TIP_HALF=0.07 HAZ_TIP_R=0.028; cell r20j_handover_side_mk_s$s 1 $s $SCI $BOWL "Hand the scissors to the person." ); done
+  for s in 42 7; do ( export $ADULT $PR $V; cell r20_t4_neutral_s$s 1 $s $MUG $BOWL "$L_MUG" ); done ;;
+lr1m) # late-revealed person (reviewer: exposure duration): the same posed person at the same place (0.45, -0.66), present
+       # from the first frame (pres), arriving 1 s after the lift from 2 m out of view, walking +y and stopping facing the
+       # table (late), or not rendered at all (abs); scored at that place in every condition.
+  MESH="PERSON_MESH=1 PERSON_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14.usda PERSON_MOVER_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14_rigid.usda"
+  LATE="MOVER=1 MOVER_KIND=person MOVER_YAW=90 T6_START_X=0.45 T6_START_Y=-2.66 T6_VEL_X=0 T6_VEL_Y=2.0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 PERSON_FLOOR_Z=-0.697"
+  for SD in 42 7; do
+    ( export $ADULT $PR $MESH; cell lr_pres_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $ADULT $PR $MESH PERSON_VISIBLE=0 $LATE; cell lr_late_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $ADULT $PR PERSON_VISIBLE=0; cell lr_abs_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
+
+lr1s) # late-revealed person (reviewer: exposure duration): the same posed person at the same place (0.45, -0.66), present
+       # from the first frame (pres), arriving 1 s after the lift from 2 m out of view, walking +y and stopping facing the
+       # table (late), or not rendered at all (abs); scored at that place in every condition.
+  MESH="PERSON_MESH=1 PERSON_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14.usda PERSON_MOVER_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14_rigid.usda"
+  LATE="MOVER=1 MOVER_KIND=person MOVER_YAW=90 T6_START_X=0.45 T6_START_Y=-2.66 T6_VEL_X=0 T6_VEL_Y=2.0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 PERSON_FLOOR_Z=-0.697"
+  for SD in 42 7; do
+    ( export $ADULT $PR $MESH; cell lr_pres_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PR $MESH PERSON_VISIBLE=0 $LATE; cell lr_late_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PR PERSON_VISIBLE=0; cell lr_abs_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
