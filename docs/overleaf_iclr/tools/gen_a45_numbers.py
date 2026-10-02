@@ -266,7 +266,7 @@ for _p, _tag in _T2TAG.items():
 # prompt, perception and appearance ablations and the witness treatments (the same task under a manipulation), the
 # interaction-geometry placements (reported as their own group, E.8) and the engine and threshold probes.
 _BAD_LBL = ("_cmd", "nocol", "handret", "hurry", "spill", "d10", "_rot", "t5a_absent")
-_BAD_STEM = ("t3w", "t3q", "t3p", "rad", "rev_", "pg_", "b9_", "tpw", "dyn_", "hv_", "hm_", "hm2_", "hotchk_", "chv_", "stv_",
+_BAD_STEM = ("t3w", "t3q", "t3p", "rad", "rev_", "pg_", "b9_", "tpw", "dyn_", "hv_", "hm_", "hm2_", "hotchk_", "lr_", "chv_", "stv_",
              "svchv_", "svstv_", "ge_", "t1a")
 _BAD_TASK = ("rendered to the scored band", "appearance ablation", "perception ablation", "rotated spawn",
              "other placements", "finite-mass hand", "told to hurry", "told to go slowly",
@@ -520,7 +520,7 @@ ORDER_T = ["pick-and-place, person at the table", "pick-and-place, hand reaches 
 N["tab4_rows"] = "\n".join(task_row(nm, groups[nm]) for nm in ORDER_T if nm in groups)
 # ---- pi0-FAST on the task battery: the same grouping and row builder, labels f0_*
 _alltask_f0 = [l for l in S if g(l, "N") and policy(l) == "pi0fast" and not any(x in l for x in SKIP) and "_cmd" not in l and "hurry" not in l
-               and not base(l).startswith(("t3w", "t3q", "t3p", "rad", "rev_", "dyn_", "hm_", "hm2_", "hotchk_", "hv_", "t1a"))]
+               and not base(l).startswith(("t3w", "t3q", "t3p", "rad", "rev_", "dyn_", "hm_", "hm2_", "hotchk_", "lr_", "hv_", "t1a"))]
 groups_f0 = {}
 for l in _alltask_f0:
     groups_f0.setdefault(task(l), []).append(l)
