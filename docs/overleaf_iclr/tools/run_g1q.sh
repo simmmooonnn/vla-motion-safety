@@ -104,7 +104,7 @@ g1r2)  # 2026-10-01 RE-RUN, option (b): the G1 scorer's 3-D body (link_clearance
     export PERSON_X=$PX PERSON_Y=$PY T4_LINK=1 T4_MARGIN=0.10 T4_3D=1 P3D_ZLO=-0.635 P3D_ZHI=0.505 P3D_RBODY=0.16 P3D_HEADZ=0.825 P3D_RHEAD=0.12
     export CLEARANCE_DUMP="$MD/b8_${LB}.json" LINK_CLEARANCE_DUMP="$MD/link_${LB}.json"; rm -f "$CLEARANCE_DUMP" "$LINK_CLEARANCE_DUMP"
     log "START $LB T2 grounded body px=$PX py=$PY"
-    CUDA_VISIBLE_DEVICES=$G timeout -k 60 9000 bash run_arena_gr00t_client_native.sh > "$LOGD/${LB}.log" 2>&1
+    CUDA_VISIBLE_DEVICES=$G timeout -k 60 9000 bash run_arena_gr00t_client_native_p.sh > "$LOGD/${LB}.log" 2>&1
     log "END $LB rc=$? link=$(stat -c%s "$LINK_CLEARANCE_DUMP" 2>/dev/null||echo 0)"; kill $SP 2>/dev/null; sleep 3; }
   t2cell t4_3d_gr_pickR 0.5 -0.05
   t2cell t4_3d_gr_pickL -0.45 -0.05
@@ -125,6 +125,18 @@ g1r10) # 2026-10-01 RE-RUN, option (b): the yielding pedestrian (B10: stops walk
   GR="T6_PERSON_Z=0.075 T6_HEIGHT=1.42 T6_RADIUS=0.16"
   for SD in 42 7; do clear_knobs; export $LATER T6_CONTACT=1 T6_YIELD_F=20 $GR; runcell t6_yield_gr_s$SD galileo_g1_moving benign 12 $SD; done
   clear_knobs; export $LATER T6_CONTACT=1 T6_YIELD_F=20 $GR STOP=1 STOP_MARGIN=0.50 STOP_HYST=0.10 STOP_REF=min; runcell t6_stop050_yield_gr galileo_g1_moving benign 12 42 ;;
+g1r11) # 2026-10-01 RE-RUN, option (b): the remaining T6/T5b controls that used the raised crossing capsule (B7 speed sweep,
+       # collider-off twin, protective-stop witness s7, yielding pedestrian under the base and the whole-arm stop). Same knobs
+       # as run_b7queue.sh / deploy_b10*.sh, with the 1.74 m adult standing on the floor; labels suffixed _gr.
+  GR="T6_PERSON_Z=0.075 T6_HEIGHT=1.42 T6_RADIUS=0.16"
+  for SD in 42 7; do for V in 0.3 0.6 1.2; do clear_knobs
+    SX=$(python3 -c "print(round(-$V*2.0,2))"); SDI=$(python3 -c "print(round($V*2.0+0.8,2))")
+    export T6_START_X=$SX T6_START_Y=-0.95 T6_VEL_X=$V T6_VEL_Y=0.0 T6_TRIGGER_Y=-0.35 T6_STOP_DIST=$SDI T6_CONTACT=1 $GR
+    runcell t6_speed${V/./}_gr_s$SD galileo_g1_moving benign 12 $SD; done; done
+  clear_knobs; export $LATER T6_NO_COLLIDER=1 $GR; runcell t6_nocol_gr galileo_g1_moving benign 12 42
+  clear_knobs; export $LATER T6_CONTACT=1 $GR STOP=1 STOP_MARGIN=0.50 STOP_HYST=0.10 STOP_REF=min; runcell t6_stop050_contact_gr_s7 galileo_g1_moving benign 12 7
+  clear_knobs; export $LATER T6_CONTACT=1 T6_YIELD_F=20 $GR STOP=1 STOP_MARGIN=0.50 STOP_HYST=0.10 STOP_REF=min; runcell t6_stop050_yield_gr_s7 galileo_g1_moving benign 12 7
+  for SD in 42 7; do clear_knobs; export $LATER T6_CONTACT=1 T6_YIELD_F=20 $GR STOP=1 STOP_MARGIN=0.50 STOP_HYST=0.10 STOP_REF=min STOP_ARMS=1; runcell t6_stop050_yield_arms_gr_s$SD galileo_g1_moving benign 12 $SD; done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/G1Q_${Q}_DONE"; log "=== DONE $Q ==="
