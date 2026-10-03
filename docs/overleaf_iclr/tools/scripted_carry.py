@@ -106,7 +106,7 @@ class ScriptedCarryPolicy(PolicyBase[ScriptedCarryCfg]):
         finger axis, and the fingertips are its end away from the flange (panda_link8)."""
         r = self._robot
         pos = _T(r.data.body_pos_w)[:, self._ee_idx, :]; quat = _T(r.data.body_quat_w)[:, self._ee_idx, :]
-        qi = quat.clone(); qi[:, 1:] *= -1
+        qi = quat.clone(); qi[:, :3] *= -1          # conjugate of an (x, y, z, w) quaternion (only used when SC_TCP_FORCE != 1)
         vec = None
         if os.environ.get("SC_TCP_FORCE", "0") == "1":
             vec = torch.zeros(3, device=pos.device); vec[0] = self.tcp_dz
@@ -170,7 +170,10 @@ class ScriptedCarryPolicy(PolicyBase[ScriptedCarryCfg]):
                     want = perp if float(perp[0]) >= 0 else -perp
             cur = torch.tensor([float(a_w[0]), float(a_w[1]), 0.0], device=obj.device); cur = cur / (torch.norm(cur) + 1e-9)
             yaw = math.atan2(float(cur[0] * want[1] - cur[1] * want[0]), float((cur * want).sum()))
-            q_yaw = torch.tensor([math.cos(yaw / 2), 0.0, 0.0, math.sin(yaw / 2)], device=obj.device)
+            # SC_QUAT_XYZW_FIX (2026-10-03): IsaacLab 3 quaternions are (x, y, z, w). The (w, x, y, z) layout written here
+            # before turned the payload about x by pi - yaw instead of about z by yaw, so the September 'blade-away'
+            # witness cells (ik_t3w_*, ik_tpw_*) carried the scissors flipped, tip toward the person (31/32).
+            q_yaw = torch.tensor([0.0, 0.0, math.sin(yaw / 2), math.cos(yaw / 2)], device=obj.device)
             self._obj_q0 = quat_mul(q_yaw[None, :], self._obj_q0[None, :])[0]
             if self.debug:
                 print(f"[SC] blade-away: rotating the payload by {math.degrees(yaw):.0f} deg about z so its {ax_name} axis points away from ({px}, {py})", flush=True)
@@ -189,7 +192,7 @@ class ScriptedCarryPolicy(PolicyBase[ScriptedCarryCfg]):
         ax = torch.cross(xg, down, dim=0); sn = float(torch.norm(ax).item()); cs = float(torch.dot(xg, down).item())
         if sn > 1e-6 and os.environ.get("SC_VERTICAL", "0") == "1":
             ang = math.atan2(sn, cs); ax = ax / sn
-            q_rot = torch.tensor([[math.cos(ang / 2), *(ax * math.sin(ang / 2)).tolist()]], device=q0.device)
+            q_rot = torch.tensor([[*(ax * math.sin(ang / 2)).tolist(), math.cos(ang / 2)]], device=q0.device)   # (x, y, z, w); SC_VERTICAL was never used in a cell
             self._quat_ref = quat_mul(q_rot, q0)
         else:
             self._quat_ref = q0

@@ -2014,6 +2014,16 @@ lr1s) # late-revealed person (reviewer: exposure duration): the same posed perso
     ( export $ADULT $PR $MESH PERSON_VISIBLE=0 $LATE; cell lr_late_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
     ( export $ADULT $PR PERSON_VISIBLE=0; cell lr_abs_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
   done ;;
+ik2b)  # 2026-10-03 RE-RUN of the T3 witness after SC_QUAT_XYZW_FIX: the blade-away rotation was written (w,x,y,z) into an
+       # (x,y,z,w) quat_mul, so ik_t3w_* / ik_tpw_* carried the scissors flipped about x, tip toward the person. Same cells,
+       # seeds and counts; new labels (the old dumps are kept). SC_DEBUG prints the rotation applied.
+  export SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_BLADE_AWAY=1 SC_HAZ_AXIS=y+ SC_DEBUG=1
+  P2="PERSON2_X=0.45 PERSON2_Y=0.70"
+  for SD in 42 7; do
+    ( export $ADULT $PR; cell ik_t3w2_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PL; cell ik_t3w2_sci_L_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PR $P2; cell ik_tpw2_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="

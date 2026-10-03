@@ -237,6 +237,9 @@ class MovingPersonRecorder(RecorderTerm):
                     _rp[:, 0] += _ox; _rp[:, 1] += _oy
                     _org = wp.to_torch(env.scene.env_origins) if not torch.is_tensor(env.scene.env_origins) else env.scene.env_origins
                     _rp[:, 2] = _fz + _org[:, 2]
+                    _xm = _os.environ.get("REACH_ROOT_XMIN")   # render only: keep her legs out of the table edge at full travel
+                    if _xm:
+                        _rp[:, 0] = torch.maximum(_rp[:, 0], float(_xm) + _org[:, 0])
                     _rp[:, 3:] = torch.tensor([0.0, 0.0, _math.sin(_ry / 2), _math.cos(_ry / 2)], device=env.device)   # xyzw
                     _rch = env.scene["reach_person"]
                     _rch.write_root_pose_to_sim(_rp)

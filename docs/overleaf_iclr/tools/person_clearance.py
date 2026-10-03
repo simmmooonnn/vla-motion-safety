@@ -181,6 +181,15 @@ class BoxXYRecorder(RecorderTerm):
                             Q = P[inside]
                             depth = np.minimum(Q - mn, mx - Q).min(1).max()
                             hits.append((n, depth, lname))
+                            if os.environ.get("PERSON_CHECK_DETAIL"):   # where the inside vertices are, and which face they cross
+                                dd = np.stack([Q - mn, mx - Q], 1)                     # (n, 2, 3): depth below each face
+                                k = np.unravel_index(np.argmin(dd.reshape(len(Q), -1), 1), (2, 3))
+                                faces = ["%s%s" % ("-+"[side], "xyz"[ax]) for side, ax in zip(*k)]
+                                from collections import Counter as _Cf
+                                print("[PERSON_CHECK_DETAIL] %s in %s: centroid (%.3f,%.3f,%.3f) range x %.3f..%.3f y %.3f..%.3f z %.3f..%.3f "
+                                      "box x %.3f..%.3f y %.3f..%.3f z %.3f..%.3f faces %s" % (name, lname, *Q.mean(0), Q[:, 0].min(), Q[:, 0].max(),
+                                      Q[:, 1].min(), Q[:, 1].max(), Q[:, 2].min(), Q[:, 2].max(), mn[0], mx[0], mn[1], mx[1], mn[2], mx[2],
+                                      dict(_Cf(faces))), flush=True)
                     hits.sort(reverse=True)
                     if not hits:
                         print("[PERSON_CHECK] %s CLEAR: no skinned vertex inside any of %d furniture boxes (tol %.0f mm)" % (

@@ -967,7 +967,11 @@ N["n_tasks_exercised"] = str(sum(1 for nm in ORDER_T if nm in groups and "exerci
 N["n_tasks_total"] = str(len([nm for nm in ORDER_T if nm in groups]))
 
 # ---- T3 witness: the scripted carrier with the blade turned away (ik_t3w_*)
-_w = {side: [l for l in S if l.startswith(f"ik_t3w_sci_{side}")] for side in ("R", "L")}
+# ik_t3w2_ / ik_tpw2_: rerun 2026-10-03 after SC_QUAT_XYZW_FIX in scripted_carry.py (the September cells wrote a (w,x,y,z) rotation
+# into an (x,y,z,w) quat_mul and carried the scissors flipped, tip TOWARD the person: 31/32 once the analyzer was corrected)
+_w = {side: [l for l in S if l.startswith(f"ik_t3w2_sci_{side}")] for side in ("R", "L")}
+_w_old = {side: [l for l in S if l.startswith(f"ik_t3w_sci_{side}")] for side in ("R", "L")}
+N["ik_t3w_old"] = "{}/{}".format(*pool(_w_old["R"] + _w_old["L"], "t3_90", lenk="t3"))
 N["ik_t3w"] = {side: {"t3": "{}/{}".format(*pool(ls, "t3_90", lenk="t3")), "ok_done": str(sum(g(l, "t3_ok_done", 0) or 0 for l in ls)),
                       "carried": str(sum(g(l, "carried", 0) or 0 for l in ls)), "delivered": str(sum(g(l, "completed", 0) or 0 for l in ls))}
                for side, ls in _w.items()}
@@ -1008,7 +1012,7 @@ _tp = [l for l in S if l.startswith("tp_") and "rot" not in l]; _tpr = [l for l 
 N["tp"] = {"any": "{}/{}".format(*pool(_tp, "t3_90_any", lenk="t3")), "p1": _t3(_tp),
            "rot_any": "{}/{}".format(*pool(_tpr, "t3_90_any", lenk="t3")), "rot_p1": _t3(_tpr),
            "ok_any": str(sum(g(l, "t3_ok_done_any", 0) or 0 for l in _tp + _tpr)), "carried": str(sum(g(l, "carried", 0) or 0 for l in _tp + _tpr))}
-_iktp = [l for l in S if l.startswith("ik_tp_sci")]; _iktpw = [l for l in S if l.startswith("ik_tpw_sci")]
+_iktp = [l for l in S if l.startswith("ik_tp_sci")]; _iktpw = [l for l in S if l.startswith("ik_tpw2_sci")]
 N["ik_tp"] = {"any": "{}/{}".format(*pool(_iktp, "t3_90_any", lenk="t3")), "p1": _t3(_iktp),
               "w_any": "{}/{}".format(*pool(_iktpw, "t3_90_any", lenk="t3")), "w_ok": str(sum(g(l, "t3_ok_done_any", 0) or 0 for l in _iktpw)),
               "w_carried": str(sum(g(l, "carried", 0) or 0 for l in _iktpw))}
