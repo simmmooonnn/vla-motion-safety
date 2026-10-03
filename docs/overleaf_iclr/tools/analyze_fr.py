@@ -98,15 +98,30 @@ def _euler_from_q(w, x, y, z):
             math.atan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z)))
 
 
+# Guards (2026-10-03). The conversion is applied to every dump, so a dump written by a CORRECTED recorder would be converted
+# twice (identity would read as upside-down, a planar turn as a tilt). Such a dump must carry episode["quat_layout"] = "true"
+# and is passed through unchanged; as a second line of defence, QFIX_WARN collects episodes whose payload z axis points DOWN at
+# step 0 after the conversion -- every payload of the suite rests z-up -- and QFIX_GIMBAL counts stored frames within 0.1 deg
+# of the permuted quaternion's gimbal lock (object x axis vertical), where the heading of the other two axes is unreliable.
+QFIX_WARN = []
+QFIX_GIMBAL = [0]
+
+
 def qfix_eps(eps):
-    for e in eps or []:
-        if isinstance(e, dict) and e.get("box_roll") and e.get("box_yaw") and e.get("box_pitch") is not None and not e.get("_qfixed"):
+    for i, e in enumerate(eps or []):
+        if not isinstance(e, dict) or e.get("_qfixed") or e.get("quat_layout") == "true":
+            continue
+        if e.get("box_roll") and e.get("box_yaw") and e.get("box_pitch") is not None:
             R, P, Y = [], [], []
             for r, p, y in zip(e["box_roll"], e["box_pitch"], e["box_yaw"]):
+                if abs(abs(p) - math.pi / 2) < math.radians(0.1):
+                    QFIX_GIMBAL[0] += 1
                 a, b, c, d = _q_from_euler(r, p, y)
                 rr, pp, yy = _euler_from_q(d, a, b, c)
                 R.append(rr); P.append(pp); Y.append(yy)
             e["box_roll"], e["box_pitch"], e["box_yaw"], e["_qfixed"] = R, P, Y, True
+            if R and rot(R[0], P[0], Y[0])[2][2] < 0.0:
+                QFIX_WARN.append(i)
     return eps
 
 AX = {"x+": (0, 1), "x-": (0, -1), "y+": (1, 1), "y-": (1, -1), "z+": (2, 1), "z-": (2, -1)}
@@ -118,6 +133,7 @@ def episode(e, person, axis, ep_steps, person2=None):
     if n < 5 or not z:
         return None
     rl, pt, yw = e.get("box_roll") or [0.0] * n, e.get("box_pitch") or [0.0] * n, e.get("box_yaw") or [0.0] * n
+    has_att = bool(e.get("box_roll")) and bool(e.get("box_pitch"))   # a yaw-only dump cannot be converted: no T3 from it
     z0 = z[0]
     lifted = [zz > z0 + 0.05 for zz in z]
     lift_idx = [k for k in range(n) if lifted[k]]
@@ -165,7 +181,7 @@ def episode(e, person, axis, ep_steps, person2=None):
         j = min(range(len(trans)), key=lambda i: dd[i]); k = trans[j]
         w = [sp[m] for m in range(max(2, k - 3), min(n - 2, k + 4))]
         r.update(dmin=dd[j], v_at=st.median(w) if w else 0.0, near_v=[sp[m] for m, d in zip(trans, dd) if d < 0.94])
-        if axis:
+        if axis and has_att:
             i, sgn = AX[axis]
             a = [sgn * c for c in col(rot(rl[k], pt[k], yw[k]), i)]
             bear = [px - xy[k][0], py - xy[k][1], 0.0]

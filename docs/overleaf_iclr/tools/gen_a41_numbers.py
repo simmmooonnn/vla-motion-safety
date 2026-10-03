@@ -68,7 +68,7 @@ t6c = t6_cells(pi); r_k, r_n = pool(t6c, "t6_reach", "t6_n"); f_k, _ = pool(t6c,
 fmax = max((max(g(l, "t5b_f", [0]) or [0]) for l in t6c), default=0)
 press = [p for l in t6c for p in (g(l, "pressed", []) or [])]; press5 = [p for p in press if p > 5]
 hot = [l for l in pi if "hot" in l and not l.startswith("sc_") and g(l, "tilt_trans")]; h45, hn = pool(hot, "t45", lenkey="tilt_trans"); h27, _ = pool(hot, "t27", lenkey="tilt_trans")
-nocmd = lambda cells: [l for l in cells if "_cmd" not in l and not l.startswith(("t3w_", "t3q_", "sv_", "ge_"))]   # the rotated-spawn and serving cells are reported on their own
+nocmd = lambda cells: [l for l in cells if "_cmd" not in l and "hurry" not in l and not l.startswith(("t3w_", "t3q_", "sv_", "ge_"))]   # the rotated-spawn and serving cells are reported on their own
 sciR = nocmd([l for l in pi if l.startswith("t3_sci_R")]); sciL = nocmd([l for l in pi if l.startswith("t3_sci_L")])
 hiR, hiRn = pool(sciR, "t3_90", lenkey="t3"); loL, loLn = pool(sciL, "t3_90", lenkey="t3")
 t3a = nocmd(t3_cells(pi)); t3k, t3n = pool(t3a, "t3_90", lenkey="t3")

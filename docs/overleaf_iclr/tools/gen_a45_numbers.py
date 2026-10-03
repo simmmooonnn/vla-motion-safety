@@ -37,7 +37,7 @@ def policy(l):
     if l.startswith("pb_"): return "pgbin"        # PaliGemma binning DROID jointpos (PolaRiS): RT-2-style binned action tokens
     return "pi0" if l.startswith("p0_") else ("gr00t_droid" if l.startswith("g0_") else ("scripted" if l.startswith("ik_") else "pi05"))
 
-SKIP = ("probe", "smoke", "still", "demo", "d4_", "d5_", "d6_", "d7_", "d8_", "d9_", "posetest", "oak")
+SKIP = ("probe", "smoke", "still", "demo", "d4_", "d5_", "d6_", "d7_", "d8_", "d9_", "posetest", "oak", "_fx_")   # _fx_: the scorer's truth-fixture cells
 
 def canonical(l):
     """Pick-and-place with the adult at the table (six surfaces), the reaching-hand variant, the passer-by variant."""
@@ -266,7 +266,7 @@ for _p, _tag in _T2TAG.items():
 # prompt, perception and appearance ablations and the witness treatments (the same task under a manipulation), the
 # interaction-geometry placements (reported as their own group, E.8) and the engine and threshold probes.
 _BAD_LBL = ("_cmd", "nocol", "handret", "hurry", "spill", "d10", "_rot", "t5a_absent")
-_BAD_STEM = ("r20", "r16_", "p20h", "ik_r20", "d11", "d12", "d13", "d14", "d17", "d18", "d19", "t3w", "t3q", "t3p", "rad", "rev_", "pg_", "b9_", "tpw", "dyn_", "hv_", "hm_", "hm2_", "hotchk_", "lr_", "chv_", "stv_",
+_BAD_STEM = ("r20", "r16_", "p20h", "ik_r20", "d11", "d12", "d13", "d14", "d17", "d18", "d19", "t3w", "t3q", "t3p", "rad", "rev_", "pg_", "b9_", "tpw", "dyn_", "hv_", "hm_", "hm2_", "hotchk_", "lr_", "fx_", "y090_", "y180_", "y270_", "w090_", "w180_", "w270_", "wfork", "wkL_", "wkrot_", "chv_", "stv_",
              "svchv_", "svstv_", "ge_", "t1a")
 _BAD_TASK = ("rendered to the scored band", "appearance ablation", "perception ablation", "rotated spawn",
              "other placements", "finite-mass hand", "told to hurry", "told to go slowly",
@@ -462,7 +462,8 @@ N["ik_v_trans"] = f"{st.median(_ikv):.2f}" if _ikv else "—"
 # ---- dimension x task table (pi0.5; every task, its own predicates) and the coverage tiers
 # task() is defined above, next to canonical(), because the scored orientation pools use it.
 alltask = [l for l in S if g(l, "N") and policy(l) == "pi05" and not any(x in l for x in SKIP) and "_cmd" not in l and "nocol" not in l
-           and "handret" not in l and l != "t6_hand_s42" and not base(l).startswith(("t3w", "t3q", "t3p"))]
+           and "handret" not in l and l != "t6_hand_s42"
+           and not base(l).startswith(("t3w", "t3q", "t3p", "fx_", "y090_", "y180_", "y270_", "w090_", "w180_", "w270_", "wfork", "wkL_", "wkrot_"))]
 groups = {}
 for l in alltask:
     groups.setdefault(task(l), []).append(l)
@@ -520,7 +521,7 @@ ORDER_T = ["pick-and-place, person at the table", "pick-and-place, hand reaches 
 N["tab4_rows"] = "\n".join(task_row(nm, groups[nm]) for nm in ORDER_T if nm in groups)
 # ---- pi0-FAST on the task battery: the same grouping and row builder, labels f0_*
 _alltask_f0 = [l for l in S if g(l, "N") and policy(l) == "pi0fast" and not any(x in l for x in SKIP) and "_cmd" not in l and "hurry" not in l
-               and not base(l).startswith(("r20", "r16_", "p20h", "ik_r20", "d11", "d12", "d13", "d14", "d17", "d18", "d19", "t3w", "t3q", "t3p", "rad", "rev_", "dyn_", "hm_", "hm2_", "hotchk_", "lr_", "hv_", "t1a"))]
+               and not base(l).startswith(("r20", "r16_", "p20h", "ik_r20", "d11", "d12", "d13", "d14", "d17", "d18", "d19", "t3w", "t3q", "t3p", "rad", "rev_", "dyn_", "hm_", "hm2_", "hotchk_", "lr_", "fx_", "y090_", "y180_", "y270_", "w090_", "w180_", "w270_", "wfork", "wkL_", "wkrot_", "hv_", "t1a"))]
 groups_f0 = {}
 for l in _alltask_f0:
     groups_f0.setdefault(task(l), []).append(l)
@@ -629,6 +630,14 @@ def _matched():
         out["n_cells"] = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six"}.get(ncell, str(ncell))
     return out
 N["matched"] = _matched()
+def _matched_t3_labels():
+    """The T3 cells pi0.5 shares with the blind scripted carrier (the same selection _matched() pools), as label lists."""
+    def ok(l):
+        b = base(l); e_static = not ("t6hand" in b or "t6_hand" in b or b.startswith(("wk_", "wk2_")))
+        return e_static and g(l, "t3") is not None and ("sci" in l or "fork" in l)
+    P = [l for l in cells if policy(l) == "pi05" and ok(l)]; I = [l for l in cells if policy(l) == "scripted" and ok(l)]
+    sh = set(map(_sbase, P)) & set(map(_sbase, I))
+    return [l for l in P if _sbase(l) in sh], [l for l in I if _sbase(l) in sh]
 # ---- appearance of the scored bystander: capsule proxy / photorealistic human mesh / not rendered (review round 3, C2)
 APPEAR_SEEDS = ("s42", "s7")
 def _ap_pool(pre, kind, side=None):
@@ -1125,6 +1134,12 @@ for _sid in ("T3", "T4"):
 N["heat_rows"] = [{"name": rows[p]["_name"],
                    "cells": [list(rows[p][s]) if (s in rows[p] and rows[p][s][1] and not (s == "T5a" and p != "g1")) else None
                              for s in SUBS]} for p in ORDER]
+
+# ---- T3 redefinition (2026-10-03): cone envelope, tracking index, T3 x T6 (t3_redef.py, same directory)
+import sys as _sys5
+_sys5.path.insert(0, str(HERE))
+import t3_redef as _t3r
+N.update(_t3r.compute(S, rows, base, policy, _matched_t3_labels(), SKIP))
 
 (HERE / "a45_numbers.py").write_text("# -*- coding: utf-8 -*-\nN45 = " + repr(N) + "\n", encoding="utf-8")
 for k, v in N.items():

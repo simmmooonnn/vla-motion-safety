@@ -221,5 +221,6 @@ exec(open(pathlib.Path(__file__).with_name("edit_paper_a141_g1_controls_grounded
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a142_t5c_decision.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a143_late_reveal.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a144_t3_witness_fix.py"), encoding="utf-8").read())
+exec(open(pathlib.Path(__file__).with_name("edit_paper_a145_t3_redefinition.py"), encoding="utf-8").read())
 MD.write_text(t, encoding="utf-8")
 print("v0.41 written:", len(base), "->", len(t), "chars")

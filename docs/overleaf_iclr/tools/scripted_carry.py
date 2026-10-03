@@ -177,6 +177,19 @@ class ScriptedCarryPolicy(PolicyBase[ScriptedCarryCfg]):
             self._obj_q0 = quat_mul(q_yaw[None, :], self._obj_q0[None, :])[0]
             if self.debug:
                 print(f"[SC] blade-away: rotating the payload by {math.degrees(yaw):.0f} deg about z so its {ax_name} axis points away from ({px}, {py})", flush=True)
+        # SC_FIX_YAW_DEG / SC_FIX_TILT_DEG (2026-10-03): truth fixture for the orientation scorer. The attached payload is
+        # carried at a KNOWN attitude -- the spawn orientation, yawed about world z, then tilted about world x -- and the
+        # commanded object axes are printed, so the recorder -> dump -> analyzer read-back can be asserted against them.
+        _fy, _ft = os.environ.get("SC_FIX_YAW_DEG"), os.environ.get("SC_FIX_TILT_DEG")
+        self._fixture = bool(_fy or _ft)
+        if _fy or _ft:
+            _yw, _tl = math.radians(float(_fy or 0.0)), math.radians(float(_ft or 0.0))
+            _qz = torch.tensor([0.0, 0.0, math.sin(_yw / 2), math.cos(_yw / 2)], device=obj.device)      # (x, y, z, w)
+            _qx = torch.tensor([math.sin(_tl / 2), 0.0, 0.0, math.cos(_tl / 2)], device=obj.device)
+            self._obj_q0 = quat_mul(_qx[None, :], quat_mul(_qz[None, :], self._obj_q0[None, :]))[0]
+            _e = torch.eye(3, device=obj.device)
+            _ax = [[round(float(v), 5) for v in quat_apply(self._obj_q0[None, :], _e[i][None, :])[0].tolist()] for i in range(3)]
+            print(f"[SC_FIXTURE] yaw_deg={float(_fy or 0.0)} tilt_deg={float(_ft or 0.0)} x_w={_ax[0]} y_w={_ax[1]} z_w={_ax[2]}", flush=True)
         z_carry = obj[2] + self.carry_dz
         above_obj = grasp.clone(); above_obj[2] = z_carry
         above_dst = dst.clone(); above_dst[2] = z_carry
@@ -268,6 +281,12 @@ class ScriptedCarryPolicy(PolicyBase[ScriptedCarryCfg]):
         if self.magic and 2 <= self._phase <= 5:                  # carried: the payload follows the tool centre, level, spawn yaw
             obj = env.unwrapped.scene[self.obj_name]
             p = tcp_w.clone(); p[:, 2] -= 0.04 - self._attach_dz
+            if getattr(self, "_fixture", False):
+                p[:, 0] += float(os.environ.get("SC_FIX_DX", "0.16"))     # beside the gripper, touching nothing once lifted
+                _oq = _T(obj.data.root_quat_w)[0]
+                _e = torch.eye(3, device=_oq.device)
+                _ax = [[round(float(v), 5) for v in quat_apply(_oq[None, :], _e[i][None, :])[0].tolist()] for i in range(3)]
+                print(f"[SC_FIXTURE_STEP] t={cur} ph={self._phase} x_w={_ax[0]} y_w={_ax[1]} z_w={_ax[2]}", flush=True)
             obj.write_root_pose_to_sim(torch.cat([p, self._obj_q0[None, :].expand(p.shape[0], -1)], dim=-1))
             obj.write_root_velocity_to_sim(torch.zeros(p.shape[0], 6, device=p.device))
         act = torch.zeros(q.shape[0], 8, device=q.device, dtype=torch.float32)

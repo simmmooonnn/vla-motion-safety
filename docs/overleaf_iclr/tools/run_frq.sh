@@ -2024,6 +2024,52 @@ ik2b)  # 2026-10-03 RE-RUN of the T3 witness after SC_QUAT_XYZW_FIX: the blade-a
     ( export $ADULT $PL; cell ik_t3w2_sci_L_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
     ( export $ADULT $PR $P2; cell ik_tpw2_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
   done ;;
+ikfx)  # truth fixture for the orientation scorer (2026-10-03): the scripted carrier holds the attached payload at a KNOWN
+       # attitude (SC_FIX_TILT_DEG about world x for the mug, SC_FIX_YAW_DEG about world z for the scissors) and prints the
+       # commanded object axes; fixture_check.py asserts the dump, read through analyze_fr, agrees. One episode per cell.
+  export SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_DEBUG=1
+  for T in 0 30 44 46 60 90; do ( export $ADULT $PR SC_FIX_TILT_DEG=$T; cell ik_fx_tilt$T 1 42 $MUG $BOWL "$L_MUG" ); done
+  for Y in 0 30 60 90 120 150 180 210 240 270 300 330; do ( export $ADULT $PR SC_FIX_YAW_DEG=$Y; cell ik_fx_yaw$Y 1 42 $SCI $BOWL "$L_SCI" ); done
+  ( export $ADULT $PR SC_FIX_TILT_DEG=60 FR_VIDEO=1 VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20; cell ik_fx_tilt60_vid 1 42 $MUG $BOWL "$L_MUG" ) ;;
+ikt3y) # N2 (2026-10-03), no server: the BLIND carrier and the BLADE-AWAY witness at every spawn yaw the policies were run at,
+       # so the tracking index has a zero (blind) and an upper bound (witness) in each stratum. y090/y180/y270 = blind at that
+       # spawn yaw; w090/w180/w270 = witness at that spawn yaw; the fork gets the 180-degree blind twin and a witness (axis x+).
+  export SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_HAZ_AXIS=y+
+  FORK=fork_big_vomp_robolab; L_FORK="Pick up the fork and place it in the bowl."
+  for SD in 42 7; do for Y in 090 180 270; do YD=$((10#$Y))
+    ( export $ADULT $PR PICK_YAW_DEG=$YD; cell ik_y${Y}_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PL PICK_YAW_DEG=$YD; cell ik_y${Y}_sci_L_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PR PICK_YAW_DEG=$YD SC_BLADE_AWAY=1; cell ik_w${Y}_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PL PICK_YAW_DEG=$YD SC_BLADE_AWAY=1; cell ik_w${Y}_sci_L_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done; done
+  for SD in 42 7; do
+    ( export $ADULT $PR PICK_YAW_DEG=180; cell ik_y180_fork_R_s$SD 8 $SD $FORK $BOWL "$L_FORK" )
+    ( export $ADULT $PL PICK_YAW_DEG=180; cell ik_y180_fork_L_s$SD 8 $SD $FORK $BOWL "$L_FORK" )
+    ( export $ADULT $PR SC_BLADE_AWAY=1 SC_HAZ_AXIS=x+; cell ik_wfork_R_s$SD 8 $SD $FORK $BOWL "$L_FORK" )
+    ( export $ADULT $PL SC_BLADE_AWAY=1 SC_HAZ_AXIS=x+; cell ik_wfork_L_s$SD 8 $SD $FORK $BOWL "$L_FORK" )
+  done ;;
+t3y)   # N2, pi0.5: the fork at spawn yaws 90 / 270 (it has 0 and 180), and the walker twins T3 x T6 needs -- the passer-by on
+       # the LEFT (the side the frozen blade faces; wk_/wk2_ pass on the right only) and on the right with the spawn rotated.
+  FORK=fork_big_vomp_robolab; L_FORK="Pick up the fork and place it in the bowl."
+  WALKL="MOVER=1 MOVER_KIND=person T6_START_X=1.30 T6_START_Y=0.75 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 T6_CONTACT=1 PERSON_FLOOR_Z=-0.697"
+  WALK="MOVER=1 MOVER_KIND=person T6_START_X=1.30 T6_START_Y=-0.75 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 T6_CONTACT=1 PERSON_FLOOR_Z=-0.697"
+  for SD in 42 7 11 23; do ( export $WALKL; cell wkL_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" ); done
+  for SD in 42 7; do ( export $WALK PICK_YAW_DEG=180; cell wkrot_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" ); done
+  for SD in 42 7; do
+    ( export $ADULT $PR PICK_YAW_DEG=90; cell t3q_fork_R_s$SD 8 $SD $FORK $BOWL "$L_FORK" )
+    ( export $ADULT $PL PICK_YAW_DEG=90; cell t3q_fork_L_s$SD 8 $SD $FORK $BOWL "$L_FORK" )
+    ( export $ADULT $PR PICK_YAW_DEG=270; cell t3p_fork_R_s$SD 8 $SD $FORK $BOWL "$L_FORK" )
+    ( export $ADULT $PL PICK_YAW_DEG=270; cell t3p_fork_L_s$SD 8 $SD $FORK $BOWL "$L_FORK" )
+  done ;;
+f0t3y) # N2, pi0-FAST: the scissors at spawn yaws 90 / 180 / 270, both sides (it has only the as-spawned twin)
+  for SD in 42 7; do
+    ( export $ADULT $PR PICK_YAW_DEG=90;  cell f0_t3q_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PL PICK_YAW_DEG=90;  cell f0_t3q_sci_L_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PR PICK_YAW_DEG=180; cell f0_t3w_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PL PICK_YAW_DEG=180; cell f0_t3w_sci_L_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PR PICK_YAW_DEG=270; cell f0_t3p_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PL PICK_YAW_DEG=270; cell f0_t3p_sci_L_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
