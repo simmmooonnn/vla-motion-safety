@@ -9,9 +9,13 @@ about world x), hovering beside the gripper so nothing touches it once it is lif
                           quat_apply (the state before policy step t, i.e. dump sample t - 1).
 This script reads each cell's dump through the code path the paper's numbers use (analyze_fr.qfix_eps + rot) and checks:
   A. library truth, every attached step: each object axis read back from the dump against the axis IsaacLab reports;
-  B. commanded truth, lift and transport (phases 3-4): each axis against the commanded axis;
+  B. commanded truth, transport (phase 4: at carry height, off the table): each axis against the commanded axis;
   C. the rest pose: the payload's up axis at step 0 against world z (every fixture payload rests z-up);
-  D. the T4 quantity over phases 3-4 -- the angle of the up axis from its rest up axis -- against the knob SC_FIX_TILT_DEG.
+  D. the T4 quantity over phase 4 -- the angle of the up axis from its rest up axis -- against the knob SC_FIX_TILT_DEG.
+  E. the T3 quantity over phase 4, level cells only -- the heading of the object's x axis (the blade axis of the scissors)
+     relative to its rest heading -- against the knob SC_FIX_YAW_DEG.
+While it is still at table height (closing, and the first steps of the lift) a tilted mug intersects the table and is pushed
+several degrees off the command; those steps are in check A, where the truth is what the simulator holds, not in B.
 The run fails if no cell is found, if no cell has a non-zero yaw or none a non-zero tilt (identity attitudes test nothing), or
 if any cell exceeds the tolerance. The grid must avoid yaw in {90, 270} with tilt = 90 (the object's x axis vertical: the gimbal
 lock of the stored angles). A first version selected steps by height and compared with a payload held between the fingers; it
@@ -19,7 +23,7 @@ failed for two reasons that were not the scorer's: the window caught steps after
 the fingers between pose writes (several degrees). Both are removed here by construction.
 usage: fixture_check.py [tolerance_deg=2.0]     exit status 1 on any failure.
 """
-import glob, json, os, re, sys
+import glob, json, math, os, re, sys
 
 I = "/home/data/zzhao140/zijian/isaac"
 src = open(f"{I}/analyze_fr.py", encoding="utf-8").read()
@@ -31,6 +35,7 @@ VEC = r"\[(.*?)\]"
 PAT = re.compile(r"\[SC_FIXTURE\] yaw_deg=([-\d.]+) tilt_deg=([-\d.]+) x_w=" + VEC + " y_w=" + VEC + " z_w=" + VEC)
 STEP = re.compile(r"\[SC_FIXTURE_STEP\] t=(\d+) ph=(\d+) x_w=" + VEC + " y_w=" + VEC + " z_w=" + VEC)
 vec = lambda s: [float(v) for v in s.split(",")]
+hdg = lambda v: math.degrees(math.atan2(v[1], v[0]))
 rows = []; bad = 0
 for f in sorted(glob.glob(f"{I}/logs/matrix/fr_ik_fx_*.json")):
     if f.endswith(("_link.json", "_mp.json")):
@@ -49,27 +54,31 @@ for f in sorted(glob.glob(f"{I}/logs/matrix/fr_ik_fx_*.json")):
     qfix([e])
     n = len(e["box_yaw"])
     R = lambda k: rot(e["box_roll"][k], e["box_pitch"][k], e["box_yaw"][k])
-    up0 = col(R(0), 2)
-    lib_err = 0.0; cmd_err = 0.0; tilts = []; n_lib = n_cmd = 0
+    up0 = col(R(0), 2); h0 = hdg(col(R(0), 0))
+    lib_err = 0.0; cmd_err = 0.0; hdg_err = 0.0; tilts = []; n_lib = n_cmd = 0
     for t_, ph, x, y, z in st:
         k = int(t_) - 1                      # the controller sees the state after step t - 1
         if k < 1 or k >= n:
             continue
         Rk = R(k); lib = [vec(x), vec(y), vec(z)]
         lib_err = max(lib_err, max(ang(col(Rk, i), lib[i]) for i in range(3))); n_lib += 1
-        if int(ph) in (3, 4):                # lift and transport: attached, off the table, beside the gripper
+        if int(ph) == 4:                     # transport: attached, at carry height, beside the gripper, touching nothing
             cmd_err = max(cmd_err, max(ang(col(Rk, i), cmd[i]) for i in range(3))); n_cmd += 1
             tilts.append(ang(col(Rk, 2), up0))
+            if tilt == 0:                    # level: the heading the T3 predicate reads, against the yaw knob
+                hdg_err = max(hdg_err, abs((hdg(col(Rk, 0)) - h0 - yaw + 180.0) % 360.0 - 180.0))
     if n_lib < 10 or n_cmd < 10:
         print(f"{lb}: only {n_lib} attached / {n_cmd} carried steps matched"); bad += 1; continue
     tilts.sort(); t_med = tilts[len(tilts) // 2]
     rest_err = ang(up0, [0.0, 0.0, 1.0])
-    ok = lib_err <= TOL and cmd_err <= TOL and rest_err <= TOL and abs(t_med - tilt) <= TOL
+    ok = lib_err <= TOL and cmd_err <= TOL and rest_err <= TOL and abs(t_med - tilt) <= TOL and hdg_err <= TOL
     bad += 0 if ok else 1
     rows.append(dict(label=lb, yaw=yaw, tilt=tilt, attached_steps=n_lib, carried_steps=n_cmd, lib_err=round(lib_err, 3),
-                     cmd_err=round(cmd_err, 3), rest_err=round(rest_err, 3), tilt_read=round(t_med, 3), ok=ok))
+                     cmd_err=round(cmd_err, 3), rest_err=round(rest_err, 3), tilt_read=round(t_med, 3),
+                     hdg_err=round(hdg_err, 3) if tilt == 0 else None, ok=ok))
     print(f"{lb:20s} yaw {yaw:5.0f} tilt {tilt:4.0f} | attached {n_lib:3d} carried {n_cmd:3d} | vs IsaacLab {lib_err:5.2f} deg | "
-          f"vs command {cmd_err:5.2f} | rest up vs z {rest_err:4.2f} | tilt read {t_med:6.2f} | {'ok' if ok else 'FAIL'}")
+          f"vs command {cmd_err:5.2f} | rest up vs z {rest_err:4.2f} | tilt read {t_med:6.2f} | heading vs knob {hdg_err:4.2f} | "
+          f"{'ok' if ok else 'FAIL'}")
 if not rows:
     print("no fixture cell was scored (run queue ikfx first)"); bad += 1
 elif not any(r["yaw"] != 0 for r in rows) or not any(r["tilt"] != 0 for r in rows):
@@ -77,6 +86,7 @@ elif not any(r["yaw"] != 0 for r in rows) or not any(r["tilt"] != 0 for r in row
 if rows:
     print(f"cells {len(rows)}; worst error vs IsaacLab {max(r['lib_err'] for r in rows):.2f} deg, vs command "
           f"{max(r['cmd_err'] for r in rows):.2f} deg, rest pose {max(r['rest_err'] for r in rows):.2f} deg, tilt "
-          f"{max(abs(r['tilt_read'] - r['tilt']) for r in rows):.2f} deg; tolerance {TOL} deg; failures {bad}")
+          f"{max(abs(r['tilt_read'] - r['tilt']) for r in rows):.2f} deg, heading "
+          f"{max((r['hdg_err'] or 0.0) for r in rows):.2f} deg; tolerance {TOL} deg; failures {bad}")
 json.dump({"tolerance_deg": TOL, "cells": rows, "failures": bad}, open(f"{I}/logs/fr/fixture_check.json", "w"))
 sys.exit(1 if bad else 0)

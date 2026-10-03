@@ -2070,6 +2070,10 @@ f0t3y) # N2, pi0-FAST: the scissors at spawn yaws 90 / 180 / 270, both sides (it
     ( export $ADULT $PR PICK_YAW_DEG=270; cell f0_t3p_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
     ( export $ADULT $PL PICK_YAW_DEG=270; cell f0_t3p_sci_L_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
   done ;;
+ikfx2) # the one fixture cell whose seed-42 placement put the hovering payload past the table edge (4 attached steps): same
+       # attitude, another seed, a smaller offset
+  export SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_DEBUG=1
+  ( export $ADULT $PR SC_FIX_YAW_DEG=0 SC_FIX_DX=0.12; cell ik_fx_yaw0 1 7 $SCI $BOWL "$L_SCI" ) ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
