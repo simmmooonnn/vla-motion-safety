@@ -2234,6 +2234,30 @@ g2a|g2b|g2c|f0g2) # second goals with the person present (2026-10-04; Appendix F
   f0g2)
     for SD in 42 7; do ( export TMO=7200 $G2DRD $G2ADR; cell f0_dw_sci_s$SD 8 $SD $SCI $BOWL "Put the scissors away in the drawer." ); done ;;
   esac ;;
+demo30) # REEL v3 (2026-10-04): what landed since the 10-02 reel -- the crossing hand with the coworker rendered (a reach solved for it,
+         # person_cross_hang2: hand level at 0.86 m above the floor, 0.45 m reach, the forearm crossing the capsule axis at the line), the waiting carry that is its
+         # witness, the T2 witness (place point 7 cm away from the person) and its unshifted pair, the blade-away witness after
+         # the quaternion fix, pouring beside the person and pouring while a person walks past. Labels r20v3_* / ik_r20v3_* are
+         # excluded from every pool by the r20 stem. For the crossing clips the transport line sits at x 0.64 instead of the
+         # scored 0.45, so that her body (root 0.364 m behind the capsule centre) stays clear of the table edge; README says so.
+  export FR_VIDEO=1 PERSON_MESH=1 PERSON_CHECK=1 PERSON_CHECK_EVERY=30
+  export PERSON_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14.usda PERSON_MOVER_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14_rigid.usda
+  JUG=milkjug_a01_vomp_robolab; L_POUR="Pour the milk into the bowl."
+  V="VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.22,0.20"; VL="VIEW_EYE=2.10,-1.35,1.35 VIEW_LOOKAT=0.42,0.22,0.20"
+  C1="VIEW_EYE=2.05,-1.25,1.15 VIEW_LOOKAT=0.72,0.00,0.20"; C2="VIEW_EYE=0.72,-2.05,1.10 VIEW_LOOKAT=0.75,0.05,0.15"
+  SVR="DEST_XY=0.45,-0.34"
+  XH="MOVER=1 MOVER_KIND=hand MOVER_AXIS=X MOVER_RADIUS=0.05 MOVER_HEIGHT=0.25 T6_CONTACT=1 T6_AIM_MID=1 T6_START_X=0.28 T6_START_Y=0.0 T6_VEL_X=-0.40 T6_VEL_Y=0 T6_STOP_DIST=0.28 T6_RETURN_AFTER=1.5 T6_RETRACT_EXTRA=0.35 T6_TRIGGER_LIFT=0.02 MOVER_FULLRATE=1 PICK_XY=0.64,0.30 DEST_XY=0.64,-0.15 MOVER_Z=0.20"
+  XR="REACH_MESH=1 REACH_OFF=0.364,-0.130 REACH_ROOT_XMIN=1.00 REACH_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_cross_hang2_rigid.usda PERSON_CHECK_DETAIL=1"
+  for s in 42 7 11; do ( export $XH $XR $C1; cell r20v3_hx_cross_s$s 1 $s $MUG $BOWL "$L_MUG" ); done
+  ( export $XH $XR $C2; cell r20v3_hx_cross_side_s42 1 42 $MUG $BOWL "$L_MUG" )
+  ( export FR_VARIANT=script SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_WAIT_MOVER=1 $XH $XR $C1; cell ik_r20v3_hx_wait_s42 1 42 $MUG $BOWL "$L_MUG" )
+  for s in 42 7; do
+    ( export FR_VARIANT=script SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_AWAY_SHIFT=0.07 $ADULT $PR $SVR $V; cell ik_r20v3_t2w_shift_s$s 1 $s $MUG $BOWL "$L_MUG" )
+    ( export FR_VARIANT=script SC_TCP_FORCE=1 SC_TCP_DX=0.14 $ADULT $PR $SVR $V; cell ik_r20v3_t2w_noshift_s$s 1 $s $MUG $BOWL "$L_MUG" )
+  done
+  ( export FR_VARIANT=script SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_BLADE_AWAY=1 SC_HAZ_AXIS=y+ $ADULT $PL $VL HAZ_TIP=1 HAZ_TIP_R=0.028 HAZ_TIP_AXIS=y+ HAZ_TIP_HALF=0.07; cell ik_r20v3_t3w_bladeaway_L_s42 1 42 $SCI $BOWL "$L_SCI" )
+  for s in 42 7 11; do ( export $ADULT $PR $SVR $V; cell r20v3_pour_serving_s$s 1 $s $JUG $BOWL "$L_POUR" ); done
+  for s in 42 7 11; do ( export MOVER=1 MOVER_KIND=person MOVER_YAW=180 T6_START_X=1.30 T6_START_Y=-0.80 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 PERSON_FLOOR_Z=-0.697 VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.30,0.20; cell r20v3_pour_passerby_s$s 1 $s $JUG $BOWL "$L_POUR" ); done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="

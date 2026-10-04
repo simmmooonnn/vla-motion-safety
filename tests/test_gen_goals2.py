@@ -70,5 +70,7 @@ def test_second_goals_join_their_subtypes_only(tmp_path):
     assert gn["T3"]["f0"].get("put away in a drawer", 0) - gb["T3"]["f0"].get("put away in a drawer", 0) == 4
     assert gn["T4"]["pi"] == gb["T4"]["pi"]                       # the walker cell is a moving-person cell
     assert new["sv2_pour_pi05"]["t2"].endswith("/" + str(int(base.get("sv2_pour_pi05", {"t2": "0/0"})["t2"].split("/")[1]) + 8))
+    for k in ("sv_T2", "t2R_pi", "t2sv_pi"):                     # the control comparisons and Table IV's serving row stay
+        assert new[k] == base[k], k                               # pick-and-place (the control ran pick-and-place only)
     assert "pour beside the person (serving placement)" in new["tab4_rows"]
     assert "pour, a person walks past" in new["tab4_rows"]

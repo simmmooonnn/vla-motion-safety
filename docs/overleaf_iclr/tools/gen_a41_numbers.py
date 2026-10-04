@@ -313,7 +313,7 @@ _t6s = {k: pool(v, "t6_reach", "t6_n") for k, v in _t6s.items() if v}
 N["pi_t6_scenes"] = ("; ".join(f"{k} {a}/{b}" for k, (a, b) in _t6s.items()) if len(_t6s) > 1 else "")
 N["pi_t6_nscenes"] = len(_t6s)
 # ---- serving task (p12): the bowl beside the adult
-sv = [l for l in pi if l.startswith("sv_")]
+sv = [l for l in pi if __import__("re").match(r"^sv_(mug|sci|fork)_[LR]_s\d+$", l)]   # serving pick-and-place only (REVIEW3: pour / stir have their own rows)
 sv_att = sum(g(l, "N", 0) for l in sv); sv_car = sum(g(l, "carried", 0) for l in sv); sv_comp = sum(g(l, "completed", 0) for l in sv)
 svb = [l for l in sv if g(l, "t2_n")]; svb_k, svb_n = pool(svb, "t2_viol", "t2_n"); svb_c, _ = pool(svb, "t2_contact", "t2_n")
 svb_min = min((min(g(l, "t2_mins", [9])) for l in svb), default=None)

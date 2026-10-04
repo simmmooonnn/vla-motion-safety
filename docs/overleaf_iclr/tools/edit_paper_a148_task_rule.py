@@ -38,7 +38,10 @@ _two = [sid for sid in ("T1", "T2", "T3", "T4", "T6", "T6b")
 _low_goals = [(sid, g_) for sid in ("T1", "T2", "T3", "T4", "T6", "T6b") for g_, v in _GN.get(sid, {}).get("pi", {}).items()
               if g_ != "pick-and-place into the bowl" and 0 < v < 8]
 _GV = {"put away in a drawer": "putting away in a drawer", "pour": "pouring", "hand to the person": "handing over",
-       "clear the table": "clearing the table"}
+       "clear the table": "clearing the table", "tool use: stir": "stirring", "tool use: scrape": "scraping",
+       "tool use: toss": "tossing"}
+_lst = lambda xs: xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
+_one = [sid for sid in ("T1", "T2", "T3", "T4", "T6", "T6b") if sid not in _two]
 
 
 def _second(tag, sids):
@@ -62,7 +65,7 @@ if _i >= 0 and _G["T3"]:
         _new = ("Table III is narrower than the suite, and the gap is now specific. A task is a row of Table IV; its *goal* is "
                 "the instruction's goal and success condition, and a task is a goal under one setting of work surface, "
                 "bystander, placement, keep-out or mover (Appendix D). Counted by tasks, trajectory and orientation are "
-                "broad: T2 rests on the serving family (" + V["t2sv_pi_cells"] + " cells at " + _word(V["t2sv_pi_surf"])
+                "broad: T2 rests on the serving family (" + V.get("pi_T2_cells", V["t2sv_pi_cells"]) + " cells at " + _word(V["t2sv_pi_surf"])
                 + " work surfaces for π0.5), T3 on " + V["t3task_pi_n"] + " tasks and T4 on " + V["t4task_pi_n"]
                 + ", for π0-FAST on " + V["t3task_f0_n"] + " and " + V["t4task_f0_n"] + ", and T1 on two kinds of keep-out "
                 "point. Counted by goals they are not: every tabletop sub-type rests on pick-and-place into the bowl, and "
@@ -82,9 +85,14 @@ if _i >= 0 and _G["T3"]:
                    "one mechanism per sub-type — a hand reaching into the destination for T6, at six work surfaces, and a person "
                    "walking past for T6b, at three.")
                 + " π0 and GR00T-DROID rest on one goal wherever they are scored. What the next cells must add is "
-                "therefore goals other than pick-and-place — handing over, putting away, clearing the table — with the person "
-                "present, not more surfaces; until then Table IV's breadth supports the design, and the matrix rests on one "
-                "goal under many settings.")
+                "therefore goals other than pick-and-place — handing over, clearing the table"
+                + ("".join(", and more carries on " + _GV.get(g_, g_) + " for " + sid for sid, g_ in _low_goals))
+                + " — with the person present, not more surfaces; "
+                + (("until then " + _lst(_one) + (" rests" if len(_one) == 1 else " rest") + " on one goal and " + _lst(_two)
+                    + " on two or more, each further goal on far fewer carries than the first.") if (_one and _two) else
+                   ("until then Table IV's breadth supports the design, and the matrix rests on one goal under many settings."
+                    if not _two else "every tabletop sub-type now rests on two or more goals, each further goal on far fewer "
+                    "carries than the first.")))
         t = t[:_i] + _new + t[_j:]
     else:
         print("  [a148 MISS] Appendix F coverage paragraph end")

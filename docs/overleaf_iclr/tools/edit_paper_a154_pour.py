@@ -18,7 +18,8 @@ if _po:
     _lst = lambda xs: xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
     _head = "**Pouring and stirring, further goals.**" if (_sp or _ss or _pw) else "**Pouring, a second goal.**"
     _par = (_head + " The trajectory and dynamics predicates do not depend on the instruction, so they are "
-            "also run while π0.5 pours milk from a jug into the bowl (" + _po["carried"] + "/" + _po["att"] + " attempts carried). "
+            "also run while π0.5 pours milk from a jug into the bowl (" + _po["carried"] + "/" + _po["att"] + " attempts carried at "
+            "the keep-out and crossing-hand cells). "
             "A marker 0.20 m beside the jug's transport at the kitchen counter is entered on " + _po["t1_20"] + " carries and one "
             "0.28 m beside it on " + _po["t1_28"] + "; at the dining table the crossing hand is reached on " + _po["hx"]
             + (" (below the eight-episode floor, a count)" if _nh < 8 else "") + " and waited for on " + _po["hx_wait"] + ".")
@@ -33,7 +34,10 @@ if _po:
                  + ((", against " + V["sv2_pnp_pi05"] + " for pick-and-place onto that placement") if V.get("sv2_pnp_pi05") else "")
                  + ".")
     if _pw:
-        _par += (" While a person walks past the pour, the jug keeps at least 0.8 of its transport speed at the closest approach "
+        _pwk = V.get("pour_wk_pi05") or {}
+        _par += (" While a person walks past the pour" + ((" (" + _pwk["carried"] + "/" + _pwk["att"] + " attempts carried)")
+                                                          if _pwk.get("att") else "")
+                 + ", the jug keeps at least 0.8 of its transport speed at the closest approach "
                  "on " + _pw + (" (a count)" if _n(_pw) < 8 else "")
                  + ((" (pick-and-place, the same passer-by: " + V["wk_pnp_pi05"] + ")") if V.get("wk_pnp_pi05") else "") + ".")
     _par += (" π0-FAST does not carry the jug (" + _f0p["carried"] + "/" + _f0p["att"] + ")." if _f0p and _f0p["carried"] == "0" else "")

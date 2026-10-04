@@ -96,7 +96,7 @@ def task(l):
     return "pick-and-place, person at the table"
 
 
-# REVIEW-2026-10-04 and REVIEW2-2026-10-04 applied. G2-2026-10-04 applied. MOVER GUARD (2026-10-04): every cell that ran with a moving person or hand, from the queue log (fr_mover_knobs.json).
+# REVIEW-2026-10-04 and REVIEW2-2026-10-04 applied. G2-2026-10-04 applied. REVIEW3-2026-10-04 applied. MOVER GUARD (2026-10-04): every cell that ran with a moving person or hand, from the queue log (fr_mover_knobs.json).
 try:
     _MOVERS = set(json.load(open(HERE / "fr_mover_knobs.json", encoding="utf-8")))
 except OSError:
@@ -114,6 +114,28 @@ def moving(l):
 
 def misrendered(l):
     return policy(l) == "pi05" and l.startswith(_MISRENDER) and not l.startswith(("ch_tu_", "st_tu_"))
+
+
+def task_goal(l):
+    """The instruction's goal and its success condition, the object noun aside (2026-10-04 review): what Table IVe counts
+    as a task. Work surface, environment map, clutter, the bystander's body, what a moving person or hand does, the
+    placement and the keep-out kind are factors of a task, and a Table IV row is a task under one level of them."""
+    b = base(l)
+    for pre in ("ch_", "st_"):
+        if b.startswith(pre + "tu"):
+            b = b[len(pre):]
+    if b.startswith(("ho_", "how_", "hr_")):
+        return "hand to the person"
+    if b.startswith("dw_") or b.startswith("sc_drw_dw"):
+        return "put away in a drawer"
+    if b.startswith("sv_tu_"):
+        return "tool use: " + b.split("_")[2]
+    for pre, nm in (("mt_pour", "pour"), ("sv_pour", "pour"), ("mt_push", "push"), ("mt_clear", "clear the table"), ("mt_micro", "close a door")):
+        if b.startswith(pre):
+            return nm
+    if b.startswith(("tu_", "tuc_", "tuh_")):
+        return "tool use: " + b.split("_")[1]
+    return "pick-and-place into the bowl"
 
 
 def task_unit(l):
@@ -329,12 +351,41 @@ for _p in ("pi05", "pi0", "pi0fast", "pgbin", "gr00t_droid", "scripted"):
                                    "completed": str(sum(g(l, "completed", 0) or 0 for l in _tl)),
                                    "carried": str(sum(g(l, "carried", 0) or 0 for l in _tl))}
 
-# dining-table comparators for the twin and the waiting witness (same table, same objects)
+# dining-table comparators for the twin and the waiting witness (same table; delivery on cells matched by object and seed below)
 for _p, _tg in (("pi05", "pi05"), ("pi0fast", "pi0fast"), ("scripted", "scripted")):
     _dn = [l for l in S if policy(l) == _p and base(l).startswith("hx_") and (g(l, "hx_ahead") or 0) > 0]
     if _dn:
         N[f"hx_{_tg}_dining"] = {"reach": "{}/{}".format(sum(g(l, "hx_reach", 0) for l in _dn), sum(g(l, "hx_ahead", 0) for l in _dn)),
                                 "completed": str(sum(g(l, "completed", 0) or 0 for l in _dn)), "att": str(sum(g(l, "N", 0) or 0 for l in _dn))}
+
+
+# REVIEW3 [6]: delivery counts every attempt, so the waiting carry and the straight carry are compared on the cells both ran
+_wk = {base(l)[len("hxwait_"):]: l for l in S if policy(l) == "scripted" and base(l).startswith("hxwait_")}
+_nk = {base(l)[len("hx_"):]: l for l in S if policy(l) == "scripted" and base(l).startswith("hx_")}
+_mk = sorted(set(_wk) & set(_nk))
+if _mk and N.get("hx_scripted_wait"):
+    N["hx_scripted_wait"]["completed_m"] = str(sum(g(_wk[k], "completed", 0) or 0 for k in _mk))
+    N["hx_scripted_wait"]["att_m"] = str(sum(g(_wk[k], "N", 0) or 0 for k in _mk))
+    N["hx_scripted_wait"]["nowait_completed_m"] = str(sum(g(_nk[k], "completed", 0) or 0 for k in _mk))
+    N["hx_scripted_wait"]["nowait_att_m"] = str(sum(g(_nk[k], "N", 0) or 0 for k in _mk))
+    N["hx_scripted_wait"]["cells_m"] = str(len(_mk))
+
+
+def _fisher2(a, b, c, d):
+    """Two-sided Fisher exact p for [[a, b], [c, d]] (sum of tables no more likely than the observed one)."""
+    from math import comb
+    r1, r2, c1 = a + b, c + d, a + c
+    n = r1 + r2
+    pr = lambda x: comb(r1, x) * comb(r2, c1 - x) / comb(n, c1)
+    p0 = pr(a)
+    return min(1.0, sum(pr(x) for x in range(max(0, c1 - r2), min(r1, c1) + 1) if pr(x) <= p0 * (1 + 1e-9)))
+# REVIEW3 [7]: the hidden-hand twin against the visible hand at the same table
+for _tg in ("pi05", "pi0fast"):
+    _h, _v = N.get(f"hx_{_tg}_hidden"), N.get(f"hx_{_tg}_dining")
+    if _h and _v:
+        (_a, _n1), (_c, _n2) = (tuple(int(x) for x in _h["reach"].split("/")), tuple(int(x) for x in _v["reach"].split("/")))
+        _pv = _fisher2(_a, _n1 - _a, _c, _n2 - _c)
+        _h["p_vs_visible"] = ("1.0" if _pv > 0.995 else f"{_pv:.2f}")
 
 
 def _t6b_count(l):
@@ -399,6 +450,8 @@ for _p in ("pi05", "pi0", "pi0fast", "pgbin", "gr00t_droid", "scripted"):
         rows[_p]["T6b_cl"] = (rows[_p].get("T6b_cl") or []) + [(x[1], x[2]) for x in _wkp]
         rows[_p]["T6b_lbl"] = (rows[_p].get("T6b_lbl") or []) + [x[0] for x in _wkp]
         N[f"pour_T6b_{_p}"] = "{}/{}".format(sum(x[1] for x in _wkp), sum(x[2] for x in _wkp))
+        _wall = [l for l in S if policy(l) == _p and base(l).startswith("mt_pour_wk_") and not any(x in l for x in SKIP)]
+        N[f"pour_wk_{_p}"] = {"att": str(sum(g(l, "N", 0) or 0 for l in _wall)), "carried": str(sum(g(l, "carried", 0) or 0 for l in _wall))}
 # T2's further goals (queue g2a): pouring into, and stirring, a bowl on the serving placement; they enter the serving pool by
 # name (_serving), and are reported here per goal
 for _p in ("pi05", "pi0fast"):
@@ -434,7 +487,8 @@ def _sv_surface(l):
     return "dining table"
 _T2TAG = {"pi05": "pi", "pi0": "q0", "pi0fast": "f0", "gr00t_droid": "g0", "scripted": "ik"}
 for _p, _tag in _T2TAG.items():
-    _all = [l for l in S if policy(l) == _p and g(l, "t2_n") and _serving(l) and not any(x in l for x in SKIP) and not misrendered(l)]
+    _all = [l for l in S if policy(l) == _p and g(l, "t2_n") and _serving(l) and not any(x in l for x in SKIP) and not misrendered(l)
+            and task_goal(l) == "pick-and-place into the bowl"]     # REVIEW3 [0]: the control and the other policies ran pick-and-place
     _pr = [l for l in _all if "_R_" in base(l)]
     if _all:
         _k, _n = pool(_all, "t2_viol", "t2_n")
@@ -856,7 +910,7 @@ N["wkch"] = {"T6b": f"{_k}/{_n}" if _n else "—", "car": str(sum(g(l, "carried"
 N["svh_L"] = {"seated": _svh([l for l in S if l.startswith("svst_") and "_L_" in l]), "child": _svh([l for l in S if l.startswith("svch_") and "_L_" in l]),
               "adult": _svh([l for l in S if l.startswith(("sv_mug_L", "sv_sci_L"))])}
 N["sv_surf"] = {"packing": _svh([l for l in S if base(l).startswith("sc_pack_sv")]), "d45": _svh([l for l in S if l.startswith("svd45_")]), "d55": _svh([l for l in S if l.startswith("svd55_")]), "counter": _svh([l for l in S if base(l).startswith("sc_kit_sv")]), "office": _svh([l for l in S if base(l).startswith("sc_off_sv")])}
-N["sv_T2"] = "{}/{}".format(*pool([l for l in S if l.startswith("sv_")], "t2_viol", "t2_n"))
+N["sv_T2"] = "{}/{}".format(*pool([l for l in S if __import__("re").match(r"^sv_(mug|sci|fork)_[LR]_s\d+$", l)], "t2_viol", "t2_n"))   # REVIEW3 [1]
 N["sv_T2_pct"] = str(round(100 * int(N["sv_T2"].split("/")[0]) / int(N["sv_T2"].split("/")[1]))) if N["sv_T2"] != "—" else "—"
 _po = [l for l in S if task(l) == "pour"]
 N["pour"] = {"away": "{}/{}".format(*pool(_po, "pour_away", "pour_n")), "over": "{}/{}".format(*pool(_po, "pour_over_dest", "pour_n")), "car": str(sum(g(l, "carried", 0) or 0 for l in _po)), "att": str(sum(g(l, "N", 0) for l in _po))}
@@ -1403,26 +1457,6 @@ DIMTASK = [("Trajectory", "T1", "a keep-out 0.20 / 0.28 m beside the transport, 
 DT_POL = [("pi05", "π0.5"), ("pi0", "π0"), ("pi0fast", "π0-FAST"), ("gr00t_droid", "GR00T-DROID"), ("scripted", "control")]
 
 
-def task_goal(l):
-    """The instruction's goal and its success condition, the object noun aside (2026-10-04 review): what Table IVe counts
-    as a task. Work surface, environment map, clutter, the bystander's body, what a moving person or hand does, the
-    placement and the keep-out kind are factors of a task, and a Table IV row is a task under one level of them."""
-    b = base(l)
-    for pre in ("ch_", "st_"):
-        if b.startswith(pre + "tu"):
-            b = b[len(pre):]
-    if b.startswith(("ho_", "how_", "hr_")):
-        return "hand to the person"
-    if b.startswith("dw_") or b.startswith("sc_drw_dw"):
-        return "put away in a drawer"
-    if b.startswith("sv_tu_"):
-        return "tool use: " + b.split("_")[2]
-    for pre, nm in (("mt_pour", "pour"), ("sv_pour", "pour"), ("mt_push", "push"), ("mt_clear", "clear the table"), ("mt_micro", "close a door")):
-        if b.startswith(pre):
-            return nm
-    if b.startswith(("tu_", "tuc_", "tuh_")):
-        return "tool use: " + b.split("_")[1]
-    return "pick-and-place into the bowl"
 
 
 def _dt_cell(p, sid):
@@ -1492,6 +1526,8 @@ def _goal_n(p_, sid):
     return out
 N["goals_n_by_sub"] = {sid: {tg: _goal_n(p_, sid) for p_, tg in (("pi05", "pi"), ("pi0", "q0"), ("pi0fast", "f0"), ("gr00t_droid", "g0"), ("scripted", "ik"))
                              if rows.get(p_, {}).get(sid + "_lbl")} for sid in ("T1", "T2", "T3", "T4", "T6", "T6b")}
+N["pi_T2_cells"] = str(len(rows["pi05"].get("T2_lbl") or []))
+N["pi_T2_goals8"] = str(sum(1 for v in N["goals_n_by_sub"]["T2"].get("pi", {}).values() if v >= FLOOR))
 N["goals_by_sub"] = {sid: {tg: sorted({task_goal(l) for l in rows[p_].get(sid + "_lbl", [])})
                            for p_, tg in (("pi05", "pi"), ("pi0", "q0"), ("pi0fast", "f0"), ("gr00t_droid", "g0"), ("scripted", "ik"))
                            if rows.get(p_, {}).get(sid + "_lbl")}
@@ -1545,8 +1581,12 @@ def task_agg(p, sid, unit=None, reps=10000):
     K = sum(v[0] for v in per.values()); Nn = sum(v[1] for v in per.values())
     assert (K, Nn) == tuple(rows[p][sid][:2]), (p, sid, (K, Nn), rows[p][sid])
     sc = [(t, k, n) for t, (k, n) in per.items() if n]; big = [x for x in sc if x[2] >= FLOOR]
-    fam = {task_goal(l) for l in rows[p][sid + "_lbl"] if CELL_KN[sid](l)[1]}   # goals (Appendix D), not the coarser families
-    out = {"k": K, "n": Nn, "tasks": len(sc), "tasks8": len(big), "families": len(fam), "per_task": per}
+    _gn = {}
+    for l in rows[p][sid + "_lbl"]:
+        _gn[task_goal(l)] = _gn.get(task_goal(l), 0) + CELL_KN[sid](l)[1]
+    fam = {k_ for k_, v_ in _gn.items() if v_ >= FLOOR}            # goals (Appendix D) with >= 8 scored episodes (REVIEW3 [13])
+    out = {"k": K, "n": Nn, "tasks": len(sc), "tasks8": len(big), "families": len(fam),
+           "families_low": sum(1 for v_ in _gn.values() if 0 < v_ < FLOOR), "per_task": per}
     if Nn:
         out["top_share"] = max(n for _, _, n in sc) / Nn
     if big:
@@ -1623,7 +1663,7 @@ def _agg_row(p, nm, s):
     small = sum(1 for k, n in a["per_task"].values() if 0 < n < FLOOR)
     loto = "{}–{}".format(*map(_pc, a["loto"])) if "loto" in a else "—"
     return (f"| {nm} | {s} | {pooled} | {a['tasks']} ({a['tasks8']} with ≥ 8{'; ' + str(small) + ' below' if small else ''}) / "
-            f"{a['families']} | {_pc(a['top_share'])} % | {macro} | {loto} |")
+            f"{a['families']}{'+' + str(a['families_low']) if a.get('families_low') else ''} | {_pc(a['top_share'])} % | {macro} | {loto} |")
 
 
 N["tab3e_head"] = ("| Policy | Sub-type | Pooled (Table IIIb) | Tasks / goals | Largest task's share | Task-macro [task bootstrap 95 %] "
@@ -1631,8 +1671,8 @@ N["tab3e_head"] = ("| Policy | Sub-type | Pooled (Table IIIb) | Tasks / goals | 
 N["tab3e_rows"] = "\n".join(_agg_row(p, nm, s) for p, nm in _AGG_POL for s in ("T1", "T2", "T3", "T4", "T5b", "T6", "T6b")
                             if (p, s) in _AGG and _AGG[(p, s)]["tasks"] >= 2)
 N["tab3e_single"] = str(sum(1 for a in _AGG.values() if a["tasks"] == 1 and a["n"]))
-N["tab3e_onefamily"] = str(sum(1 for a in _AGG.values() if a["families"] == 1 and a["n"]))
-N["tab3e_onegoal_multi"] = str(sum(1 for a in _AGG.values() if a["families"] == 1 and a["tasks"] >= 2 and a["n"]))
+N["tab3e_onefamily"] = str(sum(1 for a in _AGG.values() if a["families"] <= 1 and a["n"]))
+N["tab3e_onegoal_multi"] = str(sum(1 for a in _AGG.values() if a["families"] <= 1 and a["tasks"] >= 2 and a["n"]))
 N["vs_ctl"] = {sid: {p: vs_control(p, sid) for p, _ in _AGG_POL[:-1]} for sid in ("T2", "T3", "T4")}
 _sb, _sbn = t3_side_balanced("pi05")
 N["agg_pi_T3"] = {"pooled": _pc(_AGG[("pi05", "T3")]["k"] / _AGG[("pi05", "T3")]["n"]), "macro": _pc(_AGG[("pi05", "T3")]["macro"]),
