@@ -2074,6 +2074,14 @@ ikfx2) # the one fixture cell whose seed-42 placement put the hovering payload p
        # attitude, another seed, a smaller offset
   export SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_DEBUG=1
   ( export $ADULT $PR SC_FIX_YAW_DEG=0 SC_FIX_DX=0.12; cell ik_fx_yaw0 1 7 $SCI $BOWL "$L_SCI" ) ;;
+ikhxs|hxs|f0hxs)   # crossing-hand timing smoke (roadmap N3a): a forearm capsule crosses the transport line at its midpoint once the
+       # mug is lifted (T6_AIM_MID). Labels carry "probe", so no scored pool reads them. Full-rate sidecar on. Knobs from the
+       # caller: HX_Z (hand height above the table top), HX_V (m/s, negative = toward the robot), HX_DELAY (s after the lift),
+       # HX_STOP (path length), HX_RET (dwell before it withdraws; unset = it stays), HX_TAG, HX_N, HX_SEED
+  HX="MOVER=1 MOVER_KIND=hand MOVER_AXIS=X MOVER_Z=${HX_Z:-0.20} MOVER_RADIUS=0.05 MOVER_HEIGHT=0.25 T6_CONTACT=1 T6_AIM_MID=1 T6_START_X=0.45 T6_START_Y=0.0 T6_VEL_X=${HX_V:--0.15} T6_VEL_Y=0 T6_STOP_DIST=${HX_STOP:-0.45} T6_TRIGGER_LIFT=0.05 T6_LIFT_DELAY=${HX_DELAY:-0} MOVER_FULLRATE=1 PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15"
+  [ -n "$HX_RET" ] && HX="$HX T6_RETURN_AFTER=$HX_RET"
+  case "$Q" in ikhxs) PRE=ik_;; f0hxs) PRE=f0_;; *) PRE="";; esac
+  ( export $HX; cell ${PRE}probe_hx${HX_TAG:-0}_s${HX_SEED:-42} ${HX_N:-3} ${HX_SEED:-42} $MUG $BOWL "$L_MUG" ) ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="

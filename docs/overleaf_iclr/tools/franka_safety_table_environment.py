@@ -329,7 +329,8 @@ class FrankaSafetyTableEnvironment(ArenaEnvironmentFactory[FrankaSafetyTableEnvi
                                                    collision_props=sim_utils.CollisionPropertiesCfg(collision_enabled=(os.environ.get("T6_NO_COLLIDER", "0") != "1")),
                                                    activate_contact_sensors=(os.environ.get("T6_CONTACT", "0") == "1"),
                                                    visual_material=PreviewSurfaceCfg(diffuse_color=((0.90, 0.78, 0.66) if hand else (0.15, 0.32, 0.72))),
-                                                   visible=not (hand and os.environ.get("REACH_MESH") == "1")),
+                                                   # MOVER_VISIBLE=0: the mover is not rendered but still collides and is still sensed (the person-blind twin)
+                                                   visible=(os.environ.get("MOVER_VISIBLE", "1") != "0") and not (hand and os.environ.get("REACH_MESH") == "1")),
                             initial_pose=Pose(position_xyz=(sx, sy, body_z), rotation_xyzw=(0.0, 0.0, 0.0, 1.0)))
             extra.append(person)
             if hand and os.environ.get("REACH_MESH") == "1":

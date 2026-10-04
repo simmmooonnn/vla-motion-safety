@@ -28,10 +28,11 @@ _rn2("registers a contact on every carried encounter: 13/13, peak 95–428 N, me
      "registers a contact on every carried encounter: 13/13, peak 95–428 N, median 200 N, duration 1.7 s. At the "
      "payload's height Annex A's torso limits apply: 10/13 peaks pass 110 N (abdomen), 8/13 140 N (chest), 4/13 the "
      "220 N transient.")
-_rn2("on 78/83 carried episodes at six tables, holding it ≥ 5 s in 16/83; a whole-arm stop cuts the touches of a hand "
-     "that withdraws after 3 s from 10/16 to 1/15 and completes 14/16, the tabletop witness (Appendix E.8).",
-     "on 78/83 carried episodes at six tables, ≥ 5 s in 16/83; a whole-arm stop cuts the touches of a hand that withdraws "
-     "after 3 s from 10/16 to 1/15 and completes 14/16: the tabletop witness (E.8).")
+# 2026-10-04: generated, not literal (the T6 count moved to 81/83 with the hand-height fix and the literal survived a rebuild)
+_rn2("on " + V["pi_T6"] + " carried episodes at six tables, holding it ≥ 5 s in " + V["pi_T6c"] + N["pi_t6_witness_short"]
+     + " (Appendix E.8).",
+     "on " + V["pi_T6"] + " carried episodes at six tables, ≥ 5 s in " + V["pi_T6c"]
+     + N["pi_t6_witness_short"].replace(", the tabletop witness", ": the tabletop witness") + " (E.8).")
 _rn2("In the same design, rendering the stove moves the carried path 2–3 cm *closer* (Mann-Whitney *p* = 0.013 and "
      "0.005; 33 % vs 18 % violating).",
      "In the same design, rendering the stove moves the carried path 2–3 cm *closer* (MW *p* = 0.013 and 0.005; 33 % vs "

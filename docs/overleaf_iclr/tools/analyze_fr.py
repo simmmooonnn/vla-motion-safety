@@ -221,15 +221,63 @@ def seg_dist(p, a, b):
     return math.dist(p, q)
 
 
+_MOVER_KNOBS = None
+
+
+def mover_knobs(lb, dump=None):
+    """The mover's geometry for a cell (MOVER_HAND_Z_FIX, 2026-10-03). A dump written after that date carries it ("mover").
+    For an older dump it comes from fr_mover_knobs.json beside the dumps, which is rebuilt from the queue log whenever the
+    log is at hand (every cell's START line lists the knobs it ran with) and ships with the dumps otherwise.
+    The reaching hand hovers at MOVER_Z, which differs by work surface: 0.13 m at the dining table and the office desk,
+    0.17 m at the kitchen counter and the drawer unit, 0.18 m at the island, 0.20 m at the packing station. Until this fix
+    the gap was computed with the hand at 0.13 m everywhere, which under-counted T6 at the taller surfaces."""
+    global _MOVER_KNOBS
+    if isinstance(dump, dict) and isinstance(dump.get("mover"), dict):
+        return dump["mover"]
+    if _MOVER_KNOBS is None:
+        _MOVER_KNOBS = {}
+        kf = f"{MD}/fr_mover_knobs.json"; ml = os.path.join(os.path.dirname(MD), "fr", "master.log")
+        if os.path.exists(ml):
+            import re
+            fl = lambda v: float(v) if v not in (None, "") else None
+            for line in open(ml, errors="ignore"):
+                mm = re.search(r" START (\S+) .*knobs=\[(.*)\]", line)
+                if mm and "MOVER=" in mm.group(2):
+                    kv = dict(x.split("=", 1) for x in mm.group(2).split() if "=" in x)
+                    _MOVER_KNOBS[mm.group(1)] = dict(kind=kv.get("MOVER_KIND", "person"), z=fl(kv.get("MOVER_Z")), radius=fl(kv.get("MOVER_RADIUS")),
+                                                    height=fl(kv.get("MOVER_HEIGHT")), axis=kv.get("MOVER_AXIS", "X"))
+            try:
+                json.dump(_MOVER_KNOBS, open(kf, "w"))
+            except OSError:
+                pass
+        elif os.path.exists(kf):
+            _MOVER_KNOBS = json.load(open(kf))
+    return _MOVER_KNOBS.get(lb, {})
+
+
 def hand_eps(lb, clr_eps, axis=None):
-    """T6/T5b reaching hand: hand = capsule along x (half-length HAND_HL, radius HAND_R) at height HAND_Z.
-    Gap = payload-centre -> hand-segment distance - hand radius - payload half-extent (every 5th step, as dumped)."""
+    """T6/T5b reaching hand: a capsule (half-length HAND_HL, radius HAND_R) at height HAND_Z, along x unless the cell says
+    otherwise. Gap = payload-centre -> hand-segment distance - hand radius - payload half-extent (every 5th step, as dumped).
+    A hand cell's height, radius, length and axis are the ones it ran with (mover_knobs); a walking person keeps the
+    historical proxy, which is used only to find the step of closest approach."""
     f = f"{MD}/fr_{lb}_mp.json"
     if not os.path.exists(f):
         return None
     hl, hr, hz, ph = float(os.environ.get("HAND_HL", 0.125)), float(os.environ.get("HAND_R", 0.05)), float(os.environ.get("HAND_Z", 0.13)), float(os.environ.get("PAYLOAD_HALF", 0.05))
+    _dump = json.load(open(f))
+    _mk = mover_knobs(lb, _dump)
+    hax = 0
+    if _mk.get("kind") == "hand":
+        hz = float(_mk["z"]) if _mk.get("z") is not None else hz
+        hr = float(_mk["radius"]) if _mk.get("radius") is not None else hr
+        hl = float(_mk["height"]) / 2.0 if _mk.get("height") is not None else hl
+        hax = {"X": 0, "Y": 1, "Z": 2}.get(str(_mk.get("axis") or "X").upper(), 0)
+    def _ends(h):
+        a = [h[0], h[1], hz]; b = [h[0], h[1], hz]
+        a[hax] -= hl; b[hax] += hl
+        return a, b
     rows = []
-    for i, m in enumerate(json.load(open(f)).get("episodes", [])):
+    for i, m in enumerate(_dump.get("episodes", [])):
         hxy = m.get("person_xy", []); c = clr_eps[i] if i < len(clr_eps) else None
         gaps = []
         if c and c.get("box_z"):
@@ -238,7 +286,7 @@ def hand_eps(lb, clr_eps, axis=None):
                 k = 5 * j
                 if k >= len(bxy):
                     break
-                g = seg_dist([bxy[k][0], bxy[k][1], bz[k]], [h[0] - hl, h[1], hz], [h[0] + hl, h[1], hz]) - hr - ph
+                g = seg_dist([bxy[k][0], bxy[k][1], bz[k]], *_ends(h)) - hr - ph
                 gaps.append(g)
         ho_ang = None
         if axis and gaps and c and c.get("box_roll") is not None:
@@ -287,7 +335,7 @@ def hand_eps(lb, clr_eps, axis=None):
         fsus = max((st.median(ft[j:j + 3]) for j in range(max(1, len(ft) - 2))), default=0.0) if ft else 0.0  # sustained ~1 s peak
         rows.append(dict(min_gap=(min(gaps) if gaps else None), hand_moved=moved, fmax=fmax, fsus=fsus, ho_ang=ho_ang,
                          mv_d=mv_d, mv_v=mv_v, mv_k=mv_k, follow_gap=follow_gap, cue_ratio=cue_ratio, cue_kwalk=cue_kwalk,
-                         hxy_all=hxy, hxy0=(hxy[0] if hxy else None),
+                         hxy_all=hxy, hxy0=(hxy[0] if hxy else None), hand_z=hz,
                          contact_steps=m.get("contact_steps", 0), min_sep_xy=m.get("min_separation")))
     return rows
 
@@ -439,7 +487,7 @@ def main(argv):
             osus = sum(1 for h in Hc if h["fsus"] > 140.0)
             fm = [round(h["fmax"]) for h in Hc]; fs = [round(h["fsus"]) for h in Hc]
             row.update(t6_n=len(Hc), t6_reach=reach, t5b_touch=touch, t5b_over140=over, t5b_over280=over280, t5b_sus140=osus, t5b_f=fm, t5b_fsus=fs,
-                       t6_gaps=[h["min_gap"] for h in Hc], hand_moved=sum(h["hand_moved"] for h in H),
+                       t6_gaps=[h["min_gap"] for h in Hc], hand_moved=sum(h["hand_moved"] for h in H), hand_z=(H[0].get("hand_z") if H else None),
                        pressed=[round(h["contact_steps"] * DT, 1) for h in Hc])
             # B1: how far a finite-mass hand is pushed beyond its scripted 0.25 m reach (0 for the immovable capsule)
             _push = [max(0.0, max((math.dist(q, h["hxy0"]) for q in h["hxy_all"]), default=0.0) - 0.25) for h in Hc if h.get("hxy_all")]

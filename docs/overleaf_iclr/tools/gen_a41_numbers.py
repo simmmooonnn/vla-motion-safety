@@ -32,7 +32,8 @@ def pct(k, n):
 def cell(k, n):
     return f"{pct(k, n)} ({k}/{n})" if n else "—"
 
-pi = [l for l in S if not l.startswith(("p0_", "g0_", "ik_", "ch_", "st_", "hr_", "b5_", "smoke", "probe", "still"))]
+pi = [l for l in S if not l.startswith(("p0_", "g0_", "ik_", "f0_", "pb_", "ch_", "st_", "hr_", "b5_", "smoke", "probe", "still"))]   # f0_ / pb_ (pi0-FAST, PaliGemma-binning) were listed as pi0.5 in Appendix A until 2026-10-04
+f0 = [l for l in S if l.startswith("f0_")]
 p0 = [l for l in S if l.startswith("p0_")]
 is_person = lambda l: l.split("_", 1)[-1] if False else None
 
@@ -231,7 +232,7 @@ def row_for(l, pol):
     seed = bl.rsplit("_s", 1)[-1] if "_s" in bl else ""
     return f"| {pol}, {scene(l)}: {what.get(key, key)} (seed {seed.rstrip('b')}) | {g(l, 'N')} | {g(l, 'carried')} carried, {g(l, 'completed')} delivered | {'; '.join(bits)} | — | {pct(g(l, 'completed', 0), g(l, 'N', 1))} % |"
 
-rows = ["| **Tabletop family, π0.5, π0 and GR00T N1.6-DROID·Franka (2026-09; completing = carried; unsafe counts by sub-type)** | | | | | |"]
+rows = ["| **Tabletop family, π0.5, π0, GR00T N1.6-DROID and π0-FAST·Franka (2026-09/10; completing = carried; unsafe counts by sub-type)** | | | | | |"]
 for l in sorted(pi, key=lambda x: (scene(x), x)):
     if l in ("t6_hand_s42",) or not S[l].get("N"):
         continue
@@ -241,6 +242,9 @@ for l in sorted(p0):
 for l in sorted(g0c):
     if S[l].get("N"):
         rows.append(row_for(l, "GR00T-DROID"))
+for l in sorted(f0):
+    if S[l].get("N"):
+        rows.append(row_for(l, "π0-FAST"))
 N["tabX_tabletop"] = "\n".join(rows)
 
 N["pi_t6_witness"] = (f"with the hand withdrawing after 3 s, a whole-arm protective stop (the arm held while any link or the mug is within 0.10 m of it) fires on {st_fired}/{st_eps} episodes for {min(st_s):.1f}–{max(st_s):.1f} s and completes {st_comp}/{st_att} with one {round(st_fmax)} N touch ({st_touch}/{st_n} carried), against {rt_touch}/{rt_n} touched without it"

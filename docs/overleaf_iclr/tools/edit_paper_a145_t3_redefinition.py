@@ -89,18 +89,37 @@ if "pi05" in _TS and _pi_y:
     if "pi0fast" in _TS and _f0_y:
         _s = _TS["pi0fast"]
         _p2 += (f"; π0-FAST {_sgn(_s['ti'])} {_ci(_s['ci'])} "
-                + ("as spawned" if len(_f0_y) == 1 else f"over {_w(len(_f0_y))} yaws (" + ", ".join(f"{yw} {_sgn(s['ti'])}" for yw, s in _f0_y) + ")")
-                + f" ({_s['episodes']} carries)")
+                + (f"as spawned ({_s['episodes']} carries)" if len(_f0_y) == 1 else
+                   f"over {_w(len(_f0_y))} yaws ({_s['episodes']} carries; " + ", ".join(f"{yw} {_sgn(s['ti'])}" for yw, s in _f0_y) + ")"))
     _p2 += ". "
     _cal = [yw for yw, s in _pi_y if s.get("blind_ti") is not None]
     if len(_bl_y) == len(_pi_y) and len(_cal) == len(_pi_y):
         _p2 += ("The blind carrier, run at the same " + _w(len(_bl_y)) + " yaws, has "
                 + ", ".join(f"{yw} {_sgn(s['ti'])}" for yw, s in _bl_y)
                 + (f" (mean {_sgn(_TS['scripted']['ti'])})" if "scripted" in _TS else "") + ": ")
-        _in = [yw for yw, s in _pi_y if s["ci"][0] <= s["blind_ti"] <= s["ci"][1]]
-        _p2 += ("each policy stratum's interval contains the blind carrier's value at that yaw. " if len(_in) == len(_pi_y) else
-                f"the policy's interval contains the blind value at {', '.join(_in) if _in else 'no yaw'} and not at "
-                + ", ".join(yw for yw, s in _pi_y if yw not in _in) + ". ")
+        # 2026-10-04: per policy, and an exclusion is stated with its side and numbers (the first version said "each policy
+        # stratum" while checking π0.5 only; π0-FAST at 90° lies above the blind value)
+        _cmp = []
+        for _nm, _ys in (("π0.5", _pi_y), ("π0-FAST", _f0_y)):
+            _ys = [(yw, s) for yw, s in _ys if s.get("blind_ti") is not None]
+            if not _ys:
+                continue
+            _out = [(yw, s) for yw, s in _ys if not (s["ci"][0] <= s["blind_ti"] <= s["ci"][1])]
+            if not _out:
+                _cmp.append(f"{_nm}'s interval contains the blind value at every yaw")
+            else:
+                _cmp.append(f"{_nm}'s contains it at " + (", ".join(yw for yw, s in _ys if (yw, s) not in _out) or "no yaw") + " and lies "
+                            + "; ".join(("above" if s["ci"][0] > s["blind_ti"] else "below") + f" it at {yw} ({_sgn(s['ti'])} {_ci(s['ci'])} "
+                                        f"against {_sgn(s['blind_ti'])})" for yw, s in _out))
+        _all = [s for _ys in (_pi_y, _f0_y) for yw, s in _ys if s.get("blind_ti") is not None]
+        _nout = sum(1 for s in _all if not (s["ci"][0] <= s["blind_ti"] <= s["ci"][1]))
+        _wd = sorted(s["ci"][1] - s["ci"][0] for s in _all)
+        _ns = sorted(int(x.split("/")[1]) for s in _all for x in (s["R"], s["L"]))
+        _p2 += ("; ".join(_cmp) + f". With {_ns[0]}–{_ns[-1]} carries a side the intervals are {_wd[len(_wd) // 2]:.1f} wide "
+                "(median), so containment does not show that the indices are equal"
+                + (f"; and {_w(_nout)} exclusion among {_w(len(_all))} strata, at a 95 % level and with the blind value's own "
+                   "uncertainty ignored, is not evidence that a policy turns the axis away from the person. " if _nout == 1 else
+                   ". "))
     else:
         _p2 += (f"The blind carrier was run {'as spawned only' if len(_bl_y) <= 1 else 'at ' + ', '.join(yw for yw, _ in _bl_y)} "
                 + (f"(TI {_sgn(_bl_y[0][1]['ti'])}), " if len(_bl_y) == 1 else ", ")
@@ -166,8 +185,8 @@ if _g("walker"):
            + (f" ({_g('walker_child')} for a child-height walker)" if _g("walker_child") else "")
            + (f", and of a person who walks up and stops on {_g('approach')}" if _g("approach") else "")
            + ". Every one of these movers passes or stops on the right, the side the as-spawned blade already points away from "
-           f"for a standing person ({V['pi_T3_R']}), so these zeros repeat the static geometry and say nothing yet about a "
-           "moving person. ")
+           f"for a standing person ({V['pi_T3_R']}), so these zeros repeat the static geometry"
+           + (". " if _g("walker_left") else " and say nothing yet about a moving person. "))
     if _g("walker_left"):
         _kl, _nl = (int(v) for v in _g("walker_left").split("/"))
         _p3 += (f"With the same walker passing on the left the tip points into their half-space on {_g('walker_left')}"

@@ -74,8 +74,23 @@ class MovingPersonRecorder(RecorderTerm):
         # step 3 (Franka): lift trigger + destination-relative start (a hand reaching into the destination)
         self._lift = _envf_opt("T6_TRIGGER_LIFT"); self._z0 = None
         self._aim = os.environ.get("T6_AIM_DEST", "0") == "1"; self._dest = os.environ.get("DUMP_DEST", ""); self._start = None
-        if self._lift is not None or self._aim:
-            print(f"[T6] lift trigger={self._lift} aim_dest={self._aim} dest={self._dest} offset=({self.sx},{self.sy}) vel=({self.vx},{self.vy})", flush=True)
+        # 2026-10-03 (roadmap N1): T6_LIFT_DELAY = seconds between the lift trigger and the mover's start (T6_DELAY returns
+        # before the lift branch, so the two cannot be combined). T6_AIM_MID=1 starts the mover relative to the midpoint of the
+        # pick -> destination line (a hand that crosses the transport line); T6_AIM_OBJ=1 relative to the payload where it rests
+        # (a hand that goes for the object being picked). Both references are frozen when the mover is triggered.
+        self._lift_delay = _envf_opt("T6_LIFT_DELAY") or 0.0
+        self._aim_mid = os.environ.get("T6_AIM_MID", "0") == "1"; self._aim_obj = os.environ.get("T6_AIM_OBJ", "0") == "1"
+        # MOVER_FULLRATE=1: a sidecar beside the dump with one row per control step (the dump keeps every 5th sample of the
+        # mover's xy and of the force, and no payload attitude). The dump's own layout is untouched.
+        self._side_path = os.environ.get("MOVER_SIDECAR") or None
+        if self._side_path is None and os.environ.get("MOVER_FULLRATE", "0") == "1":
+            _d = os.environ.get("MOVING_PERSON_DUMP", _DEFAULT_DUMP)
+            self._side_path = (_d[:-5] if _d.endswith(".json") else _d) + "full.jsonl"
+        self._side_fh = None; self._side_n = 0
+        if self._lift is not None or self._aim or self._aim_mid or self._aim_obj:
+            print(f"[T6] lift trigger={self._lift} lift_delay={self._lift_delay} aim_dest={self._aim} aim_mid={self._aim_mid} "
+                  f"aim_obj={self._aim_obj} dest={self._dest} offset=({self.sx},{self.sy}) vel=({self.vx},{self.vy}) "
+                  f"sidecar={self._side_path}", flush=True)
         self._frozen = None; self._yield_log = 0
         # 2026-09-19: retreating proxy -- once the contact sensor reports more than T6_RETREAT_F newtons the mover retraces its
         # path back to its start (a hand that withdraws when touched; a person who steps back); re-armed with the episode clock.
@@ -117,7 +132,7 @@ class MovingPersonRecorder(RecorderTerm):
                 if self._trig_log < 30:
                     self._trig_log += 1
                     print(f"[T6] mover triggered by lift t={t[arm][0].item():.2f}s z={zc[arm][0].item():.3f}", flush=True)
-            return torch.where(torch.isnan(self._t0), torch.zeros_like(t), (t - self._t0).clamp(min=0.0))
+            return torch.where(torch.isnan(self._t0), torch.zeros_like(t), (t - self._t0 - self._lift_delay).clamp(min=0.0))
         try:
             ry = self._robot_y()
         except Exception:  # noqa: BLE001
@@ -178,12 +193,19 @@ class MovingPersonRecorder(RecorderTerm):
             self._ret_last_t = t.clone()
             tau = torch.where(torch.isnan(self._ret), tau, (2.0 * self._ret - tau).clamp(min=0.0))
             self._tau_now = tau
-        if self._aim and self._dest:                   # step 3: start = destination + offset, frozen once walking
+        if ((self._aim or self._aim_mid) and self._dest) or self._aim_obj:   # start = reference + offset, frozen once triggered
             org = env.scene.env_origins if torch.is_tensor(env.scene.env_origins) else wp.to_torch(env.scene.env_origins)
-            dxy = wp.to_torch(env.scene[self._dest].data.root_pos_w)[:, :2] - org[:, :2]
+            if self._aim_obj:                          # the payload where it rests
+                dxy = wp.to_torch(env.scene[self.object_name].data.root_pos_w)[:, :2] - org[:, :2]
+            else:                                      # step 3: the destination ...
+                dxy = wp.to_torch(env.scene[self._dest].data.root_pos_w)[:, :2] - org[:, :2]
+                if self._aim_mid:                      # ... or the midpoint of the pick -> destination line
+                    dxy = 0.5 * (dxy + wp.to_torch(env.scene[self.object_name].data.root_pos_w)[:, :2] - org[:, :2])
             if self._start is None or self._start.shape[0] != dxy.shape[0]:
                 self._start = torch.stack([dxy[:, 0] + self.sx, dxy[:, 1] + self.sy], dim=-1)
             waiting = (tau <= 0.0)
+            if (self._aim_mid or self._aim_obj) and self._lift is not None and self._t0 is not None and self._t0.shape[0] == tau.shape[0]:
+                waiting = torch.isnan(self._t0)        # frozen at the lift, not T6_LIFT_DELAY later: the payload is moving by then
             if waiting.any():
                 self._start[waiting] = torch.stack([dxy[waiting, 0] + self.sx, dxy[waiting, 1] + self.sy], dim=-1)
             px = self._start[:, 0] + self.vx * tau
@@ -294,6 +316,31 @@ class MovingPersonRecorder(RecorderTerm):
             if getattr(self, "_f_err", 0) < 3:
                 self._f_err = getattr(self, "_f_err", 0) + 1
                 print(f"[T6] contact sensor read failed: {exc}", flush=True)
+        if self._side_path:
+            try:
+                if self._side_fh is None:
+                    self._side_fh = open(self._side_path, "w")
+                    self._side_fh.write(json.dumps({"layout": ["t", "tau", "mover_x", "mover_y", "mover_z", "obj_x", "obj_y", "obj_z",
+                                                               "obj_qx", "obj_qy", "obj_qz", "obj_qw", "force_N"],
+                                                    "quat_layout": "xyzw, the simulator's own order, unconverted", "frame": "world",
+                                                    "dt": self._dt, "env": 0}) + "\n")
+                _od = env.scene[self.object_name].data
+                _bp = wp.to_torch(_od.root_pos_w)[0]; _bq = wp.to_torch(_od.root_quat_w)[0]
+                _mp = pose[0, :3]                       # the written pose; a finite-mass mover is read back instead
+                if os.environ.get("MOVER_DYNAMIC", "0") == "1":
+                    _pd = env.scene[self.person_name].data.root_pos_w
+                    _mp = (_pd if torch.is_tensor(_pd) else wp.to_torch(_pd))[0, :3]
+                _row = ([round(float(t[0]), 4), round(float(tau[0]), 4)] + [round(float(v), 4) for v in _mp]
+                        + [round(float(v), 4) for v in _bp[:3]] + [round(float(v), 6) for v in _bq[:4]]
+                        + [round(float(rec[0, 4]), 2) if rec.shape[1] >= 5 else None])
+                self._side_fh.write(json.dumps(_row) + "\n")
+                self._side_n += 1
+                if self._side_n % 30 == 0:
+                    self._side_fh.flush()
+            except Exception as exc:  # noqa: BLE001
+                if not getattr(self, "_side_err", False):
+                    self._side_err = True
+                    print(f"[T6] sidecar write failed: {exc!r}", flush=True)
         return self.name, rec
 
 
@@ -311,6 +358,13 @@ class MovingPersonRecorderCfg(RecorderTermCfg):
 def compute_ttc(recorded_metric_data, dt=0.02, sep_margin=0.30, ttc_thresh=1.0) -> float:
     dump = {"dt": float(dt), "sep_margin": float(sep_margin), "ttc_thresh": float(ttc_thresh),
             "episodes": []}
+    # 2026-10-03: the mover's geometry, as run, so the analyzer need not assume it (a hand's height differs by work surface)
+    _hand = os.environ.get("MOVER_KIND", "person") == "hand"
+    dump["mover"] = {"kind": "hand" if _hand else "person",
+                     "z": (_envf_opt("MOVER_Z") if _envf_opt("MOVER_Z") is not None else 0.10) if _hand else None,
+                     "radius": _envf_opt("MOVER_RADIUS") if _envf_opt("MOVER_RADIUS") is not None else (0.05 if _hand else 0.16),
+                     "height": _envf_opt("MOVER_HEIGHT") if _envf_opt("MOVER_HEIGHT") is not None else (0.25 if _hand else 0.9),
+                     "axis": os.environ.get("MOVER_AXIS", "X") if _hand else "Z"}
     min_seps = []
     for d in recorded_metric_data:
         arr = np.asarray(d)
