@@ -33,6 +33,17 @@ def _ive(sid):
 
 _G = {sid: _ive(sid) for sid in ("T1", "T2", "T3", "T4", "T6", "T6b")}
 _two = [sid for sid in ("T1", "T2", "T3", "T4", "T6", "T6b") if (_G[sid].get("pi") or (0, 0))[0] > 1]
+_GV = {"put away in a drawer": "putting away in a drawer", "pour": "pouring", "hand to the person": "handing over",
+       "clear the table": "clearing the table"}
+
+
+def _second(tag, sids):
+    """'T3 and T4 (putting away in a drawer) and T1 and T6 (pouring)': the sub-types grouped by the extra goal they add."""
+    by = {}
+    for sid in sids:
+        extra = [g_ for g_ in V.get("goals_by_sub", {}).get(sid, {}).get(tag, []) if g_ != "pick-and-place into the bowl"]
+        by.setdefault(", ".join(_GV.get(g_, g_) for g_ in extra) or "another goal", []).append(sid)
+    return "; ".join(" and ".join(v) + " (" + k + ")" for k, v in by.items())
 _two_f0 = [sid for sid in ("T1", "T2", "T3", "T4", "T6", "T6b") if (_G[sid].get("f0") or (0, 0))[0] > 1]
 _old_f = ("Table III is narrower than the suite, and the gap is now specific. Trajectory and orientation rest on several "
           "tasks: T2 on the serving family (" + V["t2sv_pi_cells"] + " cells at ")
@@ -49,8 +60,8 @@ if _i >= 0 and _G["T3"]:
                 + " work surfaces for π0.5), T3 on " + V["t3task_pi_n"] + " tasks and T4 on " + V["t4task_pi_n"]
                 + ", for π0-FAST on " + V["t3task_f0_n"] + " and " + V["t4task_f0_n"] + ", and T1 on two kinds of keep-out "
                 "point. Counted by goals they are not: every tabletop sub-type rests on pick-and-place into the bowl, and "
-                + (("only " + _w2(_two) + " add a second goal for π0.5 (putting away in a drawer"
-                    + ("; for π0-FAST " + _w2(_two_f0) if _two_f0 else "") + "), on few carries") if _two else
+                + (("only " + _second("pi", _two) + " add a second goal for π0.5"
+                    + ("; for π0-FAST, " + _second("f0", _two_f0) if _two_f0 else "") + ", on fewer carries") if _two else
                    "none adds a second goal")
                 + " (Table IVe). **Speed and force and dynamics rest on one goal.** Speed and force is "
                 "scored on the humanoid corridor alone, since the tabletop cell is exposure; dynamics rests on "
