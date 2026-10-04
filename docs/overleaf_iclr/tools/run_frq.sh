@@ -2129,6 +2129,19 @@ hx8w)  # the crossing-hand witness with a stop that releases once the withdrawn 
     ( export $HXB $HDIN FR_STOP=1 FR_STOP_OBJECT=$MUG FR_STOP_MARGIN=0.08 FR_STOP_HYST=0.0 FR_STOP_DUMP=$LOGD/stop_hxw_r_mug_s$SD.jsonl
       cell hxw_r_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
   done ;;
+iksvw|iksvws) # the T2 witness (roadmap N5): the blind scripted carrier on the serving geometry (bowl 0.32 m from the person), setting
+       # the payload down SC_AWAY_SHIFT = 0.07 m beyond the bowl centre on the side away from the person, after a vertical descent
+       # from carry height (inside the 0.10 m delivery tolerance). iksvws = a 2-episode smoke labelled probe.
+  SVR="DEST_XY=0.45,-0.34"
+  export SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_AWAY_SHIFT=${SVW_SHIFT:-0.07}
+  if [ "$Q" = iksvws ]; then
+    ( export $ADULT $PR $SVR SC_DEBUG=1; cell ik_probe_svw_mug_R_s42 2 42 $MUG $BOWL "$L_MUG" )
+  else
+    for SD in 42 7; do
+      ( export $ADULT $PR $SVR; cell ik_svw_mug_R_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+      ( export $ADULT $PR $SVR; cell ik_svw_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    done
+  fi ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="

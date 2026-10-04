@@ -270,7 +270,7 @@ def _serving(l):
     elif b.startswith(("ch_", "st_", "hm_")):
         b = b[3:]
     return ((b.startswith(("sv", "svst_", "svch_", "svd")) or "_sv_" in b) and "_hw_" not in b
-            and not b.startswith(("svd45_", "svd55_", "svchd45_", "svstd45_", "svchvd45_", "svstvd45_", "sc_pack_sv")))
+            and not b.startswith(("svd45_", "svd55_", "svchd45_", "svstd45_", "svchvd45_", "svstvd45_", "sc_pack_sv", "svw_")))
 for _p in ("pi05", "pi0", "pi0fast", "pgbin", "gr00t_droid", "scripted"):
     _ls = [l for l in S if policy(l) == _p and g(l, "t2_n") and _serving(l) and not any(x in l for x in SKIP) and not misrendered(l)]
     if _ls:
@@ -379,7 +379,7 @@ for _p, _tag in _T2TAG.items():
 # interaction-geometry placements (reported as their own group, E.8) and the engine and threshold probes.
 _BAD_LBL = ("_cmd", "nocol", "handret", "hurry", "spill", "d10", "_rot", "t5a_absent")
 _BAD_STEM = ("r20", "r16_", "p20h", "ik_r20", "d11", "d12", "d13", "d14", "d17", "d18", "d19", "t3w", "t3q", "t3p", "rad", "rev_", "pg_", "b9_", "tpw", "dyn_", "hv_", "hm_", "hm2_", "hotchk_", "lr_", "fx_", "y090_", "y180_", "y270_", "w090_", "w180_", "w270_", "wfork", "wkL_", "wkrot_",
-             "ge_", "hxh_", "hxw_", "hxw_r_", "probe")
+             "ge_", "hxh_", "hxw_", "hxw_r_", "svw_", "probe")
 _BAD_TASK = ("appearance ablation", "perception ablation", "rotated spawn",
              "other placements", "finite-mass hand", "told to hurry", "told to go slowly",
              "two bystanders", "handover", "pour", "tool use", "push",
@@ -796,6 +796,16 @@ N["hw_sci"] = {"reach": "{}/{}".format(*pool(_hws, "t6_reach", "t6_n")), "touch"
 _hw0 = [l for l in S if l.startswith("p0_hw_")]
 N["hw_pi0"] = {"reach": "{}/{}".format(*pool(_hw0, "t6_reach", "t6_n")), "touch": "{}/{}".format(*pool(_hw0, "t5b_touch", "t6_n")), "follow": "{}/{}".format(*pool(_hw0, "follow_reach", "follow_n")),
                "car": str(sum(g(l, "carried", 0) or 0 for l in _hw0)), "att": str(sum(g(l, "N", 0) for l in _hw0))}
+# ---- the T2 witness (roadmap N5): the blind carrier on the serving geometry, setting the payload down 0.07 m beyond the bowl
+# centre, away from the person (ik_svw_*), against the same carrier without the shift (ik_sv_*)
+_svw = [l for l in S if l.startswith("ik_svw_") and g(l, "t2_n")]
+_sv0 = [l for l in S if l.startswith("ik_sv_") and g(l, "t2_n")]
+if _svw:
+    N["ik_svw"] = {"T2": "{}/{}".format(*pool(_svw, "t2_viol", "t2_n")), "contact": str(pool(_svw, "t2_contact", "t2_n")[0]),
+                   "att": str(sum(g(l, "N", 0) or 0 for l in _svw)), "carried": str(sum(g(l, "carried", 0) or 0 for l in _svw)),
+                   "delivered": str(sum(g(l, "completed", 0) or 0 for l in _svw)), "cells": str(len(_svw)),
+                   "T2_noshift": "{}/{}".format(*pool(_sv0, "t2_viol", "t2_n")),
+                   "delivered_noshift": str(sum(g(l, "completed", 0) or 0 for l in _sv0)), "att_noshift": str(sum(g(l, "N", 0) or 0 for l in _sv0))}
 N["svhv"] = {"seated": _svh([l for l in S if l.startswith("svstv_")]), "child": _svh([l for l in S if l.startswith("svchv_")]),
              "adult_mug": _svh([l for l in S if l.startswith("sv_mug_R")]), "adult": _svh([l for l in S if l.startswith(("sv_mug_R", "sv_sci_R"))])}
 N["svh_d45"] = {"seated": _svh([l for l in S if l.startswith("svstd45_")]), "child": _svh([l for l in S if l.startswith("svchd45_")])}

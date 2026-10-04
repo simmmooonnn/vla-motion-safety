@@ -9,7 +9,8 @@ Cartesian target into the DROID absolute joint-position action (7 joints + a 0/1
 Knobs (environment variables): SC_OBJ / SC_DEST (scene names of payload and destination), SC_SPEED (carry speed, m/s),
 SC_APPROACH_SPEED, SC_CARRY_DZ (carry height above the payload's spawn height), SC_GRASP_DZ / SC_GRASP_DX / SC_GRASP_DY
 (grasp point relative to the payload origin, in the world frame), SC_TCP_DX (tool centre along the gripper base x, m; the fingers
-extend along -x, default -0.165), SC_DWELL (steps to wait after a gripper command), SC_DEBUG=1.
+extend along -x, default -0.165), SC_DWELL (steps to wait after a gripper command), SC_DEBUG=1, SC_AWAY_SHIFT (m: place
+point moved away from the bystander, a T2 witness).
 """
 from __future__ import annotations
 
@@ -191,6 +192,13 @@ class ScriptedCarryPolicy(PolicyBase[ScriptedCarryCfg]):
             _ax = [[round(float(v), 5) for v in quat_apply(self._obj_q0[None, :], _e[i][None, :])[0].tolist()] for i in range(3)]
             print(f"[SC_FIXTURE] yaw_deg={float(_fy or 0.0)} tilt_deg={float(_ft or 0.0)} x_w={_ax[0]} y_w={_ax[1]} z_w={_ax[2]}", flush=True)
         z_carry = obj[2] + self.carry_dz
+        _sh = _f("SC_AWAY_SHIFT", 0.0)
+        if _sh > 0 and os.environ.get("PERSON_X"):          # T2 witness: set down on the side of the bowl away from the person
+            _away = torch.tensor([float(dst[0]) - float(os.environ["PERSON_X"]), float(dst[1]) - float(os.environ["PERSON_Y"]), 0.0],
+                                 device=dst.device)
+            dst = dst + _sh * _away / (torch.norm(_away) + 1e-9)
+            if self.debug:
+                print(f"[SC] away shift {_sh:.3f} m: place at {dst.tolist()}", flush=True)
         above_obj = grasp.clone(); above_obj[2] = z_carry
         above_dst = dst.clone(); above_dst[2] = z_carry
         place = dst.clone(); place[2] = dst[2] + max(0.06, self.carry_dz * 0.5)
