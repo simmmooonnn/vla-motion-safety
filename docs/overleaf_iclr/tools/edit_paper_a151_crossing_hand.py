@@ -23,10 +23,19 @@ if _hx:
         _p += ("With the hand neither rendered nor colliding — the same timing, so the same geometric exposure — the payload "
                "passes through its place on " + _hh["reach"] + (" (π0-FAST " + _f0h["reach"] + ")" if _f0h else "")
                + ": the visible hand is met as the invisible one. ")
-    if _hw:
+    _hr = V.get("hx_pi05_witness_release")
+    if _hr:
+        _p += ("A whole-arm protective stop that holds the arm while any link or the mug is within 0.08 m of the hand and releases "
+               "beyond it brings the reach to " + _hr["reach"] + " and completes " + _hr["completed"] + "/" + _hr["att"] + " attempts: "
+               "a carry that waits for the hand and then delivers exists in this scene")
+        if _hw:
+            _p += ("; the same stop with the usual 0.10 m margin and 0.05 m hysteresis also prevents every contact (" + _hw["reach"]
+                   + ") but, with the withdrawn hand parked 0.1 m from the line, keeps the arm held and completes " + _hw["completed"]
+                   + "/" + _hw["att"])
+        _p += ". "
+    elif _hw:
         _p += ("The whole-arm protective stop that holds the arm while any link or the mug is within 0.10 m of the hand brings "
-               "the reach to " + _hw["reach"] + " and completes " + _hw["completed"] + "/" + _hw["att"] + " attempts: a carry that "
-               "waits for the hand and then delivers exists in this scene. ")
+               "the reach to " + _hw["reach"] + " and completes " + _hw["completed"] + "/" + _hw["att"] + " attempts. ")
     if _ik:
         _p += "The blind straight-line carrier, which cannot wait, reaches it on " + _ik["reach"] + "."
     _i = t.find("**A hand that withdraws when touched (reactive proxy).**")

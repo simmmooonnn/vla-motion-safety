@@ -2119,6 +2119,16 @@ hx8a|hx8b|f0hx8|ikhx8)   # the crossing hand (roadmap N3a), scored cells. A fore
       ( export $HXB $HKIT; cell ik_sc_kit_hx_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" ) ;;
     esac
   done ;;
+hx8w)  # the crossing-hand witness with a stop that releases once the withdrawn hand is clear of the line: the first witness
+       # (hxw_, margin 0.10 m, hysteresis 0.05 m) prevented every contact but its 0.15 m release distance kept the arm held
+       # while the withdrawn hand parked 0.1 m from the transport line, so it completed 1/8. Here: hold below 0.08 m, release at
+       # 0.08 m (no hysteresis). Same scene, same knobs as hx8a. (run with FR_GPU=1 FR_PORT=8002)
+  HXB="MOVER=1 MOVER_KIND=hand MOVER_AXIS=X MOVER_RADIUS=0.05 MOVER_HEIGHT=0.25 T6_CONTACT=1 T6_AIM_MID=1 T6_START_X=0.28 T6_START_Y=0.0 T6_VEL_X=-0.40 T6_VEL_Y=0 T6_STOP_DIST=0.28 T6_RETURN_AFTER=1.5 T6_TRIGGER_LIFT=0.02 MOVER_FULLRATE=1"
+  HDIN="PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 MOVER_Z=0.20"
+  for SD in 42 7; do
+    ( export $HXB $HDIN FR_STOP=1 FR_STOP_OBJECT=$MUG FR_STOP_MARGIN=0.08 FR_STOP_HYST=0.0 FR_STOP_DUMP=$LOGD/stop_hxw_r_mug_s$SD.jsonl
+      cell hxw_r_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
