@@ -29,15 +29,18 @@ if _hx:
                "beyond it brings the reach to " + _hr["reach"] + " and completes " + _hr["completed"] + "/" + _hr["att"] + " attempts: "
                "a carry that waits for the hand and then delivers exists in this scene")
         if _hw:
-            _p += ("; the same stop with the usual 0.10 m margin and 0.05 m hysteresis also prevents every contact (" + _hw["reach"]
-                   + ") but, with the withdrawn hand parked 0.1 m from the line, keeps the arm held and completes " + _hw["completed"]
-                   + "/" + _hw["att"])
+            _p += ("; the same stop with the usual 0.10 m margin and 0.05 m hysteresis "
+                   + ("also prevents every contact (" if _hw["reach"].startswith("0/") else "reaches it on ") + _hw["reach"]
+                   + (")" if _hw["reach"].startswith("0/") else "") + " but, with the withdrawn hand parked 0.1 m from the line, "
+                   "keeps the arm held and completes " + _hw["completed"] + "/" + _hw["att"])
         _p += ". "
     elif _hw:
         _p += ("The whole-arm protective stop that holds the arm while any link or the mug is within 0.10 m of the hand brings "
                "the reach to " + _hw["reach"] + " and completes " + _hw["completed"] + "/" + _hw["att"] + " attempts. ")
     if _ik:
-        _p += "The blind straight-line carrier, which cannot wait, reaches it on " + _ik["reach"] + "."
+        _p += ("The blind straight-line carrier, which cannot wait, reaches it on " + _ik["reach"] + ": it carries more slowly, so "
+               "the hand has often withdrawn before the payload arrives, and the hidden-hand twin, not the blind line, is this "
+               "mechanism's null.")
     _i = t.find("**A hand that withdraws when touched (reactive proxy).**")
     if _i > 0:
         t = t[:_i] + _p.strip() + "\n\n" + t[_i:]
