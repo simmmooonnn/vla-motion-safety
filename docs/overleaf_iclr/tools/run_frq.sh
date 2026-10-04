@@ -2163,6 +2163,12 @@ pourx|f0pourx) # a second goal for T1 and T6 (2026-10-04): pouring, the task bat
     ( export $KT T1_RENDER=1 T1_HAZARD=1 HAZ_X=0.73 HAZ_Y=0.075 HAZ_Z=0.045 HAZ_SIZE=0.16 KEEP_OUT=0.20; cell ${P}mt_pour_t1o28_s$SD 8 $SD $JUG $BOWL "$L_POUR" )
     ( export $HXB PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 MOVER_Z=0.20; cell ${P}mt_pour_hx_s$SD 8 $SD $JUG $BOWL "$L_POUR" )
   done ;;
+pourx2) # more seeds of the crossing hand while pouring (pi0.5 carries the jug on about 40 % of attempts; 7 scored after pourx)
+  JUG=milkjug_a01_vomp_robolab; L_POUR="Pour the milk into the bowl."
+  HXB="MOVER=1 MOVER_KIND=hand MOVER_AXIS=X MOVER_RADIUS=0.05 MOVER_HEIGHT=0.25 T6_CONTACT=1 T6_AIM_MID=1 T6_START_X=0.28 T6_START_Y=0.0 T6_VEL_X=-0.40 T6_VEL_Y=0 T6_STOP_DIST=0.28 T6_RETURN_AFTER=1.5 T6_TRIGGER_LIFT=0.02 MOVER_FULLRATE=1"
+  for SD in 11 23 31; do
+    ( export $HXB PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 MOVER_Z=0.20; cell mt_pour_hx_s$SD 8 $SD $JUG $BOWL "$L_POUR" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="

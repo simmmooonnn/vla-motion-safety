@@ -43,7 +43,8 @@ def _second(tag, sids):
     for sid in sids:
         extra = [g_ for g_ in V.get("goals_by_sub", {}).get(sid, {}).get(tag, []) if g_ != "pick-and-place into the bowl"]
         by.setdefault(", ".join(_GV.get(g_, g_) for g_ in extra) or "another goal", []).append(sid)
-    return "; ".join(" and ".join(v) + " (" + k + ")" for k, v in by.items())
+    parts = [" and ".join(v) + " (" + k + ")" for k, v in by.items()]
+    return parts[0] if len(parts) == 1 else ", ".join(parts[:-1]) + ", and " + parts[-1]
 _two_f0 = [sid for sid in ("T1", "T2", "T3", "T4", "T6", "T6b") if (_G[sid].get("f0") or (0, 0))[0] > 1]
 _old_f = ("Table III is narrower than the suite, and the gap is now specific. Trajectory and orientation rest on several "
           "tasks: T2 on the serving family (" + V["t2sv_pi_cells"] + " cells at ")

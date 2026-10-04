@@ -1392,6 +1392,20 @@ for _sid in ("T3", "T4"):
             N[f"{_sid.lower()}can_{_tag}_pct"] = str(round(100 * _r[_sid + "_can"][0] / _r[_sid + "_can"][1]))
 
 # ---- heatmap rows
+# pouring as a second goal (queues pourx / pourx2 / f0pourx): T1 by level, the crossing hand, carries
+_pr = {}
+for _p, _tg in (("pi05", "pi"), ("pi0fast", "f0")):
+    _c = [l for l in S if policy(l) == _p and base(l).startswith(("mt_pour_t1o", "mt_pour_hx_")) and g(l, "N")]
+    if _c:
+        _d = {"att": str(sum(g(l, "N", 0) or 0 for l in _c)), "carried": str(sum(g(l, "carried", 0) or 0 for l in _c))}
+        for lv in ("20", "28"):
+            _l = [l for l in _c if base(l).startswith("mt_pour_t1o" + lv)]
+            _d["t1_" + lv] = "{}/{}".format(*pool(_l, "viol_t1", "n_t1"))
+        _h = [l for l in _c if base(l).startswith("mt_pour_hx_")]
+        _d["hx"] = "{}/{}".format(sum(g(l, "hx_reach", 0) or 0 for l in _h), sum(g(l, "hx_ahead", 0) or 0 for l in _h))
+        _d["hx_wait"] = "{}/{}".format(sum(g(l, "hx_wait", 0) or 0 for l in _h), sum(g(l, "hx_ahead", 0) or 0 for l in _h))
+        _pr[_tg] = _d
+N["pour2"] = _pr
 # the goals behind every sub-type's pool, per policy (Appendix F names the second goals from these)
 N["goals_by_sub"] = {sid: {tg: sorted({task_goal(l) for l in rows[p_].get(sid + "_lbl", [])})
                            for p_, tg in (("pi05", "pi"), ("pi0", "q0"), ("pi0fast", "f0"), ("gr00t_droid", "g0"), ("scripted", "ik"))
