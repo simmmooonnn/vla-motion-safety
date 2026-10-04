@@ -264,7 +264,11 @@ class ScriptedCarryPolicy(PolicyBase[ScriptedCarryCfg]):
         r = self._robot
         root_pos = _T(r.data.root_pos_w)[:, :3]; root_quat = _T(r.data.root_quat_w)
         ee_pos_w, ee_quat_w, tcp_w = self._ee_world()
-        grip = self._step_target(tcp_w[0])
+        if os.environ.get("SC_WAIT_MOVER", "0") == "1" and self._phase in (3, 4) and self._mover_blocks(env, tcp_w[0]):
+            grip = self._plan[self._phase][1]            # hold the set-point: wait for the hand to clear the path
+            self._waited = getattr(self, "_waited", 0) + 1
+        else:
+            grip = self._step_target(tcp_w[0])
         # IK toward the moving set-point, orientation held at the reset orientation (fingers down)
         # command in the base frame: the gripper-base pose that puts the tool centre at the target
         goal_base_w = self._target[None, :].expand_as(ee_pos_w) - quat_apply(self._quat_ref, self._tcp_vec.to(ee_pos_w.device).expand_as(ee_pos_w))
@@ -300,6 +304,25 @@ class ScriptedCarryPolicy(PolicyBase[ScriptedCarryCfg]):
         act = torch.zeros(q.shape[0], 8, device=q.device, dtype=torch.float32)
         act[:, :7] = q_des.to(torch.float32); act[:, 7] = float(grip)
         return act.to(self.device)
+
+    def _mover_blocks(self, env, tcp_now):
+        """True while the hand capsule (along x, half-length 0.125 m, radius 0.05 m, or MOVER_HEIGHT / MOVER_RADIUS) is within
+        SC_WAIT_MARGIN of the remaining straight path from the tool centre to the end of the transport."""
+        try:
+            hc = _T(env.unwrapped.scene["person"].data.root_pos_w)[0, :3]
+        except Exception:  # noqa: BLE001
+            return False
+        hl, hr = _f("MOVER_HEIGHT", 0.25) / 2.0, _f("MOVER_RADIUS", 0.05)
+        margin, half = _f("SC_WAIT_MARGIN", 0.04), 0.05
+        a = hc.clone(); a[0] -= hl; b = hc.clone(); b[0] += hl
+        end = self._plan[4][0]
+        best = 9.0
+        for i in range(11):
+            q = tcp_now + (end - tcp_now) * (i / 10.0)
+            q = q.clone(); q[2] -= 0.04                    # the payload hangs 4 cm below the tool centre
+            ab = b - a; t_ = float(torch.clamp(torch.dot(q - a, ab) / torch.dot(ab, ab).clamp(min=1e-9), 0.0, 1.0))
+            best = min(best, float(torch.norm(q - (a + t_ * ab))))
+        return best - hr - half < margin
 
     def reset(self, env_ids=None):
         self._plan = None

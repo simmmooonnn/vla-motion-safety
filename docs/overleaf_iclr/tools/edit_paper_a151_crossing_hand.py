@@ -23,20 +23,21 @@ if _hx:
         _p += ("With the hand neither rendered nor colliding — the same timing, so the same geometric exposure — the payload "
                "passes through its place on " + _hh["reach"] + (" (π0-FAST " + _f0h["reach"] + ")" if _f0h else "")
                + ": the visible hand is met as the invisible one. ")
-    _hr = V.get("hx_pi05_witness_release")
-    if _hr:
-        _p += ("A whole-arm protective stop that holds the arm while any link or the mug is within 0.08 m of the hand and releases "
-               "beyond it brings the reach to " + _hr["reach"] + " and completes " + _hr["completed"] + "/" + _hr["att"] + " attempts: "
-               "a carry that waits for the hand and then delivers exists in this scene")
+    _hr = V.get("hx_pi05_witness_release"); _wt = V.get("hx_scripted_wait")
+    if _wt:
+        _p += ("A straight-line carry that holds while the hand is within 0.04 m of its remaining path and then resumes reaches it "
+               "on " + _wt["reach"] + " and delivers " + _wt["completed"] + "/" + _wt["att"] + ": waiting finishes the task "
+               "without touching the hand. ")
+    if _hw or _hr:
+        _p += "A whole-arm protective stop is blunter: "
         if _hw:
-            _p += ("; the same stop with the usual 0.10 m margin and 0.05 m hysteresis "
-                   + ("also prevents every contact (" if _hw["reach"].startswith("0/") else "reaches it on ") + _hw["reach"]
-                   + (")" if _hw["reach"].startswith("0/") else "") + " but, with the withdrawn hand parked 0.1 m from the line, "
-                   "keeps the arm held and completes " + _hw["completed"] + "/" + _hw["att"])
+            _p += ("with a 0.10 m margin and 0.05 m hysteresis the payload reaches the hand on " + _hw["reach"] + ", but the arm "
+                   "stays held while the withdrawn hand is parked 0.1 m from the line (" + _hw["completed"] + "/" + _hw["att"]
+                   + " delivered)")
+        if _hr:
+            _p += (("; " if _hw else "") + "releasing at 0.08 m delivers " + _hr["completed"] + "/" + _hr["att"] + " but lets the "
+                   "payload reach the hand on " + _hr["reach"])
         _p += ". "
-    elif _hw:
-        _p += ("The whole-arm protective stop that holds the arm while any link or the mug is within 0.10 m of the hand brings "
-               "the reach to " + _hw["reach"] + " and completes " + _hw["completed"] + "/" + _hw["att"] + " attempts. ")
     if _ik:
         _p += ("The blind straight-line carrier, which cannot wait, reaches it on " + _ik["reach"] + ": it carries more slowly, so "
                "the hand has often withdrawn before the payload arrives, and the hidden-hand twin, not the blind line, is this "
@@ -49,3 +50,6 @@ if _hx:
     _rn2("The person must be in the state the predicate assumes: standing still for T1–T4, moving for T6 and T6b,",
          "The person must be in the state the predicate assumes: standing still for T1–T4, moving for T6 (a hand reaching "
          "into the destination, or crossing the transport line ahead of the payload) and T6b,")
+    _rn2("On the tabletop T1 is the off-path keep-out and T2 the serving geometry (§5.1).",
+         "On the tabletop T1 is the off-path keep-out, T2 the serving geometry (§5.1), and T6 pools the hand reaching into the "
+         "destination and the hand crossing the transport line (E.8).")

@@ -10,11 +10,8 @@ if _sw:
     _ok = _k <= 1 and int(_sw["delivered"]) >= 8
 if _ok:
     _desc = (_sw["T2"] + " in the band, " + _sw["delivered"] + "/" + _sw["att"] + " delivered")
-    _rn2("T2 has a control but no witness (Appendix E.8).",
-         "T2 has a control and a witness: the same carry set down 7 cm farther from the person (" + _desc + "; E.8).")
-    _rn2("T2 has **no witness** and does not separate the blind control (§5.1);",
-         "T2's witness is the blind carry set down 7 cm farther from the person (" + _sw["T2"] + "), and T2 does not separate the "
-         "blind control (§5.1);")
+    _rn2("T2 has a control but no witness (Appendix E.8).", "T2 has a control and a witness (E.8).")      # main text: no room
+    _rn2("T2 has **no witness** and does not separate the blind control (§5.1);", "T2 does not separate the blind control (§5.1);")
     _rn2("T2 has no witness, and T4's is the pinch-grasp control.",
          "T2's witness is the straight-line carry set down away from the person, and T4's the pinch-grasp control.")
     _rn2("T2 has no witness and its rate is partly set by the scoring geometry;",

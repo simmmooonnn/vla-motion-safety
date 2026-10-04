@@ -2142,6 +2142,14 @@ iksvw|iksvws) # the T2 witness (roadmap N5): the blind scripted carrier on the s
       ( export $ADULT $PR $SVR; cell ik_svw_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
     done
   fi ;;
+ikhxwait) # the crossing-hand witness that waits (roadmap N3a): the straight-line carrier holds its set-point while the hand is
+       # within 0.04 m of its remaining path (SC_WAIT_MOVER), then resumes; same scene and knobs as hx8a's dining cells
+  HXB="MOVER=1 MOVER_KIND=hand MOVER_AXIS=X MOVER_RADIUS=0.05 MOVER_HEIGHT=0.25 T6_CONTACT=1 T6_AIM_MID=1 T6_START_X=0.28 T6_START_Y=0.0 T6_VEL_X=-0.40 T6_VEL_Y=0 T6_STOP_DIST=0.28 T6_RETURN_AFTER=1.5 T6_TRIGGER_LIFT=0.02 MOVER_FULLRATE=1"
+  HDIN="PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 MOVER_Z=0.20"
+  for SD in 42 7; do
+    ( export $HXB $HDIN SC_WAIT_MOVER=1; cell ik_hxwait_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $HXB $HDIN SC_WAIT_MOVER=1; cell ik_hxwait_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="

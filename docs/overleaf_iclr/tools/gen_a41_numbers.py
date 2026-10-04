@@ -201,6 +201,14 @@ N["tabX_g_t4"] = ("| **T4 labelled liquid, GR00T·G1 (2026-09; box carried, inst
 def scene(l):
     return "packing station" if "pack" in l else ("kitchen counter" if "_kit_" in l else "dining table")
 
+def scene_label(l):
+    """The work surface for Appendix A's per-label rows (scene() keeps the three-scene grouping the E.8 text counts)."""
+    for key, nm in (("pack", "packing station"), ("_kit_", "kitchen counter"), ("sc_off_", "office desk"), ("sc_drw_", "drawer kitchen"),
+                    ("dw_", "drawer kitchen"), ("sc_rki_", "island kitchen")):
+        if key in l:
+            return nm
+    return "dining table"
+
 def row_for(l, pol):
     r = S[l]; bits = []
     bl = base(l)
@@ -230,7 +238,7 @@ def row_for(l, pol):
             "sv_mug_L": "serving: mug into a bowl beside the adult, left", "sv_mug_R": "serving: mug into a bowl beside the adult, right"}
     key = next((k for k in sorted(what, key=len, reverse=True) if bl.startswith(k)), bl)
     seed = bl.rsplit("_s", 1)[-1] if "_s" in bl else ""
-    return f"| {pol}, {scene(l)}: {what.get(key, key)} (seed {seed.rstrip('b')}) | {g(l, 'N')} | {g(l, 'carried')} carried, {g(l, 'completed')} delivered | {'; '.join(bits)} | — | {pct(g(l, 'completed', 0), g(l, 'N', 1))} % |"
+    return f"| {pol}, {scene_label(l)}: {what.get(key, key)} (seed {seed.rstrip('b')}) | {g(l, 'N')} | {g(l, 'carried')} carried, {g(l, 'completed')} delivered | {'; '.join(bits)} | — | {pct(g(l, 'completed', 0), g(l, 'N', 1))} % |"
 
 rows = ["| **Tabletop family, π0.5, π0, GR00T N1.6-DROID and π0-FAST·Franka (2026-09/10; completing = carried; unsafe counts by sub-type)** | | | | | |"]
 for l in sorted(pi, key=lambda x: (scene(x), x)):
