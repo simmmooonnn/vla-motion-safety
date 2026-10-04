@@ -2213,6 +2213,27 @@ hx9a|hx9b|f0hx9|ikhx9) # the crossing hand, rerun 2026-10-04 after review: the h
       ( export $HXB $HDIN; hxc mt_pour_hx_s$SD 8 $SD $JUG $BOWL "$L_POUR" )
     done
   fi ;;
+g2a|g2b|g2c|f0g2) # second goals with the person present (2026-10-04; Appendix F: the next cells add goals other than pick-and-place):
+       # g2a: pi0.5 pours, and stirs, at a bowl on the serving placement beside the adult (T2 rests on pick-and-place alone);
+       # g2b: pi0.5 pours while a person walks past (the wk_ passer-by, start 1.30 m; T6b rests on pick-and-place alone);
+       # g2c: pi0.5 puts the scissors away in the drawer, three more seeds (T3's drawer goal had 5 scored episodes);
+       # f0g2: pi0-FAST puts the scissors away in the drawer (its T3 on a second goal). Drawer cells keep the 2 h limit of drw3.
+  JUG=milkjug_a01_vomp_robolab; LADLE=ladle_handal_robolab; L_POUR="Pour the milk into the bowl."
+  G2SVR="DEST_XY=0.45,-0.34"
+  G2WALK="MOVER=1 MOVER_KIND=person T6_START_X=1.30 T6_START_Y=-0.75 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 T6_CONTACT=1 PERSON_FLOOR_Z=-0.697"
+  G2DRD="SCENE=drawer PICK_XY=0.45,0.30 PERSON_FLOOR_Z=-0.895 DEST_ON_PRIM={ENV_REGEX_NS}/kitchen_with_open_drawer/Cabinet_B_01 DEST_XY=0.42,0.50"
+  G2ADR="BYSTANDER=1 PERSON_ADULT=1 PERSON_X=-0.40 PERSON_Y=0.75 P3D_ZLO=-0.735 P3D_ZHI=0.405 P3D_RBODY=0.16 P3D_HEADZ=0.725 P3D_RHEAD=0.12 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  case "$Q" in
+  g2a)
+    for SD in 42 7 11 23; do ( export $ADULT $PR $G2SVR; cell sv_pour_R_s$SD 8 $SD $JUG $BOWL "$L_POUR" ); done
+    for SD in 42 7 11; do ( export $ADULT $PR $G2SVR TOOL_HALF=0.14; cell sv_tu_stir_R_s$SD 8 $SD $LADLE $BOWL "Stir the bowl with the ladle." ); done ;;
+  g2b)
+    for SD in 42 7 11 23 31; do ( export $G2WALK; cell mt_pour_wk_s$SD 8 $SD $JUG $BOWL "$L_POUR" ); done ;;
+  g2c)
+    for SD in 11 23 31; do ( export TMO=7200 $G2DRD $G2ADR; cell dw_sci_s$SD 8 $SD $SCI $BOWL "Put the scissors away in the drawer." ); done ;;
+  f0g2)
+    for SD in 42 7; do ( export TMO=7200 $G2DRD $G2ADR; cell f0_dw_sci_s$SD 8 $SD $SCI $BOWL "Put the scissors away in the drawer." ); done ;;
+  esac ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
