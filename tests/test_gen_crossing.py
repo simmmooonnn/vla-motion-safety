@@ -37,10 +37,11 @@ def _run(tmp_path, extra):
     return ns["N45"]
 
 
-HX = {"hx_mug_s42": {"N": 8, "carried": 8, "completed": 5, "hx_n": 8, "hx_ahead": 6, "hx_onto": 2, "hx_reach": 5, "hx_wait": 0, "hx_fpeak": [40]},
-      "sc_kit_hx_mug_s42": {"N": 8, "carried": 7, "completed": 4, "hx_n": 7, "hx_ahead": 5, "hx_onto": 1, "hx_reach": 4, "hx_wait": 1, "hx_fpeak": [30]},
-      "hxh_mug_s42": {"N": 8, "carried": 8, "completed": 8, "hx_n": 8, "hx_ahead": 6, "hx_reach": 6, "hx_wait": 0},
-      "hxw_mug_s42": {"N": 8, "carried": 8, "completed": 8, "hx_n": 8, "hx_ahead": 6, "hx_reach": 1, "hx_wait": 5}}
+# labels that no real cell uses, so the test holds whatever crossing cells the summary already has
+HX = {"hx_mug_s999": {"N": 8, "carried": 8, "completed": 5, "hx_n": 8, "hx_ahead": 6, "hx_onto": 2, "hx_reach": 5, "hx_wait": 0, "hx_fpeak": [40]},
+      "sc_kit_hx_mug_s999": {"N": 8, "carried": 7, "completed": 4, "hx_n": 7, "hx_ahead": 5, "hx_onto": 1, "hx_reach": 4, "hx_wait": 1, "hx_fpeak": [30]},
+      "hxh_mug_s999": {"N": 8, "carried": 8, "completed": 8, "hx_n": 8, "hx_ahead": 6, "hx_reach": 6, "hx_wait": 0},
+      "hxw_mug_s999": {"N": 8, "carried": 8, "completed": 8, "hx_n": 8, "hx_ahead": 6, "hx_reach": 1, "hx_wait": 5}}
 
 
 def test_crossing_cells_join_t6_and_nothing_else(tmp_path):
@@ -50,8 +51,10 @@ def test_crossing_cells_join_t6_and_nothing_else(tmp_path):
     kb, nb = (int(v) for v in base["pi_T6"].split("/"))
     kx, nx = (int(v) for v in with_hx["pi_T6"].split("/"))
     assert (kx - kb, nx - nb) == (9, 11)                      # 5 + 4 reached of 6 + 5 ahead; twins and witness excluded
-    assert with_hx["pi_T6_hand"] == base["pi_T6"]               # the reaching hand alone, for the text
-    assert with_hx["hx_pi05"]["reach"] == "9/11" and with_hx["hx_pi05_hidden"]["reach"] == "6/6"
+    assert with_hx["pi_T6_hand"] == base["pi_T6_hand"]          # the reaching hand alone, for the text
+    kh = lambda N, k: tuple(int(v) for v in (N.get(k) or {"reach": "0/0"})["reach"].split("/"))
+    assert tuple(a - b for a, b in zip(kh(with_hx, "hx_pi05"), kh(base, "hx_pi05"))) == (9, 11)
+    assert tuple(a - b for a, b in zip(kh(with_hx, "hx_pi05_hidden"), kh(base, "hx_pi05_hidden"))) == (6, 6)
     for k in ("pi_N", "pi_T5a_exp", "pi_T3", "pi_T4", "pi_T2", "pi_T1", "pi_T6b"):
         assert with_hx[k] == base[k], k                         # the canonical suite and the other pools do not move
-    assert "crossing the transport line" in with_hx["dimtask_rows"] and "crossing the transport line" not in base["dimtask_rows"]
+    assert "crossing the transport line" in with_hx["dimtask_rows"]
