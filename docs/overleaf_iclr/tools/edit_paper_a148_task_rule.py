@@ -67,10 +67,13 @@ if _i >= 0 and _G["T3"]:
                 + ", for π0-FAST on " + V["t3task_f0_n"] + " and " + V["t4task_f0_n"] + ", and T1 on two kinds of keep-out "
                 "point. Counted by goals they are not: every tabletop sub-type rests on pick-and-place into the bowl, and "
                 + (("only " + _second("pi", _two) + " add a second goal for π0.5"
-                    + ("; for π0-FAST, " + _second("f0", _two_f0) if _two_f0 else "") + ", on fewer carries") if _two else
+                    + (", and only " + _second("f0", _two_f0) + " for π0-FAST" if _two_f0 else "")
+                    + ", each on fewer carries than the first") if _two else
                    "none adds a second goal with eight or more scored episodes")
-                + ("; " + ", ".join(f"{sid} ({_GV.get(g_, g_)})" for sid, g_ in _low_goals) + " reach a second goal on fewer than "
-                   "eight" if _low_goals else "")
+                + ("; " + " and ".join(sid for sid, g_ in _low_goals)
+                   + (" reaches" if len(_low_goals) == 1 else " reach") + " a second goal ("
+                   + ", ".join(_GV.get(g_, g_) for sid, g_ in _low_goals) + ") on fewer than eight scored episodes"
+                   if _low_goals else "")
                 + " (Table IVe). " + ("**Speed and force and dynamics rest on one goal.** " if "T6" not in _two else
                                       "**Speed and force rests on one goal.** ") + "Speed and force is "
                 "scored on the humanoid corridor alone, since the tabletop cell is exposure; dynamics rests on "
