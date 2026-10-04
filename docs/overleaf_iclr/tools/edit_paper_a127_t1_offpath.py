@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# 2026-10-04: the battery counts (π0-FAST tasks, exercised / total / boundary) are generated, not literal: a literal
+# "11" silently skipped the coverage block when the count became 12 and pushed the conclusion onto page 11 (literal counts generated).
 # Round-4 R1: the SCORED tabletop T1 becomes the off-path keep-out (0.20 and 0.28 m from the transport line), the levels a
 # direct carry can clear. The on-path midpoint marker, which the paper already called forced, stays as an exposure row
 # (T1_exp) and enters no dimension score. This is what makes the trajectory column discriminate: the person-blind scripted
@@ -91,11 +93,11 @@ _rni("the maps vary on one cell, ", "the maps vary on one cell, ")
 
 _rni("T2 has **no witness**; T3's is geometric, T4's a physical pinch grasp (31 carries), T1's on the G1 only.",
      "T2 has **no witness**; T3's is geometric, T4's a physical pinch grasp (31 carries), T1's the blind carrier itself.")
-_rni("The **suite is smaller than its battery**: 40 of 51 tabletop tasks are exercised, 6 are capability boundaries, the "
-     "maps vary on one cell, π0 and GR00T-DROID cover the canonical task only (π0-FAST 11 battery tasks too, E.8), T5c is "
+_rni("The **suite is smaller than its battery**: " + V["n_tasks_exercised"] + " of " + V["n_tasks_total"] + " tabletop tasks are exercised, " + V["n_tasks_boundary"] + " are capability boundaries, the "
+     "maps vary on one cell, π0 and GR00T-DROID cover the canonical task only (π0-FAST " + V["n_tasks_f0"] + " battery tasks too, E.8), T5c is "
      "post hoc, the tabletop T5a is exposure, and E.8's next-cycle probes are unscored.",
-     "The **suite is smaller than its battery**: 40 of 51 tabletop tasks are exercised and 6 are capability boundaries; the "
-     "maps vary on one cell; π0 and GR00T-DROID cover the canonical task only (π0-FAST 11 battery tasks, E.8); T5c is post "
+     "The **suite is smaller than its battery**: " + V["n_tasks_exercised"] + " of " + V["n_tasks_total"] + " tabletop tasks are exercised and " + V["n_tasks_boundary"] + " are capability boundaries; the "
+     "maps vary on one cell; π0 and GR00T-DROID cover the canonical task only (π0-FAST " + V["n_tasks_f0"] + " battery tasks, E.8); T5c is post "
      "hoc, the tabletop T5a exposure, and E.8's next-cycle probes unscored.")
 
 _rni("The evidence is **simulation-only**; GR00T is measured in one corridor (0/31 delivered in two other rooms, E.7) and "
@@ -112,9 +114,9 @@ _rni("None of this undercuts the case: along every dimension the policies are un
      "None of it undercuts the case: along every dimension the policies are unsafe wherever there is something to avoid.")
 _rni("VLA safety asks whether a task should be done and whether it ended well, not whether it was done *safely* in between.",
      "VLA safety asks whether a task should be done and whether it ended well, not whether it was done *safely* in between. ")
-_rni("the maps vary on one cell; π0 and GR00T-DROID cover the canonical task only (π0-FAST 11 battery tasks, E.8); T5c is "
+_rni("the maps vary on one cell; π0 and GR00T-DROID cover the canonical task only (π0-FAST " + V["n_tasks_f0"] + " battery tasks, E.8); T5c is "
      "post hoc, the tabletop T5a exposure, and E.8's next-cycle probes unscored.",
-     "π0 and GR00T-DROID cover the canonical task only (π0-FAST 11 battery tasks, E.8); T5c is post hoc, the tabletop T5a "
+     "π0 and GR00T-DROID cover the canonical task only (π0-FAST " + V["n_tasks_f0"] + " battery tasks, E.8); T5c is post hoc, the tabletop T5a "
      "exposure, and E.8's next-cycle probes unscored.")
 
 _rni("VLA safety asks whether a task should be done and whether it ended well, not whether it was done *safely* in between. ",

@@ -224,5 +224,6 @@ exec(open(pathlib.Path(__file__).with_name("edit_paper_a144_t3_witness_fix.py"),
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a145_t3_redefinition.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a146_scorer_fixture.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a147_hand_height.py"), encoding="utf-8").read())
+exec(open(pathlib.Path(__file__).with_name("edit_paper_a148_task_rule.py"), encoding="utf-8").read())
 MD.write_text(t, encoding="utf-8")
 print("v0.41 written:", len(base), "->", len(t), "chars")

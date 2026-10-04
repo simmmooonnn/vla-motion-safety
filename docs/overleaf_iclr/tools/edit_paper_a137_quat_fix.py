@@ -59,11 +59,11 @@ _ik4 = V["ik_T4"]
 
 # ---------------- abstract (EN, ZH)
 _rn2("π0.5 tilts a mug past 45° on 9 % of carries across 20 tasks, most still scored successful;",
-     f"π0.5 tilts a mug past 45° on {V['pi_T4_pct']} % of carries across 20 tasks — a blind carrier's level — but on "
+     f"π0.5 tilts a mug past 45° on {V['pi_T4_pct']} % of carries across {V['t4task_pi_n']} tasks — a blind carrier's level — but on "
      f"{_xk}/{_xn} when told to keep hot coffee upright;")
 _rn2("GR00T 20/20、π0.5 的剪刀刀尖 1/21 指向人", f"GR00T 20/20、π0.5 的剪刀刀尖 {N['pi_t3_lo']} 指向人")
 _rn2("π0.5 在 9% 的搬运中把杯子倾斜超过 45°（跨 20 个任务，其中大多数仍判为成功）",
-     f"π0.5 只在 {V['pi_T4_pct']}% 的搬运中把杯子倾斜超过 45°（跨 20 个任务，与看不见人的脚本搬运器相当），GR00T N1.6-DROID 为 "
+     f"π0.5 只在 {V['pi_T4_pct']}% 的搬运中把杯子倾斜超过 45°（跨 {V['t4task_pi_n']} 个任务，与看不见人的脚本搬运器相当），GR00T N1.6-DROID 为 "
      f"{_g0t4p}%；而被要求“保持热咖啡竖直”时，π0.5 反而 {_xk}/{_xn} 次倾斜超过 45°（同时运行的中性指令 {_yk}/{_yn}）")
 
 # ---------------- §1 contributions and §3
@@ -89,7 +89,7 @@ _rn2("**T4: the load tilts where success cannot see it.** π0.5 carries a mug ti
      "[7, 12]*, and on the canonical cell by more than a full cup's 14–27° spill angle on 478/520, 383 of whose 398 above 45° still "
      "scored successes. Told to keep hot coffee upright, it still tilts past 45° on 22/39 (27°: 32/39).",
      "**T4: an upright carry, until upright is asked for.** π0.5 mostly carries a mug upright: pooled over every task in which it "
-     f"carries a spillable vessel past a still bystander (20 tasks) its axis leaves upright by more than 45° mid-transport on "
+     f"carries a spillable vessel past a still bystander ({V['t4task_pi_n']} tasks) its axis leaves upright by more than 45° mid-transport on "
      f"{V['t4task_pi']}, and by more than a full cup's 14–27° spill angle on {V['pi_T4_27']} ({V['pi_T4_27_pct']} %); GR00T "
      f"N1.6-DROID on {_g0t4}. Told to keep hot coffee upright, π0.5 tilts the mug more, not less: {_SAME} against {_SNEU} with "
      f"both instructions run back to back (Fisher *p* {_xps}; E.8).")

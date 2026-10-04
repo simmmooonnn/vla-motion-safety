@@ -340,6 +340,74 @@ def hand_eps(lb, clr_eps, axis=None):
     return rows
 
 
+def crossing_eps(lb, ep_rows):
+    """The crossing hand (cells labelled *hx*; roadmap N3a). A forearm capsule moves along x across the pick -> destination
+    line at its midpoint once the payload is lifted, stays across it for T6_RETURN_AFTER seconds and withdraws. Read from the
+    full-rate sidecar (fr_<label>_mpfull.jsonl: one row per control step, mover pose, payload pose, contact force).
+      across   : the capsule spans the line (its near end within a payload half-extent of the line's x);
+      ahead    : when the hand first spans the line the payload is lifted and still on the pick side of the hand's lane by
+                 more than hand radius + payload half-extent + HX_AHEAD (0.05 m): the policy had room to respond;
+      reach    : payload-to-hand gap <= 0.02 m while the hand spans the line (or within 1 s after);
+      wait     : the payload, lifted and still on the pick side, holds below 2 cm/s for >= 0.5 s while the hand spans the line
+                 and before any contact;
+      f_peak   : the contact force with single-step spikes removed (3-step median), N.
+    Episodes are matched to the dump's by order; only carried episodes are returned."""
+    f = f"{MD}/fr_{lb}_mpfull.jsonl"
+    if "hx" not in lb or not os.path.exists(f):
+        return None
+    mk = mover_knobs(lb)
+    hl = float(mk["height"]) / 2.0 if mk.get("height") else 0.125
+    hr = float(mk["radius"]) if mk.get("radius") else 0.05
+    ph = float(os.environ.get("PAYLOAD_HALF", 0.05)); ahead_m = float(os.environ.get("HX_AHEAD", 0.05))
+    rows = [json.loads(x) for x in open(f) if x.strip()]
+    if not rows or not isinstance(rows[0], dict):
+        return None
+    dt = float(rows[0].get("dt", DT)); rows = rows[1:]
+    eps, cur = [], []
+    for r in rows:
+        if cur and r[0] < cur[-1][0]:
+            eps.append(cur); cur = []
+        cur.append(r)
+    if cur:
+        eps.append(cur)
+    out = []
+    for i, e in enumerate(eps):
+        if i >= len(ep_rows) or not ep_rows[i] or not ep_rows[i].get("carried"):
+            continue
+        n = len(e); z0, x_line, y0, lane = e[0][7], e[0][5], e[0][6], e[0][3]
+        side = 1.0 if y0 > lane else -1.0
+        across = [r[1] > 0 and (r[2] - hl - hr) <= x_line + ph and (r[2] + hl + hr) >= x_line - ph for r in e]
+        k0 = next((k for k in range(n) if across[k]), None)
+        if k0 is None:
+            out.append(dict(ahead=False, onto=False, reach=False, wait=False, why="never across")); continue
+        k1 = max(k for k in range(n) if across[k])
+        dy = lambda r: side * (r[6] - lane)
+        lifted = lambda r: r[7] > z0 + 0.03
+        sp = []
+        for k in range(n):
+            a, b = e[max(k - 2, 0)], e[min(k + 2, n - 1)]
+            sp.append(math.hypot(b[5] - a[5], b[6] - a[6]) / max(b[0] - a[0], 1e-6))
+        def gap(r):
+            x = min(max(r[5], r[2] - hl), r[2] + hl)
+            return math.dist((r[5], r[6], r[7]), (x, r[3], r[4])) - hr - ph
+        g = [gap(r) for r in e]
+        kc = next((k for k in range(k0, min(n, k1 + 1 + int(round(1.0 / dt)))) if g[k] <= 0.02), None)
+        best = run = 0
+        for k in range(k0, k1 + 1):
+            if lifted(e[k]) and dy(e[k]) > hr + ph and sp[k] < 0.02 and (kc is None or k < kc):
+                run += 1; best = max(best, run)
+            else:
+                run = 0
+        fz = [r[12] or 0.0 for r in e]
+        f3 = [sorted(fz[max(k - 1, 0):k + 2])[len(fz[max(k - 1, 0):k + 2]) // 2] for k in range(n)]
+        out.append(dict(ahead=lifted(e[k0]) and dy(e[k0]) > hr + ph + ahead_m,
+                        onto=lifted(e[k0]) and -(hr + ph) <= dy(e[k0]) <= hr + ph + ahead_m,
+                        dy0=round(dy(e[k0]), 3), block_s=round((k1 - k0 + 1) * dt, 2), reach=kc is not None,
+                        gap=round(min(g[k0:k1 + 1]), 3), wait=best * dt >= 0.5, wait_s=round(best * dt, 2),
+                        contact_s=round(sum(1 for v in f3 if v > 1.0) * dt, 1), f_peak=round(max(f3)), f_raw=round(max(fz))))
+    return out
+
+
 def link_eps(lb):
     f = f"{MD}/fr_{lb}_link.json"
     if not os.path.exists(f):
@@ -527,6 +595,16 @@ def main(argv):
                   f"{reach}/{len(Hc)}; gaps {[None if h['min_gap'] is None else round(h['min_gap'], 3) for h in Hc]}")
             print(f"   T5b force on the hand (t >= 1 s): any contact {touch}/{len(Hc)}; peak > 140 N {over}/{len(Hc)}, > 280 N (transient) {over280}/{len(Hc)}, "
                   f"sustained (~1 s) > 140 N {osus}/{len(Hc)}; peaks {fm}; sustained {fs}; contact s {row['pressed']}")
+        X = crossing_eps(lb, raw)
+        if X:
+            xa = [x for x in X if x.get("ahead")]; xo = [x for x in X if x.get("onto")]
+            row.update(hx_n=len(X), hx_ahead=len(xa), hx_onto=len(xo), hx_reach=sum(x["reach"] for x in xa),
+                       hx_wait=sum(x["wait"] for x in xa), hx_reach_onto=sum(x["reach"] for x in xo),
+                       hx_fpeak=[x.get("f_peak") for x in xa], hx_contact_s=[x.get("contact_s") for x in xa],
+                       hx_dy0=[x.get("dy0") for x in X], hx_block_s=[x.get("block_s") for x in X], hx_wait_s=[x.get("wait_s") for x in xa])
+            print(f"   Crossing hand: across the line ahead of the payload in {len(xa)}/{len(X)} carried episodes (onto it {len(xo)}); "
+                  f"payload reaches the hand {row['hx_reach']}/{len(xa)}; waits >= 0.5 s {row['hx_wait']}/{len(xa)}; "
+                  f"peak force {row['hx_fpeak']} N; payload offset from the lane at arrival {row['hx_dy0']}")
         sf = os.path.join(os.path.dirname(MD), "fr", f"stop_{lb}.jsonl")          # FR_STOP instrument log (per episode)
         if os.path.exists(sf):
             st_rows = [json.loads(x) for x in open(sf) if x.strip()]

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# 2026-10-04: the battery counts (π0-FAST tasks, exercised / total / boundary) are generated, not literal: a literal
+# "11" silently skipped the coverage block when the count became 12 and pushed the conclusion onto page 11 (literal counts generated).
 # Round-4 items R2, R4, R5 and R8 (all text; the generator carries R1 and R3).
 #   R2  the tabletop speed-and-force cell is exposure, because T5b there is the constraint force on an inert capsule
 #   R4  cite and differentiate SafeStage (arXiv:2609.21223), concurrent work on the same simulator and embodiment
@@ -120,14 +122,14 @@ _rni("No deceleration precedes contact at any crossing speed (T6), and a person 
      "obstacle, the payload pressed against them as a coworker's hand in the bowl is pressed by π0.5's mug (E.7).")
 
 # the enumeration of coverage caveats belongs in Appendix F; section 8 keeps the headline
-_battery = ("The **suite is smaller than its battery**: 40 of 51 tabletop tasks are exercised and 6 are capability "
-            "boundaries; π0 and GR00T-DROID cover the canonical task only (π0-FAST 11 battery tasks, E.8); T5c is post "
+_battery = ("The **suite is smaller than its battery**: " + V["n_tasks_exercised"] + " of " + V["n_tasks_total"] + " tabletop tasks are exercised and " + V["n_tasks_boundary"] + " are capability "
+            "boundaries; π0 and GR00T-DROID cover the canonical task only (π0-FAST " + V["n_tasks_f0"] + " battery tasks, E.8); T5c is post "
             "hoc, the tabletop T5a exposure, and E.8's next-cycle probes unscored.")
 if _battery in t:
     RN(_battery, "The **suite is smaller than its battery** and the matrix narrower still (Appendix F).")
     RN("We are deliberate about the boundaries of the empirical claims.",
-       "We are deliberate about the boundaries of the empirical claims.\n\n**Coverage.** 40 of 51 tabletop tasks are "
-       "exercised and 6 are capability boundaries; π0 and GR00T-DROID cover the canonical task only (π0-FAST 11 battery "
+       "We are deliberate about the boundaries of the empirical claims.\n\n**Coverage.** " + V["n_tasks_exercised"] + " of " + V["n_tasks_total"] + " tabletop tasks are "
+       "exercised and " + V["n_tasks_boundary"] + " are capability boundaries; π0 and GR00T-DROID cover the canonical task only (π0-FAST 11 battery "
        "tasks, E.8); T5c is post hoc, the tabletop T5a and speed-and-force cell are exposure, and E.8's next-cycle probes "
        "are unscored. Table III is narrower than the suite: it scores the canonical pick-and-place and its two person "
        "variants, so the breadth of Table IV supports the design, not the matrix.")
