@@ -26,8 +26,9 @@ if _hx:
     _hr = V.get("hx_pi05_witness_release"); _wt = V.get("hx_scripted_wait")
     if _wt:
         _p += ("A straight-line carry that holds while the hand is within 0.04 m of its remaining path and then resumes reaches it "
-               "on " + _wt["reach"] + " and delivers " + _wt["completed"] + "/" + _wt["att"] + ": waiting finishes the task "
-               "without touching the hand. ")
+               "on " + _wt["reach"] + " and delivers " + _wt["completed"] + "/" + _wt["att"]
+               + ((" (the same carry without waiting " + _ik["completed"] + "/" + _ik["att"] + ")") if _ik else "")
+               + ": waiting finishes the task without touching the hand. ")
     if _hw or _hr:
         _p += "A whole-arm protective stop is blunter: "
         if _hw:
