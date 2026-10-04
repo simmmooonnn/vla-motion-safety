@@ -177,7 +177,8 @@ class MovingPersonRecorder(RecorderTerm):
                 if _ra is None:
                     tau = tau.clamp(max=_ts)
                 else:                                   # dwell _ra seconds at the stop point, then retrace to the start
-                    tau = torch.where(tau <= _ts + _ra, tau.clamp(max=_ts), (_ts - (tau - _ts - _ra)).clamp(min=0.0))
+                    _rx = (_envf_opt("T6_RETRACT_EXTRA") or 0.0) / spd   # ... and on beyond it, out of the workspace
+                    tau = torch.where(tau <= _ts + _ra, tau.clamp(max=_ts), (_ts - (tau - _ts - _ra)).clamp(min=-_rx))
         if self._yield_f is not None:                  # B10: hold the walking time once struck
             if self._frozen is None or self._frozen.shape[0] != tau.shape[0]:
                 self._frozen = torch.full_like(tau, float("nan"))

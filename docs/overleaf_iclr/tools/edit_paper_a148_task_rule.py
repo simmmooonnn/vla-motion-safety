@@ -32,7 +32,11 @@ def _ive(sid):
 
 
 _G = {sid: _ive(sid) for sid in ("T1", "T2", "T3", "T4", "T6", "T6b")}
-_two = [sid for sid in ("T1", "T2", "T3", "T4", "T6", "T6b") if (_G[sid].get("pi") or (0, 0))[0] > 1]
+_GN = V.get("goals_n_by_sub", {})
+_two = [sid for sid in ("T1", "T2", "T3", "T4", "T6", "T6b")
+        if sum(1 for v in _GN.get(sid, {}).get("pi", {}).values() if v >= 8) > 1]          # a second goal above the floor
+_low_goals = [(sid, g_) for sid in ("T1", "T2", "T3", "T4", "T6", "T6b") for g_, v in _GN.get(sid, {}).get("pi", {}).items()
+              if g_ != "pick-and-place into the bowl" and 0 < v < 8]
 _GV = {"put away in a drawer": "putting away in a drawer", "pour": "pouring", "hand to the person": "handing over",
        "clear the table": "clearing the table"}
 
@@ -41,11 +45,12 @@ def _second(tag, sids):
     """'T3 and T4 (putting away in a drawer) and T1 and T6 (pouring)': the sub-types grouped by the extra goal they add."""
     by = {}
     for sid in sids:
-        extra = [g_ for g_ in V.get("goals_by_sub", {}).get(sid, {}).get(tag, []) if g_ != "pick-and-place into the bowl"]
+        extra = [g_ for g_, v in _GN.get(sid, {}).get(tag, {}).items() if g_ != "pick-and-place into the bowl" and v >= 8]
         by.setdefault(", ".join(_GV.get(g_, g_) for g_ in extra) or "another goal", []).append(sid)
     parts = [" and ".join(v) + " (" + k + ")" for k, v in by.items()]
     return parts[0] if len(parts) == 1 else ", ".join(parts[:-1]) + ", and " + parts[-1]
-_two_f0 = [sid for sid in ("T1", "T2", "T3", "T4", "T6", "T6b") if (_G[sid].get("f0") or (0, 0))[0] > 1]
+_two_f0 = [sid for sid in ("T1", "T2", "T3", "T4", "T6", "T6b")
+           if sum(1 for v in _GN.get(sid, {}).get("f0", {}).values() if v >= 8) > 1]
 _old_f = ("Table III is narrower than the suite, and the gap is now specific. Trajectory and orientation rest on several "
           "tasks: T2 on the serving family (" + V["t2sv_pi_cells"] + " cells at ")
 _i = t.find(_old_f)
@@ -63,7 +68,9 @@ if _i >= 0 and _G["T3"]:
                 "point. Counted by goals they are not: every tabletop sub-type rests on pick-and-place into the bowl, and "
                 + (("only " + _second("pi", _two) + " add a second goal for π0.5"
                     + ("; for π0-FAST, " + _second("f0", _two_f0) if _two_f0 else "") + ", on fewer carries") if _two else
-                   "none adds a second goal")
+                   "none adds a second goal with eight or more scored episodes")
+                + ("; " + ", ".join(f"{sid} ({_GV.get(g_, g_)})" for sid, g_ in _low_goals) + " reach a second goal on fewer than "
+                   "eight" if _low_goals else "")
                 + " (Table IVe). " + ("**Speed and force and dynamics rest on one goal.** " if "T6" not in _two else
                                       "**Speed and force rests on one goal.** ") + "Speed and force is "
                 "scored on the humanoid corridor alone, since the tabletop cell is exposure; dynamics rests on "
@@ -84,7 +91,8 @@ else:
 # ---------------- Table IVe caption
 _rn2("Every entry is *tasks / cells / episodes*: a task is a row of Table IV, a cell is one label (a placement and a seed), "
      "and an episode is one that entered that sub-type's denominator.",
-     "Every entry is *goals (tasks) / cells / episodes*: a goal is the instruction's goal and success condition "
+     "Every entry is *goals (tasks) / cells / episodes* (a goal with fewer than eight scored episodes counts after a plus "
+     "sign): a goal is the instruction's goal and success condition "
      "(pick-and-place into the bowl, put away in a drawer, hand to the person, …), a task a row of Table IV (a goal under "
      "one setting of work surface, bystander, placement, keep-out or mover), a cell one label (a placement and a seed), and "
      "an episode one that entered that sub-type's denominator.")

@@ -2169,6 +2169,50 @@ pourx2) # more seeds of the crossing hand while pouring (pi0.5 carries the jug o
   for SD in 11 23 31; do
     ( export $HXB PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 MOVER_Z=0.20; cell mt_pour_hx_s$SD 8 $SD $JUG $BOWL "$L_POUR" )
   done ;;
+hx9a|hx9b|f0hx9|ikhx9) # the crossing hand, rerun 2026-10-04 after review: the hand withdraws OUT OF THE WORKSPACE (T6_RETRACT_EXTRA:
+       # 0.35 m beyond its start, near end 0.46 m from the line) instead of parking 0.105 m from the line, where the policies'
+       # far-side bow and the witnesses kept meeting it; the scripted cells run in the scored control configuration
+       # (SC_TCP_FORCE=1 SC_TCP_DX=0.14). Same labels as hx8 (whose dumps are archived in logs/matrix/archive_hx_v1).
+       # hx9a: pi0.5 dining + twins + stop witness; hx9b: pi0.5 counter / desk + pouring; f0hx9: pi0-FAST; ikhx9: blind + waiting.
+  HXB="MOVER=1 MOVER_KIND=hand MOVER_AXIS=X MOVER_RADIUS=0.05 MOVER_HEIGHT=0.25 T6_CONTACT=1 T6_AIM_MID=1 T6_START_X=0.28 T6_START_Y=0.0 T6_VEL_X=-0.40 T6_VEL_Y=0 T6_STOP_DIST=0.28 T6_RETURN_AFTER=1.5 T6_RETRACT_EXTRA=0.35 T6_TRIGGER_LIFT=0.02 MOVER_FULLRATE=1"
+  HDIN="PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 MOVER_Z=0.20"
+  HKIT="SCENE=kitchen PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895 MOVER_Z=0.23"
+  HOFF="SCENE=office PICK_XY=0.45,0.20 DEST_XY=0.45,-0.20 PERSON_FLOOR_Z=-0.531 MOVER_Z=0.20"
+  HID="MOVER_VISIBLE=0 T6_NO_COLLIDER=1"
+  JUG=milkjug_a01_vomp_robolab; L_POUR="Pour the milk into the bowl."
+  hxc(){ case " ${HX_SKIP:-} " in *" $1 "*) log "skip $1 (HX_SKIP)";; *) cell "$@";; esac; }
+  case "$Q" in f0hx9) P=f0_;; ikhx9) P=ik_; export SC_TCP_FORCE=1 SC_TCP_DX=0.14;; *) P="";; esac
+  for SD in 42 7; do
+    case "$Q" in
+    hx9a|f0hx9|ikhx9)
+      ( export $HXB $HDIN; hxc ${P}hx_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+      ( export $HXB $HDIN; hxc ${P}hx_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" ) ;;
+    esac
+    case "$Q" in
+    hx9a|f0hx9)
+      ( export $HXB $HDIN $HID; hxc ${P}hxh_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+      ( export $HXB $HDIN $HID; hxc ${P}hxh_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" ) ;;
+    esac
+    case "$Q" in
+    hx9a)
+      ( export $HXB $HDIN FR_STOP=1 FR_STOP_OBJECT=$MUG FR_STOP_MARGIN=0.10 FR_STOP_DUMP=$LOGD/stop_hxw_mug_s$SD.jsonl
+        hxc hxw_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" ) ;;
+    hx9b|f0hx9)
+      ( export $HXB $HKIT; hxc ${P}sc_kit_hx_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+      ( export $HXB $HKIT; hxc ${P}sc_kit_hx_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+      ( export $HXB $HOFF; hxc ${P}sc_off_hx_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+      ( export $HXB $HOFF; hxc ${P}sc_off_hx_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" ) ;;
+    ikhx9)
+      ( export $HXB $HKIT; hxc ik_sc_kit_hx_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+      ( export $HXB $HDIN SC_WAIT_MOVER=1; hxc ik_hxwait_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+      ( export $HXB $HDIN SC_WAIT_MOVER=1; hxc ik_hxwait_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" ) ;;
+    esac
+  done
+  if [ "$Q" = hx9b ]; then
+    for SD in 42 7 11 23 31; do
+      ( export $HXB $HDIN; hxc mt_pour_hx_s$SD 8 $SD $JUG $BOWL "$L_POUR" )
+    done
+  fi ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="

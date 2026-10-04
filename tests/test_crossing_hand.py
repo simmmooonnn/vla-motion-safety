@@ -99,3 +99,15 @@ def test_reset_and_edge_spikes_are_not_a_contact(tmp_path, monkeypatch):
     f = [0.0] * n; f[0] = f[1] = 250000.0; f[n - 1] = 250000.0
     h = sidecar(tmp_path, monkeypatch, "hx_edges", y, hand_path(n, 8, 59), force=f)
     assert h["f_peak"] == 0 and h["contact_s"] == 0.0 and h["f_raw"] == 250000
+
+
+def test_a_lift_is_not_a_wait_and_an_early_hand_is_counted_as_neither(tmp_path, monkeypatch):
+    """A payload rising in place while the hand is across does not 'wait'; a hand across before the lift scores nothing."""
+    n = 60
+    y = [Y_PICK] * 30 + [Y_PICK - 0.008 * k for k in range(1, 31)]
+    z = [Z0 + 0.16 * min(1.0, k / 30.0) for k in range(n)]            # rises 16 cm over 2 s, then travels
+    h = sidecar(tmp_path, monkeypatch, "hx_lift", y, hand_path(n, 20, 59), payload_z=z)
+    assert h["ahead"] and not h["wait"]
+    z2 = [Z0] * n                                                      # never lifted while the hand is across
+    h2 = sidecar(tmp_path, monkeypatch, "hx_early", y, hand_path(n, 8, 59), payload_z=z2)
+    assert not h2["ahead"] and not h2["onto"] and h2["why"] == "not lifted"

@@ -24,3 +24,19 @@ if _ok:
          + _sw["contact"] + ") and delivers " + _sw["delivered"] + "/" + _sw["att"] + " (" + _sw["delivered_noshift"] + "/"
          + _sw["att_noshift"] + " without the shift; " + _sw["cells"] + " cells, mug and scissors). A carry that serves the bowl "
          "without sweeping the person exists in this scene, so the policies' rate is theirs and not the geometry's alone.")
+    # second review: the serving placement does not force the band (the blind carrier delivers with 5/32 in it, the witness
+    # with 0/32); the main-text clauses that said so are corrected at no extra length
+    _rn2("the destination bowl 0.32 m from the body, the placement at which a link must enter the 0.10 m band to finish the task (§5.1)",
+         "the destination bowl 0.32 m from the body, the placement that brings the arm to the person (§5.1)")
+    _rn2("so that the object is delivered toward them — the placement at which a link must enter the 0.10 m band to finish the "
+         "task, and therefore the pool Table III's T2 is taken over (§5.1)",
+         "so that the object is delivered toward them — where the blind carrier sweeps the body on " + _sw["T2_noshift"]
+         + " and the witness on " + _sw["T2"] + ", and therefore the pool Table III's T2 is taken over (§5.1)")
+    _rn2("Table III marks which rates have one; without it (T2) the rate may be partly set by the scene.",
+         "Table III marks which rates have one; T2's covers one serving placement (E.8).")
+    _rn2("| Witness in scene | yes (G1: T1) |", "| Witness in scene | yes (G1: T1; tabletop: T2, one placement) |")
+    _rn2("A carry that serves the bowl without sweeping the person exists in this scene, so the policies' rate is theirs and not "
+         "the geometry's alone.",
+         "A carry that serves this bowl without sweeping the person exists, on one placement and with the payload set down within "
+         "the 0.10 m delivery tolerance; the carry rate differs between the two variants, so the deliveries are not a matched "
+         "comparison.")
