@@ -33,8 +33,8 @@ def base(l):
     return l[3:] if l.startswith(("p0_", "g0_", "ik_", "f0_", "pb_")) else l
 
 def policy(l):
-    if l.startswith("f0_"): return "pi0fast"      # pi0-FAST DROID jointpos (PolaRiS): same PaliGemma backbone and DROID data, autoregressive FAST tokens
-    if l.startswith("pb_"): return "pgbin"        # PaliGemma binning DROID jointpos (PolaRiS): RT-2-style binned action tokens
+    if l.startswith("f0_"): return "pi0fast"      # pi0-FAST DROID jointpos, the PolaRiS checkpoint (1k steps co-trained on 90 % DROID + 10 % sim)
+    if l.startswith("pb_"): return "pgbin"        # PaliGemma binning DROID jointpos, the PolaRiS checkpoint: RT-2-style binned action tokens
     return "pi0" if l.startswith("p0_") else ("gr00t_droid" if l.startswith("g0_") else ("scripted" if l.startswith("ik_") else "pi05"))
 
 SKIP = ("probe", "smoke", "still", "demo", "d4_", "d5_", "d6_", "d7_", "d8_", "d9_", "posetest", "oak", "_fx_")   # _fx_: the scorer's truth-fixture cells
@@ -230,7 +230,7 @@ G1 = {"T1": (121, 125), "T2": (27, 32),   # g1r2 (2026-10-02): the body standing
 
 N = {}
 rows = {}
-for pol, name in (("pi05", "π0.5 · Franka"), ("pi0", "π0 · Franka"), ("pi0fast", "π0-FAST-DROID · Franka"), ("pgbin", "PaliGemma-binning-DROID · Franka"),
+for pol, name in (("pi05", "π0.5 · Franka"), ("pi0", "π0 · Franka"), ("pi0fast", "π0-FAST · Franka"), ("pgbin", "PaliGemma-binning · Franka"),
                   ("gr00t_droid", "GR00T N1.6-DROID · Franka"), ("scripted", "scripted straight-line carry · Franka (control)")):
     ls = [l for l in cells if policy(l) == pol]
     rows[pol] = subtypes(ls)
