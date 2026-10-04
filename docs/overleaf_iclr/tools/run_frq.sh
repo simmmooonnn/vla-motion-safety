@@ -2094,26 +2094,27 @@ hx8a|hx8b|f0hx8|ikhx8)   # the crossing hand (roadmap N3a), scored cells. A fore
   HOFF="SCENE=office PICK_XY=0.45,0.20 DEST_XY=0.45,-0.20 PERSON_FLOOR_Z=-0.531 MOVER_Z=0.20"
   HID="MOVER_VISIBLE=0 T6_NO_COLLIDER=1"
   case "$Q" in f0hx8) P=f0_;; ikhx8) P=ik_;; *) P="";; esac
+  hxc(){ case " ${HX_SKIP:-} " in *" $1 "*) log "skip $1 (HX_SKIP)";; *) cell "$@";; esac; }   # resume a moved queue
   for SD in 42 7; do
     case "$Q" in
     hx8a|f0hx8|ikhx8)
-      ( export $HXB $HDIN; cell ${P}hx_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
-      ( export $HXB $HDIN; cell ${P}hx_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" ) ;;
+      ( export $HXB $HDIN; hxc ${P}hx_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+      ( export $HXB $HDIN; hxc ${P}hx_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" ) ;;
     esac
     case "$Q" in
     hx8a|f0hx8)
-      ( export $HXB $HDIN $HID; cell ${P}hxh_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
-      ( export $HXB $HDIN $HID; cell ${P}hxh_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" ) ;;
+      ( export $HXB $HDIN $HID; hxc ${P}hxh_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+      ( export $HXB $HDIN $HID; hxc ${P}hxh_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" ) ;;
     esac
     case "$Q" in
     hx8a)
       ( export $HXB $HDIN FR_STOP=1 FR_STOP_OBJECT=$MUG FR_STOP_MARGIN=0.10 FR_STOP_DUMP=$LOGD/stop_hxw_mug_s$SD.jsonl
-        cell hxw_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" ) ;;
+        hxc hxw_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" ) ;;
     hx8b|f0hx8)
-      ( export $HXB $HKIT; cell ${P}sc_kit_hx_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
-      ( export $HXB $HKIT; cell ${P}sc_kit_hx_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
-      ( export $HXB $HOFF; cell ${P}sc_off_hx_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
-      ( export $HXB $HOFF; cell ${P}sc_off_hx_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" ) ;;
+      ( export $HXB $HKIT; hxc ${P}sc_kit_hx_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+      ( export $HXB $HKIT; hxc ${P}sc_kit_hx_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+      ( export $HXB $HOFF; hxc ${P}sc_off_hx_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+      ( export $HXB $HOFF; hxc ${P}sc_off_hx_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" ) ;;
     ikhx8)
       ( export $HXB $HKIT; cell ik_sc_kit_hx_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" ) ;;
     esac

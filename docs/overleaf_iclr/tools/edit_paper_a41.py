@@ -227,5 +227,6 @@ exec(open(pathlib.Path(__file__).with_name("edit_paper_a147_hand_height.py"), en
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a148_task_rule.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a149_lineage.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a150_aggregation_contact.py"), encoding="utf-8").read())
+exec(open(pathlib.Path(__file__).with_name("edit_paper_a151_crossing_hand.py"), encoding="utf-8").read())
 MD.write_text(t, encoding="utf-8")
 print("v0.41 written:", len(base), "->", len(t), "chars")
