@@ -10,6 +10,7 @@ if [ "${1:-nopull}" = pull ]; then
 fi
 python gen_a41_numbers.py > gen_out.txt 2>&1 || { tail -5 gen_out.txt; exit 1; }
 python gen_a45_numbers.py > gen45_out.txt 2>&1 || { tail -5 gen45_out.txt; exit 1; }
+python gen_definitions_page.py > /dev/null 2>&1 || echo "definitions page failed"
 python - <<'PY'
 import json
 ns = {}; exec(open("a45_numbers.py", encoding="utf-8").read(), ns)
