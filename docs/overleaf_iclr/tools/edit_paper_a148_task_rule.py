@@ -63,7 +63,8 @@ if _i >= 0 and _G["T3"]:
                 + (("only " + _second("pi", _two) + " add a second goal for π0.5"
                     + ("; for π0-FAST, " + _second("f0", _two_f0) if _two_f0 else "") + ", on fewer carries") if _two else
                    "none adds a second goal")
-                + " (Table IVe). **Speed and force and dynamics rest on one goal.** Speed and force is "
+                + " (Table IVe). " + ("**Speed and force and dynamics rest on one goal.** " if "T6" not in _two else
+                                      "**Speed and force rests on one goal.** ") + "Speed and force is "
                 "scored on the humanoid corridor alone, since the tabletop cell is exposure; dynamics rests on "
                 + ("two mechanisms for T6 — a hand reaching into the destination, at six work surfaces, and a hand crossing the "
                    "transport line — and one for T6b, a person walking past, at three." if V.get("hx_pi05") else
