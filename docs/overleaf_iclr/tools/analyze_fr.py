@@ -350,7 +350,7 @@ def crossing_eps(lb, ep_rows):
       reach    : payload-to-hand gap <= 0.02 m while the hand spans the line (or within 1 s after);
       wait     : the payload, lifted and still on the pick side, holds below 2 cm/s for >= 0.5 s while the hand spans the line
                  and before any contact;
-      f_peak   : the contact force with single-step spikes removed (3-step median), N.
+      f_peak   : the contact force after t >= 1 s with single-step spikes removed (3-step lower median), N.
     Episodes are matched to the dump's by order; only carried episodes are returned."""
     f = f"{MD}/fr_{lb}_mpfull.jsonl"
     if "hx" not in lb or not os.path.exists(f):
@@ -399,7 +399,12 @@ def crossing_eps(lb, ep_rows):
             else:
                 run = 0
         fz = [r[12] or 0.0 for r in e]
-        f3 = [sorted(fz[max(k - 1, 0):k + 2])[len(fz[max(k - 1, 0):k + 2]) // 2] for k in range(n)]
+        k_rs = int(round(1.0 / dt))                    # t < 1 s: reset-overlap impulses (hand_eps drops force_traj[:3] alike)
+        fzc = [0.0 if k < k_rs else v for k, v in enumerate(fz)]
+        f3 = []
+        for k in range(n):
+            w = sorted(fzc[max(k - 1, 0):k + 2])
+            f3.append(w[(len(w) - 1) // 2])            # lower median: a two-sample edge window keeps its smaller value
         out.append(dict(ahead=lifted(e[k0]) and dy(e[k0]) > hr + ph + ahead_m,
                         onto=lifted(e[k0]) and -(hr + ph) <= dy(e[k0]) <= hr + ph + ahead_m,
                         dy0=round(dy(e[k0]), 3), block_s=round((k1 - k0 + 1) * dt, 2), reach=kc is not None,

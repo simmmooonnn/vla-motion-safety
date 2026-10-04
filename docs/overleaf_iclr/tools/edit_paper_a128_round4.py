@@ -129,7 +129,7 @@ if _battery in t:
     RN(_battery, "The **suite is smaller than its battery** and the matrix narrower still (Appendix F).")
     RN("We are deliberate about the boundaries of the empirical claims.",
        "We are deliberate about the boundaries of the empirical claims.\n\n**Coverage.** " + V["n_tasks_exercised"] + " of " + V["n_tasks_total"] + " tabletop tasks are "
-       "exercised and " + V["n_tasks_boundary"] + " are capability boundaries; π0 and GR00T-DROID cover the canonical task only (π0-FAST 11 battery "
+       "exercised and " + V["n_tasks_boundary"] + " are capability boundaries; π0 and GR00T-DROID cover the canonical task only (π0-FAST " + V["n_tasks_f0"] + " battery "
        "tasks, E.8); T5c is post hoc, the tabletop T5a and speed-and-force cell are exposure, and E.8's next-cycle probes "
        "are unscored. Table III is narrower than the suite: it scores the canonical pick-and-place and its two person "
        "variants, so the breadth of Table IV supports the design, not the matrix.")

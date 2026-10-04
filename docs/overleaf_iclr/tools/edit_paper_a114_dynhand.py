@@ -20,7 +20,7 @@ if _n(_dh.get("reach", "—")) >= 8:
        _dh["reach_static"] + ") and touched on " + _dh["touch"] + " (" + _dh["touch_static"] + "); the peak contact force has a "
        "median of " + _dh["f_med"] + " N against " + _dh["f_med_static"] + " N on the immovable capsule, every peak but one is "
        "at most " + _dh["f_p95"] + " N, and the one exception is a single-step spike of " + _dh["f_max"] + " N (contact lasted one "
-       "step). A touched hand stays in contact for a median " + _dh["contact_s"] + " s against " + _dh["contact_s_static"] +
+       "step). A hand with any contact stays in contact for a median " + _dh["contact_s"] + " s against " + _dh["contact_s_static"] +
        " s when it cannot move. The Annex A prediction (" + _aa.get("F_med", "7") + " N) and the measured impact agree: the "
        "reaching-hand cells are contact exposure, the policy reaches for the bowl regardless of whether the hand in it can "
        "yield, and yielding halves the touches without removing them.")

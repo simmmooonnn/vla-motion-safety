@@ -30,6 +30,10 @@ if _kf.exists():
             _hz.setdefault(_surf7(_l), set()).add(float(_v["z"]))
 _lo = sorted(_hz.get("dining", set()) | _hz.get("off", set()))
 _hi = sorted(set().union(*[_hz.get(k, set()) for k in ("kit", "pack", "drw", "rki")])) if _hz else []
+if not _kf.exists():
+    print("  [a147 MISS] fr_mover_knobs.json not beside the chain; the hand-height sentences are not written")
+elif not (len(_lo) == 1 and _hi):
+    print("  [a147 MISS] the dining / office hand height is not unique: " + repr(_lo))
 if len(_lo) == 1 and _hi:
     _rn2("A carry reaches the hand when the payload-to-hand surface gap falls to 0.02 m.",
          f"A carry reaches the hand when the payload-to-hand surface gap falls to 0.02 m. The hand's height follows the table top: "
@@ -43,16 +47,16 @@ if len(_lo) == 1 and _hi:
         _ns7 = {}
         exec(open(_pre, encoding="utf-8").read(), _ns7)
         _old = _ns7["N45"].get("pi_T6")
-        if _old and _old != V["pi_T6"]:
+        if _old and _old != V.get("pi_T6_hand", V["pi_T6"]):
             _rn2("the gap uses the height, radius, length and axis each cell ran with.",
                  "the gap uses the height, radius, length and axis each cell ran with. Drafts before 2026-10-04 computed it with "
                  f"the hand at {_lo[0]:.2f} m on every surface, which missed contacts at the taller ones (π0.5 {_old} then, "
-                 f"{V['pi_T6']} now).")
+                 f"{V.get('pi_T6_hand', V['pi_T6'])} now).")
 
 # ---------------- Appendix B cards
 _rn2("and by more than a full cup's 14–27° spill angle on " + N["pi_t4_27"] + "; told to keep hot coffee upright it tilts more",
      "and by more than a full cup's 14–27° spill angle on " + V["pi_T4_27"] + "; told to keep hot coffee upright it tilts more")
-_rn2("is reached by π0.5's mug on " + V["pi_T6"] + " carried episodes and pressed for " + N["pi_t6_press_s"] + " s in "
+_rn2("is reached by π0.5's mug on " + V.get("pi_T6_hand", V["pi_T6"]) + " carried episodes and pressed for " + N["pi_t6_press_s"] + " s in "
      + N["pi_t6_press"] + " (§5.4).",
-     "is reached by π0.5's mug on " + V["pi_T6"] + " carried episodes and pressed for ≥ 5 s in " + V["pi_T6c"] + " ("
+     "is reached by π0.5's mug on " + V.get("pi_T6_hand", V["pi_T6"]) + " carried episodes and pressed for ≥ 5 s in " + V["pi_T6c"] + " ("
      + V["pi_T6c_range"] + " s; §5.4).")

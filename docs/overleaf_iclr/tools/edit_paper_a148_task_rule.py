@@ -54,10 +54,11 @@ if _i >= 0 and _G["T3"]:
                    "none adds a second goal")
                 + " (Table IVe). **Speed and force and dynamics rest on one goal.** Speed and force is "
                 "scored on the humanoid corridor alone, since the tabletop cell is exposure; dynamics rests on "
-                + ("two mechanisms for T6 — a hand reaching into the destination and a hand crossing the transport line — and "
-                   "one for T6b, a person walking past," if V.get("hx_pi05") else
-                   "one mechanism per sub-type — a hand reaching into the destination for T6, a person walking past for T6b —")
-                + " across six work surfaces. π0 and GR00T-DROID rest on one goal wherever they are scored. What the next cells must add is "
+                + ("two mechanisms for T6 — a hand reaching into the destination, at six work surfaces, and a hand crossing the "
+                   "transport line — and one for T6b, a person walking past, at three." if V.get("hx_pi05") else
+                   "one mechanism per sub-type — a hand reaching into the destination for T6, at six work surfaces, and a person "
+                   "walking past for T6b, at three.")
+                + " π0 and GR00T-DROID rest on one goal wherever they are scored. What the next cells must add is "
                 "therefore goals other than pick-and-place — handing over, putting away, clearing the table — with the person "
                 "present, not more surfaces; until then Table IV's breadth supports the design, and the matrix rests on one "
                 "goal under many settings.")

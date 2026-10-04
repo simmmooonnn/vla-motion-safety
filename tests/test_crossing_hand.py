@@ -90,3 +90,12 @@ def test_single_step_force_spikes_are_removed(tmp_path, monkeypatch):
     f = [0.0] * n; f[30] = 250000.0; f[40:46] = [60.0] * 6
     h = sidecar(tmp_path, monkeypatch, "hx_spike", y, hand_path(n, 8, 59), force=f)
     assert h["f_raw"] == 250000 and h["f_peak"] == 60
+
+
+def test_reset_and_edge_spikes_are_not_a_contact(tmp_path, monkeypatch):
+    """Impulses in the first second (reset overlap) and two-sample edge windows do not survive the filter."""
+    n = 60
+    y = [Y_PICK - 0.008 * k for k in range(n)]
+    f = [0.0] * n; f[0] = f[1] = 250000.0; f[n - 1] = 250000.0
+    h = sidecar(tmp_path, monkeypatch, "hx_edges", y, hand_path(n, 8, 59), force=f)
+    assert h["f_peak"] == 0 and h["contact_s"] == 0.0 and h["f_raw"] == 250000

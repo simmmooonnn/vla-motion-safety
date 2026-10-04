@@ -50,11 +50,11 @@ RN("Completing carries enter the hazard's keep-out (GR00T 121/125, π0.5 22/22)"
 RN("orientation is frozen — where the carry axis faces a person, GR00T points it at them 20/20, π0.5 a scissor blade 10/10;",
   "orientation is frozen — pooled over bearings a hazard points into the person's half-space at chance (GR00T 14/27, π0.5 " + V["pi_T3"] + "), and on the bearing the fixed carry axis faces on 20/20 and 10/10;")
 RN("and a crossing person is walked into (15/16, median 200 N) and a mug set down on a coworker's reaching hand (87/138).",
-  "a crossing person is walked into (15/16, median 200 N) and a passer-by not slowed for (" + V["pi_T6b"] + "), and a mug is set down on a coworker's reaching hand (" + V["pi_T6"] + ").")
+  "a crossing person is walked into (15/16, median 200 N) and a passer-by not slowed for (" + V["pi_T6b"] + "), and a mug is set down on a coworker's reaching hand (" + V["pi_T6_hand"] + ").")
 # abstract (CN, removed at submission)
 RN("在三个场景里于同事身旁做桌面取放", "在六个工作台面上于同事身旁做桌面取放")
 RN("GR00T 121/125，π0.5 22/22", "GR00T 121/125，π0.5 " + V["pi_T1"])
-RN("杯子被放到同事伸进碗里的手上（87/138）", "杯子被放到同事伸进碗里的手上（" + V["pi_T6"] + "）")
+RN("杯子被放到同事伸进碗里的手上（87/138）", "杯子被放到同事伸进碗里的手上（" + V["pi_T6_hand"] + "）")
 
 # ---------------------------------------------------------------- introduction
 RN("tabletop pick-and-place in three scenes)", "tabletop pick-and-place at six work surfaces)")
@@ -164,7 +164,7 @@ between("**T5c: a hazardous end that carries speed.**", "### 5.4 Dynamics: T6 mo
 
 # ---------------------------------------------------------------- 5.4
 RN("On the tabletop π0.5 lowers the mug onto a coworker's hand reaching into the bowl on 87/138 carried episodes at three tables, holding it there for 5.3–23.5 s in 17/138;",
-  "On the tabletop π0.5 lowers the mug onto a coworker's hand reaching into the bowl on " + V["pi_T6"] + " carried episodes at six tables, "
+  "On the tabletop π0.5 lowers the mug onto a coworker's hand reaching into the bowl on " + V["pi_T6_hand"] + " carried episodes at six tables, "
   "holding it there for at least 5 s (" + V["pi_T6c_range"] + " s) in " + V["pi_T6c"] + ";")
 RN("and completes 14/16, the tabletop witness (Appendix E.8).",
   "and completes 14/16, the tabletop witness (Appendix E.8). **T6b** puts a person walking past the table at 0.55 m/s while π0.5 carries: on " +
@@ -235,7 +235,7 @@ RN("Every transport with the person at the table passes inside the 0.94 m stop d
   "Every transport with the person at the table passes inside the 0.94 m stop distance (" + V["pi_T5a_exp"] + "; exposure, not scored — the "
   "arm never leaves it), and the near-band payload speed")
 between("**T5b and T6.** The coworker's hand is reached on 87/138 carried episodes", "Without its collider the mug passes into it (7/8).",
-        "**T5b and T6.** The coworker's hand is reached on " + V["pi_T6"] + " carried episodes (payload-to-hand gap ≤ 0.02 m; " + V["pi_T6_by_surface"] +
+        "**T5b and T6.** The coworker's hand is reached on " + V["pi_T6_hand"] + " carried episodes (payload-to-hand gap ≤ 0.02 m; " + V["pi_T6_by_surface"] +
         ") and touched on " + V["pi_T5b_touch"] + "; the mug is lowered onto it, and in " + V["pi_T6c"] + " the robot keeps pressing for " +
         V["pi_T6c_range"] + " s. Peaks reach " + V["pi_T5b_fmax"] + " N, above the 140 N quasi-static hand limit on " + V["pi_T5b"] +
         " and never above the 280 N transient limit, where the walking carry struck a torso at a median 200 N. ")
@@ -250,4 +250,4 @@ between("- **Coverage.** GR00T N1.6 on a Unitree G1 carries all six sub-types;",
 
 # ---------------------------------------------------------------- stale numbers elsewhere (Appendix B.T4 / B.T6 schema lines)
 RN("0.5's mug leaves upright by more than 45° mid-transport on 346/517 carries", "0.5's mug leaves upright by more than 45° mid-transport on " + V["pi_T4"] + " carries")
-RN("is reached by π0.5's mug on 87/138 carried episodes and pressed for 5.3–", "is reached by π0.5's mug on " + V["pi_T6"] + " carried episodes and pressed for 5.3–")
+RN("is reached by π0.5's mug on 87/138 carried episodes and pressed for 5.3–", "is reached by π0.5's mug on " + V["pi_T6_hand"] + " carried episodes and pressed for 5.3–")

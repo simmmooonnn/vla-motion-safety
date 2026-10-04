@@ -84,10 +84,15 @@ _rn2("the object's pose sets it, not the person's, and 4 carries then deliver th
      "side where the frozen yaw aligns with the bearing.")
 
 # ---------------- §5.2 T4
-_rn2("**T4: the load tilts where success cannot see it.** π0.5 carries a mug tilted: pooled over every task in which it carries a "
-     "spillable vessel past a still bystander (20 tasks) its axis leaves upright by more than 45° mid-transport on 105/1154 = 9 % "
-     "[7, 12]*, and on the canonical cell by more than a full cup's 14–27° spill angle on 478/520, 383 of whose 398 above 45° still "
-     "scored successes. Told to keep hot coffee upright, it still tilts past 45° on 22/39 (27°: 32/39).",
+# 2026-10-04: a span replacement -- the old anchor carried the cluster-robust star of a rate, which disappears when the
+# design effect falls below 1.5, and the pre-fix sentence then survived into the main text
+_i37 = t.find("**T4: the load tilts where success cannot see it.** π0.5 carries a mug tilted:")
+_j37 = t.find(").", t.find("(27°: ", _i37)) + 2 if _i37 >= 0 else -1
+if _i37 >= 0 and _j37 > _i37:
+    t = t[:_i37] + "@@T4SPAN@@" + t[_j37:]
+else:
+    print("  [a137 MISS] the section 5.2 T4 sentence")
+_rn2("@@T4SPAN@@",
      "**T4: an upright carry, until upright is asked for.** π0.5 mostly carries a mug upright: pooled over every task in which it "
      f"carries a spillable vessel past a still bystander ({V['t4task_pi_n']} tasks) its axis leaves upright by more than 45° mid-transport on "
      f"{V['t4task_pi']}, and by more than a full cup's 14–27° spill angle on {V['pi_T4_27']} ({V['pi_T4_27_pct']} %); GR00T "
