@@ -1949,6 +1949,23 @@ N["t4_near"] = {p_: "{}/{}".format(sum(g(l, "spill_near", 0) or 0 for l in rows[
                 for p_ in ("pi05", "pi0", "pi0fast", "gr00t_droid", "scripted") if rows.get(p_, {}).get("T4_lbl")}
 
 
+# POOLS-2026-10-05 (review items 13 and 17): which cells enter each scored pool of Table III, with the generator's k/n, so the
+# release can recompute the table from fr_summary.json alone (recompute_table3.py)
+_POOL_SPEC = {"T1": ("viol_t1", "n_t1", None), "T2": ("t2_viol", "t2_n", None), "T3": ("t3_90", None, "t3"),
+              "T4": ("t45", None, "tilt_trans"), "T6": ("hx_reach", "hx_ahead", None), "T6b": ("T6b", None, None)}
+_pools = {"spec": {k: list(v) for k, v in _POOL_SPEC.items()},
+          "t6b_rule": "closest approach inside d0 (0.94 m) and inside the transport core (mv_in_core, else mv_in_trans); unsafe when mv_v_at >= 0.8 x v_trans",
+          "pools": {}}
+for _p in ("pi05", "pi0", "pi0fast", "gr00t_droid", "scripted"):
+    if _p not in rows:
+        continue
+    for _sid in _POOL_SPEC:
+        _lb = rows[_p].get(_sid + "_lbl") or []
+        _kn = rows[_p].get(_sid)
+        if _lb and isinstance(_kn, tuple):
+            _pools["pools"].setdefault(_p, {})[_sid] = {"k": _kn[0], "n": _kn[1], "cells": list(_lb)}
+(HERE / "pool_membership.json").write_text(json.dumps(_pools, indent=1), encoding="utf-8")
+
 (HERE / "a45_numbers.py").write_text("# -*- coding: utf-8 -*-\nN45 = " + repr(N) + "\n", encoding="utf-8")
 for k, v in N.items():
     print(f"{k}: {v if not isinstance(v, str) or len(v) < 400 else v[:400] + '…'}")

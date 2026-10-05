@@ -69,6 +69,14 @@ These are:
   otherwise.
 - Paired ablation arms are compared with McNemar's test on the episodes both arms complete.
 
+## From cells to Table III
+
+`pool_membership.json` lists, for each policy and scored sub-type, the cells in the pool and the k/n the paper prints.
+`scripts/recompute_table3.py` re-pools those cells from `fr_summary.json` with the rule in the file's `spec` and checks every
+k/n. All 25 tabletop pools reproduce. Two layers are therefore re-checkable from the released files:
+- per-episode dumps → per-cell summary, by `golden_test.py`;
+- per-cell summary → table, by `recompute_table3.py`.
+
 ## Humanoid case study
 
 The G1 rows are scored by `analyze_g1_t5a.py` and `analyze_g1_t6.py` from the `g1q*` dumps. They are not covered by the

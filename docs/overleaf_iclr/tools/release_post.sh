@@ -25,6 +25,11 @@ if [ -d "$SK" ]; then mkdir -p "$C/assets/asset_mirror/Arena/assets/object_libra
 du -sh "$C/assets"
 # 4. stop-instrument logs (read by the scorer from logs/fr/)
 cp "$Z"/isaac/logs/fr/stop_*.jsonl "$R/logs/fr/" 2>/dev/null; echo "stop logs: $(ls "$R"/logs/fr/stop_*.jsonl 2>/dev/null | wc -l)"
+# 4b. pool membership (from the paper generator, uploaded beside the builder) and the table recompute
+[ -f "$Z/release_pool_membership.json" ] && cp "$Z/release_pool_membership.json" "$C/pool_membership.json"
+[ -f "$Z/release_recompute_table3.py" ] && cp "$Z/release_recompute_table3.py" "$C/scripts/recompute_table3.py"
+[ -f "$Z/release_SCORING.md" ] && cp "$Z/release_SCORING.md" "$C/SCORING.md"
+[ -f "$C/pool_membership.json" ] && (cd "$C/scripts" && python3 recompute_table3.py | tail -3)
 # 5. golden test, run on the release itself
 cp "$Z/release_golden_test.py" "$C/scripts/golden_test.py"
 cd "$C/scripts" && python3 golden_test.py --json "$R/golden_test_result.json" > "$R/golden_test_output.txt" 2>&1; echo "golden exit $?"
