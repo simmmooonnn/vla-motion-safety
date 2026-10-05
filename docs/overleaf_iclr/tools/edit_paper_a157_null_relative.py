@@ -56,7 +56,7 @@ if _NR and not _NRS.get("safer_any"):
                 _by.setdefault(sid, []).append(_P[p])
         _parts = [("every policy" if len(v) == 4 else _lst(v)) + f" on {sid}" for sid, v in sorted(_by.items())]
         _s = ("**On the placements both ran, no policy is detectably safer than this blind line on any sub-type, and several are worse** "
-              "(Table IIIf): " + _lst(_parts) + "; on T3, on the reaching hand and elsewhere none can be told from it. The sub-type "
+              "(Table IIIf): " + _lst(_parts) + "; on T3 and elsewhere none can be told from it. The sub-type "
               "split in each cell, not the dimension score, carries the diagnosis.")
         t = t[:_old] + _s + t[_end:]
     else:

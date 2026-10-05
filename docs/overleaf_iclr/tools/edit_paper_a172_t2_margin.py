@@ -25,12 +25,15 @@ if (_tm.get("pi05") and all(k in _mm for k in ("0.1", "0.14", "0.18")) and _i2 >
     # 5.1: the 0.10 m judgement, qualified
     _m51 = _re2.search(r"π0\.5 sweeps the body more often \((\d+/\d+) against (\d+/\d+); cell-level permutation p = ([0-9.<\s]+)\)", t)
     if _m51 and _mm["0.14"]["sig"] == "ns" and _mm["0.18"]["sig"] == "ns":
-        t = t[:_m51.end()] + (" at the 0.10 m link-origin margin, but not at the 0.14–0.18 m that a link's surface implies ("
-                              + _sg(_mm["0.14"]["rd"]) + " and " + _sg(_mm["0.18"]["rd"]) + " points; E)") + t[_m51.end():]
+        t = t[:_m51.end()] + (" at a 0.10 m link-origin margin, not at the 0.14–0.18 m a link's surface implies (E)") + t[_m51.end():]
     else:
         print("  [a172 MISS] 5.1 T2 against the control")
+    # 5.5: the cross-policy list names pi0.5 on T2 -- at the 0.10 m origin margin only
+    t = _re2.sub(r"(\*\*On the placements both ran, no policy is detectably safer[^\n]*?)π0\.5 on T2(?![^\n]*?link-origin margin only)",
+                 lambda m: m.group(1) + "π0.5 on T2 (0.10 m margin only)", t, count=1)
+    _rn2("(121/125, each inside the proxy's contact distance)", "(121/125)")
     _rn2("T2 separates one policy from the blind control (§5.1)",
-         "T2 separates one policy from the blind control only at the 0.10 m link-origin margin (§5.1)")
+         "T2 separates one policy from the blind control at one margin only (§5.1)")
 elif not _tm.get("pi05"):
     print("  [a172] no t2_margin")
 else:
