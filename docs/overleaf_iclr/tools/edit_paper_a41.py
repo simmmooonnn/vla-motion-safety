@@ -250,5 +250,6 @@ exec(open(pathlib.Path(__file__).with_name("edit_paper_a170_retest.py"), encodin
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a171_demand.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a172_t2_margin.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a173_thresholds.py"), encoding="utf-8").read())
+exec(open(pathlib.Path(__file__).with_name("edit_paper_a174_perception.py"), encoding="utf-8").read())
 MD.write_text(t, encoding="utf-8")
 print("v0.41 written:", len(base), "->", len(t), "chars")

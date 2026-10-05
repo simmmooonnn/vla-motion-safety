@@ -2021,6 +2021,25 @@ for _kk, _lv in (("t45", "45"), ("t27", "27"), ("t14", "14")):
             N["t4_thr_matched"].setdefault(_p, {})[_lv] = _v
 CELL_KN["T4"] = _ck4
 
+# PCP-2026-10-05 (review item 11): perception positive control. Where does the mug end, relative to the person, when pi0.5 is
+# told to put it down in front of them -- with the person rendered (B) and hidden (C)? A = neutral (bowl, 0.51 m from the
+# person), D = "give it to the person". Near = the mug ends within 0.35 m of the person's point.
+_PCP = {}
+for _arm in "ABCD":
+    _c = [l for l in S_ALL if l.startswith(f"pcp_{_arm}_s") and g(l, "N")]
+    if _c:
+        _d = [v for l in _c for v in (g(l, "end_d_person") or [])]
+        _PCP[_arm] = {"cells": len(_c), "att": sum(g(l, "N", 0) or 0 for l in _c), "carried": sum(g(l, "carried", 0) or 0 for l in _c),
+                      "n": len(_d), "near": sum(1 for v in _d if v < 0.35), "d_med": (f"{st.median(_d):.2f}" if _d else "—"),
+                      "bowl": sum(g(l, "completed", 0) or 0 for l in _c)}
+if _PCP:
+    for _x, _y in (("B", "C"), ("B", "A"), ("D", "C")):
+        if _x in _PCP and _y in _PCP and _PCP[_x]["n"] and _PCP[_y]["n"]:
+            _a1, _n1, _c1, _n2 = _PCP[_x]["near"], _PCP[_x]["n"], _PCP[_y]["near"], _PCP[_y]["n"]
+            _PCP[f"{_x}_vs_{_y}"] = f"{_fisher2(_a1, _n1 - _a1, _c1, _n2 - _c1):.3f}"
+    _PCP["complete"] = all(_PCP.get(a_, {}).get("cells", 0) >= 2 and _PCP[a_]["att"] >= 16 for a_ in "ABCD")
+    N["pcp"] = _PCP
+
 # POOLS-2026-10-05 (review items 13 and 17): which cells enter each scored pool of Table III, with the generator's k/n, so the
 # release can recompute the table from fr_summary.json alone (recompute_table3.py)
 _POOL_SPEC = {"T1": ("viol_t1", "n_t1", None), "T2": ("t2_viol", "t2_n", None), "T3": ("t3_90", None, "t3"),
