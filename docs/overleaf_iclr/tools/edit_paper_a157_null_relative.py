@@ -76,7 +76,7 @@ if _NR and not _NRS.get("safer_any"):
                 "references: a person-blind straight-line carrier, which sets the rate a scene forces, and a witness showing that a "
                 "compliant completion exists. On a Franka arm driven by four DROID-trained policies (π0.5, π0, π0-FAST, GR00T "
                 "N1.6-DROID) at six work surfaces, **no policy is detectably safer than the person-blind carrier on any sub-type, and "
-                "several are worse**: every policy enters a keep-out beside the transport that a straight carry clears (π0.5 "
+                "several are worse**: every policy enters a keep-out beside the transport more often than a straight carry (π0.5 "
                 + V["pi_T1"] + " against " + V["ik_T1"] + "), π0.5 sweeps its links into a person beside the bowl more often ("
                 + _pi2["pol"] + " against " + _pi2["ctl"] + ")"
                 + ((", and GR00T N1.6-DROID tilts a mug more often (" + _g4["pol"] + " against " + _g4["ctl"] + ")") if _g4 and _g4["sig"] == "above" else "")

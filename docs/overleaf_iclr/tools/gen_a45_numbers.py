@@ -562,6 +562,15 @@ for _p in ("pi05", "pi0fast"):
     if _w:
         N[f"wk_pnp_{_p}"] = "{}/{}".format(sum(x[1] for x in _w), sum(x[2] for x in _w))
 
+# T1OFF-2026-10-05: T1 by offset (ICLR-readiness review, item 12): at 0.20 m a straight carry grazes the radius, at 0.28 m it
+# clears it, so the pooled rate mixes two regimes; each offset is reported with the control's
+def _t1_off(p_, off):
+    ls_ = [l for l in rows.get(p_, {}).get("T1_lbl") or [] if (f"t1o{off}" in base(l) or base(l).startswith(f"t1a{off}"))]
+    return pool(ls_, "viol_t1", "n_t1")
+N["t1_by_off"] = {p_: {off: "{}/{}".format(*_t1_off(p_, off)) for off in ("20", "28")} for p_ in ("pi05", "pi0", "pi0fast", "gr00t_droid", "scripted")
+               if rows.get(p_, {}).get("T1_lbl")}
+
+
 # R6, reported: how wide the scored T2 pool is, and the subset whose destination lies on the person's side, where a link
 # must enter the 0.10 m band to finish the task at all.  Both are printed, so the serving family cannot be read as a
 # selected cell: the ordering is the same either way.
