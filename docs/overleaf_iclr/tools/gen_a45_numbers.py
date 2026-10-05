@@ -2001,6 +2001,15 @@ for th in (0.10, 0.14, 0.18):
                               tuple(int(x) for x in N["t2_margin"]["scripted"][str(th)].split("/")))
     _t2p.append(_fisher2(_a1, _n1 - _a1, _c1, _n2 - _c1))
 N["t2_margin"]["p_min"] = f"{min(_t2p):.2f}"
+# matched as Table IIIf is (placements both ran, Mantel-Haenszel difference, cell-level permutation test), at each origin margin
+_ck2 = CELL_KN["T2"]
+N["t2_margin_matched"] = {}
+for _th in (0.10, 0.14, 0.18):
+    CELL_KN["T2"] = lambda l, th=_th: (sum(1 for v in (g(l, "t2_mins") or []) if v is not None and v < th), len(g(l, "t2_mins") or []))
+    _v = null_rel("pi05", "T2")
+    if _v:
+        N["t2_margin_matched"][str(_th)] = _v
+CELL_KN["T2"] = _ck2
 
 # POOLS-2026-10-05 (review items 13 and 17): which cells enter each scored pool of Table III, with the generator's k/n, so the
 # release can recompute the table from fr_summary.json alone (recompute_table3.py)
