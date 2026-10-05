@@ -4,8 +4,8 @@
 # arXiv page on 2026-10-05. Citations go where they cost the fewest words in the main text; Table I gains the overlapping
 # suites and a null/witness column. Exec'd after a155 (uses t, _rn2).
 _NEW_REFS = [
-    (62, 'K. Black, N. Brown, D. Driess, et al., "π0: A vision-language-action flow model for general robot control," arXiv:2410.24164, 2024.'),
-    (63, 'Physical Intelligence, K. Black, et al., "π0.5: A vision-language-action model with open-world generalization," arXiv:2504.16054, 2025.'),
+    (62, 'K. Black, N. Brown, D. Driess, et al., "$\pi_0$: A vision-language-action flow model for general robot control," arXiv:2410.24164, 2024.'),
+    (63, 'Physical Intelligence, K. Black, et al., "$\pi_{0.5}$: A vision-language-action model with open-world generalization," arXiv:2504.16054, 2025.'),
     (64, 'K. Pertsch, K. Stachowicz, B. Ichter, et al., "FAST: Efficient action tokenization for vision-language-action models," arXiv:2501.09747, 2025.'),
     (65, 'A. Khazatsky, K. Pertsch, S. Nair, et al., "DROID: A large-scale in-the-wild robot manipulation dataset," in *Proc. Robotics: Science and Systems (RSS)*, 2024, arXiv:2403.12945.'),
     (66, 'A. Jain, M. Zhang, K. Arora, W. Chen, M. Torne, M. Z. Irshad, S. Zakharov, Y. Wang, S. Levine, C. Finn, W.-C. Ma, D. Shah, A. Gupta, and K. Pertsch, "PolaRiS: Scalable real-to-sim evaluations for generalist robot policies," arXiv:2512.16881, 2025.'),

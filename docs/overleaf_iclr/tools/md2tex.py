@@ -321,9 +321,9 @@ FIGS = r"""
    \textbf{Trajectory}: T1 payload path $\cdot$ T2 body sweep\\
    \textbf{Orientation}: T3 hazard axis $\cdot$ T4 load tilt\\
    \textbf{Speed \& force}: T5a speed $\cdot$ T5b contact force\\
-   \textbf{Dynamics}: T6 moving person};
+   \textbf{Dynamics}: T6 moving hand or person $\cdot$ T6b passer-by};
 \node[draw=black!40, fill=black!4, rounded corners=2pt, align=center, text width=6.1cm, inner sep=3pt] (tup) at (3.25,-0.1)
-  {per sub-type: task $\cdot$ quantity $\cdot$ human-referenced predicate\\ $\rightarrow$ one unsafe rate per policy (Table~\ref{tab:III})\\[1pt]
+  {per sub-type: task $\cdot$ quantity $\cdot$ human-referenced predicate\\ $\rightarrow$ one unsafe rate per policy, against a person-blind straight line (Table~\ref{tab:III})\\[1pt]
    \textcolor{red!55!black}{attribution: name it? $\cdot$ show it? $\cdot$ does a compliant completion exist?}};
 \draw[arr] (ex.south) -- (tup.north);
 \draw[arr] (in.south) -- (in.south |- ex.north);
@@ -333,17 +333,18 @@ FIGS = r"""
 \node[anchor=north west, inner sep=0pt, font=\tiny] at (6.75,4.62) {%
 \renewcommand{\arraystretch}{1.18}\setlength{\tabcolsep}{2.2pt}%
 \begin{tabular}{@{}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{1.0cm}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{2.55cm}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{2.85cm}@{}}
- & \textbf{G1 corridor carry}\newline GR00T N1.6, Unitree G1 & \textbf{Franka tabletop pick-place}\newline $\pi_{0.5}$, $\pi_0$, GR00T N1.6-DROID; dining table, kitchen counter, packing station \\ \hline
-\textcolor{blue!45!black}{\textbf{T1}} payload path & hazard on the path: live strip, stove, person & keep-out / hot plate between pick and place \\
-\textcolor{blue!45!black}{\textbf{T2}} body sweep & bystander beside the shelf & adult at the table; forearm resting on it \\ \hline
+ & \textbf{G1 corridor carry} (case study)\newline GR00T N1.6, Unitree G1 & \textbf{Franka tabletop}\newline $\pi_{0.5}$, $\pi_0$, $\pi_0$-FAST, GR00T N1.6-DROID; six work surfaces \\ \hline
+\textcolor{blue!45!black}{\textbf{T1}} payload path & stove 0.28\,m off the path (on-path hazards: exposure) & keep-out 0.20 / 0.28\,m beside the transport: marker or resting forearm \\
+\textcolor{blue!45!black}{\textbf{T2}} body sweep & bystander beside the shelf & destination beside the person (serving) \\ \hline
 \textcolor{orange!70!black}{\textbf{T3}} hazard axis & box's long axis, person at 8 azimuths & scissors or fork, person left or right \\
 \textcolor{orange!70!black}{\textbf{T4}} load tilt & box named ``a cup of water'' & mug, coffee cup; ``keep it upright'' \\ \hline
-\textcolor{red!55!black}{\textbf{T5a}} speed & approach speed vs.\ SSM envelope & approach speed, person present vs.\ absent \\
-\textcolor{red!55!black}{\textbf{T5b}} force & contact sensor on a crossing person & contact sensor on a coworker's hand \\ \hline
-\textcolor{green!35!black}{\textbf{T6}} moving person & person crossing the corridor & hand reaching into the destination bowl \\
+\textcolor{red!55!black}{\textbf{T5a}} speed & approach speed vs.\ SSM envelope & exposure (the arm works inside $d_0$) \\
+\textcolor{red!55!black}{\textbf{T5b}} force & crossing person (kinematic: exposure) & coworker's hand (kinematic: exposure) \\ \hline
+\textcolor{green!35!black}{\textbf{T6}} moving person & person crossing the corridor & forearm crossing the transport line \\
+\textcolor{green!35!black}{\textbf{T6b}} passer-by & speed before the crossing person & person walking past the table \\
 \end{tabular}};
 \end{tikzpicture}
-\caption{\textbf{Overview.} Left: instruction and outcome safety judge the endpoints of a task; execution-phase safety judges the trajectory between them, decomposed into four parallel dimensions of a motion --- trajectory, orientation, speed and force, dynamics --- with six sub-types, each scored per policy against a human-referenced predicate, and attributed by fixability ablations and a feasibility witness. Right: the design --- every sub-type is instantiated in two scene families, a shelf-to-bin carry on a locomoting humanoid and tabletop pick-and-place on a Franka arm at six work surfaces, so each dimension is measured on two embodiments and four policies (scenes in Fig.~\ref{fig:gallery} and Appendix Fig.~\ref{fig:tabletop}).}
+\caption{\textbf{Overview.} Left: instruction and outcome safety judge the endpoints of a task; execution-phase safety judges the trajectory between them, decomposed into four parallel dimensions of a motion --- trajectory, orientation, speed and force, dynamics --- each sub-type scored per policy against a human-referenced predicate and attributed by a person-blind straight-line control, fixability ablations and a feasibility witness. Right: the design --- the benchmark is the Franka tabletop family (four DROID-trained policies at six work surfaces); a shelf-to-bin carry on a locomoting humanoid is a case study; cells whose geometry or proxy forces the outcome are exposure (scenes in Fig.~\ref{fig:gallery} and Appendix Fig.~\ref{fig:tabletop}).}
 \label{fig:overview}
 \end{figure}
 \begin{figure}[t]
@@ -356,7 +357,7 @@ FIGS = r"""
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_gallery.pdf}
-\caption{\textbf{The six sub-types, each with its scored quantity, and the scenes as rendered.} (a)--(f) One schematic per sub-type in dimension order, with the scored quantity drawn: trajectory --- carried-object clearance to a hazard on the path (T1) and the robot's own links against the bystander's body (T2); orientation --- the angle between the hazardous axis and the bearing to a bystander (T3) and load tilt (T4, side view); speed and force --- payload speed against the ISO/TS 15066 separation envelope (T5); dynamics --- separation and time-to-collision against a crossing person (T6); predicates in Table~\ref{tab:II}. (g)--(j) Top-down Isaac Sim stills of GR00T on the G1: the carry through an electrified strip, the arm sweeping a bystander, a crossing person, and the same carry past a real object. Frame strips with the keep-out drawn are in Fig.~\ref{fig:t1}.}
+\caption{\textbf{The six sub-types, each with its scored quantity, and the scenes as rendered.} (a)--(f) One schematic per sub-type in dimension order, with the scored quantity drawn: trajectory --- the carried object against a keep-out beside the transport, which a straight carry clears (T1), and the robot's own links against the bystander's body (T2); orientation --- the angle between the hazardous axis and the bearing to a bystander (T3) and load tilt (T4, side view); speed and force --- payload speed against the ISO/TS 15066 separation envelope (T5); dynamics --- the payload reaching a crossing person or hand while it is in the way (T6); predicates in Table~\ref{tab:II}. (g)--(j) Isaac Sim stills: the G1 carry through a keep-out, $\pi_{0.5}$'s arm sweeping toward a person beside the bowl, $\pi_{0.5}$ carrying the mug into a coworker's forearm crossing its path, and a person crossing the G1's corridor. Frame strips with the keep-out drawn are in Fig.~\ref{fig:t1}.}
 \label{fig:gallery}
 \end{figure}
 \begin{figure}[t]

@@ -2163,9 +2163,9 @@ None of these undercuts the case: along all four dimensions the measured policie
 
 *Appendix pointers (not for submission): taxonomy definitions — `docs/execution_phase_safety_taxonomy.md`; per-type experiment designs and offline results — `docs/experiment_designs_T3-T6.md`; the visual taxonomy figure — published artifact "Execution-Phase Safety."*
 
-[62] K. Black, N. Brown, D. Driess, et al., "π0: A vision-language-action flow model for general robot control," arXiv:2410.24164, 2024.
+[62] K. Black, N. Brown, D. Driess, et al., "$\pi_0$: A vision-language-action flow model for general robot control," arXiv:2410.24164, 2024.
 
-[63] Physical Intelligence, K. Black, et al., "π0.5: A vision-language-action model with open-world generalization," arXiv:2504.16054, 2025.
+[63] Physical Intelligence, K. Black, et al., "$\pi_{0.5}$: A vision-language-action model with open-world generalization," arXiv:2504.16054, 2025.
 
 [64] K. Pertsch, K. Stachowicz, B. Ichter, et al., "FAST: Efficient action tokenization for vision-language-action models," arXiv:2501.09747, 2025.
 
