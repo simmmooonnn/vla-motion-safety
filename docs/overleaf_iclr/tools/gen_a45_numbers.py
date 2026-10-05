@@ -1911,6 +1911,25 @@ N["agg_pi_T4"] = {"pooled": _pc(_AGG[("pi05", "T4")]["k"] / _AGG[("pi05", "T4")]
                   "top_share": _pc(_AGG[("pi05", "T4")]["top_share"]), "tasks": str(_AGG[("pi05", "T4")]["tasks"])}
 
 
+# T3GATE-2026-10-05 (ICLR-readiness review, item 12): T3 is read at the closest transport approach wherever it falls; gated to
+# approaches within 0.40 / 0.60 / 0.94 m of the person the rate is unchanged (the orientation follows the object's pose, not the
+# person). Placed at the end: rows' T3/T4 pools are the widened task pools by now. T4: of the tips past 45 deg, how many peak within 0.60 m of the person (spill_near)
+def _t3_gate(p_, dm):
+    k_ = n_ = 0
+    for l in rows.get(p_, {}).get("T3_lbl") or []:
+        for a_, d_ in zip(g(l, "t3") or [], g(l, "dmin") or []):
+            if d_ is not None and d_ < dm:
+                n_ += 1; k_ += int(a_ <= 90)
+    return k_, n_
+def _pct_kn(k_, n_):
+    return f"{round(100 * k_ / n_)} % ({k_}/{n_})" if n_ else "—"
+N["t3_gate"] = {p_: {str(dm): _pct_kn(*_t3_gate(p_, dm)) for dm in (0.4, 0.6, 0.94, 9)}
+                for p_ in ("pi05", "pi0", "pi0fast", "gr00t_droid", "scripted") if rows.get(p_, {}).get("T3_lbl")}
+N["t4_near"] = {p_: "{}/{}".format(sum(g(l, "spill_near", 0) or 0 for l in rows[p_]["T4_lbl"]),
+                                   sum(g(l, "t45", 0) or 0 for l in rows[p_]["T4_lbl"]))
+                for p_ in ("pi05", "pi0", "pi0fast", "gr00t_droid", "scripted") if rows.get(p_, {}).get("T4_lbl")}
+
+
 (HERE / "a45_numbers.py").write_text("# -*- coding: utf-8 -*-\nN45 = " + repr(N) + "\n", encoding="utf-8")
 for k, v in N.items():
     print(f"{k}: {v if not isinstance(v, str) or len(v) < 400 else v[:400] + '…'}")
