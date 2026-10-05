@@ -13,3 +13,13 @@ Run with the Arena venv's python on chaowei (`pxr` only). All scripts read the t
 
 The `_rigid.usda` wrapper is the posed file's reference copied from `person_reach_far_hang2_rigid.usda` with the file name
 replaced (sed).
+
+**Final crossing coworker (reel v3, 2026-10-05):** `pose_solve_p.py 0.33 0.897` with `HAND_ZMIN=0.76` -> `person_crossp.usda`
+(the forearm point 0.085 m behind the wrist passes through the capsule centre 0.33 m in front of the root; 49 deg lean; head
+0.62 m above the table top; the free arm keeps the tucked pose and swings behind her). Run with `REACH_OFF=0.330,-0.146`,
+the transport line at x 0.70 (root 1.03, outside the table edge). The level-forearm solve (`pose_solve_h.py`) needed a 61 deg
+lean that put her head over the robot's workspace, and any hanging free arm landed in the bowl or the table.
+
+`body_clear.py <mpfull.jsonl>...` — the payload and the gripper against the rendered coworker's head, torso and arms per step
+(the character does not collide; only the capsule does). Episodes differ from run to run even with one seed: render several
+and keep those whose head / torso / upper-arm gaps stay positive.
