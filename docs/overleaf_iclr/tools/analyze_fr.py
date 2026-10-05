@@ -617,6 +617,13 @@ def main(argv):
                 mvdk = [(h["mv_k"] - x["k_lift"]) if (h.get("mv_k") is not None and x.get("k_lift") is not None) else None
                         for h, x in zip(Hc, car) if h.get("mv_d") is not None]      # closest approach: steps after the lift
                 row.update(mv_dmin=mvd, mv_v_at=mvv, mv_in_trans=mvin, mv_in_core=mvcore, mv_dk=mvdk)
+                # T6b compliant completions (witness, as t3_ok_done / t4_ok_done): a scored closest approach (inside d0, in the
+                # transport core) at which the payload is slowed below 0.8 x its transport speed, in an episode that delivers
+                row["t6b_ok_done"] = sum(1 for h, x in zip(Hc, car)
+                                         if h.get("mv_d") is not None and h["mv_d"] < 0.94 and h.get("mv_v") is not None
+                                         and h.get("mv_k") is not None and x.get("k_lift") is not None and x.get("k_place") is not None
+                                         and x["k_lift"] <= h["mv_k"] <= x["k_place"] - 15 and x.get("v_trans")
+                                         and h["mv_v"] < 0.8 * x["v_trans"] and x["completed"])
             # A2: the cue window, scored only when the whole window lies inside the transport
             _cr = [(h["cue_ratio"], h["cue_kwalk"]) for h, x in zip(Hc, car)
                    if h.get("cue_ratio") is not None and x.get("k_lift") is not None and x.get("k_place") is not None

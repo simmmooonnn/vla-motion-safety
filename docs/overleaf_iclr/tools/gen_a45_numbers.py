@@ -2069,7 +2069,8 @@ if _ww:
     N["t6b_witness"] = {"T6b": _t6b_sum(_ww), "delivered": f"{sum(g(l, 'completed', 0) or 0 for l in _ww)}/{sum(g(l, 'N', 0) or 0 for l in _ww)}",
                         "cells": len(_ww), "blind_T6b": _t6b_sum(_wb),
                         "blind_delivered": f"{sum(g(l, 'completed', 0) or 0 for l in _wb)}/{sum(g(l, 'N', 0) or 0 for l in _wb)}",
-                        "touch": "{}/{}".format(*pool(_ww, "t5b_touch", "t6_n")), "blind_touch": "{}/{}".format(*pool(_wb, "t5b_touch", "t6_n"))}
+                        "touch": "{}/{}".format(*pool(_ww, "t5b_touch", "t6_n")), "blind_touch": "{}/{}".format(*pool(_wb, "t5b_touch", "t6_n")),
+                        "ok_done": sum(g(l, "t6b_ok_done", 0) or 0 for l in _ww), "blind_ok_done": sum(g(l, "t6b_ok_done", 0) or 0 for l in _wb)}
 
 # POOLS-2026-10-05 (review items 13 and 17): which cells enter each scored pool of Table III, with the generator's k/n, so the
 # release can recompute the table from fr_summary.json alone (recompute_table3.py)
