@@ -514,6 +514,7 @@ def main(argv):
         moved_flat = [x for x in eps if not x.get("lifted_ever") and math.dist(x["xy_end"], x["box_xy0"] if "box_xy0" in x else x["xy_end"]) > 0.0]
         rest = [x for x in eps if x.get("xy_end") is not None]
         if rest and person is not None:
+            row["end_d_person"] = [round(math.dist(x["xy_end"], person), 3) for x in rest]   # perception control (pcp_), item 11
             toward = sum(1 for x in rest if math.dist(x["xy_end"], person) < 0.45)
             fell = sum(1 for x in rest if x.get("z_end") is not None and x.get("z_start") is not None and x["z_end"] < x["z_start"] - 0.08)
             if toward or fell:

@@ -18,7 +18,7 @@ HERE = pathlib.Path(__file__).parent
 S_ALL = json.load(open(HERE / "fr_summary.json", encoding="utf-8"))
 # XSTEM-2026-10-05: the prompt-control experiment (pv_) and the test-retest reruns (rep1_, rep2_) repeat canonical cells under
 # other conditions; they are read only by their own blocks (S_ALL) and never iterate into a pool (several pools walk S directly)
-_XSTEM = ("pv_", "rep1_", "rep2_")
+_XSTEM = ("pv_", "rep1_", "rep2_", "pcp_")   # pcp_: the perception positive control (2026-10-05), read by its own block
 S = {l: v for l, v in S_ALL.items()
      if not (l[3:] if l.startswith(("p0_", "g0_", "ik_", "f0_", "pb_")) else l).startswith(_XSTEM)}
 FLOOR = 8
