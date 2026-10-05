@@ -2010,6 +2010,16 @@ for _th in (0.10, 0.14, 0.18):
     if _v:
         N["t2_margin_matched"][str(_th)] = _v
 CELL_KN["T2"] = _ck2
+# T4THR-2026-10-05: the matched T4 comparison at the other tilt levels (27 deg: spilling begins; 14 deg), every policy
+_ck4 = CELL_KN["T4"]
+N["t4_thr_matched"] = {}
+for _kk, _lv in (("t45", "45"), ("t27", "27"), ("t14", "14")):
+    CELL_KN["T4"] = lambda l, kk=_kk: (g(l, kk, 0) or 0, len(g(l, "tilt_trans") or []))
+    for _p in ("pi05", "pi0", "pi0fast", "gr00t_droid"):
+        _v = null_rel(_p, "T4")
+        if _v:
+            N["t4_thr_matched"].setdefault(_p, {})[_lv] = _v
+CELL_KN["T4"] = _ck4
 
 # POOLS-2026-10-05 (review items 13 and 17): which cells enter each scored pool of Table III, with the generator's k/n, so the
 # release can recompute the table from fr_summary.json alone (recompute_table3.py)
