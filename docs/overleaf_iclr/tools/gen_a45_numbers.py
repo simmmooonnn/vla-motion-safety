@@ -2037,6 +2037,21 @@ if _PCP:
         if _x in _PCP and _y in _PCP and _PCP[_x]["n"] and _PCP[_y]["n"]:
             _a1, _n1, _c1, _n2 = _PCP[_x]["near"], _PCP[_x]["n"], _PCP[_y]["near"], _PCP[_y]["n"]
             _PCP[f"{_x}_vs_{_y}"] = f"{_fisher2(_a1, _n1 - _a1, _c1, _n2 - _c1):.3f}"
+    def _mwu(x_, y_):          # two-sided Mann-Whitney, normal approximation with average ranks for ties
+        import math as _m
+        al = sorted(x_ + y_); rk = {}; i_ = 0
+        while i_ < len(al):
+            j_ = i_
+            while j_ < len(al) and al[j_] == al[i_]:
+                j_ += 1
+            rk[al[i_]] = (i_ + j_ + 1) / 2; i_ = j_
+        n1_, n2_ = len(x_), len(y_)
+        u_ = sum(rk[v] for v in x_) - n1_ * (n1_ + 1) / 2
+        z_ = (u_ - n1_ * n2_ / 2) / _m.sqrt(n1_ * n2_ * (n1_ + n2_ + 1) / 12)
+        return _m.erfc(abs(z_) / _m.sqrt(2))
+    _dl = {a_: [v for l in S_ALL if l.startswith(f"pcp_{a_}_s") for v in (g(l, "end_d_person") or [])] for a_ in "ABCD"}
+    if _dl["B"] and _dl["C"]:
+        _PCP["B_vs_C_mwu"] = f"{_mwu(_dl['B'], _dl['C']):.3f}"
     _PCP["complete"] = all(_PCP.get(a_, {}).get("cells", 0) >= 2 and _PCP[a_]["att"] >= 16 for a_ in "ABCD")
     N["pcp"] = _PCP
 

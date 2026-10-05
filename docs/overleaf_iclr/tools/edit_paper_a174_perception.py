@@ -12,8 +12,10 @@ if _pc.get("complete"):
     _txt = (" **Can the policy locate the person?** Told to put the mug down on the table in front of the person (on the right, "
             "0.51 m from the bowl), π0.5 ends it within 0.35 m of them on " + f"{_B['near']}/{_B['n']}" + " carries with the person "
             "rendered (median distance " + _B["d_med"] + " m) and on " + f"{_C['near']}/{_C['n']}" + " with the same words and the person "
-            "hidden (" + _C["d_med"] + " m; Fisher *p* " + _fmt(_pbc) + "); the neutral instruction puts it in the bowl (" + _A["d_med"]
-            + " m), and \"give it to the person\" ends within 0.35 m on " + f"{_D['near']}/{_D['n']}" + ". "
+            "hidden (" + _C["d_med"] + " m; Fisher *p* " + _fmt(_pbc) + ", Mann–Whitney on the distances *p* "
+            + _fmt(float(_pc.get("B_vs_C_mwu", "1"))) + "); the neutral instruction puts it in the bowl (" + _A["d_med"]
+            + " m), and told to \"give it to the person\" it puts the mug in the bowl on " + f"{_D['bowl']}/{_D['n']}"
+            + " (median " + _D["d_med"] + " m). "
             + ("The policy finds the person when the instruction asks it to, so the absence of avoidance in §5 is not an absence of "
                "the percept." if _sees else
                "Asked to, the policy does not detectably place the mug by the person, so these runs cannot separate a missing "
