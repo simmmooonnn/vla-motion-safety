@@ -1638,16 +1638,18 @@ The other five types place a *static* hazard; T6 makes the bystander move. We sp
 
 ### E.8 Tabletop family: the sub-types on a Franka arm
 
-**Table IIIb. The same measurements by sub-type: unsafe / scored, rate and interval (cluster-robust by cell; a star marks a design effect above 1.5).** Below the floor of eight episodes a count only. On the tabletop T1 is the off-path keep-out, T2 the serving geometry (§5.1), and T6 the hand crossing the transport line (the episodes in which it crosses ahead of the payload); the hand reaching into the destination, whose delivery forces the contact, is exposure (E.8). T5a on the tabletop is exposure (the arm works inside $d_0$), not a score; T6b on the G1 is the absence of any deceleration before the 11 contacts (E.7).
+**Table IIIb. The same measurements by sub-type: unsafe / scored, rate and interval (cluster-robust by cell; a star marks a design effect above 1.5; in parentheses the number of cells pooled).** Below the floor of eight episodes a count only. On the tabletop T1 is the off-path keep-out, T2 the serving geometry (§5.1), and T6 the hand crossing the transport line (the episodes in which it crosses ahead of the payload); the hand reaching into the destination, whose delivery forces the contact, is exposure (E.8). T5a on the tabletop is exposure (the arm works inside $d_0$), not a score; T6b on the G1 is the absence of any deceleration before the 11 contacts (E.7).
 
 | Policy | T1 payload path | T2 body sweep | T3 presentation | T4 load tilt | T5a speed | T5b force | T6 moving person | T6b anticipation |
 |---|---|---|---|---|---|---|---|---|
+| *Tabletop benchmark* | | | | | | | | |
+| π0.5 · Franka | 99/187 = 53 % [35, 70]* (28) | 48/340 = 14 % [9, 22]* (43) | 275/468 = 59 % [50, 67]* (88) | 78/996 = 8 % [6, 10] (130) | (255/272 exposure) | (6/83 over 140 N; contact 65/83: exposure) | 57/88 = 65 % [49, 78]* (21) | 97/125 = 78 % [70, 84] (40) |
+| π0 · Franka | 45/92 = 49 % [32, 66]* (25) | 1/64 = 2 % [0, 8] (8) | 8/13 = 62 % [26, 88]* (6) | 8/130 = 6 % [3, 12] (36) | (40/40 exposure) | (0/9 over 140 N; contact 7/9: exposure) | (7/9 reaching hand, contact forced: exposure) | 10/12 = 83 % [55, 95] (9) |
+| π0-FAST · Franka | 52/96 = 54 % [29, 77]* (12) | 16/96 = 17 % [8, 31]* (12) | 30/72 = 42 % [23, 64]* (16) | 34/338 = 10 % [6, 16]* (48) | (78/78 exposure) | (0/9 over 140 N; contact 8/9: exposure) | 58/62 = 94 % [85, 97] (12) | 16/19 = 84 % [60, 95] (9) |
+| GR00T N1.6-DROID · Franka | 25/25 = 100 % [87, 100] (7) | 27/38 = 71 % [48, 87]* (5) | 8/14 = 57 % [20, 87]* (6) | 36/97 = 37 % [28, 47] (28) | (33/33 exposure) | (0/9 over 140 N; contact 3/9: exposure) | (5/9 reaching hand, contact forced: exposure) | — |
+| scripted straight-line controls · Franka | 18/160 = 11 % [6, 20]* (20) | 5/32 = 16 % [5, 40]* (4) | 80/138 = 58 % [39, 75]* (18) | 3/31 = 10 % [3, 25] (14) | (193/208 exposure) | (1/16 over 140 N; contact 16/16: exposure) | (16/16 reaching hand, contact forced: exposure) | — |
+| *Humanoid case study* | | | | | | | | |
 | GR00T N1.6 · G1 | 11/30 = 37 % [22, 54] | 27/32 = 84 % [68, 93] | 14/27 = 52 % [34, 69] | 0/17 = 0 % [0, 18] | 22/22 = 100 % [85, 100] | (14/21 contacts, kinematic body: exposure) | 21/24 = 88 % [69, 96] | 17/18 = 94 % [74, 99] |
-| π0.5 · Franka | 99/187 = 53 % [35, 70]* | 48/340 = 14 % [9, 22]* | 275/468 = 59 % [50, 67]* | 78/996 = 8 % [6, 10] | (255/272 exposure) | 6/83 = 7 % [3, 15] | 57/88 = 65 % [49, 78]* | 97/125 = 78 % [70, 84] |
-| π0 · Franka | 45/92 = 49 % [32, 66]* | 1/64 = 2 % [0, 8] | 8/13 = 62 % [26, 88]* | 8/130 = 6 % [3, 12] | (40/40 exposure) | 0/9 = 0 % [0, 30] | (7/9 reaching hand, contact forced: exposure) | 10/12 = 83 % [55, 95] |
-| π0-FAST · Franka | 52/96 = 54 % [29, 77]* | 16/96 = 17 % [8, 31]* | 30/72 = 42 % [23, 64]* | 34/338 = 10 % [6, 16]* | (78/78 exposure) | 0/9 = 0 % [0, 30] | 58/62 = 94 % [85, 97] | 16/19 = 84 % [60, 95] |
-| GR00T N1.6-DROID · Franka | 25/25 = 100 % [87, 100] | 27/38 = 71 % [48, 87]* | 8/14 = 57 % [20, 87]* | 36/97 = 37 % [28, 47] | (33/33 exposure) | 0/9 = 0 % [0, 30] | (5/9 reaching hand, contact forced: exposure) | — |
-| scripted straight-line controls · Franka | 18/160 = 11 % [6, 20]* | 5/32 = 16 % [5, 40]* | 80/138 = 58 % [39, 75]* | 3/31 = 10 % [3, 25] | (193/208 exposure) | 1/16 = 6 % [1, 29] | (16/16 reaching hand, contact forced: exposure) | — |
 
 **Table IIIc. Labelled secondary quantities, outside the scores.**
 

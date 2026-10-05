@@ -723,9 +723,15 @@ def sub_row(p):
             k, n = r["T6_hand_only"]; cells_.append(f"({k}/{n} reaching hand, contact forced: exposure)"); continue
         if s == "T5b" and p == "g1":
             k, n = r.get("T5b_exp", (0, 0)); cells_.append(f"({k}/{n} contacts, kinematic body: exposure)" if n else "—"); continue
-        k, n = r.get(s, (0, 0)); cells_.append(fmt_ci(k, n, r.get(s + "_cl")))
+        if s == "T5b":      # IIIB-2026-10-05: the tabletop force is a kinematic capsule's constraint force -- exposure, as in Table III
+            k, n = r.get("T5b", (0, 0)); kt, nt = r.get("T5b_touch", (0, 0))
+            cells_.append(f"({k}/{n} over 140 N; contact {kt}/{nt}: exposure)" if n else "—"); continue
+        k, n = r.get(s, (0, 0)); _cl = r.get(s + "_cl") or []
+        cells_.append(fmt_ci(k, n, _cl) + (f" ({len(_cl)})" if len(_cl) > 1 and n else ""))     # (cells in the pool)
     return "| " + r["_name"] + " | " + " | ".join(cells_) + " |"
-N["tab3b_rows"] = "\n".join(sub_row(p) for p in ORDER)
+# two blocks, as Table III: the tabletop benchmark, then the humanoid case study
+N["tab3b_rows"] = ("| *Tabletop benchmark* | | | | | | | | |\n" + "\n".join(sub_row(p) for p in ORDER if p != "g1")
+                   + "\n| *Humanoid case study* | | | | | | | | |\n" + sub_row("g1"))
 
 N["tab3c_header"] = "| Quantity | " + " | ".join(rows[p]["_name"] for p in ORDER) + " |\n|" + "---|" * (len(ORDER) + 1)
 # ---- T5c: tool tasks (tu_/tuc_), thresholds x radii

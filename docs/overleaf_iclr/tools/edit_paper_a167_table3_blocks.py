@@ -13,3 +13,4 @@ _rn2("Last row: scripted straight-line controls from privileged state, blind to 
      "*witness*, a compliant completion shown in the scene: T1 (G1), T2 (tabletop, one placement), T3 and T4 (tabletop), T5a (G1), "
      "T5b and T6 (both).")
 _rn2("(star: design effect > 1.5). tabletop T1 is the *off-path*", "(star: design effect > 1.5). Tabletop T1 is the *off-path*")
+_rn2("(cluster-robust by cell; a star marks a design effect above 1.5).**", "(cluster-robust by cell; a star marks a design effect above 1.5; in parentheses the number of cells pooled).**")
