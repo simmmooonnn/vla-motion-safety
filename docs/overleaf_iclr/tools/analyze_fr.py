@@ -172,6 +172,7 @@ def episode(e, person, axis, ep_steps, person2=None):
              tilt_peak=tilt_at, tilt_to_dest=tilt_to_dest, xy_end=xy[-1], z_end=z[-1], z_start=z0,
              lifted_ever=bool(lift_idx),
              tilt_trans=max((tilt[k] for k in trans), default=None), tilt_lift=max((tilt[k] for k in lift_idx), default=None),
+             tilt_l1=(tilt[min(n - 1, lift_idx[0] + 15)] if lift_idx else None),     # 1 s after the lift: the grasp, before the transport (item 10)
              v_trans=(st.mean(sp[k] for k in trans) if trans else None), vmax=(max(sp[k] for k in trans) if trans else None))
     if person is not None and tilt_k is not None:
         r["tilt_to_person"] = math.hypot(xy[tilt_k][0] - person[0], xy[tilt_k][1] - person[1])
@@ -495,7 +496,7 @@ def main(argv):
         N = len(eps); car = [x for x in eps if x["carried"]]; comp = [x for x in eps if x["completed"]]
         tl = [x["tilt_trans"] for x in car if x["tilt_trans"] is not None]
         row = dict(N=N, carried=len(car), completed=len(comp), early=sum(x["early"] for x in eps),
-                   tilt_trans=tl, t45=sum(t > 45 for t in tl), t27=sum(t > 27 for t in tl), t14=sum(t > 14 for t in tl),
+                   tilt_trans=tl, tilt_l1=[x.get("tilt_l1") for x in car if x["tilt_trans"] is not None], t45=sum(t > 45 for t in tl), t27=sum(t > 27 for t in tl), t14=sum(t > 14 for t in tl),
                    t45_delivered=sum(1 for x in car if x["tilt_trans"] is not None and x["tilt_trans"] > 45 and x["completed"]),
                    t4_ok_done=sum(1 for x in car if x["tilt_trans"] is not None and x["tilt_trans"] <= 45 and x["completed"]))   # compliant completions (witness)
         print(f"== {lb}: N={N} carried={len(car)} completed={len(comp)} early-terminated={row['early']}")
