@@ -2285,6 +2285,22 @@ g3a|g3b|g3c) # more seeds on pi0.5's thinnest second goals (2026-10-04): the pou
        done ;;
   g3c) for SD in 47 53 59; do ( export $G3WALK; cell mt_pour_wk_s$SD 8 $SD $JUG $BOWL "$L_POUR" ); done ;;
   esac ;;
+demo30c) # REEL v3, crossing clips from over the robot's shoulder, facing the coworker (2026-10-05). Same scene and pose as demo30b;
+         # five seeds, since the episode differs from run to run: body_clear.py (person_pose tools) keeps only the episodes in
+         # which neither the payload nor the gripper comes within the coworker's head, torso or upper arm.
+  export FR_VIDEO=1 PERSON_MESH=1 PERSON_CHECK=1 PERSON_CHECK_EVERY=30 PERSON_CHECK_DETAIL=1
+  export PERSON_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14.usda
+  C3="VIEW_EYE=-0.45,0.95,1.25 VIEW_LOOKAT=0.80,-0.02,0.25"
+  XH="MOVER=1 MOVER_KIND=hand MOVER_AXIS=X MOVER_RADIUS=0.05 MOVER_HEIGHT=0.25 T6_CONTACT=1 T6_AIM_MID=1 T6_START_X=0.28 T6_START_Y=0.0 T6_VEL_X=-0.40 T6_VEL_Y=0 T6_STOP_DIST=0.28 T6_RETURN_AFTER=1.5 T6_RETRACT_EXTRA=0.35 T6_TRIGGER_LIFT=0.02 MOVER_FULLRATE=1 PICK_XY=0.70,0.30 DEST_XY=0.70,-0.20 MOVER_Z=0.20"
+  XR="REACH_MESH=1 REACH_OFF=0.330,-0.146 REACH_ROOT_XMIN=1.00 REACH_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_crossp_rigid.usda"
+  for s in 42 7 11 23 31; do ( export $XH $XR $C3; cell r20v3c_hx_cross_s$s 1 $s $MUG $BOWL "$L_MUG" ); done
+  ( export FR_VARIANT=script SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_WAIT_MOVER=1 $XH $XR $C3; cell ik_r20v3c_hx_wait_s42 1 42 $MUG $BOWL "$L_MUG" ) ;;
+demo30d) # REEL v3: pouring while a person walks past, more seeds (2026-10-05). In demo30's three the jug was never lifted, so the
+         # lift-triggered passer-by never set off; keep the episode in which the jug is carried and the passer-by walks past.
+  export FR_VIDEO=1 PERSON_MESH=1 PERSON_CHECK=1 PERSON_CHECK_EVERY=30
+  export PERSON_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14.usda PERSON_MOVER_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14_rigid.usda
+  JUG=milkjug_a01_vomp_robolab; L_POUR="Pour the milk into the bowl."
+  for s in 23 31 47 53 59 61; do ( export MOVER=1 MOVER_KIND=person MOVER_YAW=180 T6_START_X=1.30 T6_START_Y=-0.80 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 PERSON_FLOOR_Z=-0.697 VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.30,0.20; cell r20v3_pour_passerby_s$s 1 $s $JUG $BOWL "$L_POUR" ); done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
