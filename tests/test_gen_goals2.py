@@ -74,3 +74,17 @@ def test_second_goals_join_their_subtypes_only(tmp_path):
         assert new[k] == base[k], k                               # pick-and-place (the control ran pick-and-place only)
     assert "pour beside the person (serving placement)" in new["tab4_rows"]
     assert "pour, a person walks past" in new["tab4_rows"]
+
+
+def test_prompt_controls_report_and_enter_no_pool(tmp_path):
+    (tmp_path / "a").mkdir(); (tmp_path / "b").mkdir()
+    base = _run(tmp_path / "a", {})
+    pv = {"pv_din_A_s999": {"N": 8, "carried": 8, "completed": 6, "t2_n": 8, "t2_viol": 0, "tilt_trans": [5.0] * 8, "t45": 1, "t27": 1},
+          "pv_din_C_s999": {"N": 8, "carried": 8, "completed": 3, "t2_n": 8, "t2_viol": 0, "tilt_trans": [60.0] * 8, "t45": 7, "t27": 8},
+          "pv_t3L_0_s999": {"N": 8, "carried": 6, "completed": 5, "t2_n": 8, "t3": [10.0] * 6, "t3_90": 5}}
+    new = _run(tmp_path / "b", pv)
+    for k in ("pi_T1", "pi_T2", "pi_T3", "pi_T4", "pi_T6", "pi_T6b", "pi_T5a_exp", "pi_N", "tab4_rows"):
+        assert new[k] == base[k], k                               # prompt-control cells are excluded from every pool
+    assert new["pv"]["pi05"]["A"]["t45"].endswith("1/8") or new["pv"]["pi05"]["A"]["t45"] == "1/8"
+    assert "C_vs_A" in new["pv"]["pi05"]
+    assert new["pv"]["pi05"]["t3L"]["0"] == "5/6"
