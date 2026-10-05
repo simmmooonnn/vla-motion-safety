@@ -111,8 +111,10 @@ def esc_text(t):
     # section refs like §5.9 -> \S5.9
     t = t.replace("§", r"\S")
     # table cross-references: "Table I" / "Tables III--IV" -> \ref by roman label (captions carry "Table N.")
-    t = re.sub(r"\bTables ([IVX]+[a-e]?)--([IVX]+[a-e]?)", r"Tables~\\ref{tab:\1}--\\ref{tab:\2}", t)
-    t = re.sub(r"\bTable ([IVX]+[a-e]?)\b(?!\.)", r"Table~\\ref{tab:\1}", t)
+    t = re.sub(r"\bTables ([IVX]+[a-h]?)--([IVX]+[a-h]?)", r"Tables~\\ref{tab:\1}--\\ref{tab:\2}", t)
+    t = re.sub(r"\bTables ([IVX]+[a-h]?)( \([^)]*\))? and ([IVX]+[a-h]?)\b",
+               lambda m: "Tables~\\ref{tab:%s}%s and~\\ref{tab:%s}" % (m.group(1), m.group(2) or "", m.group(3)), t)
+    t = re.sub(r"(?<!\\textbf\{)\bTable ([IVX]+[a-h]?)\b", r"Table~\\ref{tab:\1}", t)
     for i, r in enumerate(refs): t = t.replace("@@REF%d@@" % i, r)
     return t
 
@@ -176,7 +178,7 @@ def convert_table(rows, caption, label):
     else:
         colspec = "@{}" + "l" * ncol + "@{}"
         size = r"\small"
-    cap = re.sub(r"^Table\s+[IVXL]+[a-e]?\.\s*", "", caption or "")   # markdown carried its own "Table I." prefix
+    cap = re.sub(r"^Table\s+[IVXL]+[a-h]?\.\s*", "", caption or "")   # markdown carried its own "Table I." prefix
     def cell(c):
         """In a narrow p{} column a trailing '[N]' citation prints as '(Author et al., 2026)': put it on its own line."""
         if wide: c = re.sub(r"^(\S.*?)\s+(\[\d+\](?:[–-]+\[\d+\])?)$", r"\1@@NL@@\2", c)
@@ -255,7 +257,7 @@ def convert_block(content):
         ln = content[j]
         s = ln.strip()
         # table caption line: "**Table X. ...**" possibly followed by blank then table
-        mcap = re.match(r"^\*\*(Table [IVX0-9]+[a-e]?\.)\s*(.*?)\*\*\s*(.*)$", s)
+        mcap = re.match(r"^\*\*(Table [IVX0-9]+[a-h]?\.)\s*(.*?)\*\*\s*(.*)$", s)
         if mcap and (j + 1 < len(content)) and any(content[k].lstrip().startswith("|") for k in range(j+1, min(j+3, len(content)))):
             pending_caption = (mcap.group(1) + " " + mcap.group(2) + " " + mcap.group(3)).strip()
             j += 1; continue
@@ -264,7 +266,7 @@ def convert_block(content):
             while j < len(content) and content[j].strip().startswith("|"):
                 rows.append(content[j]); j += 1
             tcount[0] += 1
-            rm = re.match(r"Table\s+([IVX]+[a-e]?)\.", pending_caption or "")
+            rm = re.match(r"Table\s+([IVX]+[a-h]?)\.", pending_caption or "")
             lab = "tab:" + (rm.group(1) if rm else "t%d" % tcount[0])
             out.append(convert_table(rows, pending_caption, lab)); pending_caption = None
             continue

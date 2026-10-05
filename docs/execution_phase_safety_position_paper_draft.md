@@ -103,17 +103,18 @@ All GR00T tasks share one scene family: GR00T N1.6 [5], [13] drives a Unitree G1
 
 ## 5. Results
 
-**Table III. Main results: one score per policy and dimension.** Bold: mean of the dimension's fixed sub-type set (§4.2), formed when every member has ≥ 8 scored episodes; brackets: sub-type rates (counts below eight). Table IIIb's intervals are cluster-robust by cell (star: design effect > 1.5). tabletop T1 is the *off-path* keep-out and T2 the *serving* geometry, the placements at which the predicate is available (§5.1); T3 and T4 pooled over every task in which the predicate is available (Appendix D), T3 over bearings too (chance 50 %); speed and force is {T5a, T5b} on the G1 and exposure on the tabletop (contacts, not force; E.8); T5c and the tabletop T5a are exposure, in Table IIIb. Last row: scripted straight-line controls from privileged state, blind to the person (§5.5): a kinematic-attachment variant supplies the geometric columns, and a physical pinch-grasp variant supplies T4 only. *Witness*: a compliant completion shown in the scene.
+**Table III. Main results: one score per policy and dimension.** Bold: mean of the dimension's fixed sub-type set (§4.2), formed when every member has ≥ 8 scored episodes; brackets: sub-type rates (counts below eight). Table IIIb's intervals are cluster-robust by cell (star: design effect > 1.5). Tabletop T1 is the *off-path* keep-out and T2 the *serving* geometry, the placements at which the predicate is available (§5.1); T3 and T4 pooled over every task in which the predicate is available (Appendix D), T3 over bearings too (chance 50 %); speed and force is {T5a, T5b} on the G1 and exposure on the tabletop (contacts, not force; E.8); T5c and the tabletop T5a are exposure, in Table IIIb. The tabletop block ends with the scripted straight-line controls from privileged state, blind to the person (§5.5): a kinematic-attachment variant supplies the geometric columns, a physical pinch-grasp variant T4. Every dimension has a *witness*, a compliant completion shown in the scene: T1 (G1), T2 (tabletop, one placement), T3 and T4 (tabletop), T5a (G1), T5b and T6 (both).
 
 | Policy | Trajectory (T1, T2) | Orientation (T3, T4) | Speed & force (T5a, T5b) | Dynamics (T6, T6b) |
 |---|---|---|---|---|
-| GR00T N1.6 · G1 | **61** (T1 37, T2 84) | **26** (T3 52, T4 0) | **100** (T5a 100) | **91** (T6 88, T6b 94) |
+| *Tabletop benchmark* — a Franka arm at six work surfaces: four public policies and the person-blind control | | | | |
 | π0.5 · Franka | **34** (T1 53, T2 14) | **33** (T3 59, T4 8) | — (65/83 contacts, exposure) | **71** (T6 65, T6b 78) |
 | π0 · Franka | **25** (T1 49, T2 2) | **34** (T3 62, T4 6) | — (7/9 contacts, exposure) | — (T6b 83) |
 | π0-FAST · Franka | **35** (T1 54, T2 17) | **26** (T3 42, T4 10) | — (8/9 contacts, exposure) | **89** (T6 94, T6b 84) |
 | GR00T N1.6-DROID · Franka | **86** (T1 100, T2 71) | **47** (T3 57, T4 37) | — (3/9 contacts, exposure) | — |
 | scripted straight-line controls · Franka | **13** (T1 11, T2 16) | **34** (T3 58, T4 10) | — (16/16 contacts, exposure) | — |
-| Witness in scene | yes (G1: T1; tabletop: T2, one placement) | yes (tabletop: T3 geometric; T4 physical pinch-grasp) | yes (G1: T5a; both: T5b) | yes (both: T6) |
+| *Humanoid case study* — GR00T N1.6 on a Unitree G1, one task family; not pooled with the tabletop | | | | |
+| GR00T N1.6 · G1 | **61** (T1 37, T2 84) | **26** (T3 52, T4 0) | **100** (T5a 100) | **91** (T6 88, T6b 94) |
 
 ### 5.1 Trajectory: T1 payload path, T2 body sweep
 

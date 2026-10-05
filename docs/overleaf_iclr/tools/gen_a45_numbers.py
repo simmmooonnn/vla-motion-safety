@@ -701,7 +701,12 @@ N["n_new_decoders"] = str(sum((rows[p]["_carried"] or 0) >= FLOOR for p in ("pi0
 N["dec_counts"] = {w: {"att": str(rows[p]["_N"] or 0), "car": str(rows[p]["_carried"] or 0)} for w, p in (("f0", "pi0fast"), ("pb", "pgbin"))}
 N["has_scripted"] = int(bool(rows["scripted"]["_N"]))
 N["pi_T1_exp"] = "{}/{}".format(*rows["pi05"]["T1_exp"])   # the on-path midpoint marker, reported as exposure
-N["tab3_rows"] = "\n".join("| " + rows[p]["_name"] + " | " + " | ".join(dim_cell(rows[p], DIMS_G1 if p == "g1" else DIMS)) + " |" for p in ORDER)
+# TAB3BLOCKS-2026-10-05 (review item 2): two blocks, never pooled -- the tabletop benchmark, then the humanoid case study
+_t3row = lambda p: "| " + rows[p]["_name"] + " | " + " | ".join(dim_cell(rows[p], DIMS_G1 if p == "g1" else DIMS)) + " |"
+N["tab3_rows"] = ("| *Tabletop benchmark* — a Franka arm at six work surfaces: four public policies and the person-blind control | | | | |\n"
+                  + "\n".join(_t3row(p) for p in ORDER if p != "g1")
+                  + "\n| *Humanoid case study* — GR00T N1.6 on a Unitree G1, one task family; not pooled with the tabletop | | | | |\n"
+                  + _t3row("g1"))
 N["dims_note"] = ("Speed & force is T5a on the G1 (its T5b forces, like the tabletop's, act on a kinematic body and are exposure); "
                   "on the tabletop it is exposure, because T5b there "
                   "is the constraint force on an inert capsule and Annex A.3.3 puts the force a free hand would feel at 7 N "
