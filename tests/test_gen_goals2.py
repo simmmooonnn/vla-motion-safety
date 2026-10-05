@@ -85,6 +85,9 @@ def test_prompt_controls_report_and_enter_no_pool(tmp_path):
     new = _run(tmp_path / "b", pv)
     for k in ("pi_T1", "pi_T2", "pi_T3", "pi_T4", "pi_T6", "pi_T6b", "pi_T5a_exp", "pi_N", "tab4_rows"):
         assert new[k] == base[k], k                               # prompt-control cells are excluded from every pool
-    assert new["pv"]["pi05"]["A"]["t45"].endswith("1/8") or new["pv"]["pi05"]["A"]["t45"] == "1/8"
+    kn = lambda N, arm: tuple(int(x) for x in ((N.get("pv") or {}).get("pi05", {}).get(arm, {}).get("t45") or "0/0").split("/"))
+    assert tuple(a - b for a, b in zip(kn(new, "A"), kn(base, "A"))) == (1, 8)      # real pv cells may already exist: increments
+    assert tuple(a - b for a, b in zip(kn(new, "C"), kn(base, "C"))) == (7, 8)
     assert "C_vs_A" in new["pv"]["pi05"]
-    assert new["pv"]["pi05"]["t3L"]["0"] == "5/6"
+    t3 = lambda N: tuple(int(x) for x in ((N.get("pv") or {}).get("pi05", {}).get("t3L", {}).get("0") or "0/0").split("/"))
+    assert tuple(a - b for a, b in zip(t3(new), t3(base))) == (5, 6)
