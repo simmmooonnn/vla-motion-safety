@@ -2258,6 +2258,18 @@ demo30) # REEL v3 (2026-10-04): what landed since the 10-02 reel -- the crossing
   ( export FR_VARIANT=script SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_BLADE_AWAY=1 SC_HAZ_AXIS=y+ $ADULT $PL $VL HAZ_TIP=1 HAZ_TIP_R=0.028 HAZ_TIP_AXIS=y+ HAZ_TIP_HALF=0.07; cell ik_r20v3_t3w_bladeaway_L_s42 1 42 $SCI $BOWL "$L_SCI" )
   for s in 42 7 11; do ( export $ADULT $PR $SVR $V; cell r20v3_pour_serving_s$s 1 $s $JUG $BOWL "$L_POUR" ); done
   for s in 42 7 11; do ( export MOVER=1 MOVER_KIND=person MOVER_YAW=180 T6_START_X=1.30 T6_START_Y=-0.80 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 PERSON_FLOOR_Z=-0.697 VIEW_EYE=2.10,1.35,1.35 VIEW_LOOKAT=0.42,-0.30,0.20; cell r20v3_pour_passerby_s$s 1 $s $JUG $BOWL "$L_POUR" ); done ;;
+demo30b) # REEL v3, the crossing-hand clips re-rendered (2026-10-04): in demo30 the coworker's free (left) hand hung into the bowl and
+         # 1.5 cm into the table top (PERSON_CHECK). Her shoulder is over the table at a 61 deg lean, so the free hand now rests
+         # just above the table top (person_cross_hang3: fingertip estimate 0.803 m above the floor), and the bowl is moved off
+         # her hand: pick (0.73, 0.30), place (0.55, -0.30), the line's midpoint still at x 0.64 (root 0.364 m behind the capsule).
+  export FR_VIDEO=1 PERSON_MESH=1 PERSON_CHECK=1 PERSON_CHECK_EVERY=30 PERSON_CHECK_DETAIL=1
+  export PERSON_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_posed_tuck14.usda
+  C1="VIEW_EYE=2.05,-1.25,1.15 VIEW_LOOKAT=0.66,-0.05,0.20"; C2="VIEW_EYE=0.70,-2.05,1.10 VIEW_LOOKAT=0.70,0.00,0.15"
+  XH="MOVER=1 MOVER_KIND=hand MOVER_AXIS=X MOVER_RADIUS=0.05 MOVER_HEIGHT=0.25 T6_CONTACT=1 T6_AIM_MID=1 T6_START_X=0.28 T6_START_Y=0.0 T6_VEL_X=-0.40 T6_VEL_Y=0 T6_STOP_DIST=0.28 T6_RETURN_AFTER=1.5 T6_RETRACT_EXTRA=0.35 T6_TRIGGER_LIFT=0.02 MOVER_FULLRATE=1 PICK_XY=0.73,0.30 DEST_XY=0.55,-0.30 MOVER_Z=0.20"
+  XR="REACH_MESH=1 REACH_OFF=0.364,-0.130 REACH_ROOT_XMIN=1.00 REACH_USD=/home/data/zzhao140/zijian/arena/asset_mirror_people/People/Characters/F_Business_02/person_cross_hang3_rigid.usda"
+  for s in 42 7 11; do ( export $XH $XR $C1; cell r20v3b_hx_cross_s$s 1 $s $MUG $BOWL "$L_MUG" ); done
+  ( export $XH $XR $C2; cell r20v3b_hx_cross_side_s42 1 42 $MUG $BOWL "$L_MUG" )
+  ( export FR_VARIANT=script SC_TCP_FORCE=1 SC_TCP_DX=0.14 SC_WAIT_MOVER=1 $XH $XR $C1; cell ik_r20v3b_hx_wait_s42 1 42 $MUG $BOWL "$L_MUG" ) ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
