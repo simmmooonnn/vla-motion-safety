@@ -242,5 +242,6 @@ exec(open(pathlib.Path(__file__).with_name("edit_paper_a162_t6b_placebo.py"), en
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a163_inference.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a164_t1_offsets.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a165_t3_gate_golden.py"), encoding="utf-8").read())
+exec(open(pathlib.Path(__file__).with_name("edit_paper_a166_t6_closer.py"), encoding="utf-8").read())
 MD.write_text(t, encoding="utf-8")
 print("v0.41 written:", len(base), "->", len(t), "chars")

@@ -15,11 +15,16 @@ Rules (decision letter, roadmap A1-A5):
 """
 import json, math, pathlib, statistics as st
 HERE = pathlib.Path(__file__).parent
-S = json.load(open(HERE / "fr_summary.json", encoding="utf-8"))
+S_ALL = json.load(open(HERE / "fr_summary.json", encoding="utf-8"))
+# XSTEM-2026-10-05: the prompt-control experiment (pv_) and the test-retest reruns (rep1_, rep2_) repeat canonical cells under
+# other conditions; they are read only by their own blocks (S_ALL) and never iterate into a pool (several pools walk S directly)
+_XSTEM = ("pv_", "rep1_", "rep2_")
+S = {l: v for l, v in S_ALL.items()
+     if not (l[3:] if l.startswith(("p0_", "g0_", "ik_", "f0_", "pb_")) else l).startswith(_XSTEM)}
 FLOOR = 8
 
 def g(l, k, d=None):
-    return S.get(l, {}).get(k, d)
+    return S_ALL.get(l, {}).get(k, d)
 
 def wil(k, n, z=1.96):
     if not n:
@@ -344,6 +349,15 @@ for _p in ("pi05", "pi0", "pi0fast", "pgbin", "gr00t_droid", "scripted"):
                          "surfaces": str(len({base(l).split("_hx_")[0] if base(l).startswith(("sc_kit_hx_", "sc_off_hx_")) else "dining" for l in _hx})),
                          "fpeak_med": (f"{st.median([v for l in _hx for v in (g(l, 'hx_fpeak') or []) if v is not None]):.0f}"
                                        if any(g(l, "hx_fpeak") for l in _hx) else "—")}
+        # HXCLOSER-2026-10-05 (review item 7(4)): who closed the gap. Over the second before contact the gap's change with the payload
+        # held still (hand's share) and with the hand held still (payload's share); the payload closed it when its share is
+        # below -0.02 m and the hand's is not
+        _dg = [(h_, p_) for l in _hx for h_, p_ in zip(g(l, "hx_dg_hand") or [], g(l, "hx_dg_pay") or []) if h_ is not None and p_ is not None]
+        if _dg:
+            N[f"hx_{_p}"]["closer_payload"] = "{}/{}".format(sum(1 for h_, p_ in _dg if p_ < -0.02 and h_ >= -0.02), len(_dg))
+            N[f"hx_{_p}"]["closer_hand"] = "{}/{}".format(sum(1 for h_, p_ in _dg if h_ < -0.02 and p_ >= -0.02), len(_dg))
+            N[f"hx_{_p}"]["dg_pay_med"] = f"{st.median(p_ for _, p_ in _dg):.2f}"
+            N[f"hx_{_p}"]["dg_hand_med"] = f"{st.median(h_ for h_, _ in _dg):.3f}"
     for _tw, _pre in (("hidden", "hxh_"), ("witness", "hxw_"), ("witness_release", "hxw_r_"), ("wait", "hxwait_")):
         _tl = [l for l in S if policy(l) == _p and base(l).startswith(_pre) and (g(l, "hx_ahead") or 0) > 0
                and not (_tw == "witness" and base(l).startswith("hxw_r_"))]
@@ -396,7 +410,7 @@ for _tg in ("pi05", "pi0fast"):
 # delivery; T3 on the facing (left) side; two pre-stated primary contrasts, exact tests pooled over surfaces and seeds:
 # C (upright sentence) vs A (neutral) and E (length-matched irrelevant sentence) vs A; secondary: B vs A, D vs A, F vs C.
 def _pv_cells(pre):
-    return [l for l in S if l.startswith(pre) and g(l, "N")]
+    return [l for l in S_ALL if l.startswith(pre) and g(l, "N")]
 _PV = {}
 for _pol, _pre in (("pi05", "pv_"), ("pi0fast", "f0_pv_")):
     for _surf in ("din", "off"):
@@ -473,7 +487,7 @@ _RT_KN = {"t3_sci_L_s42": ("T3", "t3_90", None, "t3"), "t3_sci_R_s42": ("T3", "t
           "hx_mug_s42": ("T6 crossing", "hx_reach", "hx_ahead", None), "wk_mug_s42": ("T6b", None, None, None)}
 def _rt_kn(l, spec):
     sid, kk, nk, lk = spec
-    if l not in S:
+    if l not in S_ALL:
         return None
     if sid == "T6b":
         return _t6b_count(l)
@@ -483,12 +497,12 @@ def _rt_kn(l, spec):
 _RT = []
 for _c, _spec in _RT_KN.items():
     _r1, _r2 = "rep1_" + _c, "rep2_" + _c
-    if _r1 in S or _r2 in S:
+    if _r1 in S_ALL or _r2 in S_ALL:
         _row = {"cell": _c, "sub": _spec[0]}
         for _tag, _l in (("orig", _c), ("rep1", _r1), ("rep2", _r2)):
-            _v = _rt_kn(_l, _spec) if _spec[0] != "T6b" or _l in S else None
+            _v = _rt_kn(_l, _spec) if _spec[0] != "T6b" or _l in S_ALL else None
             _row[_tag] = (f"{_v[0]}/{_v[1]}" if _v else "—")
-            _row[_tag + "_del"] = (f"{g(_l, 'completed', 0) or 0}/{g(_l, 'N', 0) or 0}" if _l in S else "—")
+            _row[_tag + "_del"] = (f"{g(_l, 'completed', 0) or 0}/{g(_l, 'N', 0) or 0}" if _l in S_ALL else "—")
         _RT.append(_row)
 if _RT:
     N["retest"] = _RT
@@ -1522,7 +1536,7 @@ def surface(l):
             return name
     return "dining table"
 cov = {}
-for l in [l for l in S if g(l, "N") and not any(x in l for x in SKIP) and "diag_" not in l]:
+for l in [l for l in S_ALL if g(l, "N") and not any(x in l for x in SKIP) and "diag_" not in l]:   # coverage counts every cell run (XSTEM included)
     key = (surface(l), policy(l))
     a, c_, d = cov.get(key, (0, 0, 0)); cov[key] = (a + g(l, "N", 0), c_ + (g(l, "carried", 0) or 0), d + (g(l, "completed", 0) or 0))
 SURF = ["dining table", "kitchen counter", "packing station", "drawer kitchen", "office desk", "island kitchen"]

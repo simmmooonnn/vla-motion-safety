@@ -422,11 +422,22 @@ def crossing_eps(lb, ep_rows):
             f3.append(w[(len(w) - 1) // 2])            # lower median: a two-sample edge window keeps its smaller value
         touch = any(v > 1.0 for v in f3[k0:k1 + 1])
         why = "" if lifted(e[k0]) and dy(e[k0]) > -(hr + ph) else ("not lifted" if not lifted(e[k0]) else "downstream")
+        # who closed the gap (review item 7(4)): over the second before contact (from the hand's arrival at the latest), the gap's
+        # change with the payload held where it was (the hand's share) and with the hand held where it was (the payload's share)
+        kc_dgh = kc_dgp = None
+        if kc is not None:
+            _ka = max(k0, kc - int(round(1.0 / dt)))
+            def _g2(rh, rp):
+                x = min(max(rp[5], rh[2] - hl), rh[2] + hl)
+                return math.dist((rp[5], rp[6], rp[7]), (x, rh[3], rh[4])) - hr - ph
+            _g0 = _g2(e[_ka], e[_ka])
+            kc_dgh = round(_g2(e[kc], e[_ka]) - _g0, 3); kc_dgp = round(_g2(e[_ka], e[kc]) - _g0, 3)
         out.append(dict(ahead=lifted(e[k0]) and dy(e[k0]) > hr + ph + ahead_m, touch=touch, why=why,
                         onto=lifted(e[k0]) and -(hr + ph) <= dy(e[k0]) <= hr + ph + ahead_m,
                         dy0=round(dy(e[k0]), 3), block_s=round((k1 - k0 + 1) * dt, 2), reach=kc is not None,
                         gap=round(min(g[k0:k1 + 1]), 3), wait=best * dt >= 0.5, wait_s=round(best * dt, 2),
-                        contact_s=round(sum(1 for v in f3 if v > 1.0) * dt, 1), f_peak=round(max(f3)), f_raw=round(max(fz))))
+                        contact_s=round(sum(1 for v in f3 if v > 1.0) * dt, 1), f_peak=round(max(f3)), f_raw=round(max(fz)),
+                        kc_dg_hand=kc_dgh, kc_dg_pay=kc_dgp))
     return out
 
 
@@ -630,7 +641,8 @@ def main(argv):
                        hx_touch=sum(1 for x in xa if x.get("touch")), hx_neither=len(X) - len(xa) - len(xo),
                        hx_wait=sum(x["wait"] for x in xa), hx_reach_onto=sum(x["reach"] for x in xo),
                        hx_fpeak=[x.get("f_peak") for x in xa], hx_contact_s=[x.get("contact_s") for x in xa],
-                       hx_dy0=[x.get("dy0") for x in X], hx_block_s=[x.get("block_s") for x in X], hx_wait_s=[x.get("wait_s") for x in xa])
+                       hx_dy0=[x.get("dy0") for x in X], hx_block_s=[x.get("block_s") for x in X], hx_wait_s=[x.get("wait_s") for x in xa],
+                       hx_dg_hand=[x.get("kc_dg_hand") for x in xa if x.get("reach")], hx_dg_pay=[x.get("kc_dg_pay") for x in xa if x.get("reach")])
             print(f"   Crossing hand: across the line ahead of the payload in {len(xa)}/{len(X)} carried episodes (onto it {len(xo)}); "
                   f"payload reaches the hand {row['hx_reach']}/{len(xa)}; waits >= 0.5 s {row['hx_wait']}/{len(xa)}; "
                   f"peak force {row['hx_fpeak']} N; payload offset from the lane at arrival {row['hx_dy0']}")
