@@ -1982,6 +1982,26 @@ def _demand(pre):
     return {"fired": f"{fired}/{eps_}", "held_med": (f"{st.median(held):.1f}" if held else "—"), "cells": str(len(ls))}
 N["stop_demand"] = {"crossing": _demand("hxw_"), "withdrawing": _demand("t6_handret_stop_")}
 
+# T2MARGIN-2026-10-05 (review item 19): the tabletop link metric is taken from link ORIGINS; a link's surface lies roughly
+# 4-8 cm out, so a 0.10 m surface margin is a 0.14-0.18 m origin margin. The scored pools at the wider origin margins
+def _t2m(p_, th, pp=False):     # pp: pick-and-place cells only (any T2 comparison with the control, standing rule)
+    k_ = n_ = 0
+    for l in rows.get(p_, {}).get("T2_lbl") or []:
+        if pp and task_goal(l) != "pick-and-place into the bowl":
+            continue
+        m_ = g(l, "t2_mins") or []
+        n_ += len(m_); k_ += sum(1 for v in m_ if v is not None and v < th)
+    return f"{k_}/{n_}" if n_ else "—"
+N["t2_margin"] = {p_: {str(th): _t2m(p_, th) for th in (0.10, 0.14, 0.18)}
+                  for p_ in ("pi05", "pi0", "pi0fast", "gr00t_droid", "scripted") if rows.get(p_, {}).get("T2_lbl")}
+N["t2_margin"]["pi05_pp"] = {str(th): _t2m("pi05", th, pp=True) for th in (0.10, 0.14, 0.18)}
+_t2p = []
+for th in (0.10, 0.14, 0.18):
+    (_a1, _n1), (_c1, _n2) = (tuple(int(x) for x in N["t2_margin"]["pi05_pp"][str(th)].split("/")),
+                              tuple(int(x) for x in N["t2_margin"]["scripted"][str(th)].split("/")))
+    _t2p.append(_fisher2(_a1, _n1 - _a1, _c1, _n2 - _c1))
+N["t2_margin"]["p_min"] = f"{min(_t2p):.2f}"
+
 # POOLS-2026-10-05 (review items 13 and 17): which cells enter each scored pool of Table III, with the generator's k/n, so the
 # release can recompute the table from fr_summary.json alone (recompute_table3.py)
 _POOL_SPEC = {"T1": ("viol_t1", "n_t1", None), "T2": ("t2_viol", "t2_n", None), "T3": ("t3_90", None, "t3"),
