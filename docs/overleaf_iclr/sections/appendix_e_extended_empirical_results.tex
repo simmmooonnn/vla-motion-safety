@@ -427,6 +427,37 @@ control & T3 & 80/138 = 58 \% & 2 (2 with $\geq$ 8) / 1 & 93 \% & side-balanced 
 \end{tabular}
 \end{table}
 
+\textbf{Table IIIf. Each policy against the person-blind straight-line control.} On the placements (scene $\times$ object $\times$ side) both ran, the matched difference is the Mantel--Haenszel risk difference in points; the p value is a cell-level permutation test (the arm labels of the cells are exchanged within each placement, so the cell, not the episode, is the unit; two-sided; exact when the permutations are few, with the smallest attainable p in brackets when it is above 0.01). The tabletop T5a and T5b are exposure and T6b has no control, so they have no row. No row reads \emph{safer than the control}.
+
+\begin{center}\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.091\linewidth}>{\raggedright\arraybackslash}p{0.085\linewidth}>{\raggedright\arraybackslash}p{0.057\linewidth}>{\raggedright\arraybackslash}p{0.063\linewidth}>{\raggedright\arraybackslash}p{0.057\linewidth}>{\raggedright\arraybackslash}p{0.142\linewidth}>{\raggedright\arraybackslash}p{0.137\linewidth}>{\raggedright\arraybackslash}p{0.102\linewidth}>{\raggedright\arraybackslash}p{0.125\linewidth}@{}}
+\toprule
+Policy & Sub-type & Policy k/n & Control k/n & Placements & Cells (policy vs control) & Matched difference (pts) & Cell permutation p & Reading \\
+\midrule
+$\pi_{0.5}$ & T1 keep-out & 90/159 & 18/160 & 10 & 20 vs 20 & +46 & < 0.001 & worse than the control \\
+$\pi_{0.5}$ & T2 body sweep & 20/64 & 5/32 & 2 & 8 vs 4 & +16 & 0.013 & worse than the control \\
+$\pi_{0.5}$ & T3 presentation & 54/93 & 80/138 & 9 & 18 vs 18 & +6 & 0.121 & not distinguishable \\
+$\pi_{0.5}$ & T4 tilt & 3/47 & 3/31 & 3 & 6 vs 14 & -3 & 0.590 & not distinguishable \\
+$\pi_{0.5}$ & T6 reaching hand & 15/15 & 16/16 & 1 & 2 vs 2 & +0 & 1.000 (min 0.333) & not distinguishable \\
+$\pi_0$ & T1 keep-out & 45/92 & 18/160 & 10 & 25 vs 20 & +38 & < 0.001 & worse than the control \\
+$\pi_0$ & T2 body sweep & 1/48 & 5/32 & 2 & 6 vs 4 & -16 & 0.067 (min 0.022) & not distinguishable \\
+$\pi_0$ & T3 presentation & 8/13 & 33/58 & 4 & 6 vs 8 & +7 & 0.340 & not distinguishable \\
+$\pi_0$ & T4 tilt & 1/22 & 3/31 & 3 & 6 vs 14 & -5 & 0.544 & not distinguishable \\
+$\pi_0$ & T6 reaching hand & 7/9 & 16/16 & 1 & 6 vs 2 & -22 & 0.286 (min 0.071) & not distinguishable \\
+$\pi_0$-FAST & T1 keep-out & 52/96 & 12/96 & 6 & 12 vs 12 & +42 & 0.002 & worse than the control \\
+$\pi_0$-FAST & T2 body sweep & 9/32 & 5/32 & 2 & 4 vs 4 & +12 & 0.167 (min 0.056) & not distinguishable \\
+$\pi_0$-FAST & T3 presentation & 15/34 & 17/42 & 3 & 8 vs 6 & -2 & 0.789 & not distinguishable \\
+$\pi_0$-FAST & T4 tilt & 5/41 & 3/31 & 3 & 6 vs 14 & +2 & 0.727 & not distinguishable \\
+$\pi_0$-FAST & T6 reaching hand & 9/9 & 16/16 & 1 & 2 vs 2 & +0 & 1.000 (min 0.333) & not distinguishable \\
+GR00T N1.6-DROID & T1 keep-out & 25/25 & 9/64 & 4 & 7 vs 8 & +88 & 0.002 & worse than the control \\
+GR00T N1.6-DROID & T2 body sweep & 25/32 & 5/32 & 2 & 4 vs 4 & +62 & 0.056 (min 0.056) & not distinguishable \\
+GR00T N1.6-DROID & T3 presentation & 8/14 & 17/42 & 3 & 6 vs 6 & +5 & 0.519 & not distinguishable \\
+GR00T N1.6-DROID & T4 tilt & 7/18 & 3/31 & 3 & 6 vs 14 & +28 & 0.031 & worse than the control \\
+GR00T N1.6-DROID & T6 reaching hand & 5/9 & 16/16 & 1 & 4 vs 2 & -44 & 0.267 (min 0.133) & not distinguishable \\
+\bottomrule
+\end{tabular}
+\end{center}
+
 Pooling over episodes lets one task dominate a pool --- the canonical task holds 43 \% of $\pi_{0.5}$'s T4 episodes --- so Table~\ref{tab:IIIe} repeats every multi-task pool as an unweighted mean over tasks; the main tables keep the pooled rate. On the three placements the blind control ran, the mug passes 45$^{\circ}$ on 3/47 for $\pi_{0.5}$, 1/22 for $\pi_0$, 5/41 for $\pi_0$-FAST, 7/18 for GR00T N1.6-DROID, against 3/31 for the control; GR00T N1.6-DROID (exact test stratified by placement, \emph{p} = 0.033) is above it. On the two placements the blind control ran, a link enters the 0.10 m band on 20/64 for $\pi_{0.5}$, 1/48 for $\pi_0$, 9/32 for $\pi_0$-FAST, 25/32 for GR00T N1.6-DROID, against 5/32 for the control; GR00T N1.6-DROID (exact test stratified by placement, \emph{p} < 0.001) is above it; $\pi_0$ (exact test stratified by placement, \emph{p} = 0.012) is below it, which on a policy that rarely completes these carries is not a safer carry.
 
 
