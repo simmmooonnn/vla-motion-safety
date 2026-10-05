@@ -21,6 +21,8 @@ if _done and all(a in _p5 for a in "ACE") and "C_vs_A" in _p5 and "E_vs_A" in _p
     _fmtp = lambda p: ("< 0.001" if p < 0.001 else f"= {p:.3f}" if p < 0.01 else f"= {p:.2f}")
     _c_up = _pc < 0.05 and _rate(_C) > _rate(_A)
     _e_up = _pe < 0.05 and _rate(_E) > _rate(_A)
+    _pfc = _pf_(_p5["F_vs_C"]) if "F_vs_C" in _p5 else None
+    _f_same = _pfc is not None and _pfc >= 0.05 and _F != "—" and _rate(_F) > 0.5
     _t3 = _p5.get("t3L") or {}
     # ---- E (T4 paragraph): the full experiment
     _x1 = (" A pre-stated prompt control on new seeds (7 and 11; dining table and office desk, arms interleaved, " + str(sum(
@@ -28,8 +30,13 @@ if _done and all(a in _p5 for a in "ACE") and "C_vs_A" in _p5 and "E_vs_A" in _p
            "separates the sentence from the noun and from length: neutral " + _A + " past 45°, the noun alone (\"mug of hot coffee\") "
            + _B + ", the keep-upright sentence alone " + _C + " (against neutral, Fisher *p* " + _fmtp(_pc) + "), noun and sentence "
            + _D + ", a length-matched irrelevant sentence " + _E + " (*p* " + _fmtp(_pe) + "), and the sentence with its referent "
-           "swapped (\"keep the bowl upright\") " + _F + "; delivery " + " / ".join(f"{a} {_p5[a]['delivered']}" for a in "ACE" if a in _p5)
-           + ". " + ("The safety content, not the added length, raises the tilt." if _c_up and not _e_up else
+           "swapped (\"keep the bowl upright\") " + _F + (" (against the mug sentence, *p* " + _fmtp(_pfc) + ")" if _pfc is not None else "")
+           + "; delivered on " + ", ".join(f"{_p5[a]['delivered']} ({nm})" for a, nm in (("A", "neutral"), ("C", "sentence"),
+                                                                                   ("E", "irrelevant"), ("F", "bowl")) if a in _p5)
+           + ". " + ("The sentence, not its length, raises the tilt, and not through what it says: aimed at the bowl it tilts the mug "
+                     "as often, so the words change the carry without being grounded in the object they name."
+                     if _c_up and not _e_up and _f_same else
+                     "The safety content, not the added length, raises the tilt." if _c_up and not _e_up else
                      "Any appended sentence raises the tilt, so the effect is not specific to the safety content." if _c_up and _e_up else
                      "On new seeds the keep-upright sentence does not detectably raise the tilt, so the earlier contrast is not replicated."))
     if _pf.get("A") and _pf.get("D"):
@@ -53,10 +60,11 @@ if _done and all(a in _p5 for a in "ACE") and "C_vs_A" in _p5 and "E_vs_A" in _p
                                                         "but an irrelevant sentence also raises it, " + _E) + "; E.8).")
         _rn2("In one session keep-the-hot-coffee-upright tilts the mug past 45° on 13/13 carries against 2/15 (two cells per arm; E.8).",
              "Keep-the-coffee-upright tilts the mug past 45° on 13/13 carries against 2/15 in one session and on " + _C + " against "
-             + _A + " on new seeds" + (", a length-matched irrelevant sentence " + _E if not _e_up else "") + " (E.8).")
+             + _A + " on new seeds (an irrelevant sentence " + _E + ")" + (", and keep-the-*bowl*-upright as often (" + _F + "): the "
+             "words are not grounded in their object" if _f_same else "") + " (E.8).")
         _rn2("and in one session telling π0.5 to keep hot coffee upright tilts the mug past 45° on 13/13 carries.",
              "and telling π0.5 to keep its coffee upright tilts the mug past 45° more often, not less (" + _C + " against " + _A
-             + " neutral on new seeds" + ("; a length-matched irrelevant sentence " + _E if not _e_up else "") + ").")
+             + " on new seeds; an irrelevant sentence " + _E + (", keep-the-bowl-upright " + _F if _f_same else "") + ").")
     else:
         _rn2("In one session keep-the-hot-coffee-upright tilts the mug past 45° on 13/13 carries against 2/15 (two cells per arm; E.8).",
              "In one session keep-the-hot-coffee-upright tilts the mug past 45° on 13/13 carries against 2/15, but on new seeds the "

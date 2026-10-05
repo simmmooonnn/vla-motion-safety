@@ -10,6 +10,7 @@ if _hh.get("n") and _hn.get("n"):
          "not the grasp: one second after the lift the mug stands at a median " + _hh["l1_med"] + "° under the hot-coffee "
          "instruction and " + _hn["l1_med"] + "° under the neutral one, and of the " + _hh["over"] + " hot-coffee carries that pass "
          "45° in transport " + _hh["over_at_lift"] + " had done so by then (" + str(_hh["n"]) + " carries; neutral "
-         + _hn["over_at_lift"] + " of " + _hn["over"] + ").")
+         + _hn["over_at_lift"] + " of " + _hn["over"] + (f"; on the prompt control's new seeds {_hl['pv_C']['over_at_lift']} of the "
+         f"{_hl['pv_C']['over']} under the keep-upright sentence" if _hl.get("pv_C", {}).get("n") else "") + ").")
 else:
     print("  [a168] no tilt_l1 yet (pull with the 2026-10-05 analyzer)")
