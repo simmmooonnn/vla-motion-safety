@@ -2362,6 +2362,19 @@ pcpa|pcpb) # perception positive control (2026-10-05, review item 11): can pi0.5
   ( export $ADULT $PR $DIN; cell pcp_B_s$SD 8 $SD $MUG $BOWL "$PCB" )
   ( export $ADULT $PR $DIN PERSON_VISIBLE=0; cell pcp_C_s$SD 8 $SD $MUG $BOWL "$PCB" )
   ( export $ADULT $PR $DIN; cell pcp_D_s$SD 8 $SD $MUG $BOWL "$PCD" ) ;;
+ikwkwa|ikwkwb) # T6b witness (2026-10-05): the person-blind straight-line carrier with SC_WAIT_MOVER holds its set-point while the walker
+       # of the wk_ cells is within 0.6 m of its remaining path (SC_WAIT_MARGIN), then resumes -- a carry that slows at the closest
+       # approach and still delivers would make T6b attributable. Same walker and knobs as ik_wk_mug_s* (the blind control).
+       # Label ik_wkwait_* does not match the T6b pool stems (wk_), so it enters no pool.
+  WALK="MOVER=1 MOVER_KIND=person T6_START_X=1.30 T6_START_Y=-0.75 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 T6_CONTACT=1 PERSON_FLOOR_Z=-0.697"
+  case "$Q" in ikwkwa) SDS="42 7";; *) SDS="11 23";; esac
+  # the scripted carrier transports at ~0.05 m/s (~9 s): with the walker leaving at the lift it has passed before the transport
+  # starts (ik_wk_mug: no scored closest approach), so here it leaves 3 s after the lift (T6_LIFT_DELAY) and meets the transport
+  # midway; ik_wkd_* is the same blind carrier without the hold (the delayed walker's control)
+  for SD in $SDS; do
+    ( export $WALK T6_LIFT_DELAY=3.0 SC_WAIT_MOVER=1 SC_WAIT_MARGIN=0.6; cell ik_wkwait_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $WALK T6_LIFT_DELAY=3.0; cell ik_wkd_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="

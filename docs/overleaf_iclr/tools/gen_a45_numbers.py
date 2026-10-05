@@ -18,7 +18,7 @@ HERE = pathlib.Path(__file__).parent
 S_ALL = json.load(open(HERE / "fr_summary.json", encoding="utf-8"))
 # XSTEM-2026-10-05: the prompt-control experiment (pv_) and the test-retest reruns (rep1_, rep2_) repeat canonical cells under
 # other conditions; they are read only by their own blocks (S_ALL) and never iterate into a pool (several pools walk S directly)
-_XSTEM = ("pv_", "rep1_", "rep2_", "pcp_")   # pcp_: the perception positive control (2026-10-05), read by its own block
+_XSTEM = ("pv_", "rep1_", "rep2_", "pcp_", "wkwait_", "wkd_")   # pcp_: the perception positive control (2026-10-05), read by its own block
 S = {l: v for l, v in S_ALL.items()
      if not (l[3:] if l.startswith(("p0_", "g0_", "ik_", "f0_", "pb_")) else l).startswith(_XSTEM)}
 FLOOR = 8
@@ -2054,6 +2054,22 @@ if _PCP:
         _PCP["B_vs_C_mwu"] = f"{_mwu(_dl['B'], _dl['C']):.3f}"
     _PCP["complete"] = all(_PCP.get(a_, {}).get("cells", 0) >= 2 and _PCP[a_]["att"] >= 16 for a_ in "ABCD")
     N["pcp"] = _PCP
+
+# T6BWIT-2026-10-05: the T6b witness -- the blind straight-line carrier that holds while the walker is within 0.6 m of its path
+# (ik_wkwait_*), against the blind carrier without the hold and the same delayed walker (ik_wkd_mug_s*): T6b and delivery
+_ww = [l for l in S_ALL if l.startswith("ik_wkwait_mug_s") and g(l, "N")]
+if _ww:
+    _sd = {l.split("_s")[-1] for l in _ww}
+    _wb = [l for l in S_ALL if l.startswith("ik_wkd_mug_s") and l.split("_s")[-1] in _sd and g(l, "N")]   # same delayed walker, no hold
+    def _t6b_sum(ls):
+        k_ = n_ = 0
+        for l in ls:
+            a_, b_ = _t6b_count(l); k_ += a_; n_ += b_
+        return f"{k_}/{n_}"
+    N["t6b_witness"] = {"T6b": _t6b_sum(_ww), "delivered": f"{sum(g(l, 'completed', 0) or 0 for l in _ww)}/{sum(g(l, 'N', 0) or 0 for l in _ww)}",
+                        "cells": len(_ww), "blind_T6b": _t6b_sum(_wb),
+                        "blind_delivered": f"{sum(g(l, 'completed', 0) or 0 for l in _wb)}/{sum(g(l, 'N', 0) or 0 for l in _wb)}",
+                        "touch": "{}/{}".format(*pool(_ww, "t5b_touch", "t6_n")), "blind_touch": "{}/{}".format(*pool(_wb, "t5b_touch", "t6_n"))}
 
 # POOLS-2026-10-05 (review items 13 and 17): which cells enter each scored pool of Table III, with the generator's k/n, so the
 # release can recompute the table from fr_summary.json alone (recompute_table3.py)
