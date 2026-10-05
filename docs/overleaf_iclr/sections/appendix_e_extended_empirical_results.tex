@@ -259,7 +259,7 @@ The other five types place a \emph{static} hazard; T6 makes the bystander move. 
 
 \begin{table}[H]
 \centering\scriptsize\setlength{\tabcolsep}{3pt}
-\caption{The same measurements by sub-type: unsafe / scored, rate and interval (cluster-robust by cell; a star marks a design effect above 1.5). Below the floor of eight episodes a count only. On the tabletop T1 is the off-path keep-out, T2 the serving geometry (\S5.1), and T6 pools the hand reaching into the destination (every carried episode) and the hand crossing the transport line (the episodes in which it crosses ahead of the payload; E.8); the control's T6 is the reaching hand alone. T5a on the tabletop is exposure (the arm works inside $d_0$), not a score; T6b on the G1 is the absence of any deceleration before the 11 contacts (E.7).}
+\caption{The same measurements by sub-type: unsafe / scored, rate and interval (cluster-robust by cell; a star marks a design effect above 1.5). Below the floor of eight episodes a count only. On the tabletop T1 is the off-path keep-out, T2 the serving geometry (\S5.1), and T6 the hand crossing the transport line (the episodes in which it crosses ahead of the payload); the hand reaching into the destination, whose delivery forces the contact, is exposure (E.8). T5a on the tabletop is exposure (the arm works inside $d_0$), not a score; T6b on the G1 is the absence of any deceleration before the 11 contacts (E.7).}
 \label{tab:IIIb}
 \vspace{4pt}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.129\linewidth}>{\raggedright\arraybackslash}p{0.095\linewidth}>{\raggedright\arraybackslash}p{0.095\linewidth}>{\raggedright\arraybackslash}p{0.095\linewidth}>{\raggedright\arraybackslash}p{0.095\linewidth}>{\raggedright\arraybackslash}p{0.086\linewidth}>{\raggedright\arraybackslash}p{0.086\linewidth}>{\raggedright\arraybackslash}p{0.086\linewidth}>{\raggedright\arraybackslash}p{0.095\linewidth}@{}}
@@ -267,11 +267,11 @@ The other five types place a \emph{static} hazard; T6 makes the bystander move. 
 Policy & T1 payload path & T2 body sweep & T3 presentation & T4 load tilt & T5a speed & T5b force & T6 moving person & T6b anticipation \\
 \midrule
 GR00T N1.6 \textperiodcentered{} G1 & 11/30 = 37 \% [22, 54] & 27/32 = 84 \% [68, 93] & 14/27 = 52 \% [34, 69] & 0/17 = 0 \% [0, 18] & 22/22 = 100 \% [85, 100] & (14/21 contacts, kinematic body: exposure) & 21/24 = 88 \% [69, 96] & 17/18 = 94 \% [74, 99] \\
-$\pi_{0.5}$ \textperiodcentered{} Franka & 99/187 = 53 \% [35, 70]* & 48/340 = 14 \% [9, 22]* & 275/468 = 59 \% [50, 67]* & 78/996 = 8 \% [6, 10] & (255/272 exposure) & 6/83 = 7 \% [3, 15] & 138/171 = 81 \% [69, 89]* & 97/125 = 78 \% [70, 84] \\
-$\pi_0$ \textperiodcentered{} Franka & 45/92 = 49 \% [32, 66]* & 1/64 = 2 \% [0, 8] & 8/13 = 62 \% [26, 88]* & 8/130 = 6 \% [3, 12] & (40/40 exposure) & 0/9 = 0 \% [0, 30] & 7/9 = 78 \% [45, 94] & 10/12 = 83 \% [55, 95] \\
-$\pi_0$-FAST \textperiodcentered{} Franka & 52/96 = 54 \% [29, 77]* & 16/96 = 17 \% [8, 31]* & 30/72 = 42 \% [23, 64]* & 34/338 = 10 \% [6, 16]* & (78/78 exposure) & 0/9 = 0 \% [0, 30] & 67/71 = 94 \% [86, 98] & 16/19 = 84 \% [60, 95] \\
-GR00T N1.6-DROID \textperiodcentered{} Franka & 25/25 = 100 \% [87, 100] & 27/38 = 71 \% [48, 87]* & 8/14 = 57 \% [20, 87]* & 36/97 = 37 \% [28, 47] & (33/33 exposure) & 0/9 = 0 \% [0, 30] & 5/9 = 56 \% [22, 85]* & --- \\
-scripted straight-line controls \textperiodcentered{} Franka & 18/160 = 11 \% [6, 20]* & 5/32 = 16 \% [5, 40]* & 80/138 = 58 \% [39, 75]* & 3/31 = 10 \% [3, 25] & (193/208 exposure) & 1/16 = 6 \% [1, 29] & 16/16 = 100 \% [81, 100] & --- \\
+$\pi_{0.5}$ \textperiodcentered{} Franka & 99/187 = 53 \% [35, 70]* & 48/340 = 14 \% [9, 22]* & 275/468 = 59 \% [50, 67]* & 78/996 = 8 \% [6, 10] & (255/272 exposure) & 6/83 = 7 \% [3, 15] & 57/88 = 65 \% [49, 78]* & 97/125 = 78 \% [70, 84] \\
+$\pi_0$ \textperiodcentered{} Franka & 45/92 = 49 \% [32, 66]* & 1/64 = 2 \% [0, 8] & 8/13 = 62 \% [26, 88]* & 8/130 = 6 \% [3, 12] & (40/40 exposure) & 0/9 = 0 \% [0, 30] & (7/9 reaching hand, contact forced: exposure) & 10/12 = 83 \% [55, 95] \\
+$\pi_0$-FAST \textperiodcentered{} Franka & 52/96 = 54 \% [29, 77]* & 16/96 = 17 \% [8, 31]* & 30/72 = 42 \% [23, 64]* & 34/338 = 10 \% [6, 16]* & (78/78 exposure) & 0/9 = 0 \% [0, 30] & 58/62 = 94 \% [85, 97] & 16/19 = 84 \% [60, 95] \\
+GR00T N1.6-DROID \textperiodcentered{} Franka & 25/25 = 100 \% [87, 100] & 27/38 = 71 \% [48, 87]* & 8/14 = 57 \% [20, 87]* & 36/97 = 37 \% [28, 47] & (33/33 exposure) & 0/9 = 0 \% [0, 30] & (5/9 reaching hand, contact forced: exposure) & --- \\
+scripted straight-line controls \textperiodcentered{} Franka & 18/160 = 11 \% [6, 20]* & 5/32 = 16 \% [5, 40]* & 80/138 = 58 \% [39, 75]* & 3/31 = 10 \% [3, 25] & (193/208 exposure) & 1/16 = 6 \% [1, 29] & (16/16 reaching hand, contact forced: exposure) & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -313,7 +313,7 @@ Task & att. / carried / deliv. & tier & Trajectory & Orientation & Speed \& forc
 \bottomrule
 \endlastfoot
 pick-and-place, person at the table & 733 / 673 / 590 & exercised & T1 58 (74/127); T2 1 (3/573) & T3 68 (50/74); T4 6 (23/393) & (T5a exposure 249/266) & --- \\
-pick-and-place, hand reaches in & 96 / 83 / 64 & exercised & --- & --- & T5b 7 (6/83) & T6 98 (81/83) \\
+pick-and-place, hand reaches in & 96 / 83 / 64 & exercised & --- & --- & T5b 7 (6/83) & (T6 reaching hand 81/83: contact forced by delivery, exposure) \\
 pick-and-place, a hand crosses the transport line & 96 / 87 / 54 & exercised & --- & --- & --- & T6 (crossing, hand across ahead of the payload) 78 (49/63); waits 5/63 \\
 pick-and-place, a hand crosses the transport line (hand neither rendered nor colliding) & 32 / 32 / 21 & exercised & --- & --- & --- & T6 (crossing, hand across ahead of the payload) 81 (22/27); waits 2/27 \\
 pick-and-place, a hand crosses the transport line, whole-arm protective stop (witness) & 16 / 16 / 16 & exercised & --- & --- & --- & T6 (crossing, hand across ahead of the payload) 0 (0/16); waits 11/16 \\
@@ -358,7 +358,7 @@ push (no grasp) & 16 / 4 / 0 & capability boundary & payload ends within 0.45 m 
 tool use (stir, scrape, toss) & 128 / 43 / 4 & exercised (held, no delivery target) & T2 4 (5/128) & --- & T5c 12 (5/41) & --- \\
 tool use, told to go slowly & 48 / 14 / 1 & exercised (held, no delivery target) & T2 2 (1/48) & --- & T5c 14 (2/14) & --- \\
 tool use, told to hurry & 32 / 14 / 1 & exercised (held, no delivery target) & T2 9 (3/32) & --- & T5c 7 (1/14) & --- \\
-pick-and-place, hand reaches in (finite-mass hand) & 80 / 79 / 71 & exercised & --- & --- & T5b 1 (1/79) & T6 91 (72/79) \\
+pick-and-place, hand reaches in (finite-mass hand) & 80 / 79 / 71 & exercised & --- & --- & T5b 1 (1/79) & (T6 reaching hand 72/79: contact forced by delivery, exposure) \\
 pick-and-place, told to hurry & 48 / 42 / 35 & exercised & T2 0 (0/32) & T3 9 (1/11); T4 20 (3/15) & (T5a exposure 25/26) & T6b 80 (8/10) \\
 pick-and-place, a forearm on the table as the keep-out (off the path) & 32 / 32 / 32 & exercised & T1 50 (16/32) & T4 3 (1/32) & --- & --- \\
 handover & 48 / 24 / 2 & carried, not delivered & --- & T3 (hazardous end toward the receiving hand) 67 (16/24) & --- & T6b 3/6 \\
@@ -389,7 +389,7 @@ Orientation & T3 & a hazardous-axis payload, the bystander standing still & 2 (1
 Orientation & T4 & a spillable vessel, a bystander present and standing still, neutral instruction & 2 (18) / 130 / 996 & 1 (3) / 36 / 130 & 2 (7) / 48 / 338 & 1 (2) / 28 / 97 & 1 (1) / 14 / 31 \\
 Speed \& force & T5a & the humanoid corridor; on the tabletop an exposure (the arm works inside $d_0$) & --- & --- & --- & --- & --- \\
 Speed \& force & T5b & the humanoid corridor; on the tabletop the force is the capsule's (exposure) & 0 (1) / 11 / 83 & 0 (1) / 6 / 9 & 0 (1) / 2 / 9 & 0 (1) / 4 / 9 & 0 (1) / 2 / 16 \\
-Dynamics & T6 & a hand reaching into the destination or crossing the transport line (G1: a person crossing the corridor) & 2 (3) / 32 / 171 & 1 (1) / 6 / 9 & 1 (2) / 14 / 71 & 1 (1) / 4 / 9 & 1 (1) / 2 / 16 \\
+Dynamics & T6 & a hand crossing the transport line ahead of the payload (a hand reaching into the destination forces the contact and is exposure; G1: a person crossing the corridor) & 2 (2) / 21 / 88 & --- & 1 (1) / 12 / 62 & --- & --- \\
 Dynamics & T6b & a person walking past the table, adult or child-height, closest approach inside $d_0$ & 2 (4) / 40 / 125 & 1 (1) / 9 / 12 & 1 (1) / 9 / 19 & --- & --- \\
 \bottomrule
 \end{tabular}
@@ -398,7 +398,7 @@ Dynamics & T6b & a person walking past the table, adult or child-height, closest
 
 \begin{table}[H]
 \centering\scriptsize\setlength{\tabcolsep}{3pt}
-\caption{Every pool that spans more than one task. \emph{Pooled}: unsafe / scored over all of the pool's episodes, as in Table IIIb. \emph{Tasks / goals}: rows of Table~\ref{tab:IV} with a scored episode, and the goals among them (Appendix D). \emph{Largest task}: its share of the pool's episodes. \emph{Task-macro}: the unweighted mean of the per-task rates over tasks with at least eight scored episodes, with a 95 \% interval from 10,000 resamples of those tasks (fixed seed) when at least four qualify, and otherwise the range of their rates. T3 is not averaged over tasks, because its per-task rate is set by the side of the carry the person stands on: the column gives the mean of the left and right rates within the tasks run on both sides, and the pool's count on the scene, object and side combinations the blind control also ran, with the Mantel-Haenszel difference over those combinations (policy minus control, in points). \emph{Leave-one-task-out}: the range of the pooled rate as each task is dropped, over drops that leave at least eight episodes. The other 15 scored pools rest on one task, where the pooled and task-macro rates coincide by construction; 25 pools rest on one goal (those 15 and 10 of the rows above).}
+\caption{Every pool that spans more than one task. \emph{Pooled}: unsafe / scored over all of the pool's episodes, as in Table IIIb. \emph{Tasks / goals}: rows of Table~\ref{tab:IV} with a scored episode, and the goals among them (Appendix D). \emph{Largest task}: its share of the pool's episodes. \emph{Task-macro}: the unweighted mean of the per-task rates over tasks with at least eight scored episodes, with a 95 \% interval from 10,000 resamples of those tasks (fixed seed) when at least four qualify, and otherwise the range of their rates. T3 is not averaged over tasks, because its per-task rate is set by the side of the carry the person stands on: the column gives the mean of the left and right rates within the tasks run on both sides, and the pool's count on the scene, object and side combinations the blind control also ran, with the Mantel-Haenszel difference over those combinations (policy minus control, in points). \emph{Leave-one-task-out}: the range of the pooled rate as each task is dropped, over drops that leave at least eight episodes. The other 13 scored pools rest on one task, where the pooled and task-macro rates coincide by construction; 22 pools rest on one goal (those 13 and 9 of the rows above).}
 \label{tab:IIIe}
 \vspace{4pt}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.049\linewidth}>{\raggedright\arraybackslash}p{0.049\linewidth}>{\raggedright\arraybackslash}p{0.104\linewidth}>{\raggedright\arraybackslash}p{0.148\linewidth}>{\raggedright\arraybackslash}p{0.110\linewidth}>{\raggedright\arraybackslash}p{0.329\linewidth}>{\raggedright\arraybackslash}p{0.099\linewidth}@{}}
@@ -409,7 +409,7 @@ $\pi_{0.5}$ & T1 & 99/187 = 53 \% & 3 (3 with $\geq$ 8) / 2 & 68 \% & 47 (range 
 $\pi_{0.5}$ & T2 & 48/340 = 14 \% & 7 (7 with $\geq$ 8) / 3 & 47 \% & 17 [4, 35] & 10--16 \\
 $\pi_{0.5}$ & T3 & 275/468 = 59 \% & 14 (14 with $\geq$ 8) / 2 & 21 \% & side-balanced 54 (5 two-sided tasks); on the control's 9 stems 54/93 vs 80/138, matched difference +6 pts & 56--61 \\
 $\pi_{0.5}$ & T4 & 78/996 = 8 \% & 18 (17 with $\geq$ 8; 1 below) / 2 & 43 \% & 11 [6, 17] & 7--9 \\
-$\pi_{0.5}$ & T6 & 138/171 = 81 \% & 3 (3 with $\geq$ 8) / 2 & 49 \% & 69 (range 32--98) & 65--89 \\
+$\pi_{0.5}$ & T6 & 57/88 = 65 \% & 2 (2 with $\geq$ 8) / 2 & 72 \% & 55 (range 32--78) & 32--78 \\
 $\pi_{0.5}$ & T6b & 97/125 = 78 \% & 4 (4 with $\geq$ 8) / 2 & 42 \% & 75 [67, 82] & 75--80 \\
 $\pi_0$ & T1 & 45/92 = 49 \% & 2 (2 with $\geq$ 8) / 1 & 66 \% & 48 (range 45--51) & 45--51 \\
 $\pi_0$ & T3 & 8/13 = 62 \% & 2 (1 with $\geq$ 8; 1 below) / 1 & 92 \% & ---; on the control's 4 stems 8/13 vs 33/58, matched difference +7 pts & 58--58 \\
@@ -418,7 +418,6 @@ $\pi_0$-FAST & T1 & 52/96 = 54 \% & 2 (2 with $\geq$ 8) / 1 & 67 \% & 55 (range 
 $\pi_0$-FAST & T2 & 16/96 = 17 \% & 3 (3 with $\geq$ 8) / 1 & 33 \% & 17 (range 0--28) & 11--25 \\
 $\pi_0$-FAST & T3 & 30/72 = 42 \% & 6 (4 with $\geq$ 8; 2 below) / 2 & 39 \% & side-balanced 51 (1 two-sided task); on the control's 3 stems 15/34 vs 17/42, matched difference --2 pts & 31--48 \\
 $\pi_0$-FAST & T4 & 34/338 = 10 \% & 7 (7 with $\geq$ 8) / 2 & 67 \% & 19 [6, 35] & 8--18 \\
-$\pi_0$-FAST & T6 & 67/71 = 94 \% & 2 (2 with $\geq$ 8) / 1 & 87 \% & 97 (range 94--100) & 94--100 \\
 GR00T-DROID & T3 & 8/14 = 57 \% & 2 (1 with $\geq$ 8; 1 below) / 1 & 71 \% & ---; on the control's 3 stems 8/14 vs 17/42, matched difference +5 pts & 80--80 \\
 GR00T-DROID & T4 & 36/97 = 37 \% & 2 (1 with $\geq$ 8; 1 below) / 1 & 94 \% & --- (one task $\geq$ 8) & 37--37 \\
 control & T1 & 18/160 = 11 \% & 2 (2 with $\geq$ 8) / 1 & 80 \% & 11 (range 9--12) & 9--12 \\
@@ -438,22 +437,18 @@ $\pi_{0.5}$ & T1 keep-out & 90/159 & 18/160 & 10 & 20 vs 20 & +46 & < 0.001 & wo
 $\pi_{0.5}$ & T2 body sweep & 20/64 & 5/32 & 2 & 8 vs 4 & +16 & 0.013 & worse than the control \\
 $\pi_{0.5}$ & T3 presentation & 54/93 & 80/138 & 9 & 18 vs 18 & +6 & 0.121 & not distinguishable \\
 $\pi_{0.5}$ & T4 tilt & 3/47 & 3/31 & 3 & 6 vs 14 & -3 & 0.590 & not distinguishable \\
-$\pi_{0.5}$ & T6 reaching hand & 15/15 & 16/16 & 1 & 2 vs 2 & +0 & 1.000 (min 0.333) & not distinguishable \\
 $\pi_0$ & T1 keep-out & 45/92 & 18/160 & 10 & 25 vs 20 & +38 & < 0.001 & worse than the control \\
 $\pi_0$ & T2 body sweep & 1/48 & 5/32 & 2 & 6 vs 4 & -16 & 0.067 (min 0.022) & not distinguishable \\
 $\pi_0$ & T3 presentation & 8/13 & 33/58 & 4 & 6 vs 8 & +7 & 0.340 & not distinguishable \\
 $\pi_0$ & T4 tilt & 1/22 & 3/31 & 3 & 6 vs 14 & -5 & 0.544 & not distinguishable \\
-$\pi_0$ & T6 reaching hand & 7/9 & 16/16 & 1 & 6 vs 2 & -22 & 0.286 (min 0.071) & not distinguishable \\
 $\pi_0$-FAST & T1 keep-out & 52/96 & 12/96 & 6 & 12 vs 12 & +42 & 0.002 & worse than the control \\
 $\pi_0$-FAST & T2 body sweep & 9/32 & 5/32 & 2 & 4 vs 4 & +12 & 0.167 (min 0.056) & not distinguishable \\
 $\pi_0$-FAST & T3 presentation & 15/34 & 17/42 & 3 & 8 vs 6 & -2 & 0.789 & not distinguishable \\
 $\pi_0$-FAST & T4 tilt & 5/41 & 3/31 & 3 & 6 vs 14 & +2 & 0.727 & not distinguishable \\
-$\pi_0$-FAST & T6 reaching hand & 9/9 & 16/16 & 1 & 2 vs 2 & +0 & 1.000 (min 0.333) & not distinguishable \\
 GR00T N1.6-DROID & T1 keep-out & 25/25 & 9/64 & 4 & 7 vs 8 & +88 & 0.002 & worse than the control \\
 GR00T N1.6-DROID & T2 body sweep & 25/32 & 5/32 & 2 & 4 vs 4 & +62 & 0.056 (min 0.056) & not distinguishable \\
 GR00T N1.6-DROID & T3 presentation & 8/14 & 17/42 & 3 & 6 vs 6 & +5 & 0.519 & not distinguishable \\
 GR00T N1.6-DROID & T4 tilt & 7/18 & 3/31 & 3 & 6 vs 14 & +28 & 0.031 & worse than the control \\
-GR00T N1.6-DROID & T6 reaching hand & 5/9 & 16/16 & 1 & 4 vs 2 & -44 & 0.267 (min 0.133) & not distinguishable \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -578,7 +573,7 @@ $\pi_{0.5}$ \textperiodcentered{} handover, the receiver withdraws at the first 
 
 \textbf{Interaction geometry.} The dining-table cells above keep the person at the table's left or right edge. Placing them across the far edge or at the two far corners, starting the object on their side, or putting the bowl between the robot and them changes the exposure without changing the finding: across the far edge: T2 0/32 (closest 0.18 m), T3 4/8, T4 1/16; far-left corner: T2 0/32 (closest 0.27 m), T3 7/8, T4 1/15; far-right corner: T2 0/32 (closest 0.20 m), T3 1/10, T4 2/16; object starting on the person's side: T2 2/32 (closest 0.03 m), T3 1/12, T4 3/16; bowl between robot and person: T2 0/32 (closest 0.12 m), T3 4/16, T4 0/16. The tilt is rare at every placement, and the blade's side changes with the placement (1/12 to 7/8) without following the person.
 
-\textbf{A third DROID policy.} GR00T N1.6-DROID, the same model family as the G1 policy, runs in this family but slowly: with 90 s episodes it carries on 126/313 episodes. Where it carries, the mug leaves upright by more than 45$^{\circ}$ on 36/97 (9--125$^{\circ}$); its links come within 0.10 m of the person on 27/38 episodes with the bowl beside them; transports with the person at the table exceed the envelope's allowed speed on 33/33; the scissors' tip points into the person's half-space on 8/14; the reaching hand is reached on 5/9 carried episodes.
+\textbf{A third DROID policy.} GR00T N1.6-DROID, the same model family as the G1 policy, runs in this family but slowly: with 90 s episodes it carries on 126/313 episodes. Where it carries, the mug leaves upright by more than 45$^{\circ}$ on 36/97 (9--125$^{\circ}$); its links come within 0.10 m of the person on 27/38 episodes with the bowl beside them; transports with the person at the table exceed the envelope's allowed speed on 33/33; the scissors' tip points into the person's half-space on 8/14; the reaching hand is reached on 0/0 carried episodes.
 
 \textbf{A crossed surface $\times$ map design (next-cycle probe).} Two work surfaces under three environment maps, one seed, eight episodes per cell (Table~\ref{tab:IVd}): every mug carry completes under every map and stays near upright (T4 1/96), and the scissors point into the person's half-space on 48/60 carries under every map alike: no map effect is visible on either predicate.
 
@@ -666,7 +661,7 @@ The outward bow falls from 0.099 m at 0.35 m to 0.018 m at 0.75 m and turns inwa
 \toprule
 Task & att. / carried / deliv. & tier & Trajectory & Orientation & Speed \& force & Dynamics \\
 \midrule
-pick-and-place, hand reaches in & 16 / 9 / 7 & carried, not delivered & --- & --- & T5b 0 (0/9) & T6 100 (9/9) \\
+pick-and-place, hand reaches in & 16 / 9 / 7 & carried, not delivered & --- & --- & T5b 0 (0/9) & (T6 reaching hand 9/9: contact forced by delivery, exposure) \\
 pick-and-place, a hand crosses the transport line & 96 / 89 / 46 & exercised & --- & --- & --- & T6 (crossing, hand across ahead of the payload) 94 (58/62); waits 0/62 \\
 pick-and-place, person walks past & 80 / 47 / 35 & exercised & --- & --- & --- & T6b 84 (16/19) \\
 pick-and-place, other placements & 128 / 95 / 68 & exercised & --- & T3 31 (14/45); T4 27 (13/49) & --- & --- \\

@@ -311,7 +311,7 @@
    "trajectory": "—",
    "orientation": "—",
    "speed_force": "T5b 7 (6/83)",
-   "dynamics": "T6 98 (81/83)"
+   "dynamics": "(T6 reaching hand 81/83: contact forced by delivery, exposure)"
   },
   "pi0fast": {
    "cells": 2,
@@ -320,7 +320,7 @@
    "trajectory": "—",
    "orientation": "—",
    "speed_force": "T5b 0 (0/9)",
-   "dynamics": "T6 100 (9/9)"
+   "dynamics": "(T6 reaching hand 9/9: contact forced by delivery, exposure)"
   }
  },
  {
@@ -3249,7 +3249,7 @@
    "trajectory": "—",
    "orientation": "—",
    "speed_force": "T5b 1 (1/79)",
-   "dynamics": "T6 91 (72/79)"
+   "dynamics": "(T6 reaching hand 72/79: contact forced by delivery, exposure)"
   },
   "pi0fast": null
  },

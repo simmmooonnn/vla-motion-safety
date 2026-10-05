@@ -237,5 +237,6 @@ exec(open(pathlib.Path(__file__).with_name("edit_paper_a157_null_relative.py"), 
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a158_findings.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a159_standards_repro.py"), encoding="utf-8").read())
 exec(open(pathlib.Path(__file__).with_name("edit_paper_a160_g1_rule.py"), encoding="utf-8").read())
+exec(open(pathlib.Path(__file__).with_name("edit_paper_a161_t6_crossing.py"), encoding="utf-8").read())
 MD.write_text(t, encoding="utf-8")
 print("v0.41 written:", len(base), "->", len(t), "chars")

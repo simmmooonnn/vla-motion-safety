@@ -84,8 +84,8 @@ if _i >= 0 and _G["T3"]:
                 + " (Table IVe). " + ("**Speed and force and dynamics rest on one goal.** " if "T6" not in _two else
                                       "**Speed and force rests on one goal.** ") + "Speed and force is "
                 "scored on the humanoid corridor alone, since the tabletop cell is exposure; dynamics rests on "
-                + ("two mechanisms for T6 — a hand reaching into the destination, at six work surfaces, and a hand crossing the "
-                   "transport line — and one for T6b, a person walking past, at three." if V.get("hx_pi05") else
+                + ("one scored mechanism for T6, a hand crossing the transport line, at three work surfaces (the hand reaching "
+                   "into the destination forces the contact and is exposure), and one for T6b, a person walking past, at three." if V.get("hx_pi05") else
                    "one mechanism per sub-type — a hand reaching into the destination for T6, at six work surfaces, and a person "
                    "walking past for T6b, at three.")
                 + " π0 and GR00T-DROID rest on one goal wherever they are scored. What the next cells must add is "

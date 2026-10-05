@@ -43,7 +43,7 @@ if _hxt:
                 if _hxt.get("att_m") else f"送达 {_hxt['completed']}/{_hxt['att']}"))
 _t6w += "；G1：0.50 m 保护停止，带载接触 0/12"
 _ph = ((N.get("pour2") or {}).get("pi") or {}).get("hx")
-_t6pit = ((f"两种机制合计 {N['pi_T6']}：手伸进碗 {N.get('pi_T6_hand', '—')}；手横穿运输线，载荷进入 0.02 m {_hx['reach']}"
+_t6pit = ((f"计分的是横穿运输线的手 {N['pi_T6']}（抓放 {_hx['reach']}）；伸手进碗 {N.get('pi_T6_hand', '—')} 为暴露量（手停在碗上，送达就必碰手，盲直线 16/16）；横穿时载荷进入 0.02 m {_hx['reach']}"
            + (f"（倒牛奶时 {_ph}）" if _ph else "") + f"，手上传感器接触 {_hx.get('touch', '—')}，停下等待 {_hx['wait']}")
           if _hx else "目前只有“手伸进碗”一种机制")
 _hh = N.get("hx_pi05_hidden") or {}
