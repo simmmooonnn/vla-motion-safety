@@ -511,7 +511,7 @@ for _p, _tag in _T2TAG.items():
 # prompt, perception and appearance ablations and the witness treatments (the same task under a manipulation), the
 # interaction-geometry placements (reported as their own group, E.8) and the engine and threshold probes.
 _BAD_LBL = ("_cmd", "nocol", "handret", "hurry", "spill", "d10", "_rot", "t5a_absent")
-_BAD_STEM = ("r20", "r16_", "p20h", "ik_r20", "d11", "d12", "d13", "d14", "d17", "d18", "d19", "t3w", "t3q", "t3p", "rad", "rev_", "pg_", "b9_", "tpw", "dyn_", "hv_", "hm_", "hm2_", "hotchk_", "lr_", "fx_", "y090_", "y180_", "y270_", "w090_", "w180_", "w270_", "wfork", "wkL_", "wkrot_",
+_BAD_STEM = ("r20", "r16_", "p20h", "ik_r20", "d11", "d12", "d13", "d14", "d17", "d18", "d19", "t3w", "t3q", "t3p", "rad", "rev_", "pg_", "b9_", "tpw", "dyn_", "hv_", "hm_", "hm2_", "hotchk_", "pv_", "rep1_", "rep2_", "lr_", "fx_", "y090_", "y180_", "y270_", "w090_", "w180_", "w270_", "wfork", "wkL_", "wkrot_",
              "ge_", "hxh_", "hxw_", "hxw_r_", "hxwait_", "svw_", "probe")
 _BAD_TASK = ("appearance ablation", "perception ablation", "rotated spawn",
              "other placements", "finite-mass hand", "told to hurry", "told to go slowly",
@@ -859,10 +859,14 @@ _PT = "pick-and-place, person at the table"
 N["tab4_rows"] = "\n".join(task_row(nm, [l for l in groups[nm] if taskcell(l)] if nm == _PT else groups[nm]) for nm in ORDER_T if nm in groups)
 # ---- pi0-FAST on the task battery: the same grouping and row builder, labels f0_*
 _alltask_f0 = [l for l in S if g(l, "N") and policy(l) == "pi0fast" and not any(x in l for x in SKIP) and "_cmd" not in l and "hurry" not in l
-               and not base(l).startswith(("r20", "r16_", "p20h", "ik_r20", "d11", "d12", "d13", "d14", "d17", "d18", "d19", "t3w", "t3q", "t3p", "rad", "rev_", "dyn_", "hm_", "hm2_", "hotchk_", "lr_", "fx_", "y090_", "y180_", "y270_", "w090_", "w180_", "w270_", "wfork", "wkL_", "wkrot_", "hv_", "hxh_", "hxw_"))]
+               and not base(l).startswith(("r20", "r16_", "p20h", "ik_r20", "d11", "d12", "d13", "d14", "d17", "d18", "d19", "t3w", "t3q", "t3p", "rad", "rev_", "dyn_", "hm_", "hm2_", "hotchk_", "pv_", "rep1_", "rep2_", "lr_", "fx_", "y090_", "y180_", "y270_", "w090_", "w180_", "w270_", "wfork", "wkL_", "wkrot_", "hv_", "hxh_", "hxw_"))]
 groups_f0 = {}
 for l in _alltask_f0:
     groups_f0.setdefault(task(l), []).append(l)
+# task cards (docs/task_cards.md): the cells behind every Table IV row, per policy, and each row as printed
+N["task_groups"] = {"pi05": {nm: sorted([l for l in groups[nm] if taskcell(l)] if nm == _PT else groups[nm]) for nm in ORDER_T if nm in groups},
+                    "pi0fast": {nm: sorted(groups_f0[nm]) for nm in ORDER_T if nm in groups_f0}}
+N["task_goal_of"] = {nm: sorted({task_goal(l) for l in v}) for nm, v in N["task_groups"]["pi05"].items()}
 _f0_batt = [nm for nm in ORDER_T if nm in groups_f0 and nm != "pick-and-place, person at the table" and sum(g(l, "carried", 0) or 0 for l in groups_f0[nm]) >= FLOOR]
 N["tab4_f0_rows"] = "\n".join(task_row(nm, groups_f0[nm]) for nm in _f0_batt)
 N["n_tasks_f0"] = str(len(_f0_batt))

@@ -32,7 +32,7 @@ def pct(k, n):
 def cell(k, n):
     return f"{pct(k, n)} ({k}/{n})" if n else "—"
 
-pi = [l for l in S if not l.startswith(("p0_", "g0_", "ik_", "f0_", "pb_", "ch_", "st_", "hr_", "b5_", "smoke", "probe", "still", "hx"))]   # f0_ / pb_ (pi0-FAST, PaliGemma-binning) were listed as pi0.5 in Appendix A until 2026-10-04
+pi = [l for l in S if not l.startswith(("p0_", "g0_", "ik_", "f0_", "pb_", "ch_", "st_", "hr_", "b5_", "smoke", "probe", "still", "hx", "pv_", "rep1_", "rep2_"))]   # f0_ / pb_ (pi0-FAST, PaliGemma-binning) were listed as pi0.5 in Appendix A until 2026-10-04
 f0 = [l for l in S if l.startswith("f0_")]
 p0 = [l for l in S if l.startswith("p0_")]
 is_person = lambda l: l.split("_", 1)[-1] if False else None

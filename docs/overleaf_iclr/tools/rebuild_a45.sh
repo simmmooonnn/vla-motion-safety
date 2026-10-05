@@ -7,10 +7,13 @@ if [ "${1:-nopull}" = pull ]; then
   printf '%s\n' 'cd /home/data/zzhao140/zijian/isaac && python3 analyze_fr.py --axis y+ "*" > logs/fr/analysis_snapshot.txt 2>&1; python3 analyze_fr.py --axis x+ "*fork*" >> logs/fr/analysis_snapshot.txt 2>&1; grep "T5a present" logs/fr/analysis_snapshot.txt; echo ===SUMMARY===; cat logs/matrix/fr_summary.json' 'exit 0' > q_pull.sh
   timeout 200 ssh -o ConnectTimeout=25 zzhao140@dsailogin.arch.jhu.edu 'ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=25 -p 22 zzhao140@chaowei.wse.jhu.edu "bash -s"' < q_pull.sh > snap_pull.txt 2>&1
   sed -n '/===SUMMARY===/,$p' snap_pull.txt | tail -1 > fr_summary.json
+  echo "grep -a ' START ' /home/data/zzhao140/zijian/isaac/logs/fr/master.log" > q_start.sh
+  timeout 200 ssh -o ConnectTimeout=25 zzhao140@dsailogin.arch.jhu.edu 'ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=25 -p 22 zzhao140@chaowei.wse.jhu.edu "bash -s"' < q_start.sh > master_start.txt 2>/dev/null
 fi
 python gen_a41_numbers.py > gen_out.txt 2>&1 || { tail -5 gen_out.txt; exit 1; }
 python gen_a45_numbers.py > gen45_out.txt 2>&1 || { tail -5 gen45_out.txt; exit 1; }
 python gen_definitions_page.py > /dev/null 2>&1 || echo "definitions page failed"
+python gen_task_cards.py > /dev/null 2>&1 || echo "task cards failed"
 python - <<'PY'
 import json
 ns = {}; exec(open("a45_numbers.py", encoding="utf-8").read(), ns)
