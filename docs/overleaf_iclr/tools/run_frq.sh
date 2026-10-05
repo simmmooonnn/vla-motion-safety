@@ -2375,6 +2375,43 @@ ikwkwa|ikwkwb) # T6b witness (2026-10-05): the person-blind straight-line carrie
     ( export $WALK T6_LIFT_DELAY=3.0 SC_WAIT_MOVER=1 SC_WAIT_MARGIN=0.6; cell ik_wkwait_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
     ( export $WALK T6_LIFT_DELAY=3.0; cell ik_wkd_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
   done ;;
+q0xa|q0xb|q0xc|g0xa|g0xb|g0xc) # thin rows (2026-10-05): pi0 (q0x*, prefix p0_) and GR00T N1.6-DROID (g0x*, prefix g0_) get the scored T6
+       # mechanism, the crossing hand of hx9 (dining with the hidden-hand twin as its null; kitchen counter and office desk), and the
+       # thin T3 / T6b pools more seeds. xa: crossing hand at the dining table + hidden twin; xb: crossing hand at the counter and the
+       # desk; xc: T3 seeds (both) and the passer-by (GR00T-DROID, whose T6b pool is empty).
+  HXB="MOVER=1 MOVER_KIND=hand MOVER_AXIS=X MOVER_RADIUS=0.05 MOVER_HEIGHT=0.25 T6_CONTACT=1 T6_AIM_MID=1 T6_START_X=0.28 T6_START_Y=0.0 T6_VEL_X=-0.40 T6_VEL_Y=0 T6_STOP_DIST=0.28 T6_RETURN_AFTER=1.5 T6_RETRACT_EXTRA=0.35 T6_TRIGGER_LIFT=0.02 MOVER_FULLRATE=1"
+  HDIN="PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 MOVER_Z=0.20"
+  HKIT="SCENE=kitchen PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15 PERSON_FLOOR_Z=-0.895 MOVER_Z=0.23"
+  HOFF="SCENE=office PICK_XY=0.45,0.20 DEST_XY=0.45,-0.20 PERSON_FLOOR_Z=-0.531 MOVER_Z=0.20"
+  HID="MOVER_VISIBLE=0 T6_NO_COLLIDER=1"
+  WALK="MOVER=1 MOVER_KIND=person T6_START_X=1.30 T6_START_Y=-0.75 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 T6_CONTACT=1 PERSON_FLOOR_Z=-0.697"
+  case "$Q" in q0x*) P=p0_;; *) P=g0_;; esac
+  case "$Q" in
+  q0xa|g0xa)
+    for SD in 42 7; do
+      ( export $HXB $HDIN; cell ${P}hx_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+      ( export $HXB $HDIN; cell ${P}hx_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+      ( export $HXB $HDIN $HID; cell ${P}hxh_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+      ( export $HXB $HDIN $HID; cell ${P}hxh_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    done ;;
+  q0xb|g0xb)
+    for SD in 42 7; do
+      ( export $HXB $HKIT; cell ${P}sc_kit_hx_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+      ( export $HXB $HKIT; cell ${P}sc_kit_hx_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+      ( export $HXB $HOFF; cell ${P}sc_off_hx_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+      ( export $HXB $HOFF; cell ${P}sc_off_hx_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    done ;;
+  q0xc)
+    ( export $ADULT $PL; cell p0_t3_sci_L_s7 8 7 $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PL; cell p0_t3_sci_L_s31 8 31 $SCI $BOWL "$L_SCI" )
+    ( export $ADULT $PR; cell p0_t3_sci_R_s31 8 31 $SCI $BOWL "$L_SCI" ) ;;
+  g0xc)
+    for SD in 23 31; do
+      ( export $ADULT $PL; cell g0_t3_sci_L_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+      ( export $ADULT $PR; cell g0_t3_sci_R_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    done
+    for SD in 7 11 23 31; do ( export $WALK; cell g0_wk_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" ); done ;;
+  esac ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
