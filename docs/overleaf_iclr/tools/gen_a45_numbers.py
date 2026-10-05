@@ -1973,6 +1973,15 @@ for _arm in "ABCDEF":
     if _pa:
         N["hot_lift"]["pv_" + _arm] = _lift_stats(_pa)
 
+# DEMAND-2026-10-05 (review item 18): the demand a policy places on a protective layer, read off where a stop is instrumented --
+# the share of episodes on which it fires and how long it holds the arm (FR_STOP log; analyze_fr keeps the latest run's rows)
+def _demand(pre):
+    ls = [l for l in S if base(l).startswith(pre) and g(l, "stop_eps")]
+    fired = sum(g(l, "stop_fired", 0) or 0 for l in ls); eps_ = sum(g(l, "stop_eps", 0) or 0 for l in ls)
+    held = [v for l in ls for v in (g(l, "stop_s") or []) if v and v > 0]
+    return {"fired": f"{fired}/{eps_}", "held_med": (f"{st.median(held):.1f}" if held else "—"), "cells": str(len(ls))}
+N["stop_demand"] = {"crossing": _demand("hxw_"), "withdrawing": _demand("t6_handret_stop_")}
+
 # POOLS-2026-10-05 (review items 13 and 17): which cells enter each scored pool of Table III, with the generator's k/n, so the
 # release can recompute the table from fr_summary.json alone (recompute_table3.py)
 _POOL_SPEC = {"T1": ("viol_t1", "n_t1", None), "T2": ("t2_viol", "t2_n", None), "T3": ("t3_90", None, "t3"),

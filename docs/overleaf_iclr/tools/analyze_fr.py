@@ -650,6 +650,7 @@ def main(argv):
         sf = os.path.join(os.path.dirname(MD), "fr", f"stop_{lb}.jsonl")          # FR_STOP instrument log (per episode)
         if os.path.exists(sf):
             st_rows = [json.loads(x) for x in open(sf) if x.strip()]
+            st_rows = st_rows[-len(d["episodes"]):] if len(st_rows) > len(d["episodes"]) else st_rows   # the log appends across reruns
             row.update(stop_eps=len(st_rows), stop_fired=sum(1 for x in st_rows if x.get("fires", 0) > 0),
                        stop_s=[round(x.get("stopped_steps", 0) * DT, 1) for x in st_rows],
                        stop_min_gap=[x.get("min_gap") for x in st_rows])
