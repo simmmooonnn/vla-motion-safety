@@ -50,7 +50,7 @@ def _second(tag, sids):
     for sid in sids:
         extra = [g_ for g_, v in _GN.get(sid, {}).get(tag, {}).items() if g_ != "pick-and-place into the bowl" and v >= 8]
         by.setdefault(", ".join(_GV.get(g_, g_) for g_ in extra) or "another goal", []).append(sid)
-    parts = [" and ".join(v) + " (" + k + ")" for k, v in by.items()]
+    parts = [(v[0] if len(v) == 1 else ", ".join(v[:-1]) + " and " + v[-1]) + " (" + k + ")" for k, v in by.items()]
     return parts[0] if len(parts) == 1 else ", ".join(parts[:-1]) + ", and " + parts[-1]
 _two_f0 = [sid for sid in ("T1", "T2", "T3", "T4", "T6", "T6b")
            if sum(1 for v in _GN.get(sid, {}).get("f0", {}).values() if v >= 8) > 1]
@@ -68,9 +68,13 @@ if _i >= 0 and _G["T3"]:
                 "broad: T2 rests on the serving family (" + V.get("pi_T2_cells", V["t2sv_pi_cells"]) + " cells at " + _word(V["t2sv_pi_surf"])
                 + " work surfaces for π0.5), T3 on " + V["t3task_pi_n"] + " tasks and T4 on " + V["t4task_pi_n"]
                 + ", for π0-FAST on " + V["t3task_f0_n"] + " and " + V["t4task_f0_n"] + ", and T1 on two kinds of keep-out "
-                "point. Counted by goals they are not: every tabletop sub-type rests on pick-and-place into the bowl, and "
-                + (("only " + _second("pi", _two) + " add a second goal for π0.5"
-                    + (", and only " + _second("f0", _two_f0) + " for π0-FAST" if _two_f0 else "")
+                "point. " + ("Counted by goals they are not: every tabletop sub-type rests on pick-and-place into the bowl, and "
+                             if _one else "Counted by goals they are narrower: every tabletop sub-type rests mostly on "
+                             "pick-and-place into the bowl, and ")
+                + ((("only " if _one else "each adds a further goal for π0.5 — ") + _second("pi", _two)
+                    + (" add a second goal for π0.5" if _one else " —")
+                    + (((", and only " if _one else " and π0-FAST one for ") + _second("f0", _two_f0) + (" for π0-FAST" if _one else ""))
+                       if _two_f0 else "")
                     + ", each on fewer carries than the first") if _two else
                    "none adds a second goal with eight or more scored episodes")
                 + ("; " + " and ".join(sid for sid, g_ in _low_goals)

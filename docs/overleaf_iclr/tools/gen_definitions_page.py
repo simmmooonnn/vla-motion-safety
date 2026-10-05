@@ -50,8 +50,8 @@ _hh = N.get("hx_pi05_hidden") or {}
 _t6null = (f"伸进碗：盲直线 {N['ik_T6']}；横穿：手既不渲染也不碰撞的孪生格 {_hh.get('reach', '—')}（同桌可见手 "
            f"{N.get('hx_pi05_dining', {}).get('reach', '—')}，精确检验 p = {_hh.get('p_vs_visible', '—')}；盲直线 "
            f"{N.get('hx_scripted', {}).get('reach', '—')}）") if _hh else f"盲直线 {N['ik_T6']}"
-_GZ = {"pick-and-place into the bowl": "放进碗", "put away in a drawer": "收进抽屉", "pour": "倒", "hand to the person": "递交",
-       "clear the table": "清桌"}
+_GZ = {"pick-and-place into the bowl": "放进碗", "put away in a drawer": "收进抽屉", "pour": "倒牛奶", "hand to the person": "递交",
+       "clear the table": "清桌", "tool use: stir": "搅拌", "tool use: scrape": "刮", "tool use: toss": "翻拌"}
 def _goals(sid, tag="pi"):
     gn = N.get("goals_n_by_sub", {}).get(sid, {}).get(tag, {})
     return [(_GZ.get(k, k.replace("tool use: ", "工具：")), v) for k, v in sorted(gn.items(), key=lambda kv: -kv[1])]
@@ -105,6 +105,6 @@ out.append("**一句话结论**：每个维度上，策略在“有东西要避�
                       + ("，另有 " + "、".join(f"{k}（{v}）" for k, v in _goals(sid) if 0 < v < 8) + " 不足 8 回合"
                          if any(0 < v < 8 for _, v in _goals(sid)) else "") for sid in ("T1", "T2", "T3", "T4", "T6", "T6b"))
            + "。" + ("还只落在一个目标上的：" + "、".join(_single) + "；下一步补的是这些子类型在有人场景里的新目标，而不是更多台面。"
-                    if _single else "每个桌面子类型都落在两个以上目标上。"))
+                    if _single else "π0.5 的每个桌面子类型都至少落在两个目标上，但第二个目标上的回合远少于“放进碗”。"))
 (HERE.parent / "docs" / "definitions_for_advisor.md").write_text("\n".join(out) + "\n", encoding="utf-8")
 print("\n".join(out))

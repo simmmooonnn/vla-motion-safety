@@ -34,9 +34,9 @@ if V.get("pi_T2_cells") and V["pi_T2_cells"] != V["t2sv_pi_cells"]:
     _rn2("(the serving family: " + V["t2sv_pi_cells"] + " cells at ",
          "(the serving family, pouring into and stirring the bowl included: " + V["pi_T2_cells"] + " cells at ")
 if int(V.get("pi_T2_goals8", "1")) > 1:
-    _rn2("The scored tabletop T2 is therefore the serving geometry, one goal under several settings (Table IVe):",
-         "The scored tabletop T2 is therefore the serving geometry, " + _w2(V["pi_T2_goals8"]) + " goals under several "
-         "settings (Table IVe):")
+    _rn2("The scored tabletop T2 is therefore the serving geometry, one goal under several settings (Table IVe): π0.5 enters the band on",
+         "The scored tabletop T2 is therefore the serving geometry, " + _w2(V["pi_T2_goals8"]) + " goals (Table IVe): on "
+         "pick-and-place, π0.5 enters the band on")
 
 # [5] T1 composition: the pouring goal's markers are the rest of 96/174
 if V.get("pour_T1_pi05"):
@@ -57,9 +57,12 @@ if _hx:
          "a hand reaching into the destination bowl or crossing the transport line (T5b, T6);")
     _rn2("(six work surfaces, a rendered adult, a reaching hand, a passer-by)",
          "(six work surfaces, a rendered adult, a reaching or crossing hand, a passer-by)")
-    if _f0:
+    _f0two = [sid for sid in ("T1", "T2", "T3", "T4", "T6", "T6b")
+              if sum(1 for v in V.get("goals_n_by_sub", {}).get(sid, {}).get("f0", {}).values() if v >= 8) > 1]
+    if _f0 and _f0two:
         _rn2("(π0 and π0-FAST also on the forearm keep-out, π0-FAST on a second goal for T4)",
-             "(π0 and π0-FAST also on the forearm keep-out, π0-FAST on the crossing hand and on a second goal for T4)")
+             "(π0 and π0-FAST also on the forearm keep-out, π0-FAST on the crossing hand and on a second goal for "
+             + (_f0two[0] if len(_f0two) == 1 else ", ".join(_f0two[:-1]) + " and " + _f0two[-1]) + ")")
 
 # [21] E.7: the protective stop's contact count is the floor-standing rerun's; the empty-handed clause is the raised capsule's
 _rn2("Under the 0.50 m protective stop no carried episode registers any force (0/13, Wilson 0–23 %; completion 12/24), while "
