@@ -258,7 +258,7 @@ def fmt_ci(k, n, cl=None):
 # Annex A.3.3 shows is not the force a free hand would feel (7 N median, 0/202 above 140 N). What the cells establish is
 # that the payload is brought into contact with a person's hand, so the contact count is what the column reports.
 DIMS = [("Trajectory", ["T1", "T2"]), ("Orientation", ["T3", "T4"]), ("Speed & force", []), ("Dynamics", ["T6", "T6b"])]
-DIMS_G1 = [("Trajectory", ["T1", "T2"]), ("Orientation", ["T3", "T4"]), ("Speed & force", ["T5a", "T5b"]), ("Dynamics", ["T6", "T6b"])]
+DIMS_G1 = [("Trajectory", ["T1", "T2"]), ("Orientation", ["T3", "T4"]), ("Speed & force", ["T5a"]), ("Dynamics", ["T6", "T6b"])]
 
 def dim_cell(sub, dims=None):
     """Mean over the fixed set when every member is scored with n >= FLOOR; otherwise the vector only."""
@@ -278,8 +278,9 @@ def dim_cell(sub, dims=None):
     return out
 
 # ---------------- G1 (typed in from the paper's Appendix A / E; T6b = no deceleration before contact, E.7)
-G1 = {"T1": (121, 125), "T2": (27, 32),   # g1r2 (2026-10-02): the body standing on the floor; was (26, 32) with the raised body
-       "T3": (14, 27), "T3_worst": (20, 20), "T4": (0, 17), "T5a": (22, 22), "T5b": (14, 21),   # g1r5 (2026-10-01): the crosser standing on the floor; was (15, 21) with the raised capsule
+# G1RESCORE-2026-10-05: T1 scored off the path (Table XI blind rendered, 11/30); the on-path 121/125 is exposure; T5b exposure
+G1 = {"T1": (11, 30), "T1_exp": (121, 125), "T2": (27, 32),   # g1r2 (2026-10-02): the body standing on the floor; was (26, 32) with the raised body
+       "T3": (14, 27), "T3_worst": (20, 20), "T4": (0, 17), "T5a": (22, 22), "T5b_exp": (14, 21),   # g1r5 (2026-10-01): the crosser standing on the floor; was (15, 21) with the raised capsule
       
       "T6": (21, 24), "T6b": (17, 18), "T6c": (3, 5)}
 
@@ -675,7 +676,8 @@ N["dec_counts"] = {w: {"att": str(rows[p]["_N"] or 0), "car": str(rows[p]["_carr
 N["has_scripted"] = int(bool(rows["scripted"]["_N"]))
 N["pi_T1_exp"] = "{}/{}".format(*rows["pi05"]["T1_exp"])   # the on-path midpoint marker, reported as exposure
 N["tab3_rows"] = "\n".join("| " + rows[p]["_name"] + " | " + " | ".join(dim_cell(rows[p], DIMS_G1 if p == "g1" else DIMS)) + " |" for p in ORDER)
-N["dims_note"] = ("Speed & force is the mean over {T5a, T5b} on the G1; on the tabletop it is exposure, because T5b there "
+N["dims_note"] = ("Speed & force is T5a on the G1 (its T5b forces, like the tabletop's, act on a kinematic body and are exposure); "
+                  "on the tabletop it is exposure, because T5b there "
                   "is the constraint force on an inert capsule and Annex A.3.3 puts the force a free hand would feel at 7 N "
                   "median, so the cells establish contact, not harm")
 
@@ -686,6 +688,8 @@ def sub_row(p):
     for s in SUBS:
         if s == "T5a" and p != "g1":
             k, n = r.get("T5a_exp", (0, 0)); cells_.append(f"({k}/{n} exposure)" if n else "—"); continue
+        if s == "T5b" and p == "g1":
+            k, n = r.get("T5b_exp", (0, 0)); cells_.append(f"({k}/{n} contacts, kinematic body: exposure)" if n else "—"); continue
         k, n = r.get(s, (0, 0)); cells_.append(fmt_ci(k, n, r.get(s + "_cl")))
     return "| " + r["_name"] + " | " + " | ".join(cells_) + " |"
 N["tab3b_rows"] = "\n".join(sub_row(p) for p in ORDER)

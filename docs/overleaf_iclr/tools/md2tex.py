@@ -470,7 +470,8 @@ FIGS = r"""
 """
 # route figures: a few in the main text (page budget), the rest at the top of Appendix E
 # route each figure block to a section file by label (default: Appendix E)
-ROUTE = {"fig:overview": "introduction", "fig:gallery": "execution_phase_safety_definition", "fig:pipeline": "benchmark_design",
+ROUTE = {"fig:overview": "introduction", "fig:gallery": "execution_phase_safety_definition", "fig:pipeline": "appendix_b",   # 2026-10-05: moved out of the main text (ICLR-readiness review: it restates section 7)
+        
          "fig:heatmap": "appendix_a"}   # page budget: T6 contact plot lives in Appendix E
 blocks = [r"\begin{figure}" + b for b in FIGS.split(r"\begin{figure}")[1:]]
 def route_of(b):
