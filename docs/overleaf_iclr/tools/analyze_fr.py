@@ -210,6 +210,18 @@ def episode(e, person, axis, ep_steps, person2=None):
                 r[f"tip_v_near{int(rr*100)}"] = max(nr) if nr else 0.0
     r["k_lift"] = lift_idx[0] if lift_idx else None
     r["k_place"] = max(trans) if trans else None
+    # T6b placebo (2026-10-05): share of transport-core steps at >= 0.8 x the transport mean speed, speed as at a closest approach
+    r["t6b_placebo"] = None
+    if trans and r["k_lift"] is not None and r.get("v_trans"):
+        _core = [k for k in range(r["k_lift"], max(trans) - 15 + 1) if 2 <= k < n - 2]
+        if _core:
+            def _vk(k):
+                lo, hi = max(2, k - 3), min(n - 2, k + 4)
+                vv = [sp[q] for q in range(lo, hi)]
+                return st.median(vv) if vv else 0.0
+            r["t6b_placebo"] = sum(1 for k in _core if _vk(k) >= 0.8 * r["v_trans"]) / len(_core)
+            _cs = set(_core)
+            r["t6b_plc_dk"] = {str(d): int(_vk(r["k_lift"] + d) >= 0.8 * r["v_trans"]) for d in range(0, 121, 5) if r["k_lift"] + d in _cs}
     return r
 
 
@@ -499,6 +511,10 @@ def main(argv):
         if sp_near:
             row.update(spill_n=len(sp_near), spill_near=sum(1 for x in sp_near if x["tilt_trans"] > 45 and x["tilt_to_person"] < 0.60),
                        spill_far=sum(1 for x in sp_near if x["tilt_trans"] > 45 and x["tilt_to_person"] >= 0.60))
+        _pl = [round(x["t6b_placebo"], 3) for x in car if x.get("t6b_placebo") is not None]
+        if _pl:
+            row["t6b_placebo"] = _pl
+            row["t6b_plc_dk"] = [x["t6b_plc_dk"] for x in car if x.get("t6b_plc_dk")]
         vt = [x["v_trans"] for x in car if x["v_trans"] is not None]
         if vt:
             print(f"   transport speed mean {st.mean(vt):.3f} m/s (per-episode means), vmax median {st.median([x['vmax'] for x in car if x['vmax']]):.3f}")
@@ -585,7 +601,9 @@ def main(argv):
                 mvcore = [bool(h.get("mv_k") is not None and x.get("k_lift") is not None and x.get("k_place") is not None
                                and x["k_lift"] <= h["mv_k"] <= x["k_place"] - 15)
                           for h, x in zip(Hc, car) if h.get("mv_d") is not None]
-                row.update(mv_dmin=mvd, mv_v_at=mvv, mv_in_trans=mvin, mv_in_core=mvcore)
+                mvdk = [(h["mv_k"] - x["k_lift"]) if (h.get("mv_k") is not None and x.get("k_lift") is not None) else None
+                        for h, x in zip(Hc, car) if h.get("mv_d") is not None]      # closest approach: steps after the lift
+                row.update(mv_dmin=mvd, mv_v_at=mvv, mv_in_trans=mvin, mv_in_core=mvcore, mv_dk=mvdk)
             # A2: the cue window, scored only when the whole window lies inside the transport
             _cr = [(h["cue_ratio"], h["cue_kwalk"]) for h, x in zip(Hc, car)
                    if h.get("cue_ratio") is not None and x.get("k_lift") is not None and x.get("k_place") is not None

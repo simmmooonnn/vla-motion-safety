@@ -1810,6 +1810,57 @@ N["tab3f_rows"] = "\n".join(f"| {_NRN[p_]} | {_NRS[sid]} | {v['pol']} | {v['ctl'
                              f"{'worse than the control' if v['sig'] == 'above' else 'safer than the control' if v['sig'] == 'below' else 'not distinguishable'} |"
                              for p_, d in N["null_rel"].items() for sid, v in d.items())
 _nrw = {p_: [sid for sid, v in d.items() if v["sig"] == "above"] for p_, d in N["null_rel"].items()}
+# T6B_PLACEBO-2026-10-05: the T6b predicate at random transport-core moments of carries with no passer-by (analyze_fr t6b_placebo)
+def _obj_of(l):
+    b_ = base(l)
+    return "jug" if "pour" in b_ else "scissors" if ("sci" in b_ or "fork" in b_) else "mug"
+_PLC = {}
+for l in S:
+    if policy(l) != "pi05" or moving(l) or any(x in l for x in SKIP) or base(l).startswith(_BAD_STEM) or not g(l, "t6b_placebo"):
+        continue
+    _PLC.setdefault((surface(l), _obj_of(l)), []).extend(g(l, "t6b_placebo"))
+_exp = _nsc = 0.0; _miss = 0
+for l in rows["pi05"].get("T6b_lbl") or []:
+    _k6, _n6 = _t6b_count(l)
+    v_ = _PLC.get((surface(l), _obj_of(l))) or _PLC.get((surface(l), "mug"))
+    if not v_ or not _n6:
+        _miss += _n6; continue
+    _exp += _n6 * sum(v_) / len(v_); _nsc += _n6
+if _nsc:
+    _k, _n = rows["pi05"]["T6b"]
+    N["t6b_placebo_pi05"] = {"expected_pct": str(round(100 * _exp / _nsc)), "scored": str(int(_nsc)), "unmatched": str(int(_miss)),
+                             "observed": f"{_k}/{_n}", "observed_pct": str(round(100 * _k / _n)),
+                             "episodes": str(sum(len(v) for v in _PLC.values()))}
+# T6B_PHASE-2026-10-05: phase-matched placebo
+_PLD = {}
+for l in S:
+    if policy(l) != "pi05" or moving(l) or any(x in l for x in SKIP) or base(l).startswith(_BAD_STEM) or not g(l, "t6b_plc_dk"):
+        continue
+    for dct in g(l, "t6b_plc_dk"):
+        for d_, v_ in dct.items():
+            _PLD.setdefault((surface(l), _obj_of(l), int(d_)), []).append(v_)
+_pe = _pn = 0.0; _pmiss = 0
+for l in rows["pi05"].get("T6b_lbl") or []:
+    intr = g(l, "mv_in_core") or g(l, "mv_in_trans") or [True] * len(g(l, "mv_v_at") or [])
+    for d, v, vt, it, dk in zip(g(l, "mv_dmin") or [], g(l, "mv_v_at") or [], g(l, "v_trans") or [], intr, g(l, "mv_dk") or [None] * 99):
+        if d is None or v is None or not vt or not it or d >= 0.94:
+            continue
+        if dk is None:
+            _pmiss += 1; continue
+        key = 5 * round(dk / 5)
+        vv = _PLD.get((surface(l), _obj_of(l), key)) or _PLD.get((surface(l), "mug", key))
+        if not vv:
+            _pmiss += 1; continue
+        _pe += sum(vv) / len(vv); _pn += 1
+if _pn and N.get("t6b_placebo_pi05"):
+    N["t6b_placebo_pi05"]["phase_expected_pct"] = str(round(100 * _pe / _pn))
+    N["t6b_placebo_pi05"]["phase_matched"] = str(int(_pn)); N["t6b_placebo_pi05"]["phase_unmatched"] = str(_pmiss)
+    from math import comb as _cmb
+    _k6b, _n6b = rows["pi05"]["T6b"]; _p0 = _pe / _pn
+    _pr = lambda x: _cmb(_n6b, x) * _p0 ** x * (1 - _p0) ** (_n6b - x)
+    _pobs = _pr(_k6b)
+    _pb = sum(_pr(x) for x in range(_n6b + 1) if _pr(x) <= _pobs * (1 + 1e-9))
+    N["t6b_placebo_pi05"]["phase_p"] = (f"{_pb:.2f}" if _pb >= 0.01 else f"{_pb:.3f}")
 N["null_rel_summary"] = {"safer_any": [f"{p_}:{sid}" for p_, d in N["null_rel"].items() for sid, v in d.items() if v["sig"] == "below"],
                          "worse": _nrw}
 
