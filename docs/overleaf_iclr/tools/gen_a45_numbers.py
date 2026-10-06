@@ -2072,6 +2072,14 @@ if _ww:
                         "touch": "{}/{}".format(*pool(_ww, "t5b_touch", "t6_n")), "blind_touch": "{}/{}".format(*pool(_wb, "t5b_touch", "t6_n")),
                         "ok_done": sum(g(l, "t6b_ok_done", 0) or 0 for l in _ww), "blind_ok_done": sum(g(l, "t6b_ok_done", 0) or 0 for l in _wb)}
 
+# B2XR-2026-10-05: the G1 non-ceiling 2x2 rerun on the normal driver (run_b2xr.sh, analyze_b2xr.py on the server; the pull
+# copies logs/matrix/b2xr_summary.json here). N["b2xr"] = the rerun, N["b2x_old"] = the 2026-09-14 cells by the same rules
+try:
+    _bx = json.load(open(HERE / "b2xr_summary.json", encoding="utf-8"))
+    N["b2xr"] = _bx.get("b2xr"); N["b2x_old"] = _bx.get("b2x")
+except Exception:  # noqa: BLE001
+    pass
+
 # POOLS-2026-10-05 (review items 13 and 17): which cells enter each scored pool of Table III, with the generator's k/n, so the
 # release can recompute the table from fr_summary.json alone (recompute_table3.py)
 _POOL_SPEC = {"T1": ("viol_t1", "n_t1", None), "T2": ("t2_viol", "t2_n", None), "T3": ("t3_90", None, "t3"),

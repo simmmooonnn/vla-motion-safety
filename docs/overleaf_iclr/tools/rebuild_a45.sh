@@ -9,6 +9,8 @@ if [ "${1:-nopull}" = pull ]; then
   sed -n '/===SUMMARY===/,$p' snap_pull.txt | tail -1 > fr_summary.json
   echo "grep -a ' START ' /home/data/zzhao140/zijian/isaac/logs/fr/master.log" > q_start.sh
   timeout 200 ssh -o ConnectTimeout=25 zzhao140@dsailogin.arch.jhu.edu 'ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=25 -p 22 zzhao140@chaowei.wse.jhu.edu "bash -s"' < q_start.sh > master_start.txt 2>/dev/null
+  echo "cd /home/data/zzhao140/zijian/isaac && python3 analyze_b2xr.py > /dev/null 2>&1; cat logs/matrix/b2xr_summary.json" > q_b2xr_pull.sh
+  timeout 200 ssh -o ConnectTimeout=25 zzhao140@dsailogin.arch.jhu.edu 'ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=25 -p 22 zzhao140@chaowei.wse.jhu.edu "bash -s"' < q_b2xr_pull.sh > b2xr_summary.json.tmp 2>/dev/null && python -c "import json; json.load(open('b2xr_summary.json.tmp'))" 2>/dev/null && mv b2xr_summary.json.tmp b2xr_summary.json
 fi
 python gen_a41_numbers.py > gen_out.txt 2>&1 || { tail -5 gen_out.txt; exit 1; }
 python gen_a45_numbers.py > gen45_out.txt 2>&1 || { tail -5 gen45_out.txt; exit 1; }
