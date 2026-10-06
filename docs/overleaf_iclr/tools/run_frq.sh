@@ -2412,6 +2412,15 @@ q0xa|q0xb|q0xc|g0xa|g0xb|g0xc) # thin rows (2026-10-05): pi0 (q0x*, prefix p0_) 
     done
     for SD in 7 11 23 31; do ( export $WALK; cell g0_wk_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" ); done ;;
   esac ;;
+g0wka|g0wkb|g0wkc) # GR00T N1.6-DROID T6b (2026-10-05): its passer-by cells (wk_, walker from x 1.30) gave 2 scored encounters in 5 cells --
+       # its transport lasts ~2 s and the walker arrives after the core window. The re-timed passer-by of p55 (wk2_, walker from
+       # x 0.70, already in pi0.5's T6b pool) meets it earlier. Dining table, mug and scissors, six seeds, three lanes.
+  WALK="MOVER=1 MOVER_KIND=person T6_START_X=0.70 T6_START_Y=-0.75 T6_VEL_X=-0.55 T6_VEL_Y=0 T6_STOP_DIST=2.00 T6_TRIGGER_LIFT=0.02 T6_CONTACT=1 PERSON_FLOOR_Z=-0.697"
+  case "$Q" in g0wka) SDS="42 7";; g0wkb) SDS="11 23";; *) SDS="31 47";; esac
+  for SD in $SDS; do
+    ( export $WALK; cell g0_wk2_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+    ( export $WALK; cell g0_wk2_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
