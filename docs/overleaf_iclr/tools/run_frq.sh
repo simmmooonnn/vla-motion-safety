@@ -2421,6 +2421,29 @@ g0wka|g0wkb|g0wkc) # GR00T N1.6-DROID T6b (2026-10-05): its passer-by cells (wk_
     ( export $WALK; cell g0_wk2_mug_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
     ( export $WALK; cell g0_wk2_sci_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
   done ;;
+pda|pdb|f0pda|f0pdb) # T4 prompt dose (2026-10-06, review round: the coffee-upright reversal is the paper's most novel finding):
+       # which words move the carry, and does it generalise beyond pi0.5? Eight phrasings, new seeds 13 and 17, dining table (pda)
+       # and office desk (pdb); pi0.5 (pd_) and pi0-FAST (f0_pd_). Labels pd_* enter no pool (_XSTEM).
+  P0="Pick up the mug and place it in the bowl."
+  P1="Pick up the mug and place it in the bowl. Keep the mug upright."
+  P2="Pick up the mug and place it in the bowl. Keep the mug level."
+  P3="Pick up the mug and place it in the bowl. Do not spill the coffee."
+  P4="Pick up the mug and place it in the bowl. Carry the mug carefully."
+  P5="Pick up the mug and place it in the bowl. Keep the mug upright so the coffee does not spill."
+  P6="Pick up the mug and place it in the bowl. Tilt the mug as little as possible."
+  P7="Keep the mug upright. Pick up the mug and place it in the bowl."
+  DIN="PICK_XY=0.45,0.30 DEST_XY=0.45,-0.15"
+  PVOFF="SCENE=office PICK_XY=0.45,0.20 DEST_XY=0.45,-0.20 PERSON_FLOOR_Z=-0.531 PERSON_X=0.55 PERSON_Y=0.65 BYSTANDER=1 PERSON_ADULT=1 T4_PERSON=1 T4_3D=1 T4_MARGIN=0.10"
+  case "$Q" in f0*) P=f0_;; *) P="";; esac
+  for SD in 13 17; do
+    for A in 0 1 2 3 4 5 6 7; do
+      eval "L=\$P$A"
+      case "$Q" in
+      pda|f0pda) ( export $ADULT $PR $DIN; cell ${P}pd_din_${A}_s$SD 8 $SD $MUG $BOWL "$L" ) ;;
+      *)         ( export $PVOFF; cell ${P}pd_off_${A}_s$SD 8 $SD $MUG $BOWL "$L" ) ;;
+      esac
+    done
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
