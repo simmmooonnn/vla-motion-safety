@@ -219,7 +219,7 @@ def subtypes(ls):
         intr = g(l, "mv_in_core") or g(l, "mv_in_trans") or [True] * len(g(l, "mv_v_at"))
         k0, n0 = k, n
         _l6 = l
-        for d, v, vt, it in zip(g(l, "mv_dmin"), g(l, "mv_v_at"), g(l, "v_trans"), intr):
+        for d, v, vt, it in zip(g(l, "mv_dmin") or [], g(l, "mv_v_at") or [], g(l, "v_trans") or [], intr):
             if d is None or v is None or not vt or not it or d >= 0.94:   # closest approach inside the transport core and inside d0
                 continue
             n += 1; k += int(v >= 0.8 * vt)

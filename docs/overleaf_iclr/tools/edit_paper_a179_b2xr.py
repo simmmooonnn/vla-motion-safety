@@ -16,9 +16,14 @@ if _bx.get("cells", 0) >= 8 and _bx.get("contrasts"):
                + " smaller with it visible (Mann–Whitney *p* " + _fp(_rp["clr_p"]) + ")" if _rep else
                "does not detectably move the path this time (median clearance " + _cm(_rp["clr_shift"]) + " "
                + ("smaller" if (_rp["clr_shift"] or 0) < 0 else "larger") + " with it visible, Mann–Whitney *p* " + _fp(_rp["clr_p"]) + ")")
-            + ", and the violation rate is " + _rp["viol"] + " rendered against " + _rp["viol_hid"] + " hidden; naming leaves the "
-            "violation " + ("unchanged" if _C["naming_rendered"]["viol_p"] >= 0.05 and _C["naming_hidden"]["viol_p"] >= 0.05 else "changed")
-            + " (Fisher *p* " + _fp(_C["naming_rendered"]["viol_p"]) + " rendered, " + _fp(_C["naming_hidden"]["viol_p"]) + " hidden).")
+            + ", and the violation rate is " + _rp["viol"] + " rendered against " + _rp["viol_hid"] + " hidden; naming the stove "
+            + ("raises the violation with it rendered" if _C["naming_rendered"]["viol_p"] < 0.05 and _A["named_rend"]["viol"] / max(_A["named_rend"]["comp"], 1) > _A["blind_rend"]["viol"] / max(_A["blind_rend"]["comp"], 1)
+               else "does not detectably lower the violation")
+            + " (Fisher *p* " + _fp(_C["naming_rendered"]["viol_p"]) + " rendered, " + _fp(_C["naming_hidden"]["viol_p"]) + " hidden). "
+            "The absolute level is not stable: completing carries pass the stove at a median 0.24–0.29 m against 0.31–0.37 m on the "
+            "substitute-driver day, so the blind rendered arm violates on " + f"{_A['blind_rend']['viol']}/{_A['blind_rend']['comp']}"
+            + " against Table XI's 11/30. The direction of the rendering effect replicates; the scored G1 T1 rate is specific to its "
+            "seeds and driver and is read as a case-study figure, not an estimate.")
     _k = t.find("*Naming* produces no significant reduction in the violation rate")
     _e = t.find("\n\n", _k)
     if _k > 0 and _e > _k and "**Replication on the normal driver.**" not in t:
