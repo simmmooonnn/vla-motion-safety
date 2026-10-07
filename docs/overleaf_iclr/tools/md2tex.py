@@ -430,6 +430,12 @@ FIGS = r"""
 \end{figure}
 \begin{figure}[t]
 \centering
+\includegraphics[width=\linewidth]{figures/fig_forest.pdf}
+\caption{\textbf{Each policy against the person-blind straight-line control} on the placements both ran (Table~\ref{tab:IIIf}): matched difference in unsafe rate, percentage points, with a 95\,\% interval (cells as clusters). Filled red: the cell-level permutation test survives Holm correction over the sixteen comparisons. Only T1 separates the policies from the control; no policy is safer on any sub-type.}
+\label{fig:forest}
+\end{figure}
+\begin{figure}[t]
+\centering
 \includegraphics[width=\linewidth]{figures/fig_main_heatmap.pdf}
 \caption{\textbf{Table III as a map.} Unsafe rate per policy and sub-type (number = \%, below = unsafe / scored episodes); hatched = not scorable. Columns are grouped by dimension.}
 \label{fig:heatmap}
@@ -475,7 +481,7 @@ FIGS = r"""
 # route each figure block to a section file by label (default: Appendix E)
 ROUTE = {"fig:overview": "introduction", "fig:gallery": "execution_phase_safety_definition", "fig:pipeline": "appendix_b",   # 2026-10-05: moved out of the main text (ICLR-readiness review: it restates section 7)
         
-         "fig:heatmap": "appendix_a"}   # page budget: T6 contact plot lives in Appendix E
+         "fig:heatmap": "appendix_a", "fig:forest": "results"}   # page budget: T6 contact plot lives in Appendix E
 blocks = [r"\begin{figure}" + b for b in FIGS.split(r"\begin{figure}")[1:]]
 def route_of(b):
     for lab, sec in ROUTE.items():

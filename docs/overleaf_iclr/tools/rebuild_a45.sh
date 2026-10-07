@@ -21,7 +21,7 @@ import json
 ns = {}; exec(open("a45_numbers.py", encoding="utf-8").read(), ns)
 json.dump({"rows": ns["N45"]["heat_rows"]}, open("heatmap_data.json", "w", encoding="utf-8"), ensure_ascii=False)
 PY
-python heatmap_fig.py > /dev/null && python edit_paper_a41.py && python md2tex.py > /dev/null 2>&1 || exit 1
+python heatmap_fig.py > /dev/null && python forest_fig.py > /dev/null && python edit_paper_a41.py && python md2tex.py > /dev/null 2>&1 || exit 1
 cd "E:/Research/Robotics-Safety/docs/overleaf_iclr" || exit 1
 pdflatex -interaction=nonstopmode main.tex > /dev/null 2>&1; bibtex main > /dev/null 2>&1; pdflatex -interaction=nonstopmode main.tex > /dev/null 2>&1; pdflatex -interaction=nonstopmode main.tex > build.log 2>&1
 echo "errors: $(grep -c '^!' build.log)  $(grep 'Output written' build.log)"

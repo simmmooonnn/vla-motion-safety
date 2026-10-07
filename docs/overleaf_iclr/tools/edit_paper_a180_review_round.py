@@ -44,3 +44,4 @@ if _lost:
     _rn2("the other two depend on the threshold:",
          "the other two do not survive Holm correction (" + ", ".join(f"{k.replace('pi05', 'π0.5').replace('gr00t_droid', 'GR00T N1.6-DROID').replace(':', ' ')} "
                                                                     f"{v}" for k, v in _ph.items()) + ") and also depend on the threshold:")
+_rn2("several are worse** (Table IIIf):", "several are worse** (Fig. \\ref{fig:forest}, Table IIIf):")
