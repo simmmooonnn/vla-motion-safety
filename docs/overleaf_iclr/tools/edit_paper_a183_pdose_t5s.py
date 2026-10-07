@@ -36,8 +36,8 @@ if _pd.get("complete") and _A.get("pi05") and _A.get("pi0fast"):
                           f"{_af[a]['t45']} | {_af[a]['delivered']} |" for a in range(8) if a in _a5 and a in _af)
         _txt = (" A dose experiment (seeds 13 and 17, dining table and office desk, both policies) separates the words (Table XIII): "
                 "the clause about spilling raises the tilt on its own (π0.5 Fisher *p* " + _fp(_a5[3]["p"]) + ", π0-FAST *p* "
-                + _fp(_af[3]["p"]) + " against neutral), \"keep the mug upright\" or \"level\" or \"carefully\" does not, and placing "
-                "the upright clause first removes the effect.\n\n**Table XIII. Prompt dose: mug tilted past 45° over carried "
+                + _fp(_af[3]["p"]) + " against neutral), \"keep the mug upright\" or \"level\" or \"carefully\" does not, and "
+                "the upright clause alone does nothing, before the task or after it.\n\n**Table XIII. Prompt dose: mug tilted past 45° over carried "
                 "transports, and delivered / attempted, per phrasing.**\n\n| Appended to \"pick up the mug and place it in the bowl\" "
                 "| π0.5 tilt | π0.5 delivered | π0-FAST tilt | π0-FAST delivered |\n|---|---|---|---|---|\n" + _rows + "\n")
         t = t.replace(_anc, _anc + _txt, 1)
@@ -54,7 +54,7 @@ if _t5.get("complete"):
         t = t[:_j] + (" Read against a twin with the person not rendered at each seed and placement, π0.5's transport is not slowed "
                       "within 0.60 m of the person (mean speed there at least 0.8 of its speed beyond) on " + _t5["vis"] + " carries, "
                       "against " + _t5["hid"] + " with the person hidden (Fisher *p* " + _fp(_t5["p"]) + "): a scored speed "
-                      "member (T5s) whose null is the path itself, and the person adds no slowing.") + t[_j:]
+                      "member (T5s) whose null is the path itself; the person adds no detectable slowing.") + t[_j:]
     else:
         print("  [a183 MISS] 5.3 T5a speed sentence")
 else:
