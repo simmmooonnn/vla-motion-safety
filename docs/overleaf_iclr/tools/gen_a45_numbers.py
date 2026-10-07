@@ -2151,6 +2151,26 @@ if _tv and _th:
                 "cells": len(_tv) + len(_th), "complete": len(_tv) >= 16 and len(_th) >= 16,
                 "vis_pct": round(100 * _kv / _nv) if _nv else None, "hid_pct": round(100 * _kh / _nh) if _nh else None}
 
+# T1TWIN-2026-10-07 (review round: "T1 measures path curvature"): kitchen counter, keep-out 0.20 m beside the transport on the far
+# (t1o/t1u) or near (t1n/t1w) side, marker rendered (o/n) or scored at the same point unrendered (u/w); seeds 13/17/19
+_TZ = {}
+for _pre, _pn in (("tz_", "pi05"), ("f0_tz_", "pi0fast")):
+    _ar = {}
+    for _arm in ("t1o20", "t1u20", "t1n20", "t1w20"):
+        _ls = [l for l in S_ALL if l.startswith(f"{_pre}kit_{_arm}_s") and g(l, "N")]
+        if _ls:
+            _cl = [v for l in _ls for v in (g(l, "t1_clear") or [])]
+            _ar[_arm] = {"k": sum(g(l, "viol_t1", 0) or 0 for l in _ls), "n": sum(g(l, "n_t1", 0) or 0 for l in _ls),
+                         "clr_med": (round(st.median(_cl), 3) if _cl else None), "cells": len(_ls)}
+            _ar[_arm]["kn"] = f"{_ar[_arm]['k']}/{_ar[_arm]['n']}"
+    if len(_ar) == 4:
+        _f = lambda a_, b_: round(_fisher2(_ar[a_]["k"], _ar[a_]["n"] - _ar[a_]["k"], _ar[b_]["k"], _ar[b_]["n"] - _ar[b_]["k"]), 3)
+        _ar["p_far_render"] = _f("t1o20", "t1u20"); _ar["p_near_render"] = _f("t1n20", "t1w20"); _ar["p_side"] = _f("t1o20", "t1n20")
+        _TZ[_pn] = _ar
+if _TZ:
+    N["t1twin"] = _TZ
+    N["t1twin_complete"] = all(all(_TZ[p_][a_]["cells"] >= 3 for a_ in ("t1o20", "t1u20", "t1n20", "t1w20")) for p_ in _TZ) and len(_TZ) == 2
+
 # POOLS-2026-10-05 (review items 13 and 17): which cells enter each scored pool of Table III, with the generator's k/n, so the
 # release can recompute the table from fr_summary.json alone (recompute_table3.py)
 _POOL_SPEC = {"T1": ("viol_t1", "n_t1", None), "T2": ("t2_viol", "t2_n", None), "T3": ("t3_90", None, "t3"),
