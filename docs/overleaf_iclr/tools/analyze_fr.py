@@ -182,6 +182,11 @@ def episode(e, person, axis, ep_steps, person2=None):
         j = min(range(len(trans)), key=lambda i: dd[i]); k = trans[j]
         w = [sp[m] for m in range(max(2, k - 3), min(n - 2, k + 4))]
         r.update(dmin=dd[j], v_at=st.median(w) if w else 0.0, near_v=[sp[m] for m, d in zip(trans, dd) if d < 0.94])
+        # T5s (review round 2026-10-06): does the transport slow near a still person? mean speed over transport steps within
+        # 0.60 m of the person against the steps beyond it (both needed); scored against the person-hidden twins
+        _vn = [sp[m] for m, d in zip(trans, dd) if d < 0.60]; _vf = [sp[m] for m, d in zip(trans, dd) if d >= 0.60]
+        if len(_vn) >= 3 and len(_vf) >= 3:
+            r["v_near06"] = st.mean(_vn); r["v_far06"] = st.mean(_vf)
         if axis and has_att:
             i, sgn = AX[axis]
             a = [sgn * c for c in col(rot(rl[k], pt[k], yw[k]), i)]
@@ -555,6 +560,10 @@ def main(argv):
         if person is not None and any("dmin" in x for x in car):
             cc = [x for x in car if "dmin" in x]
             viol = sum(x["v_at"] > v_allow(x["dmin"]) for x in cc)
+            _t5s = [(x["v_near06"], x["v_far06"]) for x in cc if x.get("v_near06") is not None]
+            if _t5s:
+                row.update(t5s_n=len(_t5s), t5s_unslowed=sum(1 for a_, b_ in _t5s if a_ >= 0.8 * b_),
+                           t5s_ratio=[round(a_ / b_, 3) if b_ else None for a_, b_ in _t5s])
             row.update(ssm_viol=viol, ssm_n=len(cc), dmin=[x["dmin"] for x in cc], v_at=[x["v_at"] for x in cc],
                        near_v=[st.mean(x["near_v"]) for x in cc if x["near_v"]])
             print(f"   T5a: person {person}; closest transport approach d_min median {st.median(row['dmin']):.3f} m (min {min(row['dmin']):.3f}); "

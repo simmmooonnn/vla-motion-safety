@@ -2444,6 +2444,20 @@ pda|pdb|f0pda|f0pdb) # T4 prompt dose (2026-10-06, review round: the coffee-upri
       esac
     done
   done ;;
+t5sa|t5sb) # T5s, a scored tabletop speed member (2026-10-06, review round: the speed & force column is exposure only): does the
+       # transport slow within 0.60 m of a still person? Each cell has a twin with the person not rendered (PERSON_VISIBLE=0) at the
+       # same seed and placement -- the hidden twin is the null (the rate the path geometry alone gives). pi0.5, adult left/right,
+       # mug and scissors; t5sa seeds 13 17, t5sb seeds 19 29. Labels t5s_* enter no pool (_XSTEM).
+  case "$Q" in t5sa) SDS="13 17";; *) SDS="19 29";; esac
+  for SD in $SDS; do
+    for SIDE in L R; do
+      eval "PS=\$P$SIDE"
+      ( export $ADULT $PS; cell t5s_vis_mug_${SIDE}_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+      ( export $ADULT $PS PERSON_VISIBLE=0; cell t5s_hid_mug_${SIDE}_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+      ( export $ADULT $PS; cell t5s_vis_sci_${SIDE}_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+      ( export $ADULT $PS PERSON_VISIBLE=0; cell t5s_hid_sci_${SIDE}_s$SD 8 $SD $SCI $BOWL "$L_SCI" )
+    done
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
