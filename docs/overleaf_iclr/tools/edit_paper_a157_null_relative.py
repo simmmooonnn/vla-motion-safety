@@ -34,7 +34,12 @@ if _NR and not _NRS.get("safer_any"):
         _w = [p for p in _P if _t2.get(p) and _t2[p]["sig"] == "above"]
         _ns = [p for p in _P if _t2.get(p) and _t2[p]["sig"] == "ns"]
         _g = _t2.get("gr00t_droid")
-        _s = ("**Against the blind carrier on the placements it ran,** " + _lst([f"{_P[p]} sweeps the body more often ({_t2[p]['pol']} "
+        if not _w:
+            _s = ("**Against the blind carrier on the placements it ran,** no policy sweeps the body detectably more often once the "
+                  "table's tests are Holm-corrected: " + _lst([f"{_P[p]} {_t2[p]['pol']} ({_pt(_t2[p])}, Holm {_t2[p].get('p_holm')})"
+                  for p in _P if _t2.get(p)]) + " against the control's " + _t2["pi05"]["ctl"] + " (Table IIIf).")
+        else:
+          _s = ("**Against the blind carrier on the placements it ran,** " + _lst([f"{_P[p]} sweeps the body more often ({_t2[p]['pol']} "
               f"against {_t2[p]['ctl']}; cell-level permutation {_pt(_t2[p])})" for p in _w]) + "; "
               + _lst([f"{_P[p]} ({_t2[p]['pol']})" for p in _ns if p != "gr00t_droid"]) + " cannot be told from it, and GR00T "
               "N1.6-DROID sweeps it on " + _g["pol"] + (f" ({_pt(_g)}, the smallest four cells per arm allow)" if _g["sig"] == "ns" else

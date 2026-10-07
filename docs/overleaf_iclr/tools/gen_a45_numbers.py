@@ -1832,15 +1832,54 @@ N["null_rel"] = {p_: {sid: v for sid in ("T1", "T2", "T3", "T4", "T6") if rows.g
                       and (v := null_rel(p_, sid)) is not None}
                  for p_ in ("pi05", "pi0", "pi0fast", "gr00t_droid")}
 _NRN = {"pi05": "π0.5", "pi0": "π0", "pi0fast": "π0-FAST", "gr00t_droid": "GR00T N1.6-DROID"}
+# HOLM-2026-10-06 (review round): Table IIIf is the primary family -- Holm-adjust its permutation p values, and give every matched
+# difference a 95 % interval by resampling cells within each placement (so a "not distinguishable" row says how large a
+# difference it excludes)
+def _boot_rd(p, sid):
+    """95 % interval of the policy-minus-control difference on the placements both ran: cluster-robust variance of each arm's
+    pooled rate (cells as clusters) and a t quantile with (fewer cells - 1) degrees of freedom -- with four cells a side the
+    interval is wide, as it should be (a within-placement bootstrap of so few cells was too narrow)."""
+    ctl, mine = {}, {}
+    for l in rows["scripted"].get(sid + "_lbl") or []:
+        s_ = _stem(l).replace("pg_", "", 1) if sid == "T4" else _stem(l)
+        ctl.setdefault(s_, []).append(CELL_KN[sid](l))
+    for l in rows.get(p, {}).get(sid + "_lbl") or []:
+        mine.setdefault(_stem(l), []).append(CELL_KN[sid](l))
+    com = [s_ for s_ in mine if s_ in ctl and sum(n for _, n in mine[s_]) and sum(n for _, n in ctl[s_])]
+    if not com:
+        return None
+    def arm(cells):
+        cells = [c for c in cells if c[1]]
+        K = sum(k for k, _ in cells); Nn = sum(n for _, n in cells); C = len(cells)
+        pr = K / Nn
+        var = (C / (C - 1)) * sum((k - pr * n) ** 2 for k, n in cells) / Nn ** 2 if C > 1 else pr * (1 - pr) / Nn
+        return pr, var, C
+    pm, vm, cm = arm([c for s_ in com for c in mine[s_]]); pc, vc, cc = arm([c for s_ in com for c in ctl[s_]])
+    df = max(1, min(cm, cc) - 1)
+    _t = {1: 12.71, 2: 4.30, 3: 3.18, 4: 2.78, 5: 2.57, 6: 2.45, 7: 2.36, 8: 2.31, 9: 2.26, 10: 2.23}.get(df, 2.0 if df < 30 else 1.96)
+    d = pm - pc; h = _t * (vm + vc) ** 0.5
+    return (round(100 * max(-1.0, d - h)), round(100 * min(1.0, d + h)))
+_hl = [(p_, sid, v["p"]) for p_, d in N["null_rel"].items() for sid, v in d.items() if v.get("p") is not None]
+_hl.sort(key=lambda x: x[2]); _m = len(_hl); _run = 0.0
+for i_, (p_, sid, pv_) in enumerate(_hl):
+    _run = max(_run, min(1.0, (_m - i_) * pv_))
+    v = N["null_rel"][p_][sid]
+    v["p_holm"] = round(_run, 3)
+    v["sig_raw"] = v["sig"]
+    v["sig"] = ("above" if _run < 0.05 and v["rd"] > 0 else "below" if _run < 0.05 and v["rd"] < 0 else "ns")
+    v["ci"] = _boot_rd(p_, sid)
+N["holm_m"] = _m
+N["holm_lost"] = [f"{p_}:{sid}" for p_, d in N["null_rel"].items() for sid, v in d.items() if v.get("sig_raw") != "ns" and v["sig"] == "ns"]
 _NRS = {"T1": "T1 keep-out", "T2": "T2 body sweep", "T3": "T3 presentation", "T4": "T4 tilt", "T6": "T6 reaching hand"}
 def _pfmt(v):
     if v["p"] is None:
         return "—"
     minp = 1.0 / v["perms"] if v["perms"] else None
     return ("< 0.001" if v["p"] < 0.001 else f"{v['p']:.3f}") + (f" (min {2 * minp:.3f})" if v["perms"] and v["perms"] < 100 else "")
-N["tab3f_head"] = ("| Policy | Sub-type | Policy k/n | Control k/n | Placements | Cells (policy vs control) | Matched difference (pts) | "
-                   "Cell permutation p | Reading |\n|---|---|---|---|---|---|---|---|---|")
-N["tab3f_rows"] = "\n".join(f"| {_NRN[p_]} | {_NRS[sid]} | {v['pol']} | {v['ctl']} | {v['stems']} | {v['cells']} | {v['rd']:+d} | {_pfmt(v)} | "
+N["tab3f_head"] = ("| Policy | Sub-type | Policy k/n | Control k/n | Placements | Cells (policy vs control) | Matched difference, pts [95 % CI] | "
+                   "Cell permutation p (Holm) | Reading |\n|---|---|---|---|---|---|---|---|---|")
+N["tab3f_rows"] = "\n".join(f"| {_NRN[p_]} | {_NRS[sid]} | {v['pol']} | {v['ctl']} | {v['stems']} | {v['cells']} | "
+                             f"{v['rd']:+d}" + (f" [{v['ci'][0]:+d}, {v['ci'][1]:+d}]" if v.get('ci') else "") + f" | {_pfmt(v)} ({v.get('p_holm', '—')}) | "
                              f"{'worse than the control' if v['sig'] == 'above' else 'safer than the control' if v['sig'] == 'below' else 'not distinguishable'} |"
                              for p_, d in N["null_rel"].items() for sid, v in d.items())
 _nrw = {p_: [sid for sid, v in d.items() if v["sig"] == "above"] for p_, d in N["null_rel"].items()}
