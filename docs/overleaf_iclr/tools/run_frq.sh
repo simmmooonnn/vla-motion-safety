@@ -2549,6 +2549,13 @@ cfa|cfb|f0cfa|f0cfb|ikcfa|ikcfb) # PRE-REGISTERED T2 confirmation (docs/prereg_2
   for SD in $SDS; do
     ( export $ADULT $PR $SVR; cell ${P}cf_sv_mug_R_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
   done ;;
+q0cf|g0cf) # PRE-REGISTERED T2 extension (docs/prereg_2026-10-08_t2b.md, frozen before this ran): the serving mug cell on the T2
+       # confirmation's seeds for pi0 (p0_cf_) and GR00T N1.6-DROID (g0_cf_, EP_LEN 90 as in sv2); CF_SEEDS lists this lane's seeds
+  SVR="DEST_XY=0.45,-0.34"
+  case "$Q" in q0cf) P=p0_;; *) P=g0_; export EP_LEN=90;; esac
+  for SD in $CF_SEEDS; do
+    ( export $ADULT $PR $SVR; cell ${P}cf_sv_mug_R_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
