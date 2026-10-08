@@ -2541,6 +2541,14 @@ q0pdx|g0pdx) # the q0pd / g0pd prompt dose split into lanes (2026-10-07: ~24 min
     off) ( export $PVOFF; cell ${P}pd_off_${A}_s$SD 8 $SD $MUG $BOWL "$L" ) ;;
     esac
   done ;;
+cfa|cfb|f0cfa|f0cfb|ikcfa|ikcfb) # PRE-REGISTERED T2 confirmation (docs/prereg_2026-10-08_t2.md, frozen before this ran): the serving
+       # mug cell (sv_mug_R) on fresh seeds, pi0.5 (cf_), pi0-FAST (f0_cf_) and the blind control (ik_cf_, configured as sv0)
+  SVR="DEST_XY=0.45,-0.34"
+  case "$Q" in f0*) P=f0_;; ik*) P=ik_; export SC_TCP_FORCE=1 SC_TCP_DX=0.14;; *) P="";; esac
+  case "$Q" in *cfa) SDS="67 71 73 79";; *) SDS="83 89 97 101";; esac
+  for SD in $SDS; do
+    ( export $ADULT $PR $SVR; cell ${P}cf_sv_mug_R_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
