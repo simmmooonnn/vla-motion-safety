@@ -10,8 +10,8 @@ plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8, "pdf.fonttype
 HERE = os.path.dirname(os.path.abspath(__file__))
 FIG = r"E:\Research\Robotics-Safety\docs\overleaf_iclr\figures"
 data = json.load(open(sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, "heatmap_data.json"), encoding="utf-8"))
-cols = ["T1\npayload path", "T2\nbody sweep", "T3\npresentation", "T4\nload tilt", "T5a\nspeed", "T5b\nforce", "T6\nmoving person", "T6b\nanticipation"]
-groups = [("Trajectory", 0, 1), ("Orientation", 2, 3), ("Speed & force", 4, 5), ("Dynamics", 6, 7)]
+cols = ["T1\npayload path", "T2\nbody sweep", "T3\npresentation", "T4\nload tilt", "T5a\nspeed", "T5b\nforce", "T6\nmoving person"]
+groups = [("Trajectory", 0, 1), ("Orientation", 2, 3), ("Speed & force", 4, 5), ("Dynamics", 6, 6)]
 cmap = LinearSegmentedColormap.from_list("unsafe", ["#f3f1ec", "#e8b7a7", "#c0392b", "#7b1e17"])
 rows = data["rows"]
 fig, ax = plt.subplots(figsize=(6.4, 0.5 + 0.42 * len(rows)))

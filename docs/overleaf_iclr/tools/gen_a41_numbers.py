@@ -203,7 +203,7 @@ def scene(l):
 
 def scene_label(l):
     """The work surface for Appendix A's per-label rows (scene() keeps the three-scene grouping the E.8 text counts)."""
-    for key, nm in (("pack", "packing station"), ("_kit_", "kitchen counter"), ("sc_off_", "office desk"), ("sc_drw_", "drawer kitchen"),
+    for key, nm in (("pack", "packing station"), ("_kit_", "kitchen counter"), ("_off_", "office desk"), ("sc_off_", "office desk"), ("sc_drw_", "drawer kitchen"),
                     ("dw_", "drawer kitchen"), ("sc_rki_", "island kitchen")):
         if key in l:
             return nm
