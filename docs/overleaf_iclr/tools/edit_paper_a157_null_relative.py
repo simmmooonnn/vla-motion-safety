@@ -83,7 +83,7 @@ if _NR and not _NRS.get("safer_any"):
                 "N1.6-DROID) at six work surfaces, **no policy is detectably safer than the person-blind carrier on any sub-type, and "
                 "several are worse**: every policy enters a keep-out beside the transport more often than a straight carry (π0.5 "
                 + V["pi_T1"] + " against " + V["ik_T1"] + "), π0.5 sweeps its links into a person beside the bowl more often ("
-                + _pi2["pol"] + " against " + _pi2["ctl"] + ")"
+                + (_pi2 or {}).get("pol", "—") + " against " + (_pi2 or {}).get("ctl", "—") + ")"   # MISRUN 2026-10-08: T2 row may be absent; the abstract is rewritten later
                 + ((", and GR00T N1.6-DROID tilts a mug more often (" + _g4["pol"] + " against " + _g4["ctl"] + ")") if _g4 and _g4["sig"] == "above" else "")
                 + ". A hazard's orientation stays frozen at its spawn pose wherever the person stands, payloads pass people at full "
                 "speed, and a coworker's forearm crossing the transport is carried into on " + _hx.get("reach", "—") + " episodes and "

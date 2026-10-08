@@ -84,7 +84,7 @@ UNI = [
     ("∧", r"$\wedge$"), ("∀", r"$\forall$"), ("−", r"$-$"), ("—", "---"), ("–", "--"), ("…", r"\ldots{}"),
     ("“", "``"), ("”", "''"), ("‘", "`"), ("’", "'"), ("·", r"\textperiodcentered{}"), ("≡", r"$\equiv$"),
     ("π₀.₅", r"$\pi_{0.5}$"), ("π₀", r"$\pi_0$"), ("π0.5", r"$\pi_{0.5}$"), ("π0", r"$\pi_0$"), ("π", r"$\pi$"),
-    ("10⁻¹²", r"$10^{-12}$"), ("10⁻⁴", r"$10^{-4}$"), ("⁻", r"$^{-}$"), ("²", r"$^{2}$"), ("³", r"$^{3}$"),
+    ("10⁻¹²", r"$10^{-12}$"), ("10⁻⁴", r"$10^{-4}$"), ("10⁻⁹", r"$10^{-9}$"), ("⁻", r"$^{-}$"), ("²", r"$^{2}$"), ("³", r"$^{3}$"),
     ("θ", r"$\theta$"), ("Δ", r"$\Delta$"), ("κ", r"$\kappa$"), ("τ", r"$\tau$"), ("ψ", r"$\psi$"), ("φ", r"$\phi$"),
     ("✓", r"$\checkmark$"), ("✔", r"$\checkmark$"), ("✗", r"$\times$"), ("★", r"$\star$"),
     ("\u00a0", "~"), ("\u202f", r"\,"), ("\u2009", r"\,"),
@@ -419,7 +419,7 @@ FIGS = r"""
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_crosspolicy.pdf}
-\caption{\textbf{Cross-policy, first probes.} Left: the T1 keep-out defect recurs on $\pi_{0.5}$/Franka (22/22), including with the hazard rendered visible (16/16). Right: on T2 the scoring geometry sets the rate --- with an unrendered body placed inside the table footprint, 0.10\,m to the person's axis gives 3\% ($\pi_{0.5}$) and 25\% (GR00T), 0.10\,m to the body surface ($\equiv$ 0.26\,m to the axis) 53\% and 81\%; see Fig.~\ref{fig:t4thr}. With the rendered adult standing at the table, $\pi_{0.5}$'s rate is near zero (Appendix E.8).}
+\caption{\textbf{Cross-policy, first probes.} Left: the T1 keep-out defect recurs on $\pi_{0.5}$/Franka (22/22), including with the hazard rendered visible (16/16). Right: on T2 the scoring geometry sets the rate --- with an unrendered body placed inside the table footprint, 0.10\,m to the person's axis gives 3\% ($\pi_{0.5}$) and 25\% (GR00T), 0.10\,m to the body surface ($\equiv$ 0.26\,m to the axis) 53\% and 81\%; see Fig.~\ref{fig:t4thr}. With the rendered adult standing at the table, $\pi_{0.5}$'s rate is near zero with the bowl away from them (3/605) but 26/60 on the pre-registered serving cell, where the person-blind control's is 0/64 (\S5.1, Appendix E.8).}
 \label{fig:crosspolicy}
 \end{figure}
 \begin{figure}[t]
@@ -431,7 +431,7 @@ FIGS = r"""
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_forest.pdf}
-\caption{\textbf{Each policy against the person-blind straight-line control} on the placements both ran (Table~\ref{tab:IIIf}): matched difference in unsafe rate, percentage points, with a 95\,\% interval (cells as clusters). Filled red: the cell-level permutation test survives Holm correction over the sixteen comparisons. Only T1 separates the policies from the control; no policy is safer on any sub-type.}
+\caption{\textbf{Each policy against the person-blind straight-line control} on the placements both ran (Table~\ref{tab:IIIf}): matched difference in unsafe rate, percentage points, with a 95\,\% interval (cells as clusters). Filled red: the cell-level permutation test survives Holm correction over the twelve comparisons. Within this table only T1 separates the policies from the control (T2 has no matched control here; the pre-registered serving test separates $\pi_{0.5}$ and $\pi_0$-FAST, Appendix C); no policy is safer on any sub-type.}
 \label{fig:forest}
 \end{figure}
 \begin{figure}[t]
@@ -443,7 +443,7 @@ FIGS = r"""
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_t4_threshold.pdf}
-\caption{\textbf{T2: the threshold, not the policy, sets the rate.} Left: GR00T violation rate versus the radial threshold to the bystander's axis, per position and pooled (all 32 episodes). Right: the same curve for $\pi_{0.5}$ and for GR00T under the axis metric and under the 3-D body-surface metric (0.16\,m-radius capsule + head sphere, all four positions); a 0.10\,m surface margin is the same test as 0.26\,m to the axis. The threshold-free number is actual contact: $\pi_{0.5}$ 8/32, GR00T 11/32 (8/8 at pick-right).}
+\caption{\textbf{T2: the threshold sets the rate as much as the policy.} Left: GR00T violation rate versus the radial threshold to the bystander's axis, per position and pooled (all 32 episodes). Right: the same curve for $\pi_{0.5}$ and for GR00T under the axis metric and under the 3-D body-surface metric (0.16\,m-radius capsule + head sphere, all four positions); a 0.10\,m surface margin is the same test as 0.26\,m to the axis. The threshold-free number is actual contact: $\pi_{0.5}$ 8/32, GR00T 11/32 (8/8 at pick-right).}
 \label{fig:t4thr}
 \end{figure}
 \begin{figure}[t]

@@ -51,14 +51,15 @@ _e2_nr = V["null_rel"]
 _e2_mm = V["t2_margin_matched"]
 _e2_vc = {k: x for k, x in V["vs_ctl"]["T2"].items() if x and x.get("strata")}
 _e2_sp = {k: _e2_strat(x["strata"]) for k, x in _e2_vc.items()}
-_e2_g0perm = 2.0 / _e2_nr["gr00t_droid"]["T2"]["perms"]
-if not (_e2_nr["pi05"]["T2"]["sig"] == "above" and _e2_nr["pi0"]["T2"]["sig"] == "ns" and _e2_nr["pi0fast"]["T2"]["sig"] == "ns"
+_e2_T2 = bool(_e2_nr.get("pi05", {}).get("T2"))      # MISRUN 2026-10-08: no T2 row once the mis-run control cells are removed
+_e2_g0perm = 2.0 / _e2_nr["gr00t_droid"]["T2"]["perms"] if _e2_T2 else 0.0
+if _e2_T2 and not (_e2_nr["pi05"]["T2"]["sig"] == "above" and _e2_nr["pi0"]["T2"]["sig"] == "ns" and _e2_nr["pi0fast"]["T2"]["sig"] == "ns"
         and _e2_nr["gr00t_droid"]["T2"]["sig"] == "ns" and _e2_sp["gr00t_droid"] < 0.05 and _e2_sp["pi0"] < 0.05
         and _e2_sp["pi05"] >= 0.05 and _e2_sp["pi0fast"] >= 0.05 and _e2_mm["0.14"]["sig"] == "ns" and _e2_mm["0.18"]["sig"] == "ns"):
     print("  WARN appE2: the T2-vs-control verdicts changed; reword findings 0 and 2")
 
 # Finding 2 (Table IIIe note, T2 against the control): Table IIIf's cell-level verdicts lead; the episode-level stratified test is secondary.
-_rn2("GR00T N1.6-DROID (exact test stratified by placement, *p* < 0.001) is above it; π0 (exact test stratified by placement, *p* = 0.012) is below it, which on a policy that rarely completes these carries is not a safer carry.",
+_e2_T2 and _rn2("GR00T N1.6-DROID (exact test stratified by placement, *p* < 0.001) is above it; π0 (exact test stratified by placement, *p* = 0.012) is below it, which on a policy that rarely completes these carries is not a safer carry.",
      "with the cell as the unit (Table IIIf, the primary test) π0.5 is above it (*p* " + _e2_pf(_e2_nr["pi05"]["T2"]["p"])
      + "), while π0 (*p* " + _e2_pf(_e2_nr["pi0"]["T2"]["p"]) + "), π0-FAST (*p* " + _e2_pf(_e2_nr["pi0fast"]["T2"]["p"])
      + ") and GR00T N1.6-DROID (*p* " + _e2_pf(_e2_nr["gr00t_droid"]["T2"]["p"])
@@ -159,7 +160,7 @@ _rn2("for the policy against 72/72, 64/64, 15/64, 0/64 for a straight line",
 
 # Finding 0 (T2 serving subset): Table IIIf has π0.5 above the control at the 0.10 m margin; Table IIIe holds no stratified test,
 # and π0 is 'not distinguishable' there, not below.
-_rn2("Three of the four policy intervals overlap the control's, and no openpi policy is above it (π0 is below it on the stratified test, Table IIIe): for them T2 does not single out a policy that sweeps more than a straight line to a bowl beside a person, and there it measures the placement rather than the policy.",
+_e2_T2 and _rn2("Three of the four policy intervals overlap the control's, and no openpi policy is above it (π0 is below it on the stratified test, Table IIIe): for them T2 does not single out a policy that sweeps more than a straight line to a bowl beside a person, and there it measures the placement rather than the policy.",
      "Three of the four policy intervals overlap the control's. Matched by placement (Table IIIf), π0.5 is above it at the 0.10 m "
      "link-origin margin (*p* " + _e2_pf(_e2_mm["0.1"]["p"]) + ") but not at 0.14 or 0.18 m (*p* = %.2f and %.2f)"
      % (_e2_mm["0.14"]["p"], _e2_mm["0.18"]["p"]) + ", and π0-FAST and π0 cannot be told from it (*p* = %.3f and %.3f)"

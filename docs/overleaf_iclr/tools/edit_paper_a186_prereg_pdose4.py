@@ -87,22 +87,13 @@ _rn2("whose mug stays upright unless they are told to keep it so.",
 _rp = V.get("prereg") or {}
 if _rp.get("pi05") and _rp.get("pi0fast"):
     _a, _b = _rp["pi05"], _rp["pi0fast"]
-    _all = all(x[k] for x in (_a, _b) for k in ("P1", "P2", "P3"))
-    _ka = lambda R, k: R["kn"][k] + " [" + str(R["wilson"][k][0]) + ", " + str(R["wilson"][k][1]) + "]"
+    _all = all(x[k] for x in (_a, _b) for k in ("P1", "P2", "P3"))     # P2 here is its T3 and T4 parts; its T2 part is void (MISRUN)
+    _ka = lambda R, k: R["kn"][k] + " [" + str(R["wilson"][k][0]) + ", " + str(R["wilson"][k][1]) + "]" + (R["wilson"][k][2] if len(R["wilson"][k]) > 2 else "")
     _held = lambda k: "held" if (_a[k] and _b[k]) else ("held for π0.5 only" if _a[k] else "held for π0-FAST only" if _b[k] else "not held")
-    _sg = lambda x: ("+" if x >= 0 else "−") + str(abs(x))
-    _ci = lambda R: "[" + _sg(R["t2_ci"][0]) + ", " + _sg(R["t2_ci"][1]) + "]"
-    # abstract: scoped to the two policies it reran, with T2's weak check said
-    _rn2("A humanoid case study (GR00T N1.6, Unitree G1; no person-blind control) shows a similar pattern.",
-         ("A replication pre-registered on fresh seeds (π0.5, π0-FAST) holds its three predictions, though its T2 check is weak. "
-          if _all else "A replication pre-registered on fresh seeds (π0.5, π0-FAST) is reported prediction by prediction. ")
-         + "A humanoid case study (GR00T N1.6, Unitree G1; no person-blind control) shows a similar pattern.")
-    # section 8
+    # section 8 (the abstract's replication clause is written by a187 with the T2 confirmation)
     _rn2("Cells are **small** (eight episodes per tabletop cell, 8–48 on the G1),",
          "Cells are **small** (eight episodes per tabletop cell, 8–48 on the G1; a pre-registered replication of two policies on "
-         "fresh seeds " + ("holds" if _all else "is mixed") + ", C),")
-    _rn2("Holm-corrected, T2 separates no policy from the person-blind control (§5.1);",
-         "Holm-corrected, T2 separates no policy from the person-blind control (§5.1; nor do π0.5 and π0-FAST on fresh seeds, C);")
+         "fresh seeds " + ("holds where its reference was valid" if _all else "is mixed") + ", C),")
     # Appendix C: the replication and its table, after Table XII
     _anc = "\n\n## Appendix D."
     if _anc in t and "**Table XV." not in t:
@@ -116,9 +107,8 @@ if _rp.get("pi05") and _rp.get("pi0fast"):
             "| P1 | T1, keep-out 0.20 m beside the transport | above the control's 18/80 | " + _ka(_a, "T1_20") + " | " + _ka(_b, "T1_20") + " | " + _held("P1") + " |",
             "| P1 | T1, the same at 0.28 m | below the 0.20 m rate | " + _ka(_a, "T1_28") + " | " + _ka(_b, "T1_28") + " | |",
             "| P2 | T2, serving geometry | difference from the control within its original interval | " + _ka(_a, "T2")
-            + "; " + _sg(_a["t2_diff_pooled"]) + " in " + _ci(_a) + " | " + _ka(_b, "T2") + "; " + _sg(_b["t2_diff_pooled"]) + " in "
-            + _ci(_b) + " | " + _held("P2") + " |",
-            "| P2 | T3, person on the left | in the person's half-space | " + _ka(_a, "T3_L") + " | " + _ka(_b, "T3_L") + " | |",
+            + " | " + _ka(_b, "T2") + " | void (reference was π0.5) |",
+            "| P2 | T3, person on the left | in the person's half-space | " + _ka(_a, "T3_L") + " | " + _ka(_b, "T3_L") + " | " + _held("P2") + " |",
             "| P2 | T3, person on the right | rarely | " + _ka(_a, "T3_R") + " | " + _ka(_b, "T3_R") + " | |",
             "| P2 | T4 | below 20 % | " + _ka(_a, "T4") + " | " + _ka(_b, "T4") + " | |",
             "| P3 | T6, carried into the crossing hand | at least half | " + _ka(_a, "T6") + " | " + _ka(_b, "T6") + " | " + _held("P3") + " |",
@@ -128,27 +118,21 @@ if _rp.get("pi05") and _rp.get("pi0fast"):
                 "tabletop cells (2026-10-07, released as `PREREG.md`): π0.5 and π0-FAST, seeds 41 and 43 (unused before), the "
                 "configurations copied from the queue runner, the predicates of `SCORING.md`, three predictions, pooling over the "
                 "two seeds with a Wilson interval on the cell-clustered effective size, and no exclusions. Table XV gives the "
-                "outcome; " + ("all three predictions held for both policies." if _all else "each prediction is marked held or not.")
-                + " Held is read on the point estimates, which the protocol does not specify; three intervals cross their "
-                "thresholds (π0-FAST's T4, " + "[" + str(_b["wilson"]["T4"][0]) + ", " + str(_b["wilson"]["T4"][1]) + "] against "
-                "20 %, and the two T6 waits, [" + str(_a["wilson"]["T6w"][0]) + ", " + str(_a["wilson"]["T6w"][1]) + "] and ["
-                + str(_b["wilson"]["T6w"][0]) + ", " + str(_b["wilson"]["T6w"][1]) + "] against 15 %)." + _shs
+                "outcome: P1 and P3 held for both policies, and so did P2's orientation parts (T3, T4); P2's T2 part is void, "
+                "because its reference, the control's T2 on the serving placements, came from cells that ran π0.5 under the "
+                "control's label (below). On the replication's serving cell the policies sweep the body on " + _a["kn"]["T2"]
+                + " and " + _b["kn"]["T2"] + " episodes, as on the original mug cells (π0.5 " + _a["t2_orig"] + ", π0-FAST "
+                + _b["t2_orig"] + "; Fisher *p* " + _fp(_a["t2_p_orig"]) + " and " + _fp(_b["t2_p_orig"]).replace("= ", "")
+                + "); the real control, run afterwards on other fresh seeds, never does (" + _a["t2_ctl"] + "; the T2 "
+                "confirmation below). Held is read on the point estimates, which the protocol does not specify; three intervals "
+                "cross their thresholds (π0-FAST's T4, [" + str(_b["wilson"]["T4"][0]) + ", " + str(_b["wilson"]["T4"][1])
+                + "] against 20 %, and the two T6 waits, [" + str(_a["wilson"]["T6w"][0]) + ", " + str(_a["wilson"]["T6w"][1])
+                + "] and [" + str(_b["wilson"]["T6w"][0]) + ", " + str(_b["wilson"]["T6w"][1]) + "] against 15 %)." + _shs
                 + " P1's frozen comparator, 18/80, is the control's 0.20 m keep-outs pooled over five work surfaces; on the kitchen "
-                "counter alone it enters on " + _a["t1_ctl_same"] + ", and P1 holds against either. P2's T2 part is read as frozen, "
-                "against the control of Table IIIf (" + _a["t2_ctl_pooled"] + "), the comparison its interval belongs to: the "
-                "differences (" + _sg(_a["t2_diff_pooled"]) + " and " + _sg(_b["t2_diff_pooled"]) + " points) lie inside it. That "
-                "control pools the serving mug cell with a scissors placement (two cells, 0/16) the replication does not rerun; "
-                "against the mug cell's own control (" + _a["t2_ctl"] + "), a reading adopted after the run, the differences are "
-                + _sg(_a["t2_diff"]) + " and " + _sg(_b["t2_diff"]) + " and also lie inside, and the replication's rates match the "
-                "original mug cells' (π0.5 " + _a["t2_orig"] + ", π0-FAST " + _b["t2_orig"] + "; Fisher *p* " + _fp(_a["t2_p_orig"])
-                + " and " + _fp(_b["t2_p_orig"]).replace("= ", "") + "). The frozen rule is weak there: the interval is wide (π0.5 "
-                + _ci(_a) + "), and the replication neither separates the policies from the mug cell's control (Fisher *p* "
-                + _fp(_a["t2_p_ctl"]) + " and " + _fp(_b["t2_p_ctl"]).replace("= ", "") + ", not pre-registered) nor rules out a "
-                "difference of that size, so T2 against the control stays unresolved. The replication's cells enter no pool.\n\n"
-                "**Table XV. Pre-registered replication (seeds 41 and 43): episodes with the event / scored episodes, with a 95 % "
-                "Wilson interval on the cell-clustered effective size (%), per prediction.** The T2 row gives the difference from "
-                "Table IIIf's control and that table's interval.\n\n| Prediction | Sub-type and cell "
-                "| Predicted | π0.5 | π0-FAST | Outcome |\n|---|---|---|---|---|---|\n" + _rows)
+                "counter alone it enters on " + _a["t1_ctl_same"] + ", and P1 holds against either. The replication's cells enter "
+                "no pool.\n\n**Table XV. Pre-registered replication (seeds 41 and 43): episodes with the event / scored episodes, "
+                "with a 95 % Wilson interval on the cell-clustered effective size (%), per prediction.**\n\n| Prediction | Sub-type "
+                "and cell | Predicted | π0.5 | π0-FAST | Outcome |\n|---|---|---|---|---|---|\n" + _rows)
         t = t.replace(_anc, _txt + _anc, 1)
     else:
         print("  [a186 MISS] Appendix C anchor")

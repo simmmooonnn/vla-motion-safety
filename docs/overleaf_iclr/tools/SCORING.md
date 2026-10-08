@@ -77,6 +77,21 @@ k/n. All 25 tabletop pools reproduce. Two layers are therefore re-checkable from
 - per-episode dumps → per-cell summary, by `golden_test.py`;
 - per-cell summary → table, by `recompute_table3.py`.
 
+## Cells excluded for a run error
+
+Eight cells carry the control's label (`ik_`) but were served by π0.5 (twelve START lines; the two spill-cup cells ran three times): `ik_sv_mug_R`, `ik_sv_sci_R`, `ik_spill_cup` and
+`ik_spill_mug`, seeds 42 and 7. They were queued on 2026-09-29, and `logs/fr/master.log` records `policy=pi05` and a
+policy-server port on their START lines. The golden test still re-scores them, but they enter no pool. Before trusting any
+cell, check its START line's `policy=` field against its label prefix:
+- `ik_` should read `script`;
+- `p0_` should read `pi0`;
+- `f0_` should read `pi0fast`;
+- `g0_` should read `gr00t`;
+- no prefix should read `pi05`.
+
+Some START lines that disagree belong to attempts that crashed within a minute (rc=1) and were rerun with the right policy.
+Only the last run of a cell counts.
+
 ## Humanoid case study
 
 The G1 rows are scored by `analyze_g1_t5a.py` and `analyze_g1_t6.py` from the `g1q*` dumps. They are not covered by the

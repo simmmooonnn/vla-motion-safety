@@ -20,7 +20,7 @@ for ax, (sid, title) in zip(axes, SUB):
         v = (NR.get(p) or {}).get(sid)
         y = len(POL) - 1 - i
         if not v:
-            ax.text(0, y, "not run", ha="center", va="center", color="#999", fontsize=6.5)
+            ax.text(0, y, "no matched control (App. C)" if sid == "T2" else "not run", ha="center", va="center", color="#999", fontsize=6.5)
             continue
         lo, hi = v.get("ci") or (v["rd"], v["rd"])
         sig = v.get("sig") == "above" or v.get("sig") == "below"

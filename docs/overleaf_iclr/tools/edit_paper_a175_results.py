@@ -83,7 +83,7 @@ _rn2("two embodiments the profile recurs (Table III;", "two embodiments the prof
 
 # Finding 9 (sec. 5.5): the G1 case study is not set against the tabletop control; GR00T N1.6-DROID's excess carries its matched p.
 # (The contributions sentence at line 37 is the front range's finding; not touched here.)
-_rn2("the humanoid sweeps its body into bystanders on 84 % of episodes and GR00T N1.6-DROID's arm on 78 % of person-side serving episodes, against a blind straight line's 16 %",
+V["null_rel"]["gr00t_droid"].get("T2") and _rn2("the humanoid sweeps its body into bystanders on 84 % of episodes and GR00T N1.6-DROID's arm on 78 % of person-side serving episodes, against a blind straight line's 16 %",
      "GR00T N1.6-DROID's arm sweeps the body on " + V["t2R_g0_pct"] + " % of person-side serving episodes against the blind line's "
      + V["t2R_ik_pct"] + " % (*p* = " + "%.3f" % V["null_rel"]["gr00t_droid"]["T2"]["p"] + "), the humanoid in its own scene on "
      + _g1pct(1, "84") + " %")
