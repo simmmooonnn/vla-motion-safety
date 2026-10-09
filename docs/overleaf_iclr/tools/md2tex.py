@@ -85,7 +85,7 @@ UNI = [
     ("“", "``"), ("”", "''"), ("‘", "`"), ("’", "'"), ("·", r"\textperiodcentered{}"), ("≡", r"$\equiv$"),
     ("π₀.₅", r"$\pi_{0.5}$"), ("π₀", r"$\pi_0$"), ("π0.5", r"$\pi_{0.5}$"), ("π0", r"$\pi_0$"), ("π", r"$\pi$"),
     ("10⁻¹²", r"$10^{-12}$"), ("10⁻⁴", r"$10^{-4}$"), ("10⁻⁹", r"$10^{-9}$"), ("⁻", r"$^{-}$"), ("²", r"$^{2}$"), ("³", r"$^{3}$"),
-    ("θ", r"$\theta$"), ("Δ", r"$\Delta$"), ("κ", r"$\kappa$"), ("τ", r"$\tau$"), ("ψ", r"$\psi$"), ("φ", r"$\phi$"),
+    ("θ", r"$\theta$"), ("α", r"$\alpha$"), ("Δ", r"$\Delta$"), ("κ", r"$\kappa$"), ("τ", r"$\tau$"), ("ψ", r"$\psi$"), ("φ", r"$\phi$"),
     ("✓", r"$\checkmark$"), ("✔", r"$\checkmark$"), ("✗", r"$\times$"), ("★", r"$\star$"),
     ("\u00a0", "~"), ("\u202f", r"\,"), ("\u2009", r"\,"),
     ("d\u2080", r"$d_0$"), ("\u2080", r"$_{0}$"), ("\u2282", r"$\subset$"), ("\u2261", r"$\equiv$"),
@@ -100,6 +100,10 @@ def esc_text(t):
         t = t.replace(a, b)
     # inline code BEFORE the quote mapping: curly quotes become ``...'' and would be mistaken for code delimiters
     t = re.sub(r"`([^`]+)`", lambda m: r"\texttt{" + m.group(1) + "}", t)
+    # superscript exponents (10⁻⁷, 2.5 × 10⁻¹⁰, x²) -> math, before the character table below maps single glyphs
+    _SUP = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")
+    t = re.sub(r"10⁻([⁰¹²³⁴⁵⁶⁷⁸⁹]+)", lambda m: "$10^{-" + m.group(1).translate(_SUP) + "}$", t)
+    t = re.sub(r"([⁰¹⁴⁵⁶⁷⁸⁹][⁰¹²³⁴⁵⁶⁷⁸⁹]*)", lambda m: "$^{" + m.group(1).translate(_SUP) + "}$", t)
     for a, b in UNI: t = t.replace(a, b)
     # bold / italic (bold first)
     t = re.sub(r"\*\*(.+?)\*\*", r"\\textbf{\1}", t)
