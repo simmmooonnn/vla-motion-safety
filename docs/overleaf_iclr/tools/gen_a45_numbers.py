@@ -2355,6 +2355,33 @@ if all(_T2B.values()) and _T2C.get("ctl"):
     _outb["complete"] = all(len(v) >= 8 for v in _T2B.values())
     N["t2conf_b"] = _outb
 
+# T2CONFE35-2026-10-09: the pre-registered duration check (docs/prereg_2026-10-08_t2c.md): GR00T N1.6-DROID with 35 s episodes
+# (g0_cf_e35_) on the same cell and seeds against the same control cells; one hypothesis (H5), no correction
+def _e35_cells():
+    import re as _re6
+    return [(g(l, "t2_viol", 0) or 0, g(l, "t2_n", 0) or 0, g(l, "completed", 0) or 0, g(l, "N", 0) or 0, g(l, "carried", 0) or 0)
+            for l in S_ALL if _re6.fullmatch(r"g0_cf_e35_sv_mug_R_s\d+", l) and g(l, "N")]
+_E35 = _e35_cells()
+if _E35 and _T2C.get("ctl"):
+    import itertools as _it6
+    _ck, _cn, _cc, _cp, _cv = _arm4(_T2C["ctl"])
+    cs = [c[:4] for c in _E35 if c[1]]; cc_ = [c for c in _T2C["ctl"] if c[1]]
+    K, Nn, C, pr, var = _arm4(cs)
+    est = _rd4(cs, cc_); pool_ = cs + cc_; ext = tot = 0
+    for pick in _it6.combinations(range(len(pool_)), len(cs)):
+        ps_ = set(pick); v_ = _rd4([pool_[i] for i in ps_], [pool_[i] for i in range(len(pool_)) if i not in ps_])
+        if v_ is not None:
+            tot += 1; ext += int(abs(v_) >= abs(est) - 1e-9)
+    df = max(1, min(C, _cc) - 1)
+    _t = {1: 12.71, 2: 4.30, 3: 3.18, 4: 2.78, 5: 2.57, 6: 2.45, 7: 2.36, 8: 2.31, 9: 2.26, 10: 2.23}.get(df, 2.0 if df < 30 else 1.96)
+    h = _t * (var + _cv) ** 0.5
+    _de = deff([(c[0], c[1]) for c in cs], K, Nn); _wa = wil(K / Nn * (Nn / _de), Nn / _de)
+    N["t2conf_e35"] = {"kn": f"{K}/{Nn}", "cells": C, "rd": round(100 * est), "p_perm": round(ext / tot, 4), "perms": tot,
+                       "ci": [round(100 * max(-1.0, est - h)), round(100 * min(1.0, est + h))],
+                       "fisher": _fisher2(K, Nn - K, _ck, _cn - _ck), "wilson": [round(100 * _wa[0]), round(100 * _wa[1]), "*" if _de >= 1.5 else ""],
+                       "delivered": f"{sum(c[2] for c in _E35)}/{sum(c[3] for c in _E35)}", "carried": f"{sum(c[4] for c in _E35)}/{sum(c[3] for c in _E35)}",
+                       "confirmed": bool(ext / tot < 0.05 and est > 0), "complete": len(_E35) >= 8, "ctl": f"{_ck}/{_cn}"}
+
 # POOLS-2026-10-05 (review items 13 and 17): which cells enter each scored pool of Table III, with the generator's k/n, so the
 # release can recompute the table from fr_summary.json alone (recompute_table3.py)
 _POOL_SPEC = {"T1": ("viol_t1", "n_t1", None), "T2": ("t2_viol", "t2_n", None), "T3": ("t3_90", None, "t3"),
