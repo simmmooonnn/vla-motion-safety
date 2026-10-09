@@ -10,7 +10,9 @@ Knobs (environment variables): SC_OBJ / SC_DEST (scene names of payload and dest
 SC_APPROACH_SPEED, SC_CARRY_DZ (carry height above the payload's spawn height), SC_GRASP_DZ / SC_GRASP_DX / SC_GRASP_DY
 (grasp point relative to the payload origin, in the world frame), SC_TCP_DX (tool centre along the gripper base x, m; the fingers
 extend along -x, default -0.165), SC_DWELL (steps to wait after a gripper command), SC_DEBUG=1, SC_AWAY_SHIFT (m: place
-point moved away from the bystander, a T2 witness).
+point moved away from the bystander, a T2 witness), SC_JOINT_INTERP=1 (the carry interpolates linearly in joint space
+between the configuration above the pick and an IK solution above the destination, same tool attitude and duration; the
+person-blind joint-space control of 2026-10-09), SC_JI_L (tool length of the planner's kinematic model, m, default 0.19).
 """
 from __future__ import annotations
 
@@ -34,6 +36,57 @@ def _f(k, d):
 
 def _T(x):
     return x if torch.is_tensor(x) else wp.to_torch(x)
+
+
+# ---- SC_JOINT_INTERP planner: Franka Panda kinematics (modified DH, Craig convention, Franka Emika's published parameters).
+# Only the end configuration of the carry is solved with this model; a constant model-to-simulator offset measured at the
+# start of the carry absorbs the tool and mounting differences, and the simulator's own controllers do every other phase.
+_JI_DH = [(0.0, 0.333, 0.0), (0.0, 0.0, -math.pi / 2), (0.0, 0.316, math.pi / 2), (0.0825, 0.0, math.pi / 2),
+          (-0.0825, 0.384, -math.pi / 2), (0.0, 0.0, math.pi / 2), (0.088, 0.0, math.pi / 2)]
+_JI_FLANGE = 0.107
+_JI_LO = [-2.8973, -1.7628, -2.8973, -3.0718, -2.8973, -0.0175, -2.8973]
+_JI_HI = [2.8973, 1.7628, 2.8973, -0.0698, 2.8973, 3.7525, 2.8973]
+
+
+def _ji_fk_tcp(q, L):
+    import numpy as np
+    T = np.eye(4)
+    for (a, d, al), th in zip(_JI_DH, q):
+        ca, sa, ct, st = math.cos(al), math.sin(al), math.cos(th), math.sin(th)
+        T = T @ np.array([[ct, -st, 0, a], [st * ca, ct * ca, -sa, -sa * d], [st * sa, ct * sa, ca, ca * d], [0, 0, 0, 1.0]])
+    T = T @ np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, _JI_FLANGE + L], [0, 0, 0, 1.0]])
+    return T[:3, 3], T[:3, :3]
+
+
+def _ji_ik(p_goal, z_goal, seed, L, yaw_goal, iters=200, lam=0.02, k_null=0.5):
+    """Position + tool z-axis + tool heading IK (damped least squares, numerical Jacobian), null space pulled toward the seed,
+    final iterations undamped for exact convergence. Returns (q, position error m)."""
+    import numpy as np
+    q = np.array(seed, float).copy(); ref = q.copy(); lo, hi = np.array(_JI_LO), np.array(_JI_HI)
+
+    def feat(qq):
+        p, R = _ji_fk_tcp(qq, L)
+        return np.concatenate([p, 0.5 * R[:, 2], [0.3 * math.atan2(R[1, 0], R[0, 0])]])
+    goal = np.concatenate([p_goal, 0.5 * np.asarray(z_goal, float), [0.3 * yaw_goal]])
+    for it in range(iters):
+        if it == iters - 40:
+            k_null, lam = 0.0, 1e-3
+        f0 = feat(q); e = goal - f0
+        e[6] = 0.3 * ((e[6] / 0.3 + math.pi) % (2 * math.pi) - math.pi)
+        J = np.zeros((7, 7))
+        for i in range(7):
+            dq = np.zeros(7); dq[i] = 1e-6
+            df = feat(q + dq) - f0; df[6] = 0.3 * ((df[6] / 0.3 + math.pi) % (2 * math.pi) - math.pi)
+            J[:, i] = df / 1e-6
+        Jp = J.T @ np.linalg.inv(J @ J.T + lam ** 2 * np.eye(7))
+        step = Jp @ e + (np.eye(7) - Jp @ J) @ (k_null * (ref - q))
+        n = np.linalg.norm(step)
+        if n > 0.2:
+            step *= 0.2 / n
+        q = np.clip(q + step, lo, hi)
+        if k_null == 0.0 and np.linalg.norm(e[:3]) < 2e-5:
+            break
+    return q, float(np.linalg.norm(p_goal - _ji_fk_tcp(q, L)[0]))
 
 
 @dataclass
@@ -70,6 +123,9 @@ class ScriptedCarryPolicy(PolicyBase[ScriptedCarryCfg]):
         self._q_ref = None
         self._quat_ref = None
         self._err = 0
+        self._ji_on = os.environ.get("SC_JOINT_INTERP", "0") == "1"      # joint-space carry (2026-10-09)
+        self._ji_L = _f("SC_JI_L", 0.19)
+        self._ji = None
 
     # ------------------------------------------------------------------ helpers
     def _setup(self, env):
@@ -205,7 +261,7 @@ class ScriptedCarryPolicy(PolicyBase[ScriptedCarryCfg]):
         up = place.clone(); up[2] = z_carry
         self._plan = [(above_obj, 0, self.v_appr), (grasp, 0, self.v_appr), (grasp, 1, None), (above_obj, 1, self.v_appr),
                       (above_dst, 1, self.v_carry), (place, 1, self.v_appr), (place, 0, None), (up, 0, self.v_appr), (up, 0, None)]
-        self._phase = 0; self._wait = 0
+        self._phase = 0; self._wait = 0; self._ji = None
         _, q0, tcp = self._ee_world()
         # hold the gripper vertical: rotate the reset orientation so the finger axis (base +x) points straight down
         xg = quat_apply(q0, torch.tensor([[1.0, 0.0, 0.0]], device=q0.device))[0]
@@ -242,6 +298,41 @@ class ScriptedCarryPolicy(PolicyBase[ScriptedCarryCfg]):
             self._phase += 1; self._wait = 0; self._bad = 0
         return grip
 
+    def _ji_step(self, root_pos, root_quat, tcp_w):
+        """SC_JOINT_INTERP: one step of the joint-space carry. On its first step, solve the configuration that puts the tool
+        centre above the destination with the tool attitude of the carry's start, then move the joint targets linearly from
+        the start configuration to it over the duration the Cartesian carry would take (distance / SC_SPEED); after 10 settle
+        steps hand back to the Cartesian place phase. Returns (q_des, gripper)."""
+        import numpy as np
+        q_now = _T(self._robot.data.joint_pos)[:, self._arm_ids]
+        if self._ji is None:
+            q0 = q_now[0].detach().cpu().numpy().astype(float)
+            goal_w = self._plan[4][0][None, :].to(tcp_w.device)
+            tcp_b, _ = subtract_frame_transforms(root_pos, root_quat, tcp_w, root_quat)
+            goal_b, _ = subtract_frame_transforms(root_pos, root_quat, goal_w, root_quat)
+            p0m, R0m = _ji_fk_tcp(q0, self._ji_L)
+            off = tcp_b[0].detach().cpu().numpy().astype(float) - p0m
+            yaw0 = math.atan2(R0m[1, 0], R0m[0, 0])
+            q1, err_m = _ji_ik(goal_b[0].detach().cpu().numpy().astype(float) - off, R0m[:, 2], q0, self._ji_L, yaw0)
+            dist = float(torch.norm(goal_w[0] - tcp_w[0]).item())
+            n = max(1, int(math.ceil(dist / (self.v_carry * self.dt))))
+            self._ji = {"q0": q_now[0].clone(), "q1": torch.tensor(q1, dtype=q_now.dtype, device=q_now.device), "n": n, "k": 0,
+                        "settle": 0}
+            print(f"[SC_JI] carry in joint space: {n} steps, |dq| {float(np.linalg.norm(q1 - q0)):.3f} rad, model IK error "
+                  f"{err_m * 1000:.1f} mm, model-sim offset {[round(float(v), 3) for v in off]}", flush=True)
+        ji = self._ji
+        ji["k"] += 1
+        s = min(1.0, ji["k"] / ji["n"])
+        q_des = ji["q0"] + (ji["q1"] - ji["q0"]) * s
+        if s >= 1.0:
+            ji["settle"] += 1
+            if ji["settle"] >= 10:
+                if self.debug:
+                    print(f"[SC_JI] carry done, tcp {[round(v, 3) for v in tcp_w[0].tolist()]} vs goal "
+                          f"{[round(v, 3) for v in self._plan[4][0].tolist()]}", flush=True)
+                self._phase = 5; self._wait = 0; self._bad = 0; self._target = tcp_w[0].clone()
+        return q_des[None, :].expand(q_now.shape[0], -1).clone(), 1
+
     # ------------------------------------------------------------------ PolicyBase
     def get_action(self, env, observation):
         try:
@@ -264,7 +355,10 @@ class ScriptedCarryPolicy(PolicyBase[ScriptedCarryCfg]):
         r = self._robot
         root_pos = _T(r.data.root_pos_w)[:, :3]; root_quat = _T(r.data.root_quat_w)
         ee_pos_w, ee_quat_w, tcp_w = self._ee_world()
-        if os.environ.get("SC_WAIT_MOVER", "0") == "1" and self._phase in (3, 4) and self._mover_blocks(env, tcp_w[0]):
+        _ji_q = None
+        if self._ji_on and self._phase == 4:
+            _ji_q, grip = self._ji_step(root_pos, root_quat, tcp_w)
+        elif os.environ.get("SC_WAIT_MOVER", "0") == "1" and self._phase in (3, 4) and self._mover_blocks(env, tcp_w[0]):
             grip = self._plan[self._phase][1]            # hold the set-point: wait for the hand to clear the path
             self._waited = getattr(self, "_waited", 0) + 1
         else:
@@ -278,7 +372,9 @@ class ScriptedCarryPolicy(PolicyBase[ScriptedCarryCfg]):
         jac = _T(r.root_physx_view.get_jacobians())[:, self._jac_idx, :, :][:, :, self._jac_joint_ids]
         err = float(torch.norm(tcp_w[0] - self._target).item())
         self._bad = self._bad + 1 if err > 0.04 else max(0, self._bad - 1)
-        if self._bad > 6:                                # the pose IK cannot get there (reach limit / wrist limit): position only, wrist free
+        if _ji_q is not None:                            # joint-space carry: the interpolated joint targets
+            q_des = _ji_q
+        elif self._bad > 6:                              # the pose IK cannot get there (reach limit / wrist limit): position only, wrist free
             self._ik_pos.set_command(goal_pos_b, ee_quat=ee_quat_b)
             q_des = self._ik_pos.compute(ee_pos_b, ee_quat_b, jac, q)
         else:

@@ -24,7 +24,7 @@ for _l in MISRUN:
     S_ALL.pop(_l, None)
 # XSTEM-2026-10-05: the prompt-control experiment (pv_) and the test-retest reruns (rep1_, rep2_) repeat canonical cells under
 # other conditions; they are read only by their own blocks (S_ALL) and never iterate into a pool (several pools walk S directly)
-_XSTEM = ("pv_", "rep1_", "rep2_", "pcp_", "wkwait_", "wkd_", "pd_", "t5s_", "tz_", "rp_", "cf_")   # pcp_: the perception positive control (2026-10-05), read by its own block
+_XSTEM = ("pv_", "rep1_", "rep2_", "pcp_", "wkwait_", "wkd_", "pd_", "t5s_", "tz_", "rp_", "cf_", "js_", "jsmoke_")   # pcp_: the perception positive control (2026-10-05), read by its own block
 S = {l: v for l, v in S_ALL.items()
      if not (l[3:] if l.startswith(("p0_", "g0_", "ik_", "f0_", "pb_")) else l).startswith(_XSTEM)}
 FLOOR = 8
