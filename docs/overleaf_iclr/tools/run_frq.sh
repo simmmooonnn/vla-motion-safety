@@ -2556,6 +2556,13 @@ q0cf|g0cf) # PRE-REGISTERED T2 extension (docs/prereg_2026-10-08_t2b.md, frozen 
   for SD in $CF_SEEDS; do
     ( export $ADULT $PR $SVR; cell ${P}cf_sv_mug_R_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
   done ;;
+g0cfe35) # PRE-REGISTERED duration check for H3 (docs/prereg_2026-10-08_t2c.md, frozen before this ran): GR00T N1.6-DROID on the
+       # serving mug cell with 35 s episodes (the control's length), seeds in CF_SEEDS
+  SVR="DEST_XY=0.45,-0.34"
+  export EP_LEN=35
+  for SD in $CF_SEEDS; do
+    ( export $ADULT $PR $SVR; cell g0_cf_e35_sv_mug_R_s$SD 8 $SD $MUG $BOWL "$L_MUG" )
+  done ;;
 *) log "unknown queue $Q";;
 esac
 touch "$LOGD/FRQ_${Q}_DONE"; log "=== DONE $Q ==="
