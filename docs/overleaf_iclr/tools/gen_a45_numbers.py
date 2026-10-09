@@ -2318,6 +2318,43 @@ if all(_T2C.values()):
     _out["complete"] = all(len(v) >= 8 for v in _T2C.values())
     N["t2conf"] = _out
 
+# T2CONFB-2026-10-08: the pre-registered T2 extension (docs/prereg_2026-10-08_t2b.md): pi0 (p0_cf_) and GR00T N1.6-DROID (g0_cf_)
+# on the T2 confirmation's cell and seeds, against the same control cells (ik_cf_); same test, Holm over H3 (GR00T) and H4 (pi0)
+_T2B = {a_: _t2c_cells(p_) for a_, p_ in (("pi0", "p0_"), ("gr00t_droid", "g0_"))}
+if all(_T2B.values()) and _T2C.get("ctl"):
+    _ck, _cn, _cc, _cp, _cv = _arm4(_T2C["ctl"])
+    _outb = {"ctl": {"kn": f"{_ck}/{_cn}", "cells": _cc}}
+    _psb = []
+    for a_ in ("gr00t_droid", "pi0"):
+        K, Nn, C, pr, var = _arm4(_T2B[a_])
+        cs = [c for c in _T2B[a_] if c[1]]; cc_ = [c for c in _T2C["ctl"] if c[1]]
+        est = _rd4(cs, cc_) if cs else None
+        if est is None:
+            _outb[a_] = {"kn": f"{K}/{Nn}", "cells": C, "empty": True}
+            continue
+        pool_ = cs + cc_; ext = tot = 0
+        for pick in _it4.combinations(range(len(pool_)), len(cs)):
+            ps_ = set(pick); v_ = _rd4([pool_[i] for i in ps_], [pool_[i] for i in range(len(pool_)) if i not in ps_])
+            if v_ is not None:
+                tot += 1; ext += int(abs(v_) >= abs(est) - 1e-9)
+        df = max(1, min(C, _cc) - 1)
+        _t = {1: 12.71, 2: 4.30, 3: 3.18, 4: 2.78, 5: 2.57, 6: 2.45, 7: 2.36, 8: 2.31, 9: 2.26, 10: 2.23}.get(df, 2.0 if df < 30 else 1.96)
+        h = _t * (var + _cv) ** 0.5
+        _de = deff([(c[0], c[1]) for c in cs], K, Nn); _wa = wil(K / Nn * (Nn / _de), Nn / _de)
+        _outb[a_] = {"kn": f"{K}/{Nn}", "cells": C, "rd": round(100 * est), "p_perm": round(ext / tot, 4), "perms": tot,
+                     "ci": [round(100 * max(-1.0, est - h)), round(100 * min(1.0, est + h))],
+                     "fisher": round(_fisher2(K, Nn - K, _ck, _cn - _ck), 6), "wilson": [round(100 * _wa[0]), round(100 * _wa[1]), "*" if _de >= 1.5 else ""],
+                     "delivered": f"{sum(c[2] for c in _T2B[a_])}/{sum(c[3] for c in _T2B[a_])}",
+                     "carried": f"{sum(g(l, 'carried', 0) or 0 for l in S_ALL if l.startswith(('g0_' if a_ == 'gr00t_droid' else 'p0_') + 'cf_sv_mug_R_s'))}/{sum(c[3] for c in _T2B[a_])}"}
+        _psb.append((a_, ext / tot))
+    _psb.sort(key=lambda x: x[1]); _run = 0.0
+    for i_, (a_, pv_) in enumerate(_psb):
+        _run = max(_run, min(1.0, (len(_psb) - i_) * pv_))
+        _outb[a_]["p_holm"] = round(_run, 4)
+        _outb[a_]["confirmed"] = bool(_run < 0.05 and _outb[a_]["rd"] > 0)
+    _outb["complete"] = all(len(v) >= 8 for v in _T2B.values())
+    N["t2conf_b"] = _outb
+
 # POOLS-2026-10-05 (review items 13 and 17): which cells enter each scored pool of Table III, with the generator's k/n, so the
 # release can recompute the table from fr_summary.json alone (recompute_table3.py)
 _POOL_SPEC = {"T1": ("viol_t1", "n_t1", None), "T2": ("t2_viol", "t2_n", None), "T3": ("t3_90", None, "t3"),

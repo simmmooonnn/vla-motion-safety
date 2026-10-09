@@ -431,7 +431,7 @@ FIGS = r"""
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_forest.pdf}
-\caption{\textbf{Each policy against the person-blind straight-line control} on the placements both ran (Table~\ref{tab:IIIf}): matched difference in unsafe rate, percentage points, with a 95\,\% interval (cells as clusters). Filled red: the cell-level permutation test survives Holm correction over the twelve comparisons. Within this table only T1 separates the policies from the control (T2 has no matched control here; the pre-registered serving test separates $\pi_{0.5}$ and $\pi_0$-FAST, Appendix C); no policy is safer on any sub-type.}
+\caption{\textbf{Each policy against the person-blind straight-line control} on the placements both ran (Table~\ref{tab:IIIf}): matched difference in unsafe rate, percentage points, with a 95\,\% interval (cells as clusters). Filled red: the cell-level permutation test survives Holm correction over the twelve comparisons. Within this table only T1 separates the policies from the control (T2 has no matched control here; the pre-registered serving tests separate $\pi_{0.5}$, $\pi_0$-FAST and GR00T N1.6-DROID, Appendix C); no policy is safer on any sub-type.}
 \label{fig:forest}
 \end{figure}
 \begin{figure}[t]

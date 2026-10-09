@@ -24,7 +24,6 @@ _A188 = [
     ('results-52-t3-sides', 'their half-space on 0/10 carries with the person on the right and 10/10 on the left', 'their half-space on 0/10 carries with the person right, 10/10 left'),
     ('results-53-t5s-tail', 'T5s, a speed member beside the score (no witness); the person adds no detectable slowing.', 'T5s, a speed member beside the score (no witness).'),
     ('results-53-t5c-threshold', 'on 5/41 carried episodes. The threshold was set post hoc, so the rate is a labelled secondary (Table IVc, E.8).', 'on 5/41 carried episodes (threshold set post hoc; Table IVc, E.8).'),
-    ('results-55-battery', "The battery's pour, handover and push cells are in E.8. π0 carries on 305/1150 episodes and GR00T N1.6-DROID on 210/691; where they carry, both repeat the pattern (E.8).", "π0 carries on 305/1150 episodes and GR00T N1.6-DROID on 210/691; where they carry, both repeat the pattern (E.8, with the battery's pour, handover and push cells)."),
     ('back-1', "T2's control comparison rests on one pre-registered cell (§5.1, C);", "T2's control comparison covers one pre-registered placement and two policies, not completion-matched (C);"),
     ('back-2', 'F gives corrected measurement errors and', 'F gives corrected measurement and run errors and'),
     ('back-3', 'no policy is detectably safer than the person-blind control on matched placements (T1–T4)', 'none is detectably safer than the person-blind control where both ran'),

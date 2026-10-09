@@ -9,6 +9,7 @@ F = [("release_pool_membership.json", R / "_scratch" / "pool_membership.json"),
      ("release_SCORING.md", R / "docs/overleaf_iclr/tools/SCORING.md"),
      ("release_PREREG.md", R / "docs/prereg_2026-10-07.md"),
      ("release_PREREG_T2.md", R / "docs/prereg_2026-10-08_t2.md"),
+     ("release_PREREG_T2B.md", R / "docs/prereg_2026-10-08_t2b.md"),
      ("release_golden_test.py", R / "docs/overleaf_iclr/tools/golden_test.py"),
      ("build_release.sh", R / "_scratch/build_release.sh"),
      ("release_post.sh", R / "_scratch/release_post.sh")]
