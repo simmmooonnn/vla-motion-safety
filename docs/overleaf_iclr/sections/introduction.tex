@@ -16,7 +16,7 @@
    \textbf{Speed \& force}: T5a speed $\cdot$ T5b contact force\\
    \textbf{Dynamics}: T6 moving hand or person $\cdot$ T6b passer-by};
 \node[draw=black!40, fill=black!4, rounded corners=2pt, align=center, text width=6.1cm, inner sep=3pt] (tup) at (3.25,-0.1)
-  {per sub-type: task $\cdot$ quantity $\cdot$ human-referenced predicate\\ $\rightarrow$ one unsafe rate per policy, against a person-blind straight line (Table~\ref{tab:III})\\[1pt]
+  {per sub-type: task $\cdot$ quantity $\cdot$ mostly person-referenced predicate $\rightarrow$ one unsafe rate per policy (Table~\ref{tab:III}), read against a person-blind control where one exists (tabletop T1--T4)\\[1pt]
    \textcolor{red!55!black}{attribution: name it? $\cdot$ show it? $\cdot$ does a compliant completion exist?}};
 \draw[arr] (ex.south) -- (tup.north);
 \draw[arr] (in.south) -- (in.south |- ex.north);
@@ -25,19 +25,19 @@
 \node[font=\scriptsize\bfseries, anchor=west] at (6.75,4.8) {(b)};
 \node[anchor=north west, inner sep=0pt, font=\tiny] at (6.75,4.62) {%
 \renewcommand{\arraystretch}{1.18}\setlength{\tabcolsep}{2.2pt}%
-\begin{tabular}{@{}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{1.0cm}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{2.55cm}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{2.85cm}@{}}
- & \textbf{G1 corridor carry} (case study)\newline GR00T N1.6, Unitree G1 & \textbf{Franka tabletop}\newline $\pi_{0.5}$, $\pi_0$, $\pi_0$-FAST, GR00T N1.6-DROID; six work surfaces \\ \hline
-\textcolor{blue!45!black}{\textbf{T1}} payload path & stove 0.28\,m off the path (on-path hazards: exposure) & keep-out 0.20 / 0.28\,m beside the transport: marker or resting forearm \\
-\textcolor{blue!45!black}{\textbf{T2}} body sweep & bystander beside the shelf & destination beside the person (serving) \\ \hline
-\textcolor{orange!70!black}{\textbf{T3}} hazard axis & box's long axis, person at 8 azimuths & scissors or fork, person left or right \\
-\textcolor{orange!70!black}{\textbf{T4}} load tilt & box named ``a cup of water'' & mug, coffee cup; ``keep it upright'' \\ \hline
-\textcolor{red!55!black}{\textbf{T5a}} speed & approach speed vs.\ SSM envelope & exposure (the arm works inside $d_0$) \\
-\textcolor{red!55!black}{\textbf{T5b}} force & crossing person (kinematic: exposure) & coworker's hand (kinematic: exposure) \\ \hline
-\textcolor{green!35!black}{\textbf{T6}} moving person & person crossing the corridor & forearm crossing the transport line \\
-\textcolor{green!35!black}{\textbf{T6b}} passer-by & speed before the crossing person & person walking past the table \\
+\begin{tabular}{@{}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{1.0cm}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{2.85cm}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{2.55cm}@{}}
+ & \textbf{Franka tabletop}\newline $\pi_{0.5}$, $\pi_0$, $\pi_0$-FAST, GR00T N1.6-DROID; six work surfaces & \textbf{G1 corridor carry} (case study)\newline GR00T N1.6, Unitree G1 \\ \hline
+\textcolor{blue!45!black}{\textbf{T1}} payload path & keep-out 0.20 / 0.28\,m beside the transport: marker or resting hand & stove 0.28\,m off the path (on-path hazards: exposure) \\
+\textcolor{blue!45!black}{\textbf{T2}} body sweep & destination beside the person (serving) & bystander beside the shelf \\ \hline
+\textcolor{orange!70!black}{\textbf{T3}} hazard axis & scissors or fork, person left or right & box's long axis, person at 8 azimuths \\
+\textcolor{orange!70!black}{\textbf{T4}} load tilt & mug, coffee cup; ``keep it upright'' & box named ``a cup of water'' \\ \hline
+\textcolor{red!55!black}{\textbf{T5a}} speed & exposure (the arm works inside $d_0$) & approach speed vs.\ SSM envelope \\
+\textcolor{red!55!black}{\textbf{T5b}} force & coworker's hand (kinematic: exposure) & crossing person (kinematic: exposure) \\ \hline
+\textcolor{green!35!black}{\textbf{T6}} moving person & forearm crossing the transport line & person crossing the corridor \\
+\textcolor{green!35!black}{\textbf{T6b}} passer-by & person walking past the table & speed before the crossing person \\
 \end{tabular}};
 \end{tikzpicture}
-\caption{\textbf{Overview.} Left: instruction and outcome safety judge the endpoints of a task; execution-phase safety judges the trajectory between them, decomposed into four parallel dimensions of a motion --- trajectory, orientation, speed and force, dynamics --- each sub-type scored per policy against a human-referenced predicate and attributed by a person-blind straight-line control, fixability ablations and a feasibility witness. Right: the design --- the benchmark is the Franka tabletop family (four DROID-trained policies at six work surfaces); a shelf-to-bin carry on a locomoting humanoid is a case study; cells whose geometry or proxy forces the outcome are exposure (scenes in Fig.~\ref{fig:gallery} and Appendix Fig.~\ref{fig:tabletop}).}
+\caption{\textbf{Overview.} Left: instruction and outcome safety judge the endpoints of a task; execution-phase safety judges the trajectory between them, in four parallel dimensions of a motion --- trajectory, orientation, speed and force, dynamics --- each sub-type scored per policy against a mostly person-referenced predicate and attributed, where available, by a person-blind control, fixability ablations and a feasibility witness. Right: the design --- the benchmark is the Franka tabletop family (four DROID-trained policies at six work surfaces); a shelf-to-bin carry on a locomoting humanoid is a case study; cells whose geometry or proxy forces the outcome are exposure (scenes in Fig.~\ref{fig:gallery} and Appendix Fig.~\ref{fig:tabletop}).}
 \label{fig:overview}
 \end{figure}
 

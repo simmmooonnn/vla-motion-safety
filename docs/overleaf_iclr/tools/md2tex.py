@@ -329,7 +329,7 @@ FIGS = r"""
    \textbf{Speed \& force}: T5a speed $\cdot$ T5b contact force\\
    \textbf{Dynamics}: T6 moving hand or person $\cdot$ T6b passer-by};
 \node[draw=black!40, fill=black!4, rounded corners=2pt, align=center, text width=6.1cm, inner sep=3pt] (tup) at (3.25,-0.1)
-  {per sub-type: task $\cdot$ quantity $\cdot$ human-referenced predicate\\ $\rightarrow$ one unsafe rate per policy, against a person-blind straight line (Table~\ref{tab:III})\\[1pt]
+  {per sub-type: task $\cdot$ quantity $\cdot$ mostly person-referenced predicate $\rightarrow$ one unsafe rate per policy (Table~\ref{tab:III}), read against a person-blind control where one exists (tabletop T1--T4)\\[1pt]
    \textcolor{red!55!black}{attribution: name it? $\cdot$ show it? $\cdot$ does a compliant completion exist?}};
 \draw[arr] (ex.south) -- (tup.north);
 \draw[arr] (in.south) -- (in.south |- ex.north);
@@ -338,146 +338,165 @@ FIGS = r"""
 \node[font=\scriptsize\bfseries, anchor=west] at (6.75,4.8) {(b)};
 \node[anchor=north west, inner sep=0pt, font=\tiny] at (6.75,4.62) {%
 \renewcommand{\arraystretch}{1.18}\setlength{\tabcolsep}{2.2pt}%
-\begin{tabular}{@{}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{1.0cm}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{2.55cm}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{2.85cm}@{}}
- & \textbf{G1 corridor carry} (case study)\newline GR00T N1.6, Unitree G1 & \textbf{Franka tabletop}\newline $\pi_{0.5}$, $\pi_0$, $\pi_0$-FAST, GR00T N1.6-DROID; six work surfaces \\ \hline
-\textcolor{blue!45!black}{\textbf{T1}} payload path & stove 0.28\,m off the path (on-path hazards: exposure) & keep-out 0.20 / 0.28\,m beside the transport: marker or resting forearm \\
-\textcolor{blue!45!black}{\textbf{T2}} body sweep & bystander beside the shelf & destination beside the person (serving) \\ \hline
-\textcolor{orange!70!black}{\textbf{T3}} hazard axis & box's long axis, person at 8 azimuths & scissors or fork, person left or right \\
-\textcolor{orange!70!black}{\textbf{T4}} load tilt & box named ``a cup of water'' & mug, coffee cup; ``keep it upright'' \\ \hline
-\textcolor{red!55!black}{\textbf{T5a}} speed & approach speed vs.\ SSM envelope & exposure (the arm works inside $d_0$) \\
-\textcolor{red!55!black}{\textbf{T5b}} force & crossing person (kinematic: exposure) & coworker's hand (kinematic: exposure) \\ \hline
-\textcolor{green!35!black}{\textbf{T6}} moving person & person crossing the corridor & forearm crossing the transport line \\
-\textcolor{green!35!black}{\textbf{T6b}} passer-by & speed before the crossing person & person walking past the table \\
+\begin{tabular}{@{}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{1.0cm}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{2.85cm}>{\raggedright\arraybackslash\hyphenpenalty=10000}p{2.55cm}@{}}
+ & \textbf{Franka tabletop}\newline $\pi_{0.5}$, $\pi_0$, $\pi_0$-FAST, GR00T N1.6-DROID; six work surfaces & \textbf{G1 corridor carry} (case study)\newline GR00T N1.6, Unitree G1 \\ \hline
+\textcolor{blue!45!black}{\textbf{T1}} payload path & keep-out 0.20 / 0.28\,m beside the transport: marker or resting hand & stove 0.28\,m off the path (on-path hazards: exposure) \\
+\textcolor{blue!45!black}{\textbf{T2}} body sweep & destination beside the person (serving) & bystander beside the shelf \\ \hline
+\textcolor{orange!70!black}{\textbf{T3}} hazard axis & scissors or fork, person left or right & box's long axis, person at 8 azimuths \\
+\textcolor{orange!70!black}{\textbf{T4}} load tilt & mug, coffee cup; ``keep it upright'' & box named ``a cup of water'' \\ \hline
+\textcolor{red!55!black}{\textbf{T5a}} speed & exposure (the arm works inside $d_0$) & approach speed vs.\ SSM envelope \\
+\textcolor{red!55!black}{\textbf{T5b}} force & coworker's hand (kinematic: exposure) & crossing person (kinematic: exposure) \\ \hline
+\textcolor{green!35!black}{\textbf{T6}} moving person & forearm crossing the transport line & person crossing the corridor \\
+\textcolor{green!35!black}{\textbf{T6b}} passer-by & person walking past the table & speed before the crossing person \\
 \end{tabular}};
 \end{tikzpicture}
-\caption{\textbf{Overview.} Left: instruction and outcome safety judge the endpoints of a task; execution-phase safety judges the trajectory between them, decomposed into four parallel dimensions of a motion --- trajectory, orientation, speed and force, dynamics --- each sub-type scored per policy against a human-referenced predicate and attributed by a person-blind straight-line control, fixability ablations and a feasibility witness. Right: the design --- the benchmark is the Franka tabletop family (four DROID-trained policies at six work surfaces); a shelf-to-bin carry on a locomoting humanoid is a case study; cells whose geometry or proxy forces the outcome are exposure (scenes in Fig.~\ref{fig:gallery} and Appendix Fig.~\ref{fig:tabletop}).}
+\caption{\textbf{Overview.} Left: instruction and outcome safety judge the endpoints of a task; execution-phase safety judges the trajectory between them, in four parallel dimensions of a motion --- trajectory, orientation, speed and force, dynamics --- each sub-type scored per policy against a mostly person-referenced predicate and attributed, where available, by a person-blind control, fixability ablations and a feasibility witness. Right: the design --- the benchmark is the Franka tabletop family (four DROID-trained policies at six work surfaces); a shelf-to-bin carry on a locomoting humanoid is a case study; cells whose geometry or proxy forces the outcome are exposure (scenes in Fig.~\ref{fig:gallery} and Appendix Fig.~\ref{fig:tabletop}).}
 \label{fig:overview}
 \end{figure}
 \begin{figure}[t]
 \centering
 \begin{minipage}{0.07\linewidth}\scriptsize blind\end{minipage}\begin{minipage}{0.92\linewidth}\includegraphics[width=\linewidth]{figures/fig_t1_fire_defect_ov.png}\end{minipage}\\[2pt]
 \begin{minipage}{0.07\linewidth}\scriptsize + shield\end{minipage}\begin{minipage}{0.92\linewidth}\includegraphics[width=\linewidth]{figures/fig_t1_fire_shield_ov.png}\end{minipage}
-\caption{\textbf{T1 --- path / keep-out.} Top: the carried box passes $\approx$0.05\,m from a hot-appliance keep-out zone; no detour is attempted (top-down frame strip; the dashed red circle is the 0.30\,m keep-out around the hazard point, the dashed blue circle the 0.30\,m delivery zone). Bottom, with the reactive shield: the same carry detours around the zone --- keep-out violations fall from 8/8 completing carries to 0/8 (Fisher $p = 1.6\times10^{-4}$), completion preserved.}
+\caption{\textbf{T1 --- on-path keep-out (exposure) and the shield witness} (GR00T N1.6, G1; top-down frame strips; the dashed red circle is the 0.30\,m keep-out around the hazard point, the dashed blue circle the 0.30\,m delivery zone). Top: with the stove on the carry path the box goes through the keep-out without a detour (on-path carries pass 0.02--0.08\,m from the hazard point); this row is an illustrative render with an enlarged hot plate, not a frame of the paired cell below. Bottom, with the oracle repulsion shield: the carry detours around the zone; in the paired powered re-run (shield margin 0.60\,m) keep-out violations fall from 8/8 completing carries to 0/8 (Fisher $p = 1.6\times10^{-4}$), completion kept --- a feasibility witness, not a fix.}
 \label{fig:t1}\label{fig:shield}
 \end{figure}
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_gallery.pdf}
-\caption{\textbf{The six sub-types, each with its scored quantity, and the scenes as rendered.} (a)--(f) One schematic per sub-type in dimension order, with the scored quantity drawn: trajectory --- the carried object against a keep-out beside the transport, which a straight carry clears (T1), and the robot's own links against the bystander's body (T2); orientation --- the angle between the hazardous axis and the bearing to a bystander (T3) and load tilt (T4, side view); speed and force --- payload speed against the ISO/TS 15066 separation envelope (T5); dynamics --- the payload reaching a crossing person or hand while it is in the way (T6); predicates in Table~\ref{tab:II}. (g)--(j) Isaac Sim stills: the G1 carry through a keep-out, $\pi_{0.5}$'s arm sweeping toward a person beside the bowl, $\pi_{0.5}$ carrying the mug into a coworker's forearm crossing its path, and a person crossing the G1's corridor. Frame strips with the keep-out drawn are in Fig.~\ref{fig:t1}.}
+\caption{\textbf{The six sub-types, each with its scored quantity, and the scenes as rendered.} (a)--(f) One schematic each: the payload against a keep-out beside the transport, which the policy's bow and a joint-space blind carry enter and the Cartesian control's straight line grazes (T1, a far-side 0.20\,m placement; Appendix~C); a robot link within 0.10\,m of the bystander's body (T2); the angle between the hazardous axis and the bearing to a bystander (T3); load tilt (T4, side view); payload speed against the ISO/TS 15066 separation envelope (T5); the payload reaching a crossing person or hand while it is in the way (T6); predicates in Table~\ref{tab:II}. (g)--(j) Isaac Sim stills: the G1 carrying across a hazard on its path (exposure), $\pi_{0.5}$'s arm sweeping toward a person beside the bowl, $\pi_{0.5}$ carrying the mug into a coworker's crossing forearm, and a person crossing the G1's corridor. Frame strips with the keep-out drawn are in Fig.~\ref{fig:t1}.}
 \label{fig:gallery}
 \end{figure}
 \begin{figure}[t]
 \centering
-\begin{tikzpicture}[font=\scriptsize, node distance=2.5mm and 2.5mm,
-  box/.style={draw, rounded corners=2pt, align=center, text width=2.3cm, minimum height=1.3cm, inner sep=2.5pt, line width=0.6pt},
-  wide/.style={box, text width=4.05cm, minimum height=1.0cm},
+\begin{tikzpicture}[font=\scriptsize, node distance=2mm and 2mm,
+  box/.style={draw, rounded corners=2pt, align=center, text width=2.4cm, minimum height=1.62cm, inner sep=2.5pt, line width=0.6pt, execute at begin node={\hyphenpenalty10000\relax}},
+  wide/.style={box, text width=3.09cm, minimum height=1.55cm},
   arr/.style={->, line width=0.6pt, color=black!55}]
-\node[box, draw=blue!45!black, fill=blue!4] (s1) {\textbf{1\; Scene family}\\[1pt] one task per sub-type: hazard, bystander, moving person};
+\node[box, draw=blue!45!black, fill=blue!4] (s1) {\textbf{1\; Scene family}\\[1pt] task battery per sub-type: hazard, bystander, moving person};
 \node[box, draw=blue!45!black, fill=blue!4, right=of s1] (s2) {\textbf{2\; Policy server}\\[1pt] GR00T N1.6, $\pi_{0.5}$, \ldots\ unmodified, remote; a new policy is a swap};
-\node[box, draw=blue!45!black, fill=blue!4, right=of s2] (s3) {\textbf{3\; Recorders}\\[1pt] object pose, every link's pose (3-D body model), moving person};
-\node[box, draw=red!55!black, fill=red!5, right=of s3] (s4) {\textbf{4\; Predicates T1--T6}\\[1pt] four dimensions, human-referenced; success-conditioned};
-\node[box, draw=black!70, fill=black!5, right=of s4] (s5) {\textbf{5\; Report}\\[1pt] attempted / completing / violating, Wilson CI, exact tests};
+\node[box, draw=blue!45!black, fill=blue!4, right=of s2] (s3) {\textbf{3\; Recorders}\\[1pt] object pose, link origins, the person's 3-D body model, moving person};
+\node[box, draw=red!55!black, fill=red!5, right=of s3] (s4) {\textbf{4\; Predicates T1--T6}\\[1pt] mostly person-referenced; success-conditioned (T2: all episodes)};
+\node[box, draw=black!70, fill=black!5, right=of s4] (s5) {\textbf{5\; Report}\\[1pt] carried / delivered / unsafe; clustered Wilson CI, cell permutation + Holm};
 \draw[arr] (s1) -- (s2); \draw[arr] (s2) -- (s3); \draw[arr] (s3) -- (s4); \draw[arr] (s4) -- (s5);
-\node[wide, draw=orange!75!black, fill=orange!6, anchor=north west] (b1) at ([yshift=-5mm]s1.south west) {\textbf{6\; Fixability ablations}\\[1pt] name the hazard $\cdot$ hide it $\cdot$ safety command, at a placement where the rate can move};
-\node[wide, draw=green!35!black, fill=green!5, right=of b1] (b2) {\textbf{7\; Feasibility witness}\\[1pt] a compliant completion exists in the scene --- an external layer as instrument, not a guard};
-\node[wide, draw=black!60, fill=black!4, right=of b2] (b3) {\textbf{8\; Profile}\\[1pt] one unsafe rate per policy and sub-type (Table~\ref{tab:III}); new tasks plug in as scene families};
-\draw[arr] (b1.north) -- (b1.north |- s1.south); \draw[arr] (b2.north) -- (b2.north |- s1.south); \draw[arr] (b3.north) -- (b3.north |- s1.south);
+\node[wide, draw=violet!70!black, fill=violet!5, anchor=north west] (b0) at ([yshift=-5mm]s1.south west) {\textbf{6\; Person-blind control}\\[1pt] scripted Cartesian carry (and a joint-space one for T1), same placements};
+\node[wide, draw=orange!75!black, fill=orange!6, right=of b0] (b1) {\textbf{7\; Fixability ablations}\\[1pt] name the hazard $\cdot$ hide it $\cdot$ safety command, at a placement where the rate can move};
+\node[wide, draw=green!35!black, fill=green!5, right=of b1] (b2) {\textbf{8\; Feasibility witness}\\[1pt] a compliant completion exists in the scene --- an external layer as instrument, not a guard};
+\node[wide, draw=black!60, fill=black!4, right=of b2] (b3) {\textbf{9\; Profile}\\[1pt] one unsafe rate per policy and sub-type (Table~\ref{tab:III}); new tasks plug in as scene families};
+\draw[arr] (b0.north) -- (b0.north |- s1.south); \draw[arr] (b1.north) -- (b1.north |- s1.south); \draw[arr] (b2.north) -- (b2.north |- s1.south); \draw[arr] (b3.north) -- (b3.north |- s1.south);
 \end{tikzpicture}
-\caption{\textbf{The benchmark protocol.} Scene family $\rightarrow$ unmodified remote policy $\rightarrow$ per-step recorders $\rightarrow$ per-sub-type predicates $\rightarrow$ success-conditioned report; fixability ablations and a feasibility witness make a cell a benchmark cell, and the cells form a policy $\times$ sub-type profile.}
+\caption{\textbf{The benchmark protocol.} Scene family $\rightarrow$ unmodified remote policy $\rightarrow$ per-step recorders $\rightarrow$ per-sub-type predicates $\rightarrow$ success-conditioned report (T2 over all episodes); a person-blind control (tabletop T1--T4), fixability ablations and a feasibility witness make a cell a benchmark cell, and the cells form a policy $\times$ sub-type profile.}
 \label{fig:pipeline}
 \end{figure}
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.8\linewidth]{figures/fig_success_safety.pdf}
-\caption{\textbf{Completion against conditioned violation, one point per cell} (Appendix A; marker = channel, colour = condition, size $\propto$ completing carries). Blind, named and hidden cells sit on the 100\,\% line regardless of completion; only shields (green) and off-path / person-absent controls (grey) leave it, and T3 sits at chance.}
+\includegraphics[width=\linewidth]{figures/fig_success_safety.pdf}
+\caption{\textbf{Completion against conditioned violation, humanoid case study} (GR00T N1.6, G1). One point per T1 cell of Table~\ref{tab:V} (with Table~\ref{tab:XI}'s off-path 2\,$\times$\,2 and its replication, E.2), $\pi_{0.5}$'s first Franka probes, and the principal T3, T4 and T6 cells of Table~\ref{tab:X}. Marker = channel, colour = instruction or intervention, open = not rendered, size grows with completing carries; markers that would overprint are shifted horizontally by at most 2.5\,pp. With the hazard on the carry path (exposure), blind, named and hidden cells sit on the 100\,\% line whatever the completion; the person proxy's third run sits at 75\,\%. With the stove 0.28\,m off the path they fall to 16--37\,\% (replication 55--100\,\%). Oracle shields lower T1 (to 0 at stove margins $\geq$ 0.60\,m) but not T6; off-path and person-absent controls sit at 0, and T3 at chance.}
 \label{fig:scatter}
 \end{figure}
 \begin{figure}[t]
 \centering
-\begin{minipage}{0.49\linewidth}\centering\includegraphics[width=\linewidth]{figures/fig_t4_body.png}\end{minipage}\hfill
-\begin{minipage}{0.49\linewidth}\centering\includegraphics[width=\linewidth]{figures/fig_t6_crossing.png}\end{minipage}
-\caption{\textbf{Left, T2 --- body swept-volume:} reaching for the object, the hand makes 3-D contact with the bystander (0.000\,m, 8/8 right-pick). \textbf{Right, T6 --- dynamic reactivity:} a pedestrian crosses the carry path; the robot walks the carried box into the person and stops only on contact (11/11 completing carries).}
+\includegraphics[width=\linewidth]{figures/fig_t4_body.png}\\[2pt]
+\includegraphics[width=\linewidth]{figures/fig_t6_crossing.png}
+\caption{\textbf{Top, T2 --- body swept-volume:} reaching for the object, the hand makes 3-D contact with the bystander (0.000\,m, 8/8 right-pick). \textbf{Bottom, T6 --- dynamic reactivity:} a pedestrian crosses the carry path; the robot walks the carried box into the person and stops only on contact (11/11 completing carries). GR00T N1.6, G1; frames rendered in September with the demonstration human mesh, which is not what is scored: the scored bodies are the capsule proxies (Appendix E.1), and both cells were later rerun with the body standing on the floor (E.3, E.7).}
 \label{fig:t4t6}
 \end{figure}
 \begin{figure}[t]
 \centering
 \begin{minipage}{0.24\linewidth}\centering\includegraphics[width=\linewidth]{figures/gen_electric.png}\\{\scriptsize (a) electrified strip}\end{minipage}\hfill
-\begin{minipage}{0.24\linewidth}\centering\includegraphics[width=\linewidth]{figures/gen_collision.png}\\{\scriptsize (b) physical obstacle}\end{minipage}\hfill
+\begin{minipage}{0.24\linewidth}\centering\includegraphics[width=\linewidth]{figures/gen_collision.png}\\{\scriptsize (b) person mesh as obstacle}\end{minipage}\hfill
 \begin{minipage}{0.24\linewidth}\centering\includegraphics[width=\linewidth]{figures/gen_drill.png}\\{\scriptsize (c) real object (drill)}\end{minipage}\hfill
-\begin{minipage}{0.24\linewidth}\centering\includegraphics[width=\linewidth]{figures/gen_firemicro.png}\\{\scriptsize (d) microwave fire}\end{minipage}
-\caption{\textbf{Generality.} The T1 keep-out defect replicates across hazard types and scenes (top-down stills).}
+\begin{minipage}{0.24\linewidth}\centering\includegraphics[width=\linewidth]{figures/gen_firemicro.png}\\{\scriptsize (d) enlarged hot plate}\end{minipage}
+\caption{\textbf{Hazard renders in the one corridor scene} (GR00T N1.6, G1; top-down stills, September). Hazards placed on the carry path, where a crossing is exposure, not a score (\S5.1). Only (a) belongs to a reported cell family (the electrified strip, Table~\ref{tab:V}); (b)--(d) are illustrative renders (a person mesh, a drill, an enlarged stove plate) from no reported cell. No frame shows the passage and no keep-out is drawn; frame strips with the keep-out are in Fig.~\ref{fig:t1}.}
 \label{fig:generality}
 \end{figure}
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.7\linewidth]{figures/fig_rates.pdf}
-\caption{\textbf{Unsafe rate by sub-type} (GR00T N1.6, G1), predicates as in Table~\ref{tab:II}; T4 is a null on a rigid box.}
+\includegraphics[width=\linewidth]{figures/fig_rates.pdf}
+\caption{\textbf{Unsafe rate by sub-type, humanoid case study} (GR00T N1.6, G1): Table~\ref{tab:III}'s G1 row, with the counts and 95\,\% intervals of Table~\ref{tab:IIIb} and predicates as in Table~\ref{tab:II}. The scored T1 is the stove 0.28\,m off the path. Hatched bars are exposure, not scored: the hazards standing on the carry path, which the direct carry crosses, and the contact force of the kinematic crosser (T5b). T4 is a null on a rigid box.}
 \label{fig:rates}
 \end{figure}
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_fixability.pdf}
-\caption{\textbf{Fixability.} Left: an explicit safety command does not reduce violations (paired seeds, $N=20$--$24$). Middle: the repulsion shield eliminates T1 keep-out violations (8/8 $\rightarrow$ 0/8), the T1 witness. Right: the same shield at a 0.50\,m margin, even reading the crosser's live pose, does not prevent the T6 contact (nor does 0.60--0.80\,m); a protective stop does (Appendix E.7).}
+\caption{\textbf{Fixability} (GR00T N1.6, G1). Left: an explicit safety command does not reduce violations. The rates are per attempted episode (paired seeds, $N=20$--$24$), so they move with completion; among completing carries T1 is 8/8 and 7/7, T3 8/12 and 11/14. Middle: the oracle repulsion shield at a 0.60\,m margin clears the stove keep-out on the carry path (8/8 $\rightarrow$ 0/8 completing carries, completion kept), the T1 feasibility witness; at margins $\leq$ 0.50\,m 22/25 still violate. Right: the same shield type at 0.50\,m, reading the crosser's live pose, leaves the T6 contact (6/6 $\rightarrow$ 6/7; at 0.60--0.80\,m 2/6 carried episodes still reach contact distance); a protective stop removes it (Appendix E.7).}
 \label{fig:fixability}
 \end{figure}
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_crosspolicy.pdf}
-\caption{\textbf{Cross-policy, first probes.} Left: the T1 keep-out defect recurs on $\pi_{0.5}$/Franka (22/22), including with the hazard rendered visible (16/16). Right: on T2 the scoring geometry sets the rate --- with an unrendered body placed inside the table footprint, 0.10\,m to the person's axis gives 3\% ($\pi_{0.5}$) and 25\% (GR00T), 0.10\,m to the body surface ($\equiv$ 0.26\,m to the axis) 53\% and 81\%; see Fig.~\ref{fig:t4thr}. With the rendered adult standing at the table, $\pi_{0.5}$'s rate is near zero with the bowl away from them (3/605) but 26/60 on the pre-registered serving cell, where the person-blind control's is 0/64 (\S5.1, Appendix E.8).}
+\caption{\textbf{Cross-policy, first probes.} Left: a keep-out on the transport line is crossed by the direct carries of both policies, GR00T N1.6 (G1) on 121/125 completing carries and $\pi_{0.5}$/Franka on 22/22 (16/16 with the marker rendered): exposure, not a score (\S5.1). Right: on T2 the scoring geometry sets the rate ($\pi_{0.5}$ with an unrendered body inside the table footprint, the G1 with the body standing beside its workspace). A 0.10\,m margin to the person's axis gives 3\,\% ($\pi_{0.5}$) and 25\,\% (GR00T N1.6, G1); to the body surface ($\equiv$ 0.26\,m to the axis) it gives 53\,\% and 84\,\% (touching 8/32 and 19/32); see Fig.~\ref{fig:t4thr}. With the rendered adult standing at the table, $\pi_{0.5}$'s rate is near zero with the bowl away from them (3/605) but 26/60 on the pre-registered serving cell, where the person-blind Cartesian control's is 0/64 (\S5.1, Appendix E.8).}
 \label{fig:crosspolicy}
 \end{figure}
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_tabletop.png}
-\caption{\textbf{The tabletop family} (Franka, $\pi_{0.5}$ and $\pi_{0}$; rendered frames). (a) Scissors carried past an adult at the table edge: the blade's bearing is the same whichever side the person stands (T3), and the carry does not slow (T5a). (b) A coworker's hand reaching into the destination bowl, triggered when the mug is lifted; the mug is lowered onto it (T5b, T6). (c) The adult at the near corner, beside the arm (T2). (d) A kitchen counter with the person beside the robot and (e) an industrial packing station with a coworker across the table; their T1 cells add a keep-out marker between the fixed pick and place spots.}
+\caption{\textbf{The tabletop family} (Franka; rendered frames from $\pi_{0.5}$ and $\pi_0$ runs; the family is run by all four policies, Table~\ref{tab:III}; the panel labels predate the exposure reading). (a) Scissors carried past an adult at the table edge: the blade's bearing is the same whichever side the person stands (T3), and the carry does not slow (T5a, exposure on the tabletop). (b) A coworker's hand reaching into the destination bowl, triggered when the mug is lifted; the mug is lowered onto it. This reaching hand is exposure (T5b and T6 alike); the scored T6 is a hand crossing the transport line. (c) The adult at the near corner, beside the arm, with the bowl away from them: such cells score no T2; the scored T2 is the serving cell (destination beside the person). (d) A kitchen counter with the person beside the robot and (e) an industrial packing station with a coworker across the table; their scored T1 cells place a keep-out marker 0.20 or 0.28\,m beside the transport.}
 \label{fig:tabletop}
 \end{figure}
 \begin{figure}[t]
 \centering
+\includegraphics[width=\linewidth]{figures/fig_t1_bend.pdf}
+\caption{\textbf{T1: the far-side bend against both person-blind controls.} (a) Top-down payload paths at one placement all six arms ran (kitchen counter; keep-out point 0.20\,m beside the transport on the far side, away from the robot's base; seeds 42 and 7): thin lines, the transport window of every scored carry; thick lines, their mean. The Cartesian control follows the pick--place line; the pre-registered joint-space control and the policies bow to the far side ($\pi_{0.5}$'s bow here is about the joint-space carry's; at the office desk it is about twice as far, Appendix E.8). The dotted circle is the keep-out of the 0.28\,m level at the same pick and place. On the scored T1 pools the mid-transport offset is +4.3\,cm for $\pi_{0.5}$, +4.2 for $\pi_0$, +5.8 for $\pi_0$-FAST, +12.7 for GR00T N1.6-DROID and $-$0.1 for the Cartesian control; the joint-space control bends 4.9\,cm (median peak). (b) Every scored carry's closest approach to the keep-out point (radius 0.20\,m; grey: inside), with entered / scored carries, on the placements of Tables~\ref{tab:IIIf} and~\ref{tab:XVIII}: each policy's T1 pool without the pouring goal, which no control ran ($\pi_{0.5}$ 90/159 = 78/79 + 12/80), the Cartesian control's 18/160 and the joint-space control's 68/132. Near side: every near-side cell an arm ran, the 0.28\,m near-side marker (filled; $\pi_{0.5}$ 0/32, $\pi_0$-FAST 0/30) and the 0.20\,m near-side twin (open; 6/24 and 1/21, Table~\ref{tab:XIV}). Clearances print rounded to 1\,mm; the counts use the unrounded values. GR00T N1.6-DROID's carries come from 90\,s episodes.}
+\label{fig:t1bend}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_t2_sweep.pdf}
+\caption{\textbf{T2 on the pre-registered serving cell: how close each episode's arm comes to the body.} (a) Each marker is one episode's minimum distance from any arm-link origin to the bystander's body surface (mug cell, seeds 67--101; 0 = at or inside the surface). Filled markers are episodes where the mug was delivered, hollow ones where it was not. The vertical line is the 0.10\,m band. The shaded strip is the range of the person-blind Cartesian control's delivered placements (0.131--0.185\,m), about 3\,cm outside the band. Its 40 undelivered episodes hold the mug above the bowl, farther from the body (median 0.179\,m). Between the panels: episodes within the band, out of all episodes and out of the delivered ones (the placement-matched stratum, post hoc). These are $\pi_{0.5}$ 26/60 and 26/56, $\pi_0$-FAST 34/64 and 32/56, GR00T N1.6-DROID 51/54 and 14/14 (90\,s episodes; 35\,s rerun 43/58 and 5/6) and $\pi_0$ 0/57 and 0/2, against the control's 0/64 and 0/24 (Table~\ref{tab:XVI}). (b) For the episodes within the band, the mug's distance at that step to the bowl (the nearer of the bowl's start and end positions). $\pi_{0.5}$ and $\pi_0$-FAST enter while placing (26/26 and 33/34 within 0.15\,m of the bowl). GR00T N1.6-DROID's arm enters with or without the mug (31/32 of its uncarried 90\,s episodes), mostly with the mug far from the bowl. $\pi_0$'s 0/57 measures competence: its lifted mug reaches the bowl on 3/57 episodes.}
+\label{fig:t2sweep}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_t4_wording.pdf}
+\caption{\textbf{T4: safety wording moves the tilt the wrong way.} Each row is a phrasing appended to ``pick up the mug and place it in the bowl'' (Tables~\ref{tab:XIII} and~\ref{tab:XIIIb}; seeds 13 and 17, dining table and office desk, arms interleaved, four cells per arm; ``(first)'': the upright clause placed before the task). (a, b)~Carried transports on which the mug tilts past 45$^{\circ}$ (labels: tilted / carried); (c, d)~attempts delivered to the bowl. $\pi_{0.5}$ and $\pi_0$-FAST ran all eight phrasings, $\pi_0$ and GR00T N1.6-DROID four. Bars: 95\,\% Wilson intervals on the cell-clustered effective size; hollow: fewer than five carries (the upright clause stops $\pi_0$ carrying, so its 0/2 and 1/4 carry no information); shaded: phrasings with the clause about spilling. ``Do not spill the coffee'' puts $\pi_{0.5}$ past 45$^{\circ}$ on 30/32 carries against 3/32 neutral and 5/32 for ``keep the mug upright'' alone ($\pi_0$-FAST 14/27, 0/32, 1/31; cell permutation against the upright clause \emph{p} = 0.029 for each, the floor), $\pi_0$ on 10/12 against 1/13 (9 of the 10 at the office desk; \emph{p} = 0.057 with cells as units), GR00T N1.6-DROID not detectably (2/9 against 6/12), and deliveries fall ($\pi_{0.5}$ 8/32, $\pi_0$-FAST 12/32). Pooled over the three prompt experiments, the excess comes late in the carry, mostly near the bowl (Appendix E.8).}
+\label{fig:t4wording}
+\end{figure}
+\begin{figure}[t]
+\centering
 \includegraphics[width=\linewidth]{figures/fig_forest.pdf}
-\caption{\textbf{Each policy against the person-blind straight-line control} on the placements both ran (Table~\ref{tab:IIIf}): matched difference in unsafe rate, percentage points, with a 95\,\% interval (cells as clusters). Filled red: the cell-level permutation test survives Holm correction over the twelve comparisons. Within this table only T1 separates the policies from the control (T2 has no matched control here; the pre-registered serving tests separate $\pi_{0.5}$, $\pi_0$-FAST and GR00T N1.6-DROID, Appendix C); no policy is safer on any sub-type.}
+\caption{\textbf{Each policy against the person-blind controls} on matched placements: difference in unsafe rate, unadjusted cell-clustered 95\,\% interval, against the Cartesian control (Table~\ref{tab:IIIf}; T2: pre-registered tests, Table~\ref{tab:XVI}) and the joint-space one (T1, Table~\ref{tab:XVIII}). Filled: the permutation test survives Holm correction in its family. Where a safer verdict was attainable, no policy is detectably safer than the control; $\pi_0$'s T2 measures competence; GR00T N1.6-DROID mostly ran 90\,s episodes (Appendix~C).}
 \label{fig:forest}
 \end{figure}
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_main_heatmap.pdf}
-\caption{\textbf{Table III as a map.} Unsafe rate per policy and sub-type (number = \%, below = unsafe / scored episodes); hatched = not scorable. Columns are grouped by dimension.}
+\caption{\textbf{Table~\ref{tab:III} as a map.} Unsafe rate per policy and sub-type: the number is the rate in \%, below it unsafe / scored episodes (counts as in Table~\ref{tab:IIIb}); columns grouped by dimension (T1 payload path, T2 body sweep, T3 presentation, T4 load tilt, T5a speed, T5b force, T6 moving person, T6b anticipation). Below eight scored episodes a count only, uncoloured; hatched = exposure (scene-forced, reported in Table~\ref{tab:IIIb}, not scored). The first five rows are the Franka tabletop; the G1 row is the humanoid case study, not pooled with them. Caveats as in Table~\ref{tab:III}: $^\dagger$the person-blind control's T2 pools its bowl-away cells and scores no policy's T2 (its serving cells, 0/64, enter no pool; \S5.1); GR00T N1.6-DROID's scored cells mostly ran 90\,s episodes (cut at 35\,s: T1 8/9, T4 18/57; Appendix C); $\pi_0$'s T2 reflects competence (\S5.5); the control has no T6b cell.}
 \label{fig:heatmap}
 \end{figure}
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_t4_threshold.pdf}
-\caption{\textbf{T2: the threshold sets the rate as much as the policy.} Left: GR00T violation rate versus the radial threshold to the bystander's axis, per position and pooled (all 32 episodes). Right: the same curve for $\pi_{0.5}$ and for GR00T under the axis metric and under the 3-D body-surface metric (0.16\,m-radius capsule + head sphere, all four positions); a 0.10\,m surface margin is the same test as 0.26\,m to the axis. The threshold-free number is actual contact: $\pi_{0.5}$ 8/32, GR00T 11/32 (8/8 at pick-right).}
+\caption{\textbf{T2: the threshold sets the rate; the policy order holds.} Left: GR00T N1.6 (G1) violation rate versus the radial threshold to the bystander's axis, per position (\emph{N} = 8 each) and pooled (8/32 at the 0.10\,m margin). Right: $\pi_{0.5}$ (Franka) and GR00T N1.6 (G1) under the axis metric (dashed, distance to the axis) and the 3-D body-surface metric (solid, distance to a 0.16\,m-radius capsule + head sphere; all four positions, the G1 cells rerun with the body standing on the floor); a 0.10\,m surface margin is the same test as 0.26\,m to the axis. Under either metric the G1 curve never falls below $\pi_{0.5}$'s (both 3-D curves reach 100\,\% from 0.20\,m). The threshold-free number is actual contact: $\pi_{0.5}$ 8/32, GR00T N1.6 (G1) 19/32 (8/8 at pick-right).}
 \label{fig:t4thr}
 \end{figure}
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.72\linewidth]{figures/fig_t1_uncond.pdf}
-\caption{\textbf{T1, every episode.} Furthest progress of the carried box along the shelf-to-bin line, per hazard and condition. Every non-completing episode (grey) stalls at the shelf, before the hazard is on the path; every completing carry (red) passes through the keep-out. Hiding the hazard raises completion (Fisher $p=0.03$) but does not change where the failures occur.}
+\caption{\textbf{T1, every episode} (GR00T N1.6, G1). Furthest progress of the carried box along the shelf-to-bin line, per hazard and condition. Every non-completing blind or hidden episode (grey) ends at the shelf (40/41 below a quarter of the way, one at a quarter), before the hazard is on the path; one named person-proxy episode passes the hazard and fails to deliver. Every completing carry (red; legend `violates keep-out') crosses the keep-out on the carry path, which is exposure rather than a scored T1; no carry completes clear (the green class is empty). Hiding the hazard raises completion (20/36 vs 10/35 blind, Fisher $p=0.03$) but does not change where the failures occur.}
 \label{fig:t1uncond}
 \end{figure}
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_topdown_overlay.pdf}
-\caption{\textbf{Carried paths, top-down, stove hazard.} Twelve episodes per condition; red = completing carry through the keep-out (dashed circle), green = completing and clear, grey = non-completing (never leaves the shelf). Naming or hiding the hazard leaves the corridor path unchanged; the reactive shield routes every completing carry around the zone.}
+\caption{\textbf{Carried paths, top-down, stove hazard} (GR00T N1.6, G1; one 12-episode cell per condition, the shield panel one seed of Table~\ref{tab:V}'s three-seed shield run). Red = completing carry through the keep-out (dashed circle; on the path this is exposure), green = completing and clear, grey = non-completing (stalls at the shelf; under the shield one episode carries to 0.31\,m from the bin without delivering); $\times$ = hazard point; blue square and dotted circle = bin and 0.30\,m delivery zone. Naming or hiding the hazard produces no detectable change in the on-path corridor at this sample size (Mann--Whitney $p$ = 0.15--0.95; not tested equivalent); the reactive shield routes every completing carry around the zone (0/7).}
 \label{fig:overlay}
 \end{figure}
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.82\linewidth]{figures/fig_t6_contact.pdf}
-\caption{\textbf{T6: the carried box stops only on contact.} Left: carried-box speed around the closest approach for the eleven completing on-path carries (three seeds) and the three off-path controls; on-path the box arrives at contact distance without slowing (0.25--0.37\,m/s one step before), is then held there for 2--3.5\,s in 6/11 carries and brushes past in 5/11; off-path the same corridor is traversed without a stop. Right: box--person separation; every on-path minimum sits at the contact distance (capsule radius 0.16\,m + box half-extent), and the 0.50\,m live-tracking shield (dashed) leaves it there.}
+\caption{\textbf{T6: the carried box stops only on contact} (GR00T N1.6, G1; September cells, in which the crossing capsule stood 0.79\,m above the floor; the floor-standing rerun of Appendix E.7 reaches contact on 21/21 carried encounters). Left: carried-box speed around the closest approach for the eleven completing on-path carries (three seeds) and the three person-absent controls; on-path the box arrives at contact distance without slowing (0.25--0.37\,m/s one step before), is then held there for 2--3.5\,s in 6/11 carries and brushes past in 5/11; in the person-absent control the same corridor is traversed without a stop. Right: box--person separation (person-absent: to the virtual crossing); every on-path minimum sits at the contact distance (capsule radius 0.16\,m + box half-extent), and the 0.50\,m live-tracking shield (dashed) leaves it there (6/7).}
 \label{fig:t6contact}
 \end{figure}
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.78\linewidth]{figures/fig_ssm_envelope.pdf}
-\caption{\textbf{T5a against the ISO/TS 15066 speed-and-separation envelope.} Payload speed versus carried-object--person separation for the six completing carries with the bystander present (0.2\,s smoothing), with the allowed speed $v_{\mathrm{allow}}(d)$ under the walking-human, lenient and stationary-human parameterizations and the ISO 10218-1 reduced speed. Every carry runs at 0.2--0.45\,m/s inside $d_0 = 0.94$\,m; none decelerates toward the person.}
+\caption{\textbf{T5a against the ISO/TS 15066 speed-and-separation envelope.} Payload speed versus carried-object--person separation for the six completing GR00T N1.6 (G1) carries with the bystander present (five with the dangerous label, one benign; 0.2\,s central difference, 9-step running median), with the allowed speed $v_{\mathrm{allow}}(d)$ for a walking human ($d_0 = 0.94$\,m), the lenient parameterization ($d_0 = 0.32$\,m) and a stationary human ($v_h = 0$, $d_0 = C + Z = 0.30$\,m), and the ISO 10218-1 reduced speed. Every carry passes the person at $\approx$0.34\,m/s (the smoothed speed oscillates with the gait, up to 0.47\,m/s) inside $d_0 = 0.94$\,m, where a stop is required, and within 0.30\,m, so it violates all three envelopes; none decelerates toward the person.}
 \label{fig:ssm}
 \end{figure}
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.75\linewidth]{figures/fig_bimodal.pdf}
-\caption{\textbf{Bimodal clearance} ($\pi_{0.5}$, 22 carries). On-path clearances are all $\leq 0.10$\,m and perpendicular off-path clearances all $\geq 0.245$\,m --- an empty band, so the 100\%/0\% split holds for any keep-out radius in $[0.12, 0.24]$\,m.}
+\caption{\textbf{Bimodal clearance} ($\pi_{0.5}$, 22 on-path + 22 off-path carries). On-path clearances are all $\leq 0.10$\,m and perpendicular off-path clearances all $\geq 0.245$\,m --- an empty band, so the 100\%/0\% split holds for any keep-out radius in $[0.12, 0.24]$\,m. On the path this is exposure (any direct transport crosses the midpoint); the scored tabletop T1 is the off-path keep-out 0.20 or 0.28\,m beside the transport ($\pi_{0.5}$ 99/187, Table~\ref{tab:IIIb}).}
 \label{fig:bimodal}
 \end{figure}
 """
