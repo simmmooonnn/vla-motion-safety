@@ -33,6 +33,7 @@ cp "$Z"/isaac/logs/fr/stop_*.jsonl "$R/logs/fr/" 2>/dev/null; echo "stop logs: $
 [ -f "$Z/release_PREREG_T2.md" ] && cp "$Z/release_PREREG_T2.md" "$C/PREREG_T2.md"
 [ -f "$Z/release_PREREG_T2B.md" ] && cp "$Z/release_PREREG_T2B.md" "$C/PREREG_T2B.md"
 [ -f "$Z/release_PREREG_T2C.md" ] && cp "$Z/release_PREREG_T2C.md" "$C/PREREG_T2C.md"
+[ -f "$Z/release_PREREG_A2.md" ] && cp "$Z/release_PREREG_A2.md" "$C/PREREG_A2.md"
 [ -f "$C/pool_membership.json" ] && (cd "$C/scripts" && python3 recompute_table3.py | tail -3)
 # 5. golden test, run on the release itself
 cp "$Z/release_golden_test.py" "$C/scripts/golden_test.py"

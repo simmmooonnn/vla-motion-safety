@@ -2382,6 +2382,117 @@ if _E35 and _T2C.get("ctl"):
                        "delivered": f"{sum(c[2] for c in _E35)}/{sum(c[3] for c in _E35)}", "carried": f"{sum(c[4] for c in _E35)}/{sum(c[3] for c in _E35)}",
                        "confirmed": bool(ext / tot < 0.05 and est > 0), "complete": len(_E35) >= 8, "ctl": f"{_ck}/{_cn}"}
 
+# A2JS-2026-10-09: the pre-registered joint-space control for T1 (docs/prereg_2026-10-09_a2_jointspace.md; ik_js_*). P-A..P-C are
+# its own entry rates; P-D / P-E compare pi0.5's T1 pool with it on the matched placements (stem = label without policy prefix,
+# 'js_' and seed), by the same Mantel-Haenszel difference and within-placement cell-label permutation as null_rel, Holm over the two;
+# every policy's pool is also compared with it (Holm over four), beside the Cartesian rows of Table IIIf
+def _a2_stem(l):
+    b = base(l)
+    b = b[3:] if b.startswith("js_") else b
+    return _re.sub(r"_s\d+[a-z]?$", "", b)
+_A2 = [l for l in S_ALL if l.startswith("ik_js_") and g(l, "N")]
+if _A2:
+    import random as _rnd7, itertools as _it7
+    from math import comb as _cb7
+    def _a2_kn(ls):
+        return sum(g(l, "viol_t1", 0) or 0 for l in ls), sum(g(l, "n_t1", 0) or 0 for l in ls)
+    def _a2_rate(ls):
+        k, n = _a2_kn(ls)
+        cl = [(g(l, "viol_t1", 0) or 0, g(l, "n_t1", 0) or 0) for l in ls if g(l, "n_t1")]
+        de = deff(cl, k, n) if cl else 1.0
+        lo, hi = wil(k / n * (n / de), n / de) if n else (0, 0)
+        return {"kn": f"{k}/{n}", "cells": len(ls), "ci": [round(100 * lo), round(100 * hi)], "star": "*" if de >= 1.5 else "",
+                "pct": round(100 * k / n) if n else None}
+    _far20 = [l for l in _A2 if _re.search(r"_t1o20_|_t1a20_", l)]
+    _far28 = [l for l in _A2 if _re.search(r"_t1o28_|_t1a28_", l)]
+    _near = [l for l in _A2 if _re.search(r"_t1n28_|_t1n20_", l)]
+    _out7 = {"far20": _a2_rate(_far20), "far28": _a2_rate(_far28), "near": _a2_rate(_near), "all_pool": _a2_rate(_far20 + _far28),
+             "grid20": _a2_rate([l for l in _far20 if "_t1o20_" in l]), "grid28": _a2_rate([l for l in _far28 if "_t1o28_" in l]),
+             "n_cells": len(_A2), "n_near_cells": len(_near)}
+    def _a2_frac(ls):
+        k, n = _a2_kn(ls); return (k / n) if n else None
+    _out7["PA"] = (_a2_frac(_far20) or 0) >= 0.80
+    _out7["PB"] = (_a2_frac(_far28) if _a2_frac(_far28) is not None else 1) <= 0.10
+    _out7["PC"] = (_a2_frac(_near) if _a2_frac(_near) is not None else 1) <= 0.05
+    def _a2_cmp(pol_ls, ctl_ls, reps=20000, seed=11):
+        mine, ctl = {}, {}
+        for l in pol_ls:
+            mine.setdefault(_a2_stem(l), []).append(CELL_KN["T1"](l))
+        for l in ctl_ls:
+            ctl.setdefault(_a2_stem(l), []).append(CELL_KN["T1"](l))
+        com = [s_ for s_ in mine if s_ in ctl and sum(n for _, n in mine[s_]) and sum(n for _, n in ctl[s_])]
+        if not com:
+            return None
+        def mh(M, C):
+            num = den = 0.0
+            for s_ in com:
+                km, nm = sum(k for k, _ in M[s_]), sum(n for _, n in M[s_]); kc, nc = sum(k for k, _ in C[s_]), sum(n for _, n in C[s_])
+                if nm and nc:
+                    num += (km * nc - kc * nm) / (nm + nc); den += nm * nc / (nm + nc)
+            return 100 * num / den if den else None
+        est = mh(mine, ctl)
+        pools_ = {s_: mine[s_] + ctl[s_] for s_ in com}; sizes = {s_: len(mine[s_]) for s_ in com}
+        combos = 1
+        for s_ in com:
+            combos *= _cb7(len(pools_[s_]), sizes[s_])
+        def rd_of(assign):
+            M = {s_: [pools_[s_][i] for i in assign[s_]] for s_ in com}
+            C = {s_: [pools_[s_][i] for i in range(len(pools_[s_])) if i not in assign[s_]] for s_ in com}
+            return mh(M, C)
+        ext = tot = 0
+        if combos <= 20000:
+            for pick in _it7.product(*[list(_it7.combinations(range(len(pools_[s_])), sizes[s_])) for s_ in com]):
+                v = rd_of(dict(zip(com, [set(x) for x in pick])))
+                if v is not None:
+                    tot += 1; ext += int(abs(v) >= abs(est) - 1e-9)
+        else:
+            rng = _rnd7.Random(seed)
+            for _ in range(reps):
+                v = rd_of({s_: set(rng.sample(range(len(pools_[s_])), sizes[s_])) for s_ in com})
+                if v is not None:
+                    tot += 1; ext += int(abs(v) >= abs(est) - 1e-9)
+        kp = sum(k for s_ in com for k, _ in mine[s_]); np_ = sum(n for s_ in com for _, n in mine[s_])
+        kc = sum(k for s_ in com for k, _ in ctl[s_]); nc = sum(n for s_ in com for _, n in ctl[s_])
+        def _arm8(cells):
+            cells = [c for c in cells if c[1]]
+            K = sum(k for k, _ in cells); Nn = sum(n for _, n in cells); C = len(cells); pr = K / Nn
+            var = (C / (C - 1)) * sum((k - pr * n) ** 2 for k, n in cells) / Nn ** 2 if C > 1 else pr * (1 - pr) / Nn
+            return pr, var, C
+        pm, vm, cm = _arm8([c for s_ in com for c in mine[s_]]); pc, vc, cc = _arm8([c for s_ in com for c in ctl[s_]])
+        df = max(1, min(cm, cc) - 1)
+        _tq = {1: 12.71, 2: 4.30, 3: 3.18, 4: 2.78, 5: 2.57, 6: 2.45, 7: 2.36, 8: 2.31, 9: 2.26, 10: 2.23}.get(df, 2.0 if df < 30 else 1.96)
+        d8 = pm - pc; h8 = _tq * (vm + vc) ** 0.5
+        return {"stems": len(com), "pol": f"{kp}/{np_}", "ctl": f"{kc}/{nc}", "rd": round(est), "p": round(ext / tot, 4) if tot else None,
+                "perms": tot, "cells": f"{sum(len(mine[s_]) for s_ in com)} vs {sum(len(ctl[s_]) for s_ in com)}",
+                "ci": [round(100 * max(-1.0, d8 - h8)), round(100 * min(1.0, d8 + h8))]}
+    _pi_t1 = list(rows.get("pi05", {}).get("T1_lbl") or [])
+    _pd = _a2_cmp(_pi_t1, _far20 + _far28)
+    # A2JS2-2026-10-10: the far 0.28 m filter matches labels with and without a policy prefix (t1a28_mug_s42 was missed)
+    _pe = _a2_cmp([l for l in _pi_t1 if _re.search(r"(^|_)t1[oa]28_", l)], _far28)
+    _hl7 = sorted([(k_, v_["p"]) for k_, v_ in (("PD", _pd), ("PE", _pe)) if v_ and v_["p"] is not None], key=lambda x: x[1])
+    _run = 0.0
+    for i_, (k_, pv_) in enumerate(_hl7):
+        _run = max(_run, min(1.0, (len(_hl7) - i_) * pv_))
+        (_pd if k_ == "PD" else _pe)["p_holm"] = round(_run, 4)
+    if _pd:
+        _pd["held"] = bool(_pd.get("p_holm", 1) >= 0.05 or _pd["rd"] <= 0)        # P-D: pi0.5 does not detectably exceed it
+    if _pe:
+        _pe["held"] = bool(_pe.get("p_holm", 1) < 0.05 and _pe["rd"] > 0)          # P-E: pi0.5 exceeds it at 0.28 m
+    _out7["PD"], _out7["PE"] = _pd, _pe
+    _all7 = {}
+    for _p7 in ("pi05", "pi0", "pi0fast", "gr00t_droid"):
+        _v7 = _a2_cmp(list(rows.get(_p7, {}).get("T1_lbl") or []), _far20 + _far28)
+        if _v7:
+            _all7[_p7] = _v7
+    _hl7 = sorted([(k_, v_["p"]) for k_, v_ in _all7.items() if v_["p"] is not None], key=lambda x: x[1]); _run = 0.0
+    for i_, (k_, pv_) in enumerate(_hl7):
+        _run = max(_run, min(1.0, (len(_hl7) - i_) * pv_))
+        _all7[k_]["p_holm"] = round(_run, 4)
+    _out7["vs_policies"] = _all7
+    _out7["complete"] = len(_A2) >= 27
+    _out7["lat_max_med"] = round(st.median([x for l in _far20 + _far28 for x in (g(l, "lat_max") or []) if x is not None]), 3) if _far20 + _far28 else None
+    N["a2js"] = _out7
+
 # POOLS-2026-10-05 (review items 13 and 17): which cells enter each scored pool of Table III, with the generator's k/n, so the
 # release can recompute the table from fr_summary.json alone (recompute_table3.py)
 _POOL_SPEC = {"T1": ("viol_t1", "n_t1", None), "T2": ("t2_viol", "t2_n", None), "T3": ("t3_90", None, "t3"),
