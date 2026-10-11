@@ -70,6 +70,7 @@ Paper under double-blind review}
 
 \clearpage
 \appendix
+\setlength{\belowcaptionskip}{3pt}
 \counterwithin{table}{section}
 \counterwithin{figure}{section}
 
@@ -87,7 +88,7 @@ Paper under double-blind review}
 }
 
 \smallskip
-\noindent The tabletop rates of the policy, control and witness rows of Table~\ref{tab:main}, Table~\ref{tabC:counts} and the last column of Table~\ref{tab:taxonomy} are recomputed from the released cell table (\texttt{supp/cells.csv}). The Carry column and every other tabletop number come from the released per-cell summary and per-episode logs.
+\noindent The tabletop rates of the policy, control and witness rows of Table~\ref{tab:main}, its Carry and SR columns, Table~\ref{tabC:counts} and the last column of Table~\ref{tab:taxonomy} are recomputed from the released cell table (\texttt{supp/cells.csv}). Every other tabletop number comes from the released per-cell summary and per-episode logs.
 
 % Each appendix starts a page; \suppressfloats[t] keeps a float from landing above its section heading.
 \input{sections/app_a_metric_cards.tex}

@@ -6,31 +6,29 @@
 
 \textbf{Instruction- and object-level safety.}
 Most safety work on embodied agents judges the endpoints of a task.
-Instruction-level work asks whether an agent should comply at all, testing refusal of hazardous commands \citep{ref2}, resistance to physical-world jailbreaks \citep{ref12} and the enactment of harmful stereotypes \citep{ref1}.
+Instruction-level work tests refusal of hazardous commands \citep{ref2}, resistance to physical-world jailbreaks \citep{ref12} and the enactment of harmful stereotypes \citep{ref1}.
 HazardArena pairs tasks with semantically unsafe twins \citep{ref19}.
 Object-level suites check what happens to the things being handled, such as spills, topples and drops \citep{ref71}, grasp and containment properties \citep{ref30}, or object damage \citep{ref72}.
-None of these places a person's body in the predicate; of our sub-types, only T4's load tilt is of this object-level kind.
+None of these places a person's body in the predicate.
+Of our sub-types, T4's load tilt is of this object-level kind, and most of T1's keep-outs are a scene hazard, not a body.
 
 \textbf{Trajectory-level VLA safety.}
 A recent cluster scores predicates on the trajectory itself.
 SafeVLA-Bench \citep{ref27} scores temporal-logic clauses over LIBERO and RoboCasa and reports a success-but-unsafe rate for policies that include \pizero{} and \pifive{}.
 VLA-Arena \citep{ref69}, ForesightSafety-VLA \citep{ref23} and SafeVLA \citep{ref21} extend this to dynamic obstacles, force and boundary limits, and mobile manipulation, again with no person in the scene.
-Four works overlap with ours.
-LIBERO-Safety \citep{ref24} scores a collision margin to a hand proxy beside a fixed-base arm and perturbs that proxy, and HRIBench \citep{ref68} scores collisions and workspace intrusion with an animated collaborator or intruder.
+LIBERO-Safety \citep{ref24} scores a collision margin to a hand proxy and perturbs that proxy, and HRIBench \citep{ref68} scores collisions and workspace intrusion with an animated collaborator or intruder.
 An assistive-care benchmark scores region-wise contact force on a simulated patient, for contact the task intends \citep{ref70}.
 A person in the scene and reaction to a moving person are therefore not new.
-Concurrent SafeStage \citep{ref61} splits safety into before, during and after execution on the same simulated DROID Franka, with \pifive{} and GR00T N1.7 among its policies, but its scenarios contain no person.
-We add the person as the reference of the predicates, a carried hazard passing a bystander who takes no part in the task, and person-blind controls and feasibility witnesses (Table~\ref{tab:related}).
+Concurrent SafeStage \citep{ref61} splits safety into before, during and after execution on the same simulated Franka, with \pifive{} among its policies, but its scenarios contain no person.
+We add a carried hazard passing a bystander who takes no part in the task, and read the predicates against person-blind controls and feasibility witnesses (Table~\ref{tab:related}).
 
 \textbf{Safety layers for VLAs.}
-Several works filter a VLA's actions after the fact: constraint layers \citep{ref22}, attention-guided and flow-matching filters \citep{ref41,ref42,ref43}, barrier functions for ISO\,10218 separation \citep{ref44} and whole-body filters \citep{ref74,ref75,ref76}.
-MANIGUARD fine-tunes on safe-success demonstrations, which, like our witnesses, show that a safe completion exists \citep{ref71}.
-Such layers are candidates for the external layer of our scope; the benchmark measures how often a policy would call on one, and is the place where a filtered policy could show it is safer.
+Several works filter a VLA's actions after the fact, with constraint layers, learned filters and barrier functions \citep{ref22,ref41,ref44}, and MANIGUARD fine-tunes on safe-success demonstrations \citep{ref71}; App.~\ref{app:relwork} lists more.
+The benchmark measures how often a policy would call on such a layer.
 
 \textbf{Human-aware motion and handover.}
-Robotics has long planned motion around people.
-Human-aware manipulation planners account for the person's safety and comfort \citep{ref49}, early prediction of human motion lets a robot plan around a coworker \citep{ref51}, and danger indices and injury knowledge enter the controller \citep{ref46,ref48}.
+Human-aware planners account for the person's safety and comfort \citep{ref49} and plan around a coworker's predicted motion \citep{ref51}, and danger indices and injury knowledge enter the controller \citep{ref46,ref48}.
 ISO/TS~15066 turns separation and contact force into numbers \citep{ref11,ref60}.
-Handover work presents the handle and keeps hazards away from the receiver \citep{ref53,ref59,ref25}, and simulators now benchmark it \citep{ref34}.
-Several of our thresholds come from this line of work (App.~\ref{app:cards}).
-The question differs: we ask whether a learned end-to-end policy shows these competences without being built for them, toward a bystander who is receiving nothing.
+Handover work presents the handle and keeps hazards away from the receiver \citep{ref53,ref59,ref25}.
+Several of our thresholds come from this line (App.~\ref{app:cards}).
+Our question differs: does a learned end-to-end policy show these competences without being built for them, for a bystander who receives nothing?

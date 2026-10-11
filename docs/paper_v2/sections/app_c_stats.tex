@@ -10,9 +10,15 @@
 \label{app:c-unit}
 
 \textbf{The cell is the unit.} A tabletop cell is one placement (work surface, object, bystander side and keep-out) run
-with one seed for eight episodes. Episodes in a cell share a placement and a spawn pose. A seed labels a cell; it does not
+with one seed for up to eight episodes. Twenty-two pooled cells, 15 of them \grd{}'s, stopped early with fewer and count
+as run (App.~\ref{appB:seeds}). Episodes in a cell share a placement and a spawn pose. A seed labels a cell; it does not
 fix an episode. The placement solver, the policy server's sampling and GPU physics are not seeded together, so a rerun of
 a cell gives new episodes. Every pooled tabletop rate is therefore treated as clustered by cell.
+
+\textbf{Seeds beyond 42 and 7.} Of the 567 pooled cells, 86 use further seeds, added to placements with few scored
+episodes and with no stopping rule fixed in advance. On seeds 42 and 7 alone \pifive{}'s T6a is 51/67 (76\,\%) instead
+of 57/88, and \pizero{}'s T3 and T6b fall below eight scored episodes. No other rate on at least eight moves by more
+than 6 points.
 
 \textbf{Design effect and clustered Wilson interval.} A pooled rate is $\hat p = k/n$, with $k=\sum_i k_i$ and
 $n=\sum_i n_i$ over the $m$ cells that score at least one episode. Its design effect is the Rao--Scott ratio of the
@@ -27,9 +33,12 @@ $n_e=n/D$ trials. A star marks $D>1.5$. Clustering matters most where the spawn 
 T3 cells are close to all-or-none, so a pooled T3 rate carries far less information than its episode count suggests.
 Humanoid rates take a plain Wilson interval. Table~\ref{tabC:counts} gives every rate of Table~\ref{tab:main} with its
 interval. Dimension scores average the exact sub-type rates before rounding, and are formed only when every member has
-at least eight scored episodes.
+at least eight scored episodes. Table~\ref{tabC:strata} splits T1 by the keep-out's offset and kind and T3 by the
+bystander's side, and gives the deliveries and the rates among delivered carries.
 
 \input{tables/tab_counts.tex}
+
+\input{tables/tab_strata.tex}
 
 \subsection{Matched comparisons with the person-blind control}
 \label{app:c-matched}
@@ -49,20 +58,25 @@ one over the number of relabellings.
 Table~\ref{tabC:matched}. Each pre-registered body-sweep pair, H1--H2 and H3--H4, is a family; H5 is a single test. The
 four policies against the joint-space control form a fourth family, and the predictions P-D and P-E a fifth. All other
 tests are uncorrected and labelled as such: the wording contrasts, a cell permutation stratified by experiment
-(App.~\ref{app:d-t4}), the ablations and post hoc strata.
+(App.~\ref{app:d-t4}), the ablations and post hoc strata. Apart from that permutation they are episode-level tests
+(binomial, Fisher, Welch, Mann--Whitney) that ignore the clustering by cell; we read them as descriptive.
 
 \textbf{Sub-types without a row.} T2 is compared on the pre-registered serving cell (Table~\ref{tabC:prereg}), because
 the control's other serving cells place the bowl away from the person. T5a and T5b are exposure on the tabletop. The
 control reaches the crossing hand by construction (17/17), so T6a is read against the hidden-hand twin and the
-whole-arm stop (App.~\ref{app:results}). T6b has no control. Against a phase-matched placebo, the same predicate on
-carries with no passer-by, \pifive{} reads 97/125 against 70\,\% (binomial $p=0.06$): not distinguishable.
+whole-arm stop (App.~\ref{app:results}). T6b has no control. Its reference is the same predicate on \pifive{}'s carries
+with no walker: 70\,\%, against 97/125 (binomial $p=0.06$), not distinguishable. That test treats the 70\,\% as fixed
+and rests on matching the delay after the lift (App.~\ref{app:d-t6b}).
 
-\begin{table}[t]
+Table~\ref{tabC:core} gives the plain rates on the placements that all four policies ran, so that the rows can be
+compared with each other; it carries no test.
+
+\begin{table}[!htb]
 \centering
 \caption{\textbf{No matched comparison shows a policy safer than the Cartesian control; six could not have.}
 Unsafe\,/\,scored on shared placements; Mantel--Haenszel difference in points with a cluster-robust 95\,\% interval.
-Bound, Holm$_0$ and MDD are post hoc (App.~\ref{app:c-power}). $\tW$\,worse after Holm; $\tU$\,could not have shown the
-policy safer.}
+Bound, Holm$_0$ and MDD are post hoc (App.~\ref{app:c-power}). $\tW$\,worse after Holm (bold in
+Table~\ref{tab:main}); $\tU$\,could not have shown the policy safer.}
 \label{tabC:matched}
 \scriptsize
 \setlength{\tabcolsep}{2.6pt}
@@ -93,6 +107,8 @@ Policy & Sub-type & Policy & Control & Plac. & Cells & Difference [95\,\% CI] & 
 App.~\ref{app:c-g0}.}
 \end{table}
 
+\input{tables/tab_matched.tex}
+
 \subsection{What the comparisons could have shown}
 \label{app:c-power}
 
@@ -101,10 +117,11 @@ Table~\ref{tabC:matched} answers this per row with three post hoc quantities. \e
 on the safer side; a positive bound excludes any safer difference. \emph{Holm$_0$} is the Holm-adjusted $p$ that a policy
 with no violations would get against the control's observed cells. \emph{MDD} is the difference detectable with 80\,\%
 power, at $\alpha=0.05$ and under Holm. Three rows could have produced a Holm-significant safer verdict: \pifive{} and \pizero{} on T1, and \pifive{} on T3. The four T1 rows and \grd{}'s T4 exclude any safer
-difference. \pifive{}'s T3 is at most 21 points safer. The other six rows carry $\tU$ in Table~\ref{tab:main}. The three
-small T3 rows have 60--108 relabellings, so no data could reach Holm significance. On T4 the control tilts on 3 of its
-31 carries, so no policy could be more than about 10 points safer. On T2 the control never enters the band, so no policy
-can read safer there; Table~\ref{tab:main} prints $\tU$ on the one T2 row that is not already worse, \pizero{}'s.
+difference. \pifive{}'s T3 is at most 21 points safer. The other six rows, marked $\tU$, could not have shown a safer
+policy. The three small T3 rows have 60--108 relabellings, so no data could reach Holm significance. On T4 the control
+tilts on 3 of its 31 carries, so no policy could be more than about 10 points safer. On T2 the control never enters the
+band, so no policy can read safer there. The core suite of App.~\ref{appB:seeds} has \pifast{}'s cell counts, whose
+Holm$_0$ values are 0.083, 0.18 and 0.61: alone it cannot show a policy safer.
 
 \textbf{Sample sizes for a safer policy.} At eight scored episodes per cell, detecting a 20-point safer T3 needs about 65
 cells per arm with the current interval, or 114 under Holm over the 12 rows. A pre-registered placement-stratified
@@ -115,28 +132,32 @@ episodes per attempt range from 0.28 to about 1, so up to 3.6 times as many atte
 \subsection{Pre-registered analyses}
 \label{app:c-prereg}
 
-Three analyses were frozen before any of their cells ran. The predicates, the pooling rules and the scored\,/\,exposure split
-were fixed earlier, after the first data, and are not pre-registered. The protocols are released as
-\texttt{PREREG\_T2.md}, \texttt{PREREG\_T2B.md} and \texttt{PREREG\_T2C.md} (body sweep), \texttt{PREREG\_A2.md}
-(joint-space control) and \texttt{PREREG.md} (replication). All three share four rules: eight episodes per cell, Wilson
-intervals on the cell-clustered effective size, no exclusions, and cells cut short by the hour limit or the watchdog
-counted as run, never topped up. None of their cells enters the pooled rates of Table~\ref{tab:main}.
+Three analyses were frozen before any of their cells ran: the replication on 7 October 2026, the body-sweep tests on
+8 October and the joint-space control on 9 October. ``Pre-registered'' means a dated protocol file that ships with the
+release, not an entry in a public registry. The files are \texttt{PREREG.md} (replication), \texttt{PREREG\_T2.md},
+\texttt{PREREG\_T2B.md} and \texttt{PREREG\_T2C.md} (body sweep) and \texttt{PREREG\_A2.md} (joint-space control). The
+predicates, the pooling rules and the scored\,/\,exposure split were fixed earlier, after the first data, and are not
+pre-registered; every contrast outside the three analyses is exploratory. All three share four rules: eight episodes
+per cell, Wilson intervals on the cell-clustered effective size, no exclusions, and cells cut short by the hour limit or
+the watchdog counted as run, never topped up. None of their cells enters the pooled rates of Table~\ref{tab:main}.
 
 \textbf{Body sweep at the serving cell (H1--H5).} The test runs the serving mug cell, with the bowl beside the bystander,
-on eight fresh seeds (67--101) for each policy and the Cartesian control. Each policy is compared with the control by
-the cell-level permutation test, exact over the 12{,}870 assignments of 16 cells. H1 and H2 (\pifive, \pifast) were
-frozen first. H3 and H4 (\grfull, \pizero) extend the test with the control's 0/64 already known; H4 was predicted not
-to be confirmed. \grd{}'s cells ran 90\,s episodes, as frozen; H5 reruns them at 35\,s. A Fisher test on pooled episodes,
+on eight fresh seeds (67--101) for each policy and the Cartesian control. The placement was chosen with exploratory data
+in hand: of the six object-and-side variants with a standing adult at this bowl distance it had \pifive{}'s highest
+rate (17/32, against 13/128 over the other five; App.~\ref{app:d-t2}). Each policy is
+compared with the control by the cell-level permutation test, exact over the 12{,}870 assignments of 16 cells. H1 and H2
+(\pifive, \pifast) were frozen first. H3 and H4 (\grfull, \pizero) extend the test with the control's 0/64 already known;
+H4 was predicted not to be confirmed. \grd{}'s cells ran 90\,s episodes, as frozen; H5 reruns them at 35\,s. A Fisher test on pooled episodes,
 also pre-specified, gives $p<10^{-9}$ for each confirmed hypothesis. One \pifive{} cell ended after four episodes, and
 \grd{} and \pizero{} ran 54 and 57 of their 64 episodes.
 
 The control delivers on 24/64 episodes. On the other 40 it holds the mug above the bowl, farther from the body (closest
 link, median 0.179\,m). The delivered episodes are therefore the stratum that matches the control's placement, and the
-excess holds there too (post hoc). The policies enter the band at the bowl, while placing. \pizero{}'s 0/57 measures
-competence, not a safe placement: only 3 of its 57 episodes bring a lifted mug to the bowl. The margin is thin, since the
-control's placements pass 0.13--0.19\,m from the body (App.~\ref{app:d-t2}).
+excess holds there too (post hoc). \pizero{}'s 0/57 measures competence, not a safe placement: only 3 of its 57 episodes
+bring a lifted mug to the bowl. Where the arms enter the band, and how thin the margin is, are in
+App.~\ref{app:d-t2}.
 
-\begin{table}[t]
+\begin{table}[!htb]
 \centering
 \caption{\textbf{Three policies sweep the bystander's body far more often than the control at the pre-registered
 serving cell.} Episodes with a link within 0.10\,m of the body\,/\,all episodes, with the clustered 95\,\% Wilson
@@ -164,13 +185,15 @@ H5\ \ \grd, 35\,s & 43/58 [62, 84] & $+74$ [$+61$, $+87$] & 0.0002 (single) & 6/
 millimetres. The protocol reruns the control with its transport interpolated linearly in joint space, from the start
 configuration to an inverse-kinematics solution above the destination, with the same tool attitude and duration. It runs
 on the 20 cells behind the Cartesian control's T1 rate (10 placements, seeds 42 and 7) and on 7 near-side cells, each
-copying the matched cell's configuration. Its payload bows 4.9\,cm to the far side (median peak). P-A to P-C test a
-kinematic prediction; P-D and P-E compare \pifive{} with the new control (Table~\ref{tabC:js}). Of the four policies,
+copying the matched cell's configuration and seed. Three near-side cells use seeds 13, 17 and 19. Sixteen of the 27
+cells stopped early with 4--7 episodes and count as run: 180 of 216 episodes, 132 of 160 on the far side. Its payload bows
+4.9\,cm to the far side (median peak). P-A to P-C test a kinematic prediction; P-D and P-E compare \pifive{} with the
+new control (Table~\ref{tabC:js}). Of the four policies,
 only \grd{}'s T1 is higher than the joint-space control after Holm correction, from its 0.28\,m entries in 90\,s
 episodes. \pifast{}'s interval spans zero although $p=0.018$: the interval keeps the spread between all-entered 0.20\,m
 cells and rarely entered 0.28\,m cells, while the permutation exchanges cells within a placement and so removes it.
 
-\begin{table}[t]
+\begin{table}[!htb]
 \centering
 \caption{\textbf{The joint-space blind carry reproduces most of the T1 excess.} (a)~Pre-registered predictions, with
 the joint-space control's count and clustered 95\,\% Wilson interval; P-D and P-E are Holm-corrected over the two.
@@ -207,7 +230,7 @@ replaces it. ``Held'' is read on point estimates, which the protocol does not sp
 thresholds: \pifast{}'s T4 and both T6a waits. P1's comparator, the control's 18/80, is the tangent-limited rate above.
 P1 therefore shows the far-side bend, not that the policies enter more often than any person-blind carry would.
 
-\begin{table}[t]
+\begin{table}[!htb]
 \centering
 \caption{\textbf{Every prediction with a valid reference holds on fresh seeds.} Pre-registered replication (seeds 41
 and 43): episodes with the event\,/\,scored episodes, clustered 95\,\% Wilson interval.}
@@ -240,7 +263,7 @@ Eight \pifive{} cells, one or two per sub-type except T5, were each rerun twice 
 its pooled reruns (smallest $p=0.33$). The spread between runs of a cell is the binomial spread of a few episodes, which
 the clustered intervals carry.
 
-\begin{table}[tb]
+\begin{table}[!htb]
 \centering
 \caption{\textbf{Reruns of a cell agree.} Unsafe\,/\,scored (delivered\,/\,attempted), \pifive{}, seed 42. T3:
 scissors, person left (L) or right (R); reaching hand: exposure.}
@@ -262,10 +285,12 @@ Rerun 2 & 8/8 (8/8) & 2/8 (7/8) & 4/4 (2/8) & 1/6 (2/8) & 0/8 (8/8) & 7/7 (6/8) 
 \label{app:c-g0}
 
 \grd{}'s T1--T4 cells ran 90\,s episodes, against 35\,s for the control and the other policies. Many of its carries
-start late: 16 of its 25 scored T1 carries and 40 of its 97 T4 carries lift the payload only after 35\,s. Truncating each
-logged episode at 35\,s and scoring it again gives T1 8/9, with four of the seven cells keeping a carry, and T4 18/57
+start late: 16 of its 25 scored T1 carries and 40 of its 97 T4 carries lift the payload only after 35\,s. For T2 the
+pre-registered rerun (H5) ran 35\,s episodes: 43/58 (Table~\ref{tabC:prereg}). For T1 and T4 each logged 90\,s episode
+is cut at 35\,s and scored again. This gives T1 8/9, with four of the seven cells keeping a carry, and T4 18/57
 (32\,\% [21, 44]). Against the control the T1 row would read 8/9 against 5/48 on three placements (4 against 6 cells,
 $+84$ [$+40$, $+100$], $p=0.019$, Holm 0.17). That is not distinguishable, and with so few cells no data could reach
 Holm significance. The T4 row would read 3/10 against 3/31 ($+17$ [$-22$, $+62$], $p=0.31$). Truncation replays the
 same trajectories rather than rerunning them. On the serving cell, run at both lengths on the same seeds, it agrees with
-the 35\,s rerun: carried 12/54 against 10/58, and T2 44/54 against 43/58.
+the 35\,s rerun: carried 12/54 against 10/58, and T2 44/54 against 43/58. The cut uses the logged per-step link
+distances; \texttt{PREREG\_T2C.md} wrongly states that the logs keep only each episode's minimum.

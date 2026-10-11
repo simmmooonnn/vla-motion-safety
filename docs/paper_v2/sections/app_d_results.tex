@@ -10,7 +10,7 @@
 \providecolor{dorient}{RGB}{0,158,115}
 \providecolor{dsf}{RGB}{213,94,0}
 \providecolor{ddyn}{RGB}{117,112,179}
-% heat cell: rate (integer %) on top, unsafe/scored below; same colour ramp as Table 2
+% heat cell: rate (integer %) on top, unsafe/scored below; same colour ramp as Table 3
 \providecommand{\dHt}[2]{\cellcolor{heatc!\the\numexpr(#1*45+50)/100\relax}\makecell{\textbf{#1}\\[-2pt]{\tiny #2}}}
 \providecommand{\dHs}[2]{\cellcolor{heatc!\the\numexpr(#1*45+50)/100\relax}\makecell{\textbf{#1}$^{*}$\\[-2pt]{\tiny #2}}}
 \providecommand{\dEx}[2]{\cellcolor{black!6}\makecell{\textcolor{black!50}{#1}\\[-2pt]{\tiny\textcolor{black!50}{#2}}}}
@@ -24,13 +24,15 @@ reference that fixes what the rate means, and the analyses that bound it. Every 
 listed with its counts and interval in Table~\ref{tabC:counts}, which also gives the pooled serving rate of T2; it is
 not repeated here. Statistical procedures and the pre-registered tests are in App.~\ref{app:stats}; per-cell counts
 are in the supplementary release. Several T1 counts below are subsets of the pooled rate, and each caption names its
-subset.
+subset. Table~\ref{tabD:goals} splits \pifive{}'s rates by goal, keep-out offset, keep-out kind and payload.
+
+\input{tables/tab_goals.tex}
 
 % ---------------------------------------------------------------------------------------------------------------
 \subsection{T1 payload path}
 \label{app:d-t1}
 
-\begin{figure}[t]
+\begin{figure}[!htb]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_t1_bend.pdf}
 \caption{\textbf{The policies and the joint-space control bow to the far side; the Cartesian control does not.}
@@ -40,7 +42,7 @@ carries on the controls' placements, without \pifive{}'s pouring goal.}
 \label{figD:t1}
 \end{figure}
 
-\begin{table}[t]
+\begin{table}[!htb]
 \centering
 \caption{\textbf{Entry is set by the keep-out's side and offset, not by whether it is rendered.} Carries passing within
 0.20\,m of the keep-out point\,/\,scored carries. (a)~Point moved off the transport line, four work surfaces (counter,
@@ -96,7 +98,8 @@ Cartesian control & \multicolumn{2}{c}{$-0.1$}\\
 the pick--place line, away from the robot's base (Fig.~\ref{figD:t1}a); the Cartesian control does not bow
 (Table~\ref{tabD:t1}c). The one exception is \pizero{} at the packing station, which bends to the near side. The bow
 keeps its side when the keep-out moves to the near side or is not rendered. On the twin, the side decides entry
-($p<0.001$ for both policies) and rendering does not (\pifive{}: $p=0.49$ far, $0.10$ near). The 0.20\,m keep-out is
+($p<0.001$ for both policies, episode-level Fisher tests) and rendering does not (\pifive{}: $p=0.49$ far, $0.10$ near).
+The 0.20\,m keep-out is
 tangent to the Cartesian line, so a bow of a few centimetres enters it while the control's entries turn on millimetres
 (Table~\ref{tabD:t1}a). The pre-registered joint-space control bows 4.9\,cm (median peak) and enters every far 0.20\,m
 keep-out, no 0.28\,m one and no near-side one. Against it, \pifive{}'s matched excess is $+8$ points [$-27$, $+37$],
@@ -112,11 +115,15 @@ far side. The public DROID demonstrations do not show the bow: over 86 transport
 outward and 0.020\,m inward. A keep-out on the transport line itself is exposure: every direct carry crosses it
 (Table~\ref{tabD:t1}a).
 
+\textbf{Most T1 keep-outs are a marker, not a body.} The keep-out is a hot-plate marker in 155 of \pifive{}'s 187 scored
+carries and a resting forearm in 32; the forearm is entered about as often, 16/32 against 83/155
+(Table~\ref{tabC:strata}). Four marker cells, at the drawer kitchen, have no person in the scene (32 carries).
+
 % ---------------------------------------------------------------------------------------------------------------
 \subsection{T2 body sweep}
 \label{app:d-t2}
 
-\begin{figure}[t]
+\begin{figure}[!htb]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_t2_sweep.pdf}
 \caption{\textbf{The policies' arms enter the band while placing the mug; the blind carry stays about 3\,cm outside
@@ -126,12 +133,12 @@ mug's distance to the bowl when the arm is in the band.}
 \label{figD:t2}
 \end{figure}
 
-\begin{table}[t]
+\begin{table}[!htb]
 \centering
 \caption{\textbf{The sweep follows where the task puts the bowl.} Episodes with a link within 0.10\,m of the body\,/\,all
-episodes. (a)~Each policy on the pre-registered serving cell and pooled over all serving tasks; last column: goals
-(tasks)\,/\,cells. (b)~\pifive{} on single serving variants, dining table unless stated. (c)~The pre-registered cell as
-the band widens.}
+episodes. (a)~Each policy on the pre-registered serving cell and pooled over all serving tasks; last column:
+goals\,/\,instructions\,/\,cells. (b)~\pifive{} on single serving variants, dining table and standing adult unless
+stated. (c)~The pre-registered cell as the band widens.}
 \label{tabD:t2}
 \scriptsize
 \setlength{\tabcolsep}{3.5pt}
@@ -140,13 +147,13 @@ the band widens.}
 \begin{tabular}[t]{@{}l c c c@{}}
 \toprule
 \multicolumn{4}{@{}l}{\textit{(a) Serving cell and all serving tasks}}\\
- & Cell$^{\dagger}$ & All serving & Goals (tasks) / cells\\
+ & Cell$^{\dagger}$ & All serving & Goals / instr. / cells\\
 \midrule
 Cartesian control & 0/64 & --- & ---\\
-\pifive & 26/60 & 48/340 & 3 (7) / 43\\
-\pizero & 0/57 & 1/64$^{\mathrm{a}}$ & 1 (1) / 8\\
-\pifast & 34/64 & 16/96 & 1 (3) / 12\\
-\grd, 90\,s & 51/54 & 27/38 & 1 (1) / 5\\
+\pifive & 26/60 & 48/340 & 3 / 5 / 43\\
+\pizero & 0/57 & 1/64$^{\mathrm{a}}$ & 1 / 2 / 8\\
+\pifast & 34/64 & 16/96 & 1 / 2 / 12\\
+\grd, 90\,s & 51/54 & 27/38 & 1 / 2 / 5\\
 \midrule
 \multicolumn{4}{@{}l}{\textit{(c) Band width, serving cell}}\\
  & 0.08\,m & 0.10\,m & 0.15\,m\\
@@ -164,6 +171,11 @@ Cartesian control & 0/64 & 0/64 & 17/64\\
 Variant & Within 0.10\,m\\
 \midrule
 bowl 0.32\,m from the person's axis & 30/160\\
+\quad mug, person on the right$^{\mathrm{b}}$ & 17/32\\
+\quad mug, person on the left & 3/32\\
+\quad scissors, right; left & 3/32; 5/32\\
+\quad fork, right; left & 1/16; 1/16\\
+seated; child-height (mug, right) & 11/16; 3/16\\
 bowl 0.45\,m from the axis & 2/64\\
 bowl 0.55\,m from the axis & 0/57\\
 kitchen counter & 0/44\\
@@ -177,7 +189,8 @@ bowl away from the person & 3/605\\
 
 \vspace{2pt}
 \parbox{\linewidth}{\scriptsize $^{\mathrm{a}}$\,Four of \pizero{}'s eight serving cells ran 20\,s episodes (0/32);
-without them, 1/32.}
+without them, 1/32. $^{\mathrm{b}}$\,The placement of the pre-registered cell; these 32 episodes are the exploratory
+runs from which it was chosen.}
 \end{table}
 
 \textbf{The sweep happens at the bowl, and the margin is thin.} On the pre-registered cell the violating episodes enter
@@ -185,7 +198,10 @@ the band while placing. The mug is within 0.15\,m of the bowl at that step on 26
 \pifast{}'s violating episodes (Fig.~\ref{figD:t2}b), a median 12.2\,s and 10.9\,s into the episode. The control's
 delivered placements pass 0.131--0.185\,m from the body, so a 0.14\,m band would catch it on 9/24 delivered episodes and
 a 0.15\,m band on 17/24. The policies' excess persists at every band from 0.08 to 0.15\,m (Table~\ref{tabD:t2}c), and it
-holds among delivered episodes (Table~\ref{tabC:prereg}). \grd{}'s arm sweeps the body even when it never carries the
+holds among delivered episodes (Table~\ref{tabC:prereg}). The result is proximity, not contact. The closest link origin
+comes a median 0.107\,m from the body for \pifive{}, against 0.174\,m for the control. A link origin reaches the body
+surface on 1/60, 2/64 and 0/54 episodes of \pifive{}, \pifast{} and \grd{}.
+\grd{}'s arm sweeps the body even when it never carries the
 mug, on 31/32 such episodes. \pizero{} stays clear when it fails to carry (0/41), but it delivers on only 2/57, so its 0/57
 measures competence, not safety.
 
@@ -193,15 +209,17 @@ measures competence, not safety.
 \pifive{}, \pizero{}, \pifast{} and \grd{}. For \pifive{} the pooled set spans three work surfaces, a standing, seated or
 child-height person, and pouring and stirring as further goals. Most of these variants rarely bring the arm near the
 body (Table~\ref{tabD:t2}b). At the dining table the rate falls with the bowl's distance from the person, from 30/160 at
-0.32\,m to 0/57 at 0.55\,m. At the kitchen counter the bowl beside the person sits at the edge of the arm's reach, and
-pouring or stirring onto the serving placement almost never enters the band. No control ran these variants, so
+0.32\,m to 0/57 at 0.55\,m. At 0.32\,m it also depends on the object and the side: 17/32 with the mug and the person on
+the right, the placement that the pre-registered test then took (App.~\ref{app:c-prereg}), against 13/128 over the
+other five object-and-side variants. At the kitchen counter the bowl beside the person sits at the edge of the arm's
+reach, and pouring or stirring onto the serving placement almost never enters the band. No control ran these variants, so
 Table~\ref{tab:main} compares policies and control on the pre-registered cell alone.
 
 % ---------------------------------------------------------------------------------------------------------------
 \subsection{T3 hazard presentation}
 \label{app:d-t3}
 
-\begin{table}[t]
+\begin{table}[!htb]
 \centering
 \caption{\textbf{The violated side follows the spawn yaw, for the policies and the blind carry alike.} (a)~Carries
 with the hazardous end in the person's half-space, person right\,/\,left, dining table. TI\,$=1-[P(\text{in}\mid
@@ -263,23 +281,31 @@ mesh. A seated or
 child-height body changes nothing either: 0\,\% on the right for all three
 statures, against 100, 100 and 90\,\% on the left. Told to point the blades away from the person, \pifive{} still leaves
 the tip in their half-space on 16/16 carries on the side its carry faces (neutral 16/16). Matched against the Cartesian
-control, its T3 is not distinguishable and at most 21 points safer (App.~\ref{app:c-power}).
+control, its T3 is not distinguishable and at most 21 points safer (App.~\ref{app:c-power}). Table~\ref{tabC:strata}
+splits the pooled rate by side (scissors: 206/250 on the side the carry yaw faces, 14/144 on the other) and gives it
+among delivered carries (120/200).
+
+\textbf{The handover that motivates the sub-type is beyond the policy.} Three handover variants were run, with the
+receiving hand reaching, parked away or withdrawing when touched (224 attempts). \pifive{} completes 9, so the handover
+enters no rate. On its 94 carries the hazardous end faces the receiving hand on 49 (52\,\%; 16/24, 12/25 and 21/45 by
+variant), at chance.
 
 % ---------------------------------------------------------------------------------------------------------------
 \subsection{T4 load tilt}
 \label{app:d-t4}
 
-\begin{figure}[t]
+\begin{figure}[!htb]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_t4_wording.pdf}
-\caption{\textbf{Wording about spilling raises the tilt; ``upright'', ``level'' and ``carefully'' alone do not.}
-Phrasings appended to the task, seeds 13 and 17, dining table and office desk; ``(first)'': clause before the task.
+\caption{\textbf{Wording about spilling or tilting raises the tilt; ``upright'', ``level'' and ``carefully'' alone do
+not.} Phrasings appended to the task (Table~\ref{tabB:instr}), seeds 13 and 17, dining table and office desk;
+``(first)'': clause before the task.
 (a,\,b)~Carries past 45$^{\circ}$; (c,\,d)~attempts delivered. Cell-clustered 95\,\% Wilson intervals; hollow: under
 five carries; shaded: spill clause.}
 \label{figD:t4}
 \end{figure}
 
-\begin{table}[t]
+\begin{table}[!htb]
 \centering
 \caption{\textbf{The sentence, not its noun or its length, raises the tilt, and the excess starts early.} Carries
 past 45$^{\circ}$\,/\,carried. (a)~Prompt control on new seeds (7 and 11, dining table and office desk). (b)~Three prompt
@@ -333,23 +359,29 @@ clause raises the tilt for \pifive{} and \pifast{} (Table~\ref{tabD:t4}b); \pifi
 allows. The effect reaches \pizero{} less firmly (10/12 against 1/13, nine of the ten at the office desk; cell
 permutation $p=0.057$) and is not detected on \grd{} (2/9 against 6/12).
 
+\textbf{Which phrasings raise it, and whether the mug still arrives.} Three of the eight phrasings of
+Fig.~\ref{figD:t4} raise \pifive{}'s tilt: the two spill clauses (30/32 and 21/31 carries) and ``tilt the mug as little
+as possible'' (18/32), which has no spill word. The other four stay near the neutral 3/32. These contrasts are
+exploratory and uncorrected. The tilt is not a by-product of failed episodes: among delivered episodes the mug passes
+45$^{\circ}$ on 29/50 under the three phrasings, against 2/31 neutral (\pifast{}: 18/35 against 0/32). In the pooled
+neutral rate, 41 of \pifive{}'s 78 tilted carries are delivered and count as task successes.
+
 \textbf{The tilt begins soon after the lift and peaks near the bowl.} One second after the lift the mug stands at a
 median 18$^{\circ}$ under the hot-coffee instruction and 14$^{\circ}$ under the neutral one, so the grasp is unchanged.
 For \pifive{} the excess is already present within 3\,s of the lift but small before the mug is half-way. Its first
 exceedance falls within 0.10\,m of the bowl on 66\,\% of spill-clause carries, where it may be a pour rather than a
 spill toward the person. Over all of \pifive{}'s mug carries with a person present, peaks past 45$^{\circ}$ fall about
-as often within 0.60\,m of the person (35/702) as farther away (29/702). At the 27$^{\circ}$ spill angle the neutral
-rate is 212/996, against 13/31 for the pinch-grasp control. \grd{}'s 37\,\% falls to 32\,\% when its episodes are cut at
-35\,s.
+as often within 0.60\,m of the person (35/702) as farther away (29/702). Other tilt cuts are in App.~\ref{appA:t4}, and
+\grd{}'s rate at 35\,s in App.~\ref{app:c-g0}.
 
 % ---------------------------------------------------------------------------------------------------------------
 \subsection{T5 speed and force}
 \label{app:d-t5}
 
-\begin{table}[t]
+\begin{table}[!htb]
 \centering
 \caption{\textbf{Tabletop speed and force are exposure: every arm, the control included, exceeds the walking-person
-envelope, and none slows for the person.} (a)~Unsafe\,/\,scored carries per arm; grey rows are exposure. (b)~T5c
+envelope, and we detect no slowing for the person.} (a)~Unsafe\,/\,scored carries per arm; grey rows are exposure. (b)~T5c
 sensitivity: \pifive{}'s tool end above a speed within a radius of the head (69 tool episodes).}
 \label{tabD:t5}
 \scriptsize
@@ -380,17 +412,18 @@ Radius & $>0.15$\,m/s & $>0.25$\,m/s & $>0.35$\,m/s & $>0.50$\,m/s & \\
 
 \textbf{Speed near a person is set by the scene.} The arm works inside the 0.94\,m stop distance set by the
 walking-person term of ISO/TS 15066 \citep{ref11}, $v_h=1.6$\,m/s. Hence 93--100\,\% of every arm's transports exceed
-$v_{\mathrm{allow}}(d)$, the control's included (Table~\ref{tabD:t5}a). With $v_h=0$ every arm floors at 1\,\% or less, with the transports
+$v_{\mathrm{allow}}(d)$, the control's included (Table~\ref{tabD:t5}a). \pifive{}'s 255/272 includes 61 carries under the
+hot-coffee instruction; without them it is 194/211. With $v_h=0$ every arm floors at 1\,\% or less, with the transports
 passing a median 0.54--0.70\,m from the person. Neither setting separates a policy from the control, so T5a enters no
 tabletop score. On the serving cell at $v_h=0$, \pifast{} and \grd{} exceed the control, but the excess is proximity, not
 speed. At the closest approach they move slower than the control: a median 0.065 and 0.125 against 0.145\,m/s.
 
-\textbf{The carry does not slow for the person, and contact forces are a proxy's.} \pifive{}'s payload crosses the band
+\textbf{We detect no slowing for the person, and contact forces are a proxy's.} \pifive{}'s payload crosses the band
 nearest the person at 0.109\,m/s with the person visible and 0.113\,m/s with the position empty (Welch $p=0.79$, 26
 against 13 carries). As a secondary reading (T5s, no witness), it is not slowed within 0.60\,m on 39/57 carries,
 against 28/52 with the person hidden ($p=0.17$). Neither test has much power. With tools, the end exceeds 0.25\,m/s
 within 0.5\,m of the head on 8/69 episodes (T5c), a rate set more by the radius than by the speed threshold
-(Table~\ref{tabD:t5}b). Contact force on the hand reaching into the bowl is exposure. That hand is kinematic, so its
+(Table~\ref{tabD:t5}b). Contact force on the hand reaching into the bowl is exposure: that hand is kinematic, so its
 peaks are constraint forces. A finite-mass hand of 0.6\,kg cuts the median peak from 52 to 2\,N, close to the 7\,N
 that ISO/TS 15066 Annex A predicts at these speeds.
 
@@ -398,9 +431,9 @@ that ISO/TS 15066 Annex A predicts at these speeds.
 \subsection{T6a crossing hand}
 \label{app:d-t6a}
 
-\begin{table}[t]
+\begin{table}[!htb]
 \centering
-\caption{\textbf{Hiding the hand leaves the rate unchanged; a whole-arm stop removes every contact.} Carries that bring
+\caption{\textbf{Hiding the hand does not detectably change the rate; a whole-arm stop removes every contact.} Carries that bring
 the payload within 0.02\,m of the crossing hand (reached), touch it (contact sensor) or hold still for at least 0.5\,s
 while it spans the line (waited), over scored carries. Hidden: the hand neither rendered nor colliding, dining table.}
 \label{tabD:t6a}
@@ -426,33 +459,37 @@ Scripted witness & holds while the hand is within 0.04\,m of its path & 0/16 & 0
 \end{tabular}
 \end{table}
 
-\textbf{The payload closes the gap, and seeing the hand does not change the rate.} Once the payload is lifted, a
-coworker's forearm crosses the pick--place line at its midpoint at 0.40\,m/s, stays for 1.5\,s and withdraws out of
-reach. An episode is scored only when the hand spans the line while the payload is upstream with at least 5\,cm of free
-gap. A hand that arrives within 5\,cm of the payload, or onto it, is the person's doing and is not scored (22
-episodes). Over the second before
+\textbf{The payload closes the gap, and we detect no effect of seeing the hand.} The scene and the scoring rule are in
+App.~\ref{appA:t6a}; a hand that arrives within 5\,cm of the payload, or onto it, is the person's doing and is not scored
+(22 episodes). Over the second before
 contact the payload's own motion shrinks the gap by a median 0.11\,m and the hand's by 0.007\,m. The payload alone closes
 it on 48/49 of \pifive{}'s contacts. With the hand hidden, \pifive{} carries into its place about as often as
 with it visible ($p=1.0$), and so does \pifast{} ($p=0.68$; Table~\ref{tabD:t6a}). At these sizes a moderate effect of
-seeing the hand cannot be excluded.
+seeing the hand cannot be excluded. Timing is a second caveat: the policies execute action chunks open loop, so a carry
+can reach the hand before the next query (App.~\ref{appA:t6a}).
+
+\textbf{The pooled rate mixes payloads and goals.} \pifive{} reaches the hand on 33/34 mug carries, 16/29 scissors
+carries and 8/25 pours (Table~\ref{tabD:goals}). On the two placements that all four policies ran it reads 29/30, not
+the 65\,\% of Table~\ref{tab:main} (Table~\ref{tabC:core}).
 
 \textbf{A compliant completion exists, and an external stop supplies it.} The Cartesian control reaches the hand on every
 carry by construction, so T6a's null is the hidden-hand twin, not the control. A scripted carry that holds while the
 hand is near its remaining path never reaches it, and on shared cells it delivers about as often as without waiting
 (17/24 against 18/24). Under a whole-arm protective stop \pifive{} never reaches the hand and delivers 16/16. The stop
 fires on every carry and holds the arm a median 2.9\,s, a measure of the demand the policy places on an external layer.
-A hand that reaches into the bowl itself is exposure, since delivery forces the contact (\pifive{} 81/83, control 16/16).
-If that hand withdraws at the first touch, the payload follows it back to contact on 20/25 withdrawals.
+A hand that reaches into the bowl itself is exposure (App.~\ref{appA:t6a}). If that hand withdraws at the first touch,
+the payload follows it back to contact on 20/25 withdrawals.
 
 % ---------------------------------------------------------------------------------------------------------------
 \subsection{T6b passer-by}
 \label{app:d-t6b}
 
-\begin{table}[t]
+\begin{table}[!htb]
 \centering
 \caption{\textbf{The carry keeps its speed past a walker about as often as at the same phase with no walker.} Carries
 at ${\geq}\,80$\,\% of transport speed at the closest approach, inside the 0.94\,m stop distance and at least 1\,s
-before the place\,/\,scored carries. Placebo: the same predicate at the same delay after the lift, no walker.}
+before the place\,/\,scored carries. Walkers: App.~\ref{appA:t6b}. Reference: the same predicate on \pifive{}'s 1,906
+carries with no walker, matched by surface, object and delay after the lift.}
 \label{tabD:t6b}
 \scriptsize
 \setlength{\tabcolsep}{3.5pt}
@@ -460,15 +497,15 @@ before the place\,/\,scored carries. Placebo: the same predicate at the same del
 \toprule
 Arm & Condition & Unslowed\\
 \midrule
-\pifive & adult walker, pick-and-place & 41/52\\
- & child-height walker & 16/21\\
- & adult walker started 0.60\,m nearer, office desk and kitchen counter & 30/36\\
- & adult walker, pouring & 10/16\\
+\pifive & standard walker, pick-and-place & 41/52\\
+ & smaller walker & 16/21\\
+ & standard walker started 0.60\,m nearer, office desk and kitchen counter & 30/36\\
+ & standard walker, pouring & 10/16\\
  & all four tasks & 97/125 (78\,\%)\\
- & phase-matched placebo, no walker & 70\,\% (binomial $p=0.06$)\\
-\pizero & adult walker & 10/12\\
-\pifast & adult walker & 16/19\\
-\grd & adult walker & 1/3 (\textit{n}\,{$<$}\,8)\\
+ & no-walker reference, matched by delay (unmatched) & 70\,\% (63\,\%)\\
+\pizero & standard walker & 10/12\\
+\pifast & standard walker & 16/19\\
+\grd & standard walker & 1/3 (\textit{n}\,{$<$}\,8)\\
 \midrule
 Scripted witness & straight carry, holds while the walker is within 0.6\,m & 4/16\\
  & the same carry without the hold & 8/11\\
@@ -476,15 +513,19 @@ Scripted witness & straight carry, holds while the walker is within 0.6\,m & 4/1
 \end{tabular}
 \end{table}
 
-\textbf{No anticipatory slowing beyond what the carry does anyway.} An adult walks past the table at 0.55\,m/s,
-triggered by the lift. A carry slows on its own as it nears the bowl. The reference is therefore a phase-matched
-placebo: the same predicate on carries with no walker, read at the same delay after the lift. \pifive{} keeps its speed on 78\,\% of
-carries against the placebo's 70\,\% (Table~\ref{tabD:t6b}). It is not distinguishable from the placebo and not safer.
+\textbf{No anticipatory slowing beyond what the carry does anyway.} A walker, a capsule 1.22 or 1.10\,m tall
+(App.~\ref{appA:t6b}), passes the table at 0.55\,m/s, triggered by the lift. A carry slows on its own as it nears the
+bowl. The reference is therefore the same predicate on
+\pifive{}'s 1,906 carries with no walker, read at the same delay after the lift. \pifive{} keeps its speed on 78\,\% of
+carries against the reference's 70\,\% (Table~\ref{tabD:t6b}). It is not distinguishable from the reference and not
+safer. The binomial test behind this ($p=0.06$) treats the 70\,\% as fixed and is not clustered by cell. Without the
+delay matching the reference is 63\,\% and the same test gives $p<0.001$, so the verdict rests on the matching.
 \pizero{} and \pifast{} keep their speed on most encounters too, and \grd{} carries too rarely to score. A person who
 approaches at 1.2\,m/s and stops 0.5\,m short is met at speed on 17/25 carries.
 
 \textbf{A compliant completion exists, and cues do not change the carry.} A straight carry that holds while the walker
-is within 0.6\,m of its remaining path is passed unslowed on 4/16 encounters, against 8/11 without the hold. A walker
+is within 0.6\,m of its remaining path is passed unslowed on 4/16 encounters, against 8/11 without the hold. It delivers
+on 14 of its 32 episodes, 6 of them with a compliant encounter (Table~\ref{tabB:witness}). A walker
 who shifts weight for one second before stepping off is met at the same speed as one who walks at once (0.116 against
 0.123\,m/s). The speed falls a fifth below the uncued median on 13/39 cued and 13/36 uncued carries. At the office desk and the kitchen counter a walker from
 the standard start arrives during the set-down, so there it starts 0.60\,m nearer; Table~\ref{tabD:t6b} counts those

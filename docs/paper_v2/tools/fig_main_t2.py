@@ -47,9 +47,9 @@ N45 = ns["N45"]
 ARMS = [
     ("ctl", "ctl", "person-blind control", "#555555", "s"),
     ("pi05", "pi05", r"$\pi_{0.5}$", "#1f77b4", "o"),
+    ("pi0", "pi0", r"$\pi_0$", "#2ca02c", "v"),
     ("pi0fast", "pi0fast", r"$\pi_0$-FAST", "#ff7f0e", "^"),
     ("gr00t_droid_90s", "g90", "GR00T N1.6-DROID (90 s)", "#d62728", "D"),
-    ("pi0", "pi0", r"$\pi_0$", "#2ca02c", "v"),
 ]
 # the paper's counts (v1 Table XVI; results 5.1; Appendix C/E): within 0.10 m, all episodes and among delivered
 PAPER = {"ctl": ("0/64", "0/24"), "pi05": ("26/60", "26/56"), "pi0fast": ("34/64", "32/56"),

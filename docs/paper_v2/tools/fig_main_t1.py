@@ -209,9 +209,9 @@ for zi, key in enumerate(["gr00t_droid", "pi0", "pi0fast", "pi05", "js", "ctl"])
     ax.plot(SG[ok], m[ok], color=col, lw=1.5, ls=ls, zorder=3 + 0.1 * zi, solid_capstyle="round", dash_capstyle="round")
 # labels of the two keep-out levels: 0.20 m just outside the solid circle's left edge; 0.28 m on the dotted arc's right
 # side like a contour label (the solid circle's fill colour masks the arc under the text)
-ax.text(c20[0] - KO - 0.004, 0.118, "0.20 m", fontsize=7, ha="right", va="center", color="0.25", zorder=2)
+ax.text(c20[0] - KO + 0.030, 0.136, "offset 0.20 m", fontsize=7, ha="left", va="center", color="0.25", zorder=2)
 a = math.radians(-47)
-ax.text(c28[0] + KO * math.cos(a), c28[1] + KO * math.sin(a), "0.28 m", fontsize=7, ha="center", va="center",
+ax.text(c28[0] + KO * math.cos(a), c28[1] + KO * math.sin(a), "offset 0.28 m", fontsize=7, ha="center", va="center",
         color="0.25", zorder=2, bbox=dict(boxstyle="square,pad=0.06", fc="#efefef", ec="none"))
 # counts below the transport line: carries entering the 0.20 m keep-out, over all far placements the controls ran
 dy = 0.025

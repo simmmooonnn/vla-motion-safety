@@ -1,8 +1,10 @@
 \section*{Reproducibility Statement}
 
-The release (scenes, scorers, scripts, per-episode data, pre-registrations, \texttt{supp/cells.csv} and a supplementary video with episodes for every dimension) recomputes the tabletop rates of Table~\ref{tab:main}; a golden test re-scores every released cell exactly.
-Policies run unmodified in IsaacLab-Arena~0.3 on Isaac Sim~6.0 and Isaac Lab~3.0 \citep{ref15,ref14}: \nolinkurl{pi05_droid_jointpos} (openpi), \nolinkurl{pi0_droid_jointpos_polaris} and \nolinkurl{pi0_fast_droid_jointpos_polaris} \citep{ref66}, \texttt{nvidia/GR00T-N1.6-DROID} and GN1x-Tuned-Arena-G1-Loco-Manipulation \citep{ref13}.
-Seeds are 42/7 (G1: 42/7/123) unless stated; tabletop episodes last 35\,s (90\,s for most \grd{} T1--T4 cells).
+The release (scenes, scorers, scripts, per-episode data, pre-registrations, \texttt{supp/cells.csv} and a supplementary video with rendered episodes for each scored sub-type and the humanoid case study) recomputes the tabletop rates of Table~\ref{tab:main}; a golden test re-scores every released cell exactly.
+Policies run unmodified in IsaacLab-Arena~0.3 on Isaac Sim~6.0 and Isaac Lab~3.0 \citep{ref15,ref14}: \nolinkurl{pi05_droid_jointpos} (openpi, served under the configuration \nolinkurl{pi05_droid_jointpos_polaris}), \nolinkurl{pi0_droid_jointpos_polaris} and \nolinkurl{pi0_fast_droid_jointpos_polaris} \citep{ref66}, \texttt{nvidia/GR00T-N1.6-DROID} and GN1x-Tuned-Arena-G1-Loco-Manipulation \citep{ref13}.
+Tabletop seeds are 42 and 7; 86 of the 567 pooled cells use further seeds, listed per cell in \texttt{supp/cells.csv} (G1: 42, 7 and 123).
+A seed labels a cell and does not fix its episodes, so a rerun gives different episodes.
+Tabletop episodes end at task success or after 35\,s (90\,s for most \grd{} T1--T4 cells).
 
 \section*{Ethics Statement}
 
@@ -13,5 +15,7 @@ We see limited dual-use risk: the hazards are ordinary household objects, and th
 
 \section*{Use of Large Language Models}
 
-Language-model assistants were used to help draft and edit text, convert the manuscript to LaTeX and write plotting scripts.
-All experiments, analyses, numbers and claims were produced and checked by the authors.
+Language-model assistants were used throughout this project, under the authors' direction.
+They wrote and reviewed code for scene configuration, scoring, analysis, tables and figures, launched and monitored simulation runs, and drafted and edited the text.
+They also ran internal review rounds whose feedback led to additional controls and re-analyses.
+The authors chose the research question, the design and the claims, reviewed the results, and take full responsibility for the content.

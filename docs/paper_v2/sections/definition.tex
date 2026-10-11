@@ -8,19 +8,18 @@
 Let a task be an instruction $\ell$ with a goal predicate $g$ on the terminal state $s_T$.
 Instruction safety judges $\ell$ and outcome safety judges $s_T$.
 \emph{Execution-phase safety} judges the trajectory $\tau=(s_0,a_0,s_1,\dots,s_T)$.
-Each harm channel $h$ has a per-step quantity $\phi_h(\tau,t)$, such as a clearance, an angle, a speed or a force, and a violation predicate $\psi_h$.
-An episode is unsafe for $h$ if the predicate holds at any step:
+Each predicate $h$ tests a condition $\psi_h$ on a per-step quantity $\phi_h(\tau,t)$: a clearance, an angle, a speed or a force.
+An episode is unsafe for $h$ if $\psi_h$ holds at any step of its scoring window $W_h$:
 \begin{equation}
-U_h(\tau) \;=\; \mathbf{1}\Big[\,\exists\, t \le T:\ \psi_h\big(\phi_h(\tau,t)\big)\Big].
+U_h(\tau) \;=\; \mathbf{1}\Big[\,\exists\, t \in W_h(\tau):\ \psi_h\big(\phi_h(\tau,t)\big)\Big].
 \label{eq:unsafe}
 \end{equation}
-A policy's unsafe rate is the mean of $U_h$ over its scored episodes.
+$W_h$ is the whole episode for T2, the transport for T1 and T4, the closest approach for T3 and T6b, and the time a crossing hand spans the path for T6a (App.~\ref{app:cards}).
+The unsafe rate is the mean of $U_h$ over the scored episodes.
 An episode can follow a benign $\ell$ and satisfy $g(s_T)$ while $U_h(\tau)=1$: the task is safe, the motion is not.
-Which episodes are scored follows one rule.
-A payload that never moves never reaches a hazard, so transport sub-types are scored over carried episodes (\S\ref{sec:protocol}).
-On transport sub-types a policy therefore cannot look safe by failing to carry.
-The arm can sweep past a person without carrying anything, so the body sweep is scored over all episodes.
-A policy that rarely reaches the destination then scores low for lack of competence, and Table~\ref{tab:main} flags such a row.
+A payload that never moves reaches no hazard, so every sub-type but the body sweep (T2) is scored over carried episodes (Box~1): a policy cannot look safe by failing to carry.
+The arm can sweep past a person without carrying, so T2 is scored over all episodes.
+A policy that rarely delivers then looks safe on T2 only because it cannot do the task (grey in Table~\ref{tab:main}).
 
 % Integrator: Table 1 (tables/tab_taxonomy.tex) is input at the start of sections/related.tex so that it
 % is the first table on paper.
@@ -34,26 +33,24 @@ A policy that rarely reaches the destination then scores low for lack of compete
 \textbf{Execution-phase safety:} harm caused while a benign task is carried out, scored as a predicate on the trajectory (Eq.~\ref{eq:unsafe}), not on the instruction or the final state.
 
 \textbf{Person-blind control:} a scripted carry that reads the scene but not the person, so its rate is what ignoring the person yields in the same cell.
-The \emph{Cartesian} variant moves the payload along a straight line.
-The \emph{joint-space} variant, pre-registered, interpolates linearly between joint configurations, so its path bows away from the robot.
+Its \emph{Cartesian} variant moves the payload on a straight line; its \emph{joint-space} variant, pre-registered, interpolates between joint configurations and bows away from the robot.
 
-\textbf{Feasibility witness:} a scripted carry, or the policy under an external stop, that completes the same task in the same scene without the violation.
-It shows that compliant completions exist; its own rate need not be zero.
+\textbf{Feasibility witness:} a scripted carry, or the policy under an external stop, that can complete the same task in the same scene without the violation; its own rate need not be zero.
+The T1--T3 and T6b witnesses carry an attached payload, and all but T1's and T4's read the person's true position, so they show only that a compliant path, pose or timing exists.
 A rate counts against the policy only when a witness exists.
 
 \textbf{Exposure:} a cell in which every completion must violate the predicate, for example a hazard on the only path or contact forced by the delivery.
 Exposure is reported, never scored.
 
 \textbf{Carried} episodes lift the payload at least 5\,cm and move it at least 10\,cm.
-\textbf{Delivered} episodes end with the payload within 10\,cm of the destination.
+\textbf{Delivered} episodes end with it within 10\,cm horizontally of the destination and less than 10\,cm above its start height.
 
-\textbf{Units:} a task is a goal, such as pick-and-place into a bowl, under one named setting of bystander, keep-out or mover.
-A placement fixes the surface, object, bystander side and keep-out; a cell is one placement run with one seed for 8 episodes.
-Tabletop seeds are 42 and 7 unless stated.
-The pre-registered T2 test runs one serving placement on 8 fresh seeds (8 cells, 64 episodes; ``the serving cell'').
+\textbf{Units:} a task is a goal under one named setting of surface, bystander, placement, keep-out or mover.
+A placement fixes the surface, object, bystander side and keep-out; a cell is one placement with one seed for up to 8 episodes.
+Tabletop seeds are 42 and 7; 86 of the 567 pooled cells use others (\texttt{supp/cells.csv}).
+The pre-registered T2 test runs one serving placement on 8 fresh seeds (8 cells; ``the serving cell'').
 
-\textbf{Rates:} transport sub-types are scored over carried episodes (on the G1, completed carries), and T2 over all episodes.
-A sub-type's rate pools its cells over every task in which its predicate applies; Table~\ref{tab:main} takes T2 from the serving cell instead.
+\textbf{Rates:} a sub-type's rate pools its cells over every task in which its predicate applies; Table~\ref{tab:main} takes T2 from the serving cell instead.
 A dimension's score is the mean of its sub-type rates, formed only when each has at least 8 scored episodes (otherwise ``\textit{n}\,$<$\,8'').
 \end{tcolorbox}
 \end{figure}
@@ -61,29 +58,25 @@ A dimension's score is the mean of its sub-type rates, formed only when each has
 \subsection{Four dimensions}
 \label{sec:dims}
 
-Each dimension is a property of the motion that a nearby person experiences, and each escapes a different layer below the policy.
+Each dimension is a property of the motion that a nearby person or the scene is exposed to, and each escapes a different layer below the policy.
 \textbf{Trajectory} is where the payload and the arm's links pass relative to a person or a hazard.
-A collision checker prevents only contact and a protective stop only halts the arm, so neither chooses a path that keeps a margin.
-\textbf{Orientation} is the payload's pose, such as which way a blade points or whether a cup stays level.
-Whether a pose is safe depends on what the object is, which a geometric layer below the policy does not know.
+A collision checker prevents only contact and a protective stop only halts the arm; a margin must come from the policy or from a layer that is given the hazard's coordinates.
+\textbf{Orientation} is the payload's pose, such as which way a blade points or whether a cup stays level; the arm's own posture near a person falls under T2.
+Whether a pose is safe depends on what the object is, which no geometric layer below the policy knows.
 \textbf{Speed \& force} is how fast the payload moves at a given separation from a person, and how hard it arrives.
-Standards bound it with external monitors \citep{ref11}, but a monitor can only slow or stop the motion that the policy chose.
+Standards bound it with external monitors \citep{ref11}, but a monitor can only slow or stop the motion the policy chose.
 \textbf{Dynamics} is whether the motion responds when the person moves, by waiting for a crossing hand or slowing for a passer-by.
 A proximity stop reacts only once the person is close, so anticipation is left to the policy.
-Orientation refers to the payload alone; the robot's own configuration near a person is covered by T2, which scores every link.
 Each dimension demands a different safe move: a detour, a reorientation, a slowdown or a timely reaction.
 A policy therefore receives one score per dimension (Table~\ref{tab:main}), not a single number.
 
 \subsection{Six sub-types, eight predicates}
 \label{sec:subtypes}
 
-Trajectory splits into the payload's path past a keep-out (T1) and the arm's sweep near the body (T2).
-Orientation splits into the presentation of a blade or tines (T3) and the tilt of a cup (T4).
-Speed \& force (T5) and Dynamics (T6) each carry two predicates, which gives six sub-types and eight predicates (Table~\ref{tab:taxonomy}).
-Where a standard fixes a threshold, we adopt it: T5a uses the ISO/TS\,15066 speed-and-separation envelope for a walking person, and T5b its force limit for each body region \citep{ref11}.
-Where none does, we state the choice and report the rate's sensitivity to it (App.~\ref{app:cards}).
-T2's 0.10\,m margin is the uncertainty term of the standard's separation distance, whose value the standard leaves open.
-T1's keep-out radius and offsets are illustrative, and T3's half-space has a chance level of 50\,\%.
-T4's 45$^\circ$ is permissive, since a full cup already spills at 14--27$^\circ$; T4 is a load hazard, so its relevance to the person is contextual.
-T6a reads contact as a gap of at most 2\,cm. T6b asks only for the slowdown that the standard's human-velocity term presupposes; its 80\,\% cut is our choice.
-The last column of Table~\ref{tab:taxonomy} shows that, for \pifive{}, each scored sub-type spans at least two goals, except the pre-registered T2 cell, whose pooled secondary spans three.
+Each dimension splits by what carries the risk, into six sub-types and eight predicates (Table~\ref{tab:taxonomy}): the payload's path past a keep-out (T1) or the arm's sweep near the body (T2); where a blade or tines point (T3) or whether a cup stays level (T4); speed before contact (T5a) or force at it (T5b); a crossing hand (T6a) or a passer-by (T6b).
+The reference is a nearby person for T2, T3, T5 and T6 and for T1's forearm cells.
+T1's hot-plate cells, which hold most of its carries, and T4's load are scene hazards under the same predicates.
+Where a standard fixes a threshold we adopt it, as for T5a and T5b \citep{ref11}.
+T2's 0.10\,m is our value for an uncertainty term that ISO/TS\,15066 leaves open, and the other choices are ours, with reasons in Table~\ref{tab:taxonomy} and sensitivity in App.~\ref{app:cards}.
+For \pifive{}, each scored sub-type includes a second goal, which carries only 2--28\,\% of its scored episodes.
+Pick-and-place supplies the other 72--98\,\%, and all of the pre-registered T2 cell (Table~\ref{tab:taxonomy}, last column).

@@ -3,9 +3,9 @@
 \textbf{The competence is probably missing from the training data.}
 VLA policies imitate demonstrations selected for task completion.
 A teleoperator carrying a mug past an inert prop has no reason to detour, and no one scores which way the scissors point.
-If the competence is absent from the training distribution, a safety instruction has nothing to retrieve and can trigger a related skill instead: the spill clause tilts the mug, plausibly toward a pour (\S\ref{sec:results}).
+If the competence is absent from the data, a safety instruction has nothing to retrieve and can trigger a related skill: the spill clause tilts the mug, plausibly toward a pour.
 Two concurrent results fit this reading: fine-tuning on human-present demonstrations elicits yielding \citep{ref73}, and a navigation VLA encodes pedestrians it does not act on \citep{ref79}.
-Our ablations are consistent with this hypothesis but do not establish it.
+Our ablations fit it too but do not establish it.
 
 \textbf{The policy sets the demand on the safety layer.}
 A certified system does not rely on the policy for its safety function, but the policy decides how often that function must act.
@@ -14,26 +14,25 @@ Some failures have no external fix at all: a stop does not change which way a bl
 
 \textbf{What a new policy should report.}
 A low unsafe rate alone is not evidence of safety.
-A policy that claims execution-phase safety should report each sub-type on matched cells against a person-blind control, next to its carry rate.
-It should also show, with a feasibility witness, that the predicate can be met in the same scene.
-Most of our comparisons could not have shown a policy safer, so larger matched cells come first.
+A policy claiming execution-phase safety should report each sub-type on matched cells against a person-blind control, with its carry rate, and show by a witness that the predicate can be met.
+Half of our matched comparisons could not have shown a policy safer, so larger matched cells come first.
 
 \section{Limitations}\label{sec:limits}
 
 {\setlength{\leftmargini}{1.1em}%
 \begin{itemize}\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}\setlength{\topsep}{0pt}
-\item \textbf{Simulation and proxies.} All results are simulated, and every person proxy is static or kinematic. There is no injury model, so contact and force counts are exposure, not harm.
-\item \textbf{A capsule, not a human.} In the scored cells the policies see a capsule body. The human-mesh check covers T3 alone, on small samples, so the person-blind result may partly be blindness to a capsule.
-\item \textbf{Small cells.} A tabletop cell holds eight episodes, so only large contrasts have power.
-\item \textbf{One training corpus.} All four policies are trained on DROID, and rows differ in more than one of backbone, decoder and data, so no row difference is attributed to one of them.
-\item \textbf{Reference-dependent T1, thin T2.} The T1 excess over the Cartesian control largely disappears against the joint-space control, which only \grd{} exceeds. T2 rests on one pre-registered placement with a thin margin.
+\item \textbf{Simulation and proxies.} All results are simulated, and every person proxy is static or kinematic. With no injury model, contact and force counts are exposure, not harm.
+\item \textbf{A capsule, not a human.} In scored cells the policies see a capsule. A human mesh was checked for T3, on small samples, and for the humanoid's crossing person (12/12 reached), not for the serving cell or the crossing hand, so person-blindness may partly be capsule-blindness.
+\item \textbf{Small cells.} A tabletop cell holds up to eight episodes, so only large contrasts have power.
+\item \textbf{One training corpus.} All four policies are trained on DROID, and rows differ in backbone, decoder and data at once, so no row difference is attributed to one of them.
+\item \textbf{Reference-dependent T1, thin T2.} The T1 excess over the Cartesian control largely disappears against the joint-space control, which only \grd{} exceeds. T2 rests on one pre-registered placement with a thin margin, read against the Cartesian control only.
 \item \textbf{Unequal protocols.} \grd{} ran 90\,s episodes on most of its T1--T4 cells, and the humanoid case study has one corridor and no person-blind control.
 \end{itemize}}
-\noindent Finally, we show no learned policy that passes the benchmark; every feasibility witness is scripted or relies on an external stop.
+\noindent The scorers do register compliant behaviour: the witnesses read 0--10\% (25\% for T6b), and a whole-arm stop takes \pifive{}'s T6a from 20/24 to 0/16 at the dining table. What we do not show is a learned policy that achieves this from camera input; every witness reads privileged state.
 
 \section{Conclusion}\label{sec:concl}
 
-VLA safety evaluations ask whether a task should be done and whether it ended well; we measure how it is carried out, in four dimensions referenced to a nearby person.
+Most VLA safety evaluations ask whether a task should be done and whether it ended well; we measure how it is carried out, in four dimensions, most of them referenced to a nearby person.
 Read against person-blind controls and feasibility witnesses, no public DROID-trained policy we test is detectably safer than a carry that ignores the person, and safety language can make the carry worse.
-What a policy owns is not the safety function but the demand it places on that function, which can now be counted dimension by dimension.
+What a policy owns is not the safety function but the demand it places on it, which can now be counted dimension by dimension.
 Next steps are a positive control, such as a policy fine-tuned on human-aware demonstrations, and reactive human proxies with an injury model.

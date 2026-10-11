@@ -6,24 +6,23 @@
 \subsection{Reading the matrix}\label{sec:matrix}
 
 \textbf{No comparison shows a policy safer than the person-blind control; the excess lies in where the arm goes.}
-Table~\ref{tab:main} gives one score per policy and dimension, the mean of the dimension's sub-type rates, next to the
-rates themselves. Each rate is the share of unsafe episodes under the predicate of Table~\ref{tab:taxonomy}, so lower is
-safer. A dimension score is formed only when every member sub-type has at least eight scored episodes; otherwise the
-cell reads \textit{n}\,{$<$}\,8.
+Table~\ref{tab:main} gives each policy one score per dimension, the mean of its sub-type rates under the predicates of
+Table~\ref{tab:taxonomy}, next to the rates themselves; lower is safer. A score is formed only when every member
+sub-type has at least eight scored episodes; otherwise the cell reads \textit{n}\,{$<$}\,8.
 
-Reference rows make each rate interpretable. The person-blind control shows what a carry that ignores the person
-does in the same scenes. A policy that used the person would be safer than this carry, so a policy that is not safer
-gives no evidence of using the person. For Dynamics, where a blind carry meets the mover by construction, the
-mover-removed row is the reference. The feasibility witness rules out the other explanation, that the scene leaves no
-safe way to finish the task. Every scored scene admits compliant completions; the witness itself violates the predicate
-on at most a quarter of its runs.
+Reference rows make each rate interpretable. A policy that used the person would be safer than the person-blind
+control, so one that is not safer gives no evidence of using the person. For Dynamics, where a blind carry meets the
+mover by construction, the mover-removed row is the reference. The feasibility witness rules out the other
+explanation, that the scene leaves no safe way to finish the task. Each scored sub-type has one for pick-and-place: at
+five work surfaces for T1, at three for T4 and at the dining table for T2, T3, T6a and T6b. Its own rate is at most a
+quarter.
 
 Against the Cartesian control, none of the twelve matched comparisons for T1, T3 and T4 shows a policy safer
-(Fig.~\ref{fig:forest}). Every policy enters more keep-outs than this straight-line carry, but only \grd{} more than the
-joint-space one (F1). Three of the four policies sweep the bystander's body more (T2). No T3 or T4 difference survives
-Holm correction. Cells marked $\circ$ had too few matched cells for a safer result to reach significance, so they are
-evidence in neither direction. A pre-registered replication on fresh seeds holds for every prediction whose reference
-was valid (App.~\ref{app:stats}).
+(Fig.~\ref{fig:forest}). Bold cells in Table~\ref{tab:main} are worse than it after Holm correction: every policy's T1
+and three policies' pre-registered T2. Only \grd{}'s T1 also exceeds the joint-space control, whose rate follows the
+slash in the control row. No T3 or T4 difference survives correction. Six of the twelve could not have shown a policy
+safer: evidence in neither direction. A pre-registered replication on fresh seeds holds for every prediction whose
+reference was valid (App.~\ref{app:stats}).
 
 \begin{figure}[b]
 \centering
@@ -34,11 +33,16 @@ pre-registered test.}
 \label{fig:forest}
 \end{figure}
 
-A dimension score summarises a row. It is not comparable across dimensions, because each sub-type has its own
-reference: T3's chance level is 50\%, for instance, and T6b's predicate fires on 70\% of \pifive{}'s carries with no
-walker. The Speed \& force column is grey on the tabletop because the scene forces every row over the threshold, the
-control included (F3). Rates are conditioned on carrying, so they describe the tasks a policy can do. This matters for
-\pizero{} and \grd{}, which carry the object on under a third of attempts (Carry column).
+A dimension score is not comparable across dimensions, since each sub-type has its own reference: T3's chance level
+is 50\%, and T6b's predicate fires on 70\% of \pifive{}'s carries with no walker. Grey marks exposure (tabletop Speed
+\& force: the scene puts every row, the control included, over the threshold), a task the policy cannot do
+(\pizero{}'s T2) and scores with a member below 20 scored episodes. Rates are conditioned on carrying, so they
+describe what a policy can do.
+
+\textbf{Policy profiles.}
+\pifive{} and \pifast{} deliver on about 60\% of attempts and share a profile: worse than the control on Trajectory
+(T1, T2), not distinguishable on Orientation (T3, T4). \pizero{} (39\% carried) is similar when it carries. \grd{}
+(42\%; 90\,s episodes) is highest on T1, T2 and T4.
 
 \begin{figure}[t]
 \centering
@@ -51,27 +55,28 @@ control's range; filled: delivered.}
 
 \subsection{Findings by dimension}\label{sec:findings}
 
-\textbf{F1 Trajectory: when it places an object beside a person, the arm comes within 10\,cm of their body.}
-The pre-registered test uses a serving cell in which the bowl stands beside the bystander. Its hypotheses, seeds, test
-and Holm family were fixed before the policies' cells ran. There, \pifive{}, \pifast{} and \grd{} bring an arm-link
-origin within 0.10\,m of the body on 43--94\% of episodes (Fig.~\ref{fig:t2}). The person-blind control never does
-(Holm-adjusted $p = 0.0003$ for each policy). Link origins lie inside the links, so the arm's surface comes closer still.
-For \pifive{} and \pifast{}, the entries come at the bowl, as the mug is set down. The excess holds among delivered
-episodes, where the control also sets the mug down (App.~\ref{app:d-t2}). \grd{}'s arm sweeps the bystander whether or
-not it carries the mug, and a rerun with 35\,s episodes confirms the excess (Table~\ref{tab:main}, note a). \pizero{}
-stays clear, as predicted, but only because it almost never brings the mug to the bowl. A check on the payload alone
-would miss these entries, since the arm, not the mug, reaches the person. The finding rests on one placement with a
-thin margin: the control's own placements pass only about 3\,cm outside the band. The policies' excess holds at every
-band width tested, but a band a few centimetres wider also catches some of the control's placements.
+\textbf{F1 Trajectory: at a serving placement, three policies' arms come within 10\,cm of the bystander's body.}
+The pre-registered test uses a serving cell, with the bowl beside the bystander. There, \pifive{}, \pifast{} and
+\grd{} bring an arm-link origin within 0.10\,m of the body on 43--94\% of episodes (Fig.~\ref{fig:t2}). The
+person-blind control never does (Holm-adjusted $p = 0.0003$ each). Link origins lie inside the links, so the
+arm's surface is closer. For \pifive{} and \pifast{} the entries come at the bowl, as the mug is set down, and the
+excess holds among delivered episodes, where the control also sets it down (App.~\ref{app:d-t2}). \grd{}'s arm
+sweeps the bystander whether or not it carries the mug, and a 35\,s rerun confirms the excess (43/58). \pizero{}
+stays clear, as predicted, but only because it almost never brings the mug to the bowl. A payload-only check would
+miss these entries: the arm, not the mug, reaches the person. The finding rests on one placement with a thin margin.
+It comes from exploratory runs, where it gave \pifive{}'s highest rate of six object-and-side variants: 17/32,
+against 3/32 with the person on the other side and 13/128 over all five others. The test used eight fresh seeds. The
+control's arm comes within about 3\,cm of the band, so a slightly wider band catches some of its episodes; the
+policies' excess holds at every width tested.
 
 \begin{figure}[t]
 \centering
 \begin{minipage}[t]{0.49\linewidth}
 \centering
 \includegraphics[width=\linewidth]{figures/fig_main_t1.pdf}
-\caption{\textbf{Paths bend away from the robot, as a joint-space blind carry does.} Mean payload paths at one
-placement; counts: far 0.20\,m keep-outs on matched placements (\pifive{}: pick-and-place). Table~\ref{tab:main}'s T1
-pools the 0.20 and 0.28\,m offsets.}
+\caption{\textbf{Paths bend away from the robot, like a joint-space blind carry.} Mean paths at one kitchen-counter
+placement (thin: single \pifive{} carries; circles: both keep-out offsets). Cartesian control: also the T1
+feasibility witness. Counts: 0.20\,m offset, placements the controls ran.}
 \label{fig:t1}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.49\linewidth}
@@ -84,67 +89,69 @@ delivered, by phrasing (prompt experiment, two work surfaces).}
 \end{figure}
 
 \textbf{Paths bend away from the robot, not around the hazard.}
-On average, every policy's payload path bows 4--13\,cm to the far side of the straight pick--place line, away from the
-robot base (Fig.~\ref{fig:t1}). The bow does not depend on the hazard. A far-side keep-out is entered whether or not it
-is rendered, and a near-side one much less often (App.~\ref{app:d-t1}). A policy that perceived the keep-out would bend
-away from it; these policies bend away from the robot whichever side the keep-out is on. The 0.20\,m keep-out touches
-the straight line, so a bow of a few centimetres enters it; Table~\ref{tab:main}'s T1 pools this offset with the 0.28\,m
-one. A person-blind carry that interpolates in joint space bows the same way. In a pre-registered comparison with this
-control, \pifive{} is not distinguishable from it on matched placements ($+8$ points, $p = 0.169$), nor are \pizero{}
+On average, every policy's path bows 4--13\,cm to the far side of the straight pick--place line, away from the
+robot base (Fig.~\ref{fig:t1}). The bow does not depend on the hazard: a far-side keep-out is entered whether or not it
+is rendered, and a near-side one far less often (App.~\ref{app:d-t1}). A policy that perceived the keep-out would bend
+away from it; these policies bend away from the robot whichever side it is on. The 0.20\,m keep-out touches the
+straight line, so a bow of a few centimetres enters it; Table~\ref{tab:main}'s T1 pools this offset with the
+0.28\,m one. A person-blind carry that interpolates in joint space bows the same way. In a pre-registered comparison,
+\pifive{} is not distinguishable from this control on matched placements ($+8$ points, $p = 0.169$), nor are \pizero{}
 and \pifast{} after Holm correction. Only \grd{} exceeds it, in its 90\,s episodes: it bows furthest and enters the
-outer keep-out as well. For three of the four policies, joint-space interpolation thus explains the T1 excess over the
-Cartesian control. Table~\ref{tab:main} reports both references.
+outer keep-out too. For the other three, joint-space interpolation is enough to account for the pooled T1 excess
+over the Cartesian control.
 
 \textbf{F2 Orientation: safety language can make the carry less safe.}
-Under the plain task instruction, \pifive{} rarely tilts a mug past 45$^{\circ}$ (Table~\ref{tab:main}, T4). In a prompt
-experiment, appending ``do not spill the coffee'' raises its share of tilted carries from 9\% to 94\%
-(Fig.~\ref{fig:t4}). Delivery falls from 97\% to 25\% of attempts. ``Keep the mug upright'' alone leaves the tilt near
-its neutral level, and \pifast{} responds to the spill clause in the same way. The effect follows the clause, not the
-prompt's length: a length-matched irrelevant sentence has no such effect, and the noun ``coffee'' alone a much smaller
-one. For \pifive{} the effect replicates across three prompt experiments (App.~\ref{app:d-t4}). It is weaker elsewhere:
-\pizero{}'s increase is concentrated at one desk, and \grd{} shows no clear change. The tilt is pour-like rather than
-aimed at the person: most first exceedances occur near the bowl, and tilt peaks are no more frequent near the bystander.
-Either way, the instruction meant to make the carry safer makes it less safe, and no orientation-blind safety layer can
-catch it.
+Under the plain instruction, \pifive{} rarely tilts a mug past 45$^{\circ}$ (Table~\ref{tab:main}, T4). Across
+three prompt experiments, a clause about not spilling raises its share of tilted carries from 8\% to 83\%. The largest
+arm, ``do not spill the coffee'', reaches 94\% and cuts delivery from 97\% to 25\% (Fig.~\ref{fig:t4}).
+``Tilt the mug as little as possible'' also raises it (18/32); ``upright'', ``level'' and ``carefully'' alone
+do not. \pifast{} responds in the same way, \pizero{}'s increase is concentrated at one desk, and \grd{} shows no
+clear change. The effect follows the clause, not the prompt's length: a length-matched irrelevant sentence has none,
+and the noun ``coffee'' alone a much smaller one. These wording contrasts are exploratory and uncorrected
+(App.~\ref{app:d-t4}). The tilt survives among delivered episodes: 29/50 under the three tilt-raising phrasings
+against 2/31 under the plain one (\pifast{}: 18/35 against 0/32). Task success does not see it: 41 of the 78 tilted
+carries behind \pifive{}'s T4 rate are delivered. The tilt is pour-like rather than aimed at the person: most first
+exceedances occur near the bowl. Either way, the instruction meant to make the carry safer makes it less safe, and no
+orientation-blind safety layer can catch it.
 
 \textbf{Orientation follows the spawn pose, not the person.}
 \pifive{} points a blade or tines into the bystander's half-space on 59\% of carries and the person-blind control on
 62\%, near the chance level of 50\% (Table~\ref{tab:main}, T3). The carry holds a yaw set by the object's starting pose.
-With the scissors in one spawn pose, the tip faces a person on the left on every carry and a person on the right on
-none. Turning the spawn by 180$^{\circ}$ moves most violations to the other side (App.~\ref{app:d-t3}). Rendering the
-person as a capsule, as a full mesh or not at all leaves this pattern unchanged, and so does an explicit instruction to
-point the blades away. A tracking index, 1 when the blade always turns away from the person and 0 when its side ignores
-them, is near zero for \pifive{}, as for the blind carry. A scripted carry that turns the blade away scores near one on
-it and completes the same task, so a safe presentation is attainable. T3 therefore measures how the object starts, not
-a response to the person.
+With the scissors as spawned, the rate is 206 of 250 carries for a person on the side this yaw faces and 14 of 144 for
+one on the other side. The blind control reads 72/80 and 0/16, so the high level is a fixed yaw, not aim. Turning
+the spawn by 180$^{\circ}$ moves most violations to the other side (App.~\ref{app:d-t3}). Rendering the person as a
+capsule, as a full mesh or not at all leaves this pattern unchanged, and so does an instruction to point the blades
+away. A scripted carry that turns the blade away from the person never violates and completes the task, so a
+compliant pose exists. T3 measures how the object starts, not a response to the person. The handover that
+motivates it is beyond \pifive{}: it completes 9 of 224 attempts, with the hazardous end toward the receiving hand on
+49 of 94 carries.
 
 \textbf{F3 Speed \& force: no slowing is detected when a person is there.}
 Near the bystander, \pifive{}'s payload moves at 0.109\,m/s, against 0.113\,m/s when the same position is empty (Welch
-$p = 0.79$). The difference is small, but the test has little power, so a moderate slowdown cannot be excluded. The
-tabletop T5a column is exposure. With the parameters of App.~\ref{app:cards}, ISO/TS 15066 speed-and-separation
-monitoring sets a 0.94\,m protective separation distance for a walking person \citep{ref11}, and a table-side arm works
-inside it. Nearly every transport in every row therefore exceeds $v_{\mathrm{allow}}(d)$, the fastest speed the standard
-permits at separation $d$, the control included. A score would rank policies by the scene rather than by their
-behaviour, so Table~\ref{tab:main} prints these cells in grey. Contact force is exposure for a related reason: the hand
-proxy is kinematic and never yields, so the measured forces are constraint forces. The only scored speed cell is the
-humanoid's, described below.
+$p = 0.79$). The test has little power, so a moderate slowdown cannot be excluded. The tabletop T5a column is
+exposure. With the parameters of App.~\ref{app:cards}, ISO/TS 15066 speed-and-separation monitoring sets a 0.94\,m
+protective separation distance for a walking person \citep{ref11}, and a table-side arm works inside it. Nearly every
+transport in every row, the control included, thus exceeds $v_{\mathrm{allow}}(d)$, the speed the standard permits
+at separation $d$. A score would rank scenes, not policies, so Table~\ref{tab:main} prints these cells in grey.
+Contact force is exposure too: the hand proxy is kinematic and never yields, so the measured forces are constraint
+forces. The only scored speed cell is the humanoid's.
 
 \textbf{F4 Dynamics: a moving hand is carried into, not waited for.}
 A coworker's forearm crosses the transport line, stays for 1.5\,s and withdraws. \pifive{} carries the mug into it on
-65\% of carries and pauses for it on only 8\% (Table~\ref{tab:main}, T6a); on the rest the mug neither reaches the
-forearm in that window nor pauses. \pizero{}, \pifast{} and \grd{} never pause. In nearly every contact it is the mug
-that closes the gap. A blind carry meets the hand by construction, so the reference is the same scene with the hand
-neither rendered nor colliding. At the table where both ran, hiding the hand leaves the rate unchanged (81\% against
-83\% visible): the carry does not respond to the visible hand. A whole-arm protective stop avoids every contact and
-still delivers every mug, so a compliant completion exists (App.~\ref{app:d-t6a}). A person walking past the table does
-not slow the carry either: \pifive{}'s T6b rate is not distinguishable from the same predicate read on carries with no
-walker (mover-removed row). Neither a moving hand nor a passing body changes the carry, so every encounter is left to
-an external layer.
+65\% of carries and pauses for it on 8\% (Table~\ref{tab:main}, T6a). \pizero{}, \pifast{} and \grd{} never
+pause. In nearly every contact it is the mug that closes the gap. A blind carry meets the hand by construction, so the
+reference is the same scene with the hand neither rendered nor colliding. Hiding it leaves the dining-table rate
+unchanged (81\% against 83\% visible). We thus detect no response to the visible hand, in the one or two observations
+that \pifive{}'s 1.0\,s open-loop chunks allow before the mug arrives. A whole-arm protective stop avoids every
+contact and delivers every mug, so a compliant completion exists (App.~\ref{app:d-t6a}). Nor do we detect
+slowing for a passer-by: \pifive{}'s T6b rate is not distinguishable from the same predicate read on its carries with
+no walker (mover-removed row). With no detected response to a moving hand or a passing body, every encounter is left
+to an external layer.
 
 \textbf{Humanoid case study.}
-\gone{}, carrying a box down a corridor, repeats the tabletop profile (Table~\ref{tab:main}, bottom block). Every carry
-passes a standing person inside the protective separation distance, at about 0.34\,m/s; this is the matrix's only scored
-speed cell. The payload reaches a crossing person on 88\% of encounters without slowing first. A repulsion shield, which
-pushes the payload away from given hazard coordinates, removes the keep-out entry from all eight completed carries, and
-a protective stop prevents carried contact. With no person-blind control and no witness for T2--T4, the row describes
+\gone{}, carrying a box down a corridor, repeats the tabletop profile (Table~\ref{tab:main}, bottom row). Every
+carry passes within 0.30\,m of a standing person at about 0.34\,m/s. This is the matrix's only scored speed cell, read
+against the still-person envelope. The box reaches a person crossing at 0.06\,m/s on 88\% of encounters without slowing. A
+repulsion shield given the hazard's coordinates removes the keep-out entry from all eight completed carries, and a
+protective stop prevents carried contact. With no person-blind control and no witness for T2--T4, the row describes
 one policy in one scene and is not compared with the tabletop (App.~\ref{app:g1}).

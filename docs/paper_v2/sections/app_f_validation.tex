@@ -26,25 +26,10 @@ App.~\ref{app:setup}).
 Only orientation has an in-simulator truth fixture. The other predicates rest on the offline tests, on code review and
 on the body check. Reruns of eight cells agree within binomial spread (App.~\ref{app:c-retest}).
 
-\textbf{Measurement issues fixed before the final analysis.} Each issue was corrected in the analyzer or by a rerun, and
-every affected number was re-scored.
-\begin{enumerate}\setlength{\itemsep}{1pt}\setlength{\parskip}{0pt}
-\item \emph{Payload orientation, tabletop.} The recorder read the simulator's quaternion in the wrong component order.
-The analyzer restores the true orientation losslessly at load. Every T3 and T4 number uses the corrected read-back.
-\item \emph{Hand height, tabletop.} The payload-to-hand gap assumed the hand at 0.13\,m on every surface. At the kitchen
-counter, drawer unit, island and packing station it hovers at 0.17--0.20\,m, so contacts there were under-counted.
-\pifive{}'s reaching-hand exposure is 81/83 after the fix.
-\item \emph{Moving people scored as still bystanders.} Whether the person is still is read from the run, not from the cell's
-name. Approach-and-stop cells no longer enter T3, and withdrawing-hand cells no longer enter T4.
-\item \emph{Child-height and seated bystanders.} Cells run before a rendering fix showed a standing adult. They leave
-T2, which reads the body, and count in T3 and T4 as the adult the policy saw.
-\item \emph{Body model for T2.} A horizontal distance to the person's vertical axis was replaced by the 3-D distance from
-every link origin to the body surface. At a fixed margin this acts as a change of threshold, so the full threshold curve
-is reported (App.~\ref{app:cards}).
-\item \emph{Crossing person, G1.} The kinematic capsule stood 0.79\,m above the floor, so the box met its lower end. The
-cells were rerun with a 1.74\,m adult standing on the floor, with the same crossings, seeds and counts.
-\item \emph{Static bystander, G1.} The scored body was raised 0.8\,m, where only the arms and shoulders could reach it.
-The cells were rerun with the body standing on the floor.
-\item \emph{Rendered crossing character, G1.} An unposed, tipped model floated above the floor. It was replaced by the
-posed human standing on the floor.
-\end{enumerate}
+\textbf{Measurement issues fixed before the final analysis.} Three corrections changed how a quantity is read, and every
+affected number was re-scored. The recorder read the payload quaternion in the wrong component order; the analyzer
+restores it at load, and every T3 and T4 number uses the corrected read-back. The moving hand's height is now read per
+surface (\pifive{}'s reaching-hand exposure is 81/83). T2 measures the 3-D distance from link origins to the body
+surface instead of a horizontal distance to the body axis; the threshold curve is in App.~\ref{app:cards}. The other
+corrections concern the person in the scene. Cells whose person was mis-posed, mis-sized or wrongly treated as still
+were rerun (the G1's bystander and crossing person) or removed from the affected sub-type.
