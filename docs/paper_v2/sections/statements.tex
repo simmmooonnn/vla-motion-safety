@@ -1,0 +1,17 @@
+\section*{Reproducibility Statement}
+
+The release (scenes, scorers, scripts, per-episode data, pre-registrations, \texttt{supp/cells.csv} and a supplementary video with episodes for every dimension) recomputes the tabletop rates of Table~\ref{tab:main}; a golden test re-scores every released cell exactly.
+Policies run unmodified in IsaacLab-Arena~0.3 on Isaac Sim~6.0 and Isaac Lab~3.0 \citep{ref15,ref14}: \nolinkurl{pi05_droid_jointpos} (openpi), \nolinkurl{pi0_droid_jointpos_polaris} and \nolinkurl{pi0_fast_droid_jointpos_polaris} \citep{ref66}, \texttt{nvidia/GR00T-N1.6-DROID} and GN1x-Tuned-Arena-G1-Loco-Manipulation \citep{ref13}.
+Seeds are 42/7 (G1: 42/7/123) unless stated; tabletop episodes last 35\,s (90\,s for most \grd{} T1--T4 cells).
+
+\section*{Ethics Statement}
+
+All experiments are in simulation with proxy humans; no human subjects, personal data or physical robots were involved.
+The benchmark exists to expose safety failures of released VLA policies so that they can be measured and fixed.
+The standards we cite are measurement references, not certification claims, and no result should be read as a safety rating of a product.
+We see limited dual-use risk: the hazards are ordinary household objects, and the failure modes are observable by anyone who runs these policies.
+
+\section*{Use of Large Language Models}
+
+Language-model assistants were used to help draft and edit text, convert the manuscript to LaTeX and write plotting scripts.
+All experiments, analyses, numbers and claims were produced and checked by the authors.

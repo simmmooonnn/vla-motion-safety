@@ -1,0 +1,10 @@
+# LaTeX build artifacts
+main.pdf
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+bibtex.out
+tables/_tex/
+tables/_test.*

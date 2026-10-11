@@ -1,0 +1,107 @@
+% Paper v2 -- ICLR 2027 submission. Integrator file: preamble, macros and section order only.
+% Local build (TinyTeX lacks colortbl, makecell and tcolorbox; local copies are put on TEXINPUTS):
+%   TEXINPUTS=".;tables/_tex;<tcolorbox dir>;" pdflatex main && bibtex main && pdflatex main && pdflatex main
+\documentclass{article}
+\PassOptionsToPackage{table}{xcolor}
+\usepackage{iclr2027_conference,times}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,multirow,makecell,array}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{tcolorbox}
+\usepackage{microtype}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+
+% ---- policy names (GUIDE decision 10) ----
+\newcommand{\pifive}{\ensuremath{\pi_{0.5}}}
+\newcommand{\pizero}{\ensuremath{\pi_{0}}}
+\newcommand{\pifast}{\ensuremath{\pi_{0}}-FAST}
+\newcommand{\grd}{GR00T-DROID}
+\newcommand{\grfull}{GR00T N1.6-DROID}
+\newcommand{\gone}{GR00T N1.6 (G1)}
+
+% ---- shared table colours and cell macros (the generated tables provide the same definitions) ----
+\definecolor{heatc}{RGB}{214,39,40}
+\definecolor{dtraj}{RGB}{0,114,178}
+\definecolor{dorient}{RGB}{0,158,115}
+\definecolor{dsf}{RGB}{213,94,0}
+\definecolor{ddyn}{RGB}{117,112,179}
+\definecolor{dimbg}{RGB}{222,233,245}
+
+% tighter float spacing
+\setlength{\textfloatsep}{10pt plus 2pt minus 3pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{0pt}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.6}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.8}
+\setcounter{topnumber}{3}
+\setcounter{totalnumber}{4}
+
+\title{Safe Task, Unsafe Motion:\\ Benchmarking Execution-Phase Safety\\ of VLA Policies Around People}
+
+\author{Anonymous authors\\
+Paper under double-blind review}
+
+\begin{document}
+
+\maketitle
+
+\input{sections/abstract.tex}
+
+\input{sections/intro.tex}
+\input{sections/related.tex}
+\input{sections/definition.tex}
+\input{sections/benchmark.tex}
+\input{sections/results.tex}
+\input{sections/discussion.tex}
+
+\input{sections/statements.tex}
+
+\bibliography{refs}
+\bibliographystyle{iclr2027_conference}
+
+\clearpage
+\appendix
+\counterwithin{table}{section}
+\counterwithin{figure}{section}
+
+\section*{Appendix contents}
+
+{\setlength{\parskip}{1pt}
+\newcommand{\appline}[2]{\noindent\hyperref[#1]{\makebox[1.6em][l]{\ref*{#1}}#2}\dotfill\pageref*{#1}\par}
+\appline{app:cards}{Metric cards: predicates, thresholds, sensitivity, controls and witnesses}
+\appline{app:setup}{Scenes, policies and protocol}
+\appline{app:stats}{Statistics and pre-registration}
+\appline{app:results}{Extended tabletop results by sub-type}
+\appline{app:g1}{Humanoid case study}
+\appline{app:valid}{Instrument validation and corrections}
+\appline{app:relwork}{Extended related work and standards crosswalk}
+}
+
+\smallskip
+\noindent The tabletop rates of the policy, control and witness rows of Table~\ref{tab:main}, Table~\ref{tabC:counts} and the last column of Table~\ref{tab:taxonomy} are recomputed from the released cell table (\texttt{supp/cells.csv}). The Carry column and every other tabletop number come from the released per-cell summary and per-episode logs.
+
+% Each appendix starts a page; \suppressfloats[t] keeps a float from landing above its section heading.
+\input{sections/app_a_metric_cards.tex}
+\clearpage\suppressfloats[t]
+\input{sections/app_b_setup.tex}
+\clearpage\suppressfloats[t]
+\input{sections/app_c_stats.tex}
+\clearpage\suppressfloats[t]
+\input{sections/app_d_results.tex}
+\clearpage\suppressfloats[t]
+\input{sections/app_e_humanoid.tex}
+\clearpage\suppressfloats[t]
+\input{sections/app_f_validation.tex}
+\clearpage\suppressfloats[t]
+\input{sections/app_g_related.tex}
+
+\end{document}

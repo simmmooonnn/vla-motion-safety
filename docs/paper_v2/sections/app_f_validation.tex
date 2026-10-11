@@ -1,0 +1,50 @@
+% App. F -- Instrument validation and corrections (W5)
+\section{Instrument validation and corrections}
+\label{app:valid}
+
+\textbf{Validation.} Four checks tie the printed numbers to the simulator and to the released logs.
+\begin{itemize}\setlength{\itemsep}{1pt}\setlength{\parskip}{0pt}
+\item \textbf{Truth fixture for orientation.} The scripted carrier carries an attached payload, clear of the gripper and
+the table, at commanded attitudes: a mug tilted by 0, 30, 44, 46, 60 and 90$^{\circ}$, and scissors at a heading every
+30$^{\circ}$. Read back through the released analyzer, every object axis is within 0.01$^{\circ}$ of the command over the
+transport and of the simulator's own reading at every attached step (19 cells). The T4 tilt returns within 0.18$^{\circ}$
+of the commanded value, the T3 heading within 0.01$^{\circ}$.
+\item \textbf{Offline tests.} A test suite drives synthetic trajectories through the analyzer without a simulator. For
+orientation it checks the stored component order and its inverse, tilt, heading, and T3 end to end for both hazardous
+axes. For the moving hand it checks the payload-to-hand gap with each cell's hand height, radius, length and axis, and
+the crossing-hand predicates: hand ahead of the payload, reached, waited, and force spikes at resets. For aggregation it
+checks which cells join which sub-type; prompt-control, hidden-hand and witness cells join none. The analyzer refuses an
+orientation predicate from a log without roll and pitch, and flags a payload that reads upside-down at rest.
+\item \textbf{Golden re-scoring test.} The released scorer re-scores every released tabletop cell from its per-episode
+log and reproduces every scored field of the per-cell summary from which the tables are generated. A second script
+recomputes every printed count from that summary and the released list of the cells behind each rate. The humanoid rows
+come from a separate scorer and are not covered by this test.
+\item \textbf{Body and provenance checks.} Each cell's rendered person is checked against the body it is scored
+against. Each pooled cell's log is checked against the run log for the policy its label names (exclusions:
+App.~\ref{app:setup}).
+\end{itemize}
+Only orientation has an in-simulator truth fixture. The other predicates rest on the offline tests, on code review and
+on the body check. Reruns of eight cells agree within binomial spread (App.~\ref{app:c-retest}).
+
+\textbf{Measurement issues fixed before the final analysis.} Each issue was corrected in the analyzer or by a rerun, and
+every affected number was re-scored.
+\begin{enumerate}\setlength{\itemsep}{1pt}\setlength{\parskip}{0pt}
+\item \emph{Payload orientation, tabletop.} The recorder read the simulator's quaternion in the wrong component order.
+The analyzer restores the true orientation losslessly at load. Every T3 and T4 number uses the corrected read-back.
+\item \emph{Hand height, tabletop.} The payload-to-hand gap assumed the hand at 0.13\,m on every surface. At the kitchen
+counter, drawer unit, island and packing station it hovers at 0.17--0.20\,m, so contacts there were under-counted.
+\pifive{}'s reaching-hand exposure is 81/83 after the fix.
+\item \emph{Moving people scored as still bystanders.} Whether the person is still is read from the run, not from the cell's
+name. Approach-and-stop cells no longer enter T3, and withdrawing-hand cells no longer enter T4.
+\item \emph{Child-height and seated bystanders.} Cells run before a rendering fix showed a standing adult. They leave
+T2, which reads the body, and count in T3 and T4 as the adult the policy saw.
+\item \emph{Body model for T2.} A horizontal distance to the person's vertical axis was replaced by the 3-D distance from
+every link origin to the body surface. At a fixed margin this acts as a change of threshold, so the full threshold curve
+is reported (App.~\ref{app:cards}).
+\item \emph{Crossing person, G1.} The kinematic capsule stood 0.79\,m above the floor, so the box met its lower end. The
+cells were rerun with a 1.74\,m adult standing on the floor, with the same crossings, seeds and counts.
+\item \emph{Static bystander, G1.} The scored body was raised 0.8\,m, where only the arms and shoulders could reach it.
+The cells were rerun with the body standing on the floor.
+\item \emph{Rendered crossing character, G1.} An unposed, tipped model floated above the floor. It was replaced by the
+posed human standing on the floor.
+\end{enumerate}

@@ -1,0 +1,12 @@
+\begin{abstract}
+Safety evaluations of vision--language--action (VLA) policies judge the instruction or the end state, not how the task is done.
+We define \emph{execution-phase safety}, the harm a policy causes while carrying out a benign task.
+Its four dimensions follow what a nearby person experiences: the path, the payload's orientation, speed and force, and the reaction when the person moves.
+We score them with trajectory predicates in Isaac Sim, against a person-blind scripted carry and a feasibility witness showing that safe completions exist; at a table, speed and force can only be reported as exposure.
+We test four public DROID-trained policies (\pifive{}, \pizero{}, \pifast{}, \grfull{}) on a Franka arm, each at three to six work surfaces, plus a humanoid case study.
+No policy is detectably safer than the person-blind carry; where they differ, the policy is less safe.
+At one pre-registered serving placement, three policies' arms pass within 10\,cm of a bystander on 43--94\% of episodes (43--74\% at equal episode length), the blind carry on none.
+In a prompt experiment, adding ``do not spill the coffee'' raises \pifive{}'s mug tilt past 45$^\circ$ from 9\% to 94\% of carries.
+We detect no slowing near a person, and policies carry a mug into a coworker's crossing forearm instead of waiting.
+We release scenes, scorers and per-cell data.
+\end{abstract}
