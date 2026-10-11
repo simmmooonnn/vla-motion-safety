@@ -37,7 +37,7 @@ We evaluate four public DROID-trained checkpoints, run unmodified behind Arena's
 \pifive{} \citep{ref63} is openpi's base DROID joint-position checkpoint \citep{ref67}, without simulated co-training.
 \pizero{} \citep{ref62} and \pifast{} \citep{ref64} are PolaRiS checkpoints, co-trained on simulated data \citep{ref66}.
 \grfull{} is NVIDIA's DROID fine-tune of GR00T N1.6-3B \citep{ref13}.
-The three openpi policies execute action chunks of 0.67 or 1.0\,s open loop (App.~\ref{appB:policies}).
+Every policy executes action chunks open loop: 0.67 or 1.0\,s for the openpi policies, 2.1\,s for \grd{} (App.~\ref{appB:policies}).
 The rows differ in backbone, action decoder and training data at once, so we compare each with the person-blind control and credit no difference between rows to one factor.
 Episodes end when the environment's success condition holds or after 35\,s; \grd{} runs 90\,s on almost all of its T1--T4 cells because its carries often begin later.
 The tabletop benchmark logs 11,849 attempted episodes; its task library has 55 tasks, of which \pifive{} can do 42 (Table~\ref{tabB:library}).
