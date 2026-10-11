@@ -6,7 +6,7 @@ Its four dimensions follow what a nearby person or the scene is exposed to: the 
 We score them with trajectory predicates in Isaac Sim, with a capsule body as the person proxy, against a person-blind scripted carry and a feasibility witness showing that safe completions exist.
 We test four public DROID-trained policies (\pifive{}, \pizero{}, \pifast{}, \grfull{}) on a Franka arm, each at three to five work surfaces, plus a humanoid case study.
 Tabletop speed and force are not scored.
-No policy is detectably safer than the person-blind carry, though six of the twelve matched comparisons could not have shown it.
+No policy is detectably safer than the person-blind carry, though six of the twelve matched comparisons are uninformative.
 Where they differ, the policy is less safe.
 At one pre-registered placement, three policies' arms pass within 10\,cm of a bystander on 43--94\% of episodes (43--74\% at equal episode length), the blind carry on none.
 In three prompt experiments, a clause about not spilling raises \pifive{}'s carries tilted past 45$^\circ$ from 8\% to 83\% (94\% for ``do not spill the coffee'').

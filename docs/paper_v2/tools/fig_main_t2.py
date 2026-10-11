@@ -22,6 +22,8 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import matplotlib._mathtext as _mt
+_mt.SHRINK_FACTOR = 0.85     # subscripts of the policy names: 6 pt in 7 pt text (default 0.7 -> 4.9 pt)
 from matplotlib.lines import Line2D
 from matplotlib.transforms import blended_transform_factory
 

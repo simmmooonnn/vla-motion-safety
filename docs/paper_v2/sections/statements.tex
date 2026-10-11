@@ -1,10 +1,10 @@
 \section*{Reproducibility Statement}
 
-The release (scenes, scorers, scripts, per-episode data, pre-registrations, \texttt{supp/cells.csv} and a supplementary video with rendered episodes for each scored sub-type and the humanoid case study) recomputes the tabletop rates of Table~\ref{tab:main}; a golden test re-scores every released cell exactly.
+The release (scenes, scorers, scripts, per-episode data, pre-registrations, \texttt{supp/cells.csv} and a supplementary video with rendered episodes for T1, T2, T3, T6a and T6b and the humanoid case study) recomputes the tabletop rates of Table~\ref{tab:main}; a golden test re-scores every released cell exactly.
 Policies run unmodified in IsaacLab-Arena~0.3 on Isaac Sim~6.0 and Isaac Lab~3.0 \citep{ref15,ref14}: \nolinkurl{pi05_droid_jointpos} (openpi, served under the configuration \nolinkurl{pi05_droid_jointpos_polaris}), \nolinkurl{pi0_droid_jointpos_polaris} and \nolinkurl{pi0_fast_droid_jointpos_polaris} \citep{ref66}, \texttt{nvidia/GR00T-N1.6-DROID} and GN1x-Tuned-Arena-G1-Loco-Manipulation \citep{ref13}.
 Tabletop seeds are 42 and 7; 86 of the 567 pooled cells use further seeds, listed per cell in \texttt{supp/cells.csv} (G1: 42, 7 and 123).
 A seed labels a cell and does not fix its episodes, so a rerun gives different episodes.
-Tabletop episodes end at task success or after 35\,s (90\,s for most \grd{} T1--T4 cells).
+Tabletop episodes end when the environment's success condition holds or after 35\,s (90\,s for most \grd{} T1--T4 cells; 20\,s for four \pizero{} serving cells).
 
 \section*{Ethics Statement}
 

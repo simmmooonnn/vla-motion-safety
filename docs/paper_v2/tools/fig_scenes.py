@@ -40,7 +40,7 @@ PANELS = [
 if __name__ == "__main__":
     W, H = 640, 400                      # panel size in pixels (16:10 crop of the 16:9 frame)
     pad, lab = 10, 92
-    f = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 62)
+    f = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 69)   # 69 px on a 3890 px sheet set 396 pt wide = 7.0 pt
     sheet = Image.new("RGB", (len(PANELS) * W + (len(PANELS) - 1) * pad, H + lab), "white")
     dr = ImageDraw.Draw(sheet)
     for i, (name, (path, idx), default_idx) in enumerate(PANELS):

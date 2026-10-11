@@ -46,7 +46,7 @@ FR = os.path.join(HERE, "tmp", "v2", "teaser_frames")
 OUT = os.path.join(FIG, "fig_teaser.pdf")
 os.makedirs(FR, exist_ok=True)
 
-C_TRAJ, C_ORI, C_SF, C_DYN = "#3b6ea5", "#c0392b", "#d68910", "#6c3483"
+C_TRAJ, C_ORI, C_SF, C_DYN = "#0072b2", "#009e73", "#d55e00", "#7570b3"
 INK, MUTED, REF = "#222222", "#6b6b6b", "#555555"
 MIN_PT = 6.5
 

@@ -4,12 +4,12 @@
 One row per tabletop (Franka) cell that enters a scored number of the paper:
   role = scored                the cell enters a pooled sub-type rate (membership from pool_membership.json, values from
                                fr_summary.json); summing these rows by policy gives v1 Table 2 / Table 15 (v2 Table C.1)
-  role = prereg_serving        the pre-registered serving cell (v2 Table 2, T2 column), all four policies and the control
-  role = prereg_serving_35s    GR00T N1.6-DROID's pre-registered 35 s duration check on the same cell (Table 2 footnote)
-  role = control_jointspace    the pre-registered joint-space person-blind control (T1; far-side rows = Table 2 row)
+  role = prereg_serving        the pre-registered serving cell (v2 Table 3, T2 column), all four policies and the control
+  role = prereg_serving_35s    GR00T N1.6-DROID's pre-registered 35 s duration check on the same cell (App. C.6)
+  role = control_jointspace    the pre-registered joint-space person-blind control (T1; far-side rows = the value after the slash in Table 3's control T1 cell)
   role = witness               feasibility witnesses for T2, T3, T6a, T6b (T1's and T4's are control rows with role scored)
   role = control_crossing_hand the Cartesian control with the crossing hand (reaches it by construction; reference only)
-  role = exposure_only         cells that enter only the tabletop T5a exposure count (printed grey in Table 2)
+  role = exposure_only         cells that enter only the tabletop T5a exposure count (printed grey in Table 3)
 
 Reads (never writes): _scratch/fr_summary.json, _scratch/pool_membership.json, _scratch/master_start.txt (the START line
 of every run: knobs, episode length, policy), _scratch/fr_mover_knobs.json, docs/overleaf_iclr/tools/run_frq.sh (only to
@@ -580,7 +580,7 @@ _npools = sum(len(v) for v in PM["pools"].values())
 print(f"  [{'ok' if not _pool_bad else 'FAIL'}] {_npools - _pool_bad} of {_npools} pools of pool_membership.json reproduce (k, n and the cell list) from the scored rows")
 
 V1_T5A = {"pi05": (255, 272), "pi0": (40, 40), "pi0fast": (78, 78), "gr00t_droid": (35, 35), "scripted": (193, 208)}
-print("   T5a exposure (grey in Table 2; v1 Table 15 'exposure'):")
+print("   T5a exposure (grey in Table 3; v1 Table 15 'exposure'):")
 for pol, want in V1_T5A.items():
     rs = sel(None, pol, lambda r: r["T5a_exposure_n"] != "")
     got = (sum(I(r["T5a_exposure_unsafe"]) for r in rs), sum(I(r["T5a_exposure_n"]) for r in rs))
@@ -613,8 +613,8 @@ for pol, want in V1_T2.items():
         parts.append(f"{dim([sc[i] for i in ids])} (" + ", ".join(f"{lb} {sub_str(*sc[i])}" for i, lb in zip(ids, lab)) + ")")
     check(f"{POL_NAME[pol]:33s}", " | ".join(parts), want)
 
-# --- 3. v2 Table 2 (T2 = the pre-registered serving cell), its reference rows and footnotes
-print("\n3. v2 Table 2 (T2 = pre-registered serving cell; values per GUIDE decision 5 / plan section 3b):")
+# --- 3. v2 Table 3 (T2 = the pre-registered serving cell), its reference rows and footnotes
+print("\n3. v2 Table 3 (T2 = pre-registered serving cell; values per GUIDE decision 5 / plan section 3b):")
 V2_T2 = {"pi05": (26, 60), "pi0fast": (34, 64), "gr00t_droid": (51, 54), "pi0": (0, 57), "scripted": (0, 64)}
 V2_DIMS = {"pi05": ("48", "33", "71"), "pi0": ("24", "34", "85"), "pi0fast": ("54", "26", "89"), "gr00t_droid": ("97", "50", "n<8"),
            "scripted": ("6", "36", "-")}
@@ -633,7 +633,7 @@ e35 = kn(sel("prereg_serving_35s"), "T2")
 check("GR00T N1.6-DROID T2, 35 s duration check", f"{e35[0]}/{e35[1]}", "43/58")
 js_far = sel("control_jointspace", pred=lambda r: "far side" in r["keepout"])
 js_near = sel("control_jointspace", pred=lambda r: "near side" in r["keepout"])
-check("joint-space control T1, far side (Table 2 row)", f"{kn(js_far, 'T1')[0]}/{kn(js_far, 'T1')[1]} = {pct(*kn(js_far, 'T1'))} % over {len(js_far)} cells", "68/132 = 52 % over 20 cells")
+check("joint-space control T1, far side (Table 3, after the slash in the control's T1 cell)", f"{kn(js_far, 'T1')[0]}/{kn(js_far, 'T1')[1]} = {pct(*kn(js_far, 'T1'))} % over {len(js_far)} cells", "68/132 = 52 % over 20 cells")
 for off, want in (("0.20", "68/68"), ("0.28", "0/64")):
     rs = [r for r in js_far if r["keepout_offset_m"] == off]
     check(f"joint-space control T1, far {off} m", "{}/{}".format(*kn(rs, "T1")), want)
@@ -653,8 +653,8 @@ for s, pre, want in (("T2", "ik_svw_", "0/32"), ("T3", "ik_t3w2_", "0/32"), ("T6
 t3w = sel("witness", pred=lambda r: r["label"].startswith("ik_t3w2_"))
 check("T3 witness: carries delivered blade-away (t3_ok_done, not in the CSV)", f"{sum(g(r['label'], 't3_ok_done', 0) or 0 for r in t3w)}/{sum(I(r['carried']) for r in t3w)}", "31/32")
 check("T4 witness: control's pinch carry (role scored)", "{}/{}".format(*kn(sel("scored", "scripted"), "T4")), "3/31")
-check("control with the crossing hand (Table 2 footnote d)", "{}/{} over {} cells".format(*kn(sel("control_crossing_hand"), "T6a"), len(sel("control_crossing_hand"))), "17/17 over 3 cells")
-print("   pooled serving T2 (Table 2 footnote b: 14 / 2 / 17 / 71 %):")
+check("control with the crossing hand (App. A.6)", "{}/{} over {} cells".format(*kn(sel("control_crossing_hand"), "T6a"), len(sel("control_crossing_hand"))), "17/17 over 3 cells")
+print("   pooled serving T2 (Table C.1, T2 pooled: 14 / 2 / 17 / 71 %):")
 for pol, want in (("pi05", 14), ("pi0", 2), ("pi0fast", 17), ("gr00t_droid", 71)):
     check(f"{POL_NAME[pol]:33s} pooled serving T2 %", pct(*kn(sel("scored", pol), "T2")), want)
 
@@ -689,8 +689,8 @@ check("pi0 T2 without the 20 s cells", "{}/{}".format(*kn([r for r in sel("score
 others = sorted({r["episode_length_s"] for r in R if r["policy"] not in ("gr00t_droid",) and r not in p20})
 check("every other row at 35 s", others, ["35"])
 
-# --- 6. not from cells.csv: Table 2's Carry % comes from the coverage count over every tabletop cell run (v1 Table 21)
-print("\n6. info, NOT from cells.csv: carried / attempted over every tabletop cell run (v1 Table 21 rule; Table 2 'Carry %'):")
+# --- 6. not from cells.csv: Table B.1's all-cell totals come from the coverage count over every tabletop cell run (v1 Table 21)
+print("\n6. info, NOT from cells.csv: carried / attempted over every tabletop cell run (v1 Table 21 rule; Table B.1; Table 3's Carry and SR are summed from cells.csv):")
 cov = collections.defaultdict(lambda: [0, 0, 0])
 for l in S_ALL:
     if g(l, "N") and not any(x in l for x in SKIP) and "diag_" not in l:

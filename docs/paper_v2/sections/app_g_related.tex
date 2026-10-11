@@ -7,7 +7,7 @@ End-to-end policies, from RT-2 \citep{ref3} and OpenVLA \citep{ref4} to \pizero{
 In that frame, sweeping through a bystander and clearing them score the same if both deliver the object.
 
 \paragraph{Trajectory-level safety suites.}
-Table~\ref{tabG:related} extends Table~\ref{tab:related}.
+Table~\ref{tabG:related} extends Table~\ref{tab:related}, without the instruction-level SafeAgentBench.
 Most concurrent suites score trajectory predicates with no person present: temporal-logic clauses \citep{ref27,ref30}, safety categories across embodiments \citep{ref23}, object constraints and damage \citep{ref69,ref71,ref72}, and hazards for a mobile robot \citep{ref21}.
 SafeStage \citep{ref61} is closest in framing, with a during-execution stage on the same simulated DROID arm and \pifive{} among its policies, but its predicates are events on objects and regions.
 LIBERO-Safety \citep{ref24} and HRIBench \citep{ref68} place a person, as a perturbable hand proxy or an animated intruder, so a person in the scene, and one who moves, are not our contribution.
@@ -23,7 +23,7 @@ Our reading; ``$\approx$T$n$'': closest sub-type; (\textit{n}): policies. None c
 \renewcommand{\arraystretch}{0.95}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.35cm} >{\raggedright\arraybackslash}p{1.25cm} >{\raggedright\arraybackslash}p{2.1cm} >{\raggedright\arraybackslash}p{3.0cm} >{\raggedright\arraybackslash}p{1.35cm} >{\raggedright\arraybackslash}p{1.35cm} >{\raggedright\arraybackslash}p{1.3cm}@{}}
 \toprule
-Suite & Robot & Person in scene & Predicates ($\approx$ our sub-type) & Speed\,/\,force vs a person & Ablations & Control, witness\\
+Suite & Robot & Person in scene & Predicates ($\approx$ our sub-type) & Speed\,/\,force scored & Ablations & Control, witness\\
 \midrule
 SafeVLA-Bench (9) \citep{ref27} & fixed arm & no & self-contact $\approx$T2, held-object tilt $\approx$T4, contact force & force proxy only & none & no\\
 LIBERO-Safety (10) \citep{ref24} & fixed arm & hand proxy, perturbed & collision margin $\approx$T1/T2, perturbed hand $\approx$T6a & no & mitigation demo & no\\
@@ -37,7 +37,7 @@ HRIBench \citep{ref68} & fixed arm & animated & collision-free rate $\approx$T6a
 VLA-Arena \citep{ref69} & fixed arm & no & hazard avoidance $\approx$T1, state preservation $\approx$T4 & no & no & no\\
 MANIGUARD \citep{ref71} & fixed arm & no & spill, topple, drop $\approx$T4 & no & fine-tuning & safe demos\\
 OopsieVerse \citep{ref72} & fixed arm & no & object damage & objects & no & no\\
-Assistive care \citep{ref70} & fixed arm & patient & region-wise contact force & intended & no & no\\
+Assistive care \citep{ref70} & fixed arm & patient & region-wise contact force $\approx$T5b & intended & no & no\\
 \midrule
 \textbf{This work} (5) & Franka; G1 & bystander, hand, passer-by & six sub-types, eight predicates, four dimensions & T5a (G1); tabletop exposure & wording, hidden person & both (tabletop)\\
 \bottomrule
@@ -58,7 +58,7 @@ The benchmark measures how often a policy needs such a remedy.
 \paragraph{Standards crosswalk.}
 Table~\ref{tabG:standards} maps each sub-type to its governing requirement; where no standard fixes a value, the threshold is ours and its sensitivity is reported (App.~\ref{app:cards}).
 ISO/TS\,15066 \citep{ref11}, now in ISO\,10218-1/-2:2025 \citep{ref35,ref36}, governs separation and contact; ISO\,13855 \citep{ref20} names the separation terms and ISO\,13482 \citep{ref37} covers personal-care robots.
-Peer suites score object- or hand-referenced versions of T1, T2, T4, T5b and T6a; none scores T3 toward a bystander, T5a against a person, or T6b.
+Peer suites score object- or hand-referenced versions of T1, T2, T4, T5b and T6a, and two score contact with a person: HRIBench counts collisions with an animated person ($\approx$T6a) and the assistive-care benchmark scores contact force on a patient ($\approx$T5b). None scores T3 toward a bystander, T5a against a person, or T6b.
 
 \begin{table}[!ht]
 \centering
@@ -70,7 +70,7 @@ Our reading; ISO/TS\,15066:2016 clauses. SSM: separation monitoring, no contact;
 \renewcommand{\arraystretch}{0.95}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{6.6cm} >{\raggedright\arraybackslash}p{2.9cm} >{\raggedright\arraybackslash}p{1.2cm}@{}}
 \toprule
-Sub-type & Governing requirement & Person-referenced quantity & Regime\\
+Sub-type & Governing requirement & Measured quantity & Regime\\
 \midrule
 T1 payload path & SSM (5.5.4); ISO\,13482 hazardous contact & carried hazard to a keep-out & SSM\\
 T2 body sweep & PFL for the robot body; the uncertainty term $Z$ of SSM & link to body surface & PFL if blunt\\

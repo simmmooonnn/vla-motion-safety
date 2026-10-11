@@ -11,7 +11,7 @@ openpi \citep{ref67} serves \pifive{}, \pizero{} and \pifast{}; \grfull{} runs o
 
 \begin{table}[ht]
 \centering
-\caption{\textbf{Every tabletop policy is a public DROID-trained checkpoint that outputs joint positions.} Episodes over every tabletop cell of the row, probes and demonstrations excluded; carried and delivered as \% of attempted. The control row includes its joint-space cells. The five rows total 11,849 attempted, 8,540 carried and 5,823 delivered episodes. Table~\ref{tab:main}'s Carry and SR columns count only the cells behind each row's rates.}
+\caption{\textbf{Every tabletop policy is a public DROID-trained checkpoint that outputs joint positions.} Episodes over every tabletop cell of the row; carried and delivered as \% of attempted. Cells marked as probes, smoke tests, analyzer fixtures or first demonstration recordings are excluded, but 154 later single-episode cells, run for demonstration videos and their render checks, are counted (144 for \pifive{}, 10 for the control). The control row holds the scripted carries: the Cartesian and joint-space controls and the scripted witnesses. The five rows total 11,849 attempted, 8,540 carried and 5,823 delivered episodes. Table~\ref{tab:main}'s Carry and SR columns count only the cells behind each row's rates.}
 \label{tabB:policies}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -20,7 +20,7 @@ openpi \citep{ref67} serves \pifive{}, \pizero{} and \pifast{}; \grfull{} runs o
 \toprule
 Row & Checkpoint and training data & Episode & Attempted & Carried & Delivered \\
 \midrule
-\pifive{} & openpi \texttt{pi05\_droid\_jointpos}, the base DROID joint-position checkpoint; no simulated co-training. It is served under the PolaRiS evaluation configuration \texttt{pi05\_droid\_jointpos\_polaris}, whose weight shards are identical to the base checkpoint's & 35\,s & 6,164 & 4,870 (79) & 3,455 (56) \\
+\pifive{} & openpi \texttt{pi05\_droid\_jointpos}, the base DROID joint-position checkpoint; no simulated co-training. It is served under the PolaRiS evaluation configuration \texttt{pi05\_droid\_jointpos\_polaris}, whose weight shards are identical to the base checkpoint's & 35\,s; 44 cells 6--20\,s & 6,164 & 4,870 (79) & 3,455 (56) \\
 \pizero{} & \texttt{pi0\_droid\_jointpos\_polaris}, co-trained by PolaRiS \citep{ref66} for 1,000 steps on 90\,\% DROID and 10\,\% simulated DROID-platform data & 35\,s; 4 cells 20\,s & 1,207 & 321 (27) & 180 (15) \\
 \pifast{} & \texttt{pi0\_fast\_droid\_jointpos\_polaris}, co-trained as \pizero{} & 35\,s & 1,991 & 1,506 (76) & 1,148 (58) \\
 \grfull{} & \texttt{nvidia/GR00T-N1.6-DROID}, a DROID fine-tune of GR00T N1.6-3B \citep{ref13} & 90\,s on 57 of 116 cells & 803 & 242 (30) & 103 (13) \\
@@ -29,41 +29,43 @@ Person-blind control & scripted inverse-kinematics carry, no checkpoint & 35\,s 
 \end{tabular}
 \end{table}
 
-\textbf{Episode lengths.} A tabletop episode ends when the environment's success condition holds or after 35\,s. The limit is 90\,s on 57 of \grfull{}'s 116 cells. These include 34 of the 43 cells behind its pooled rates (every T1--T4 cell but one T3 cell) and its eight pre-registered serving cells. Its T6a and T6b cells and the pre-registered 35\,s duration check ran 35\,s; many of its carries start after 35\,s (App.~\ref{app:stats}). \pizero{}'s four serving reruns ran 20\,s and contribute 0/32 to its pooled T2. One of them also contributes 1/1 to its T3 (7/12 without it) and one 0/1 to its T4.
+\textbf{Episode lengths.} A tabletop episode ends when the environment's success condition holds or after 35\,s. The limit is 90\,s on 57 of \grfull{}'s 116 cells. These include 34 of the 43 cells behind its pooled rates (every T1--T4 cell but one T3 cell) and its eight pre-registered serving cells. Its T6a and T6b cells and the pre-registered 35\,s duration check ran 35\,s; many of its carries start after 35\,s (App.~\ref{app:stats}). \pizero{}'s four serving reruns ran 20\,s and contribute 0/32 to its pooled T2. One of them also contributes 1/1 to its T3 (7/12 without it) and one 0/1 to its T4. \pifive{}'s 44 shorter cells are 39 of the render checks counted in Table~\ref{tabB:policies} (6\,s) and five cells that test small spheres as a liquid proxy (four at 20\,s, one at 12\,s); none enters a rate.
 
 \subsection{Scenes, person proxies and recorders}
 \label{appB:scenes}
 
-One IsaacLab-Arena environment hosts every tabletop cell through flags. Five work surfaces vary height, layout and lighting (Table~\ref{tabB:surfaces}, Fig.~\ref{figB:tabletop}): a dining table, a kitchen counter, an office desk, an industrial packing station under warehouse lighting and a drawer kitchen. The drawer kitchen is the kitchen counter with an open drawer. A sixth, an island kitchen, was probed with one \pifive{} cell, which adds six T4 carries; that surface lies beyond the policy's reach (Table~\ref{tabB:library}). Not every policy ran at every surface. In the cells behind the rates (\texttt{supp/cells.csv}), \pifive{}, \pizero{} and both person-blind controls run at all five, \pifast{} at four (not the packing station) and \grd{} at three (dining table, kitchen counter, office desk). The dining table holds more than half of \pifive{}'s scored episodes. Four further light maps (an auto shop, a courtyard, a lounge and, in one cell, a woodland) relight 31 of \pifive{}'s T3 and T4 cells; the lighting and backdrop change, not the room.
+One IsaacLab-Arena environment hosts every tabletop cell through flags. Five work surfaces vary height, layout and lighting (Table~\ref{tabB:surfaces}, Fig.~\ref{figB:tabletop}): a dining table, a kitchen counter, an office desk, an industrial packing station under warehouse lighting and a drawer kitchen. The drawer kitchen is the kitchen counter with an open drawer. A sixth, an island kitchen, was tried with six \pifive{} cells (48 attempts, 10 carried, 3 delivered); one of them is behind a rate and adds six T4 carries. That surface lies beyond the policy's reach (Table~\ref{tabB:library}). Not every policy ran at every surface. In the cells behind the rates (\texttt{supp/cells.csv}), \pifive{}, \pizero{} and both person-blind controls run at all five, \pifast{} at four (not the packing station) and \grd{} at three (dining table, kitchen counter, office desk). The dining table holds more than half of \pifive{}'s scored episodes. Four further light maps (an auto shop, a courtyard, a lounge and, in one cell, a woodland) relight 31 of \pifive{}'s T3 and T4 cells; the 24 under the first three maps at the kitchen counter and packing station are the robustness check of Sec.~\ref{sec:scenes}. The lighting and backdrop change, not the room.
 
 \begin{table}[!htb]
 \centering
-\caption{\textbf{Geometry of the work surfaces.} Metres, in the robot-base frame: $x$ points away from the robot, $y$ to its left, and the work surface lies near $z = 0$. The dining table's spots are randomized unless a cell pins them to the values shown; serving cells move the bowl beside the bystander.}
+\caption{\textbf{Geometry of the work surfaces.} Metres, in the robot-base frame: $x$ points away from the robot, $y$ to its left, and the work surface lies near $z = 0$. The dining table's spots are randomized unless a cell pins them to the values shown; serving cells move the bowl beside the bystander. In brackets: the share of the bystander's body surface that projects inside the external camera's frame, occlusion ignored (Fig.~\ref{figB:view}).}
 \label{tabB:surfaces}
 \scriptsize
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.08}
 \begin{tabular}{@{}l c c c >{\raggedright\arraybackslash}p{5.2cm}@{}}
 \toprule
-Surface & Top above floor & Pick $(x, y)$ & Place $(x, y)$ & Still bystander $(x, y)$ \\
+Surface & Top above floor & Pick $(x, y)$ & Place $(x, y)$ & Still bystander $(x, y)$ [share in the external frame] \\
 \midrule
-Dining table & 0.70 & $(0.45,\,0.30)$ & $(0.45,\,-0.15)$ & $(0.45,\,0.70)$ or $(0.45,\,-0.66)$; near corner $(0.15,\,0.66)$ or $(0.15,\,-0.62)$; across the table with a forearm on it, $(1.15,\,0)$ \\
-Kitchen counter & 0.93 & $(0.45,\,0.30)$ & $(0.45,\,-0.15)$ & $(-0.10,\,0.75)$ \\
-Office desk & 0.53 & $(0.45,\,0.20)$ & $(0.45,\,-0.20)$ & $(0.55,\,0.65)$ \\
-Packing station & 0.99 & $(0.55,\,0.30)$ & $(0.55,\,-0.10)$ & $(1.30,\,0.10)$ \\
-Drawer kitchen & 0.93 & $(0.45,\,0.30)$ & $(0.45,\,-0.15)$ & $(-0.40,\,0.75)$, or no person \\
-Island kitchen (probe) & 0.87 & $(0.45,\,0.40)$ & $(0.25,\,0.60)$ & $(1.15,\,0.40)$ \\
+Dining table & 0.70 & $(0.45,\,0.30)$ & $(0.45,\,-0.15)$ & $(0.45,\,0.70)$ [30\,\%] or $(0.45,\,-0.66)$ [70\,\%]; near corner $(0.15,\,0.66)$ [the camera is inside the body: image black] or $(0.15,\,-0.62)$ [64\,\%]; across the table with a forearm on it, $(1.15,\,0)$ [70\,\%] \\
+Kitchen counter & 0.93 & $(0.45,\,0.30)$ & $(0.45,\,-0.15)$ & $(-0.10,\,0.75)$ [0\,\%] \\
+Office desk & 0.53 & $(0.45,\,0.20)$ & $(0.45,\,-0.20)$ & $(0.55,\,0.65)$ [44\,\%] \\
+Packing station & 0.99 & $(0.55,\,0.30)$ & $(0.55,\,-0.10)$ & $(1.30,\,0.10)$ [86\,\%] \\
+Drawer kitchen & 0.93 & $(0.45,\,0.30)$ & $(0.45,\,-0.15)$ & $(-0.40,\,0.75)$ [0\,\%], or no person \\
+Island kitchen (probe) & 0.87 & $(0.45,\,0.40)$ & $(0.25,\,0.60)$ & $(1.15,\,0.40)$ [81\,\%] \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The still adult (App.~\ref{app:cards}) stands at the positions of Table~\ref{tabB:surfaces}. The T1 marker is a red plate 0.16\,m square at the midpoint of the transport line, moved 0.20 or 0.28\,m in $x$, away from the robot; in the forearm cells the forearm's hand end takes its place. The moving hand is a kinematic capsule, 0.05\,m by 0.25\,m, with a collider and a PhysX contact sensor. It reaches into the bowl at 0.10\,m/s (T5b) or crosses the transport line at 0.40\,m/s (T6a). The passer-by is a kinematic capsule that walks at 0.55\,m/s (T6b; App.~\ref{appA:t6b}). At every step the recorders log the payload's pose, the origin of every robot link, the moving body's pose and the contact sensor's net force; the predicates reduce these logs after the episode. The link recorder reads the simulator's body positions, so the same recorder serves the Franka and the G1.
+The still adult (App.~\ref{app:cards}) stands at the positions of Table~\ref{tabB:surfaces}. The T1 marker is a red plate 0.16\,m square at the midpoint of the transport line, moved 0.20 or 0.28\,m in $x$, away from the robot; in the forearm cells the forearm's hand end takes its place. The moving hand is a kinematic capsule of radius 0.05\,m, 0.35\,m long end to end, with a collider and a PhysX contact sensor. It reaches into the bowl at 0.10\,m/s (T5b) or crosses the transport line at 0.40\,m/s (T6a). The passer-by is a kinematic capsule that walks at 0.55\,m/s (T6b; App.~\ref{appA:t6b}). At every step the recorders log the payload's pose, the origin of every robot link, the moving body's pose and the contact sensor's net force; the predicates reduce these logs after the episode. The link recorder reads the simulator's body positions, so the same recorder serves the Franka and the G1.
 
-\textbf{Instructions.} Every pooled cell uses the neutral instruction of its goal and object; the wording arms of the prompt experiments (App.~\ref{app:d-t4}) enter no pooled rate. Table~\ref{tabB:instr} gives all of them in full.
+\textbf{What the cameras show.} Every policy receives two images: the embodiment's external camera and its wrist camera, letterboxed to 224\,$\times$\,224 (App.~\ref{appB:policies}). The external camera is fixed to the robot base, 0.57\,m to its left and 0.66\,m up, and looks forward, to the right and down over a field of 104$^{\circ}$ by 72$^{\circ}$. We recorded both images with a scripted carry at each placement (Fig.~\ref{figB:view}) and projected each still bystander into the external frame (Table~\ref{tabB:surfaces}). The bystander is in the frame at the dining table, the office desk and the packing station; at the dining table's left placement and the office desk it fills the frame's left edge. At the kitchen counter and the drawer kitchen it stands beside and behind the camera, and neither camera shows it at any step of the carry. These two placements hold 113 of the 607 tabletop cells behind the rates, 84 of \pifive{}'s 468 scored T3 carries and 44 of its 340 pooled T2 episodes; they hold none of the pre-registered serving cell, T6a or T6b. At the near-left corner of the dining table (one cell, scored for T4 only) the camera lies inside the body's capsule and its image is black. At the dining table the crossing forearm and the walker are in the external frame, as is the hot-plate marker at the kitchen counter; the forearm is partly hidden behind the robot's own arm while it spans the transport line.
+
+\textbf{Instructions.} Every pooled cell uses the neutral instruction of its goal and object; the wording arms of the prompt experiments (App.~\ref{app:d-t4}) enter no pooled rate. Table~\ref{tabB:instr} gives all of them in full; the instructions of the other library tasks, such as the handover and the hurry and go-slowly variants, are in the released queue script.
 
 \begin{table}[!htb]
 \centering
-\caption{\textbf{The instructions, in full.} $N$ is the neutral mug instruction, ``Pick up the mug and place it in the bowl.''}
+\caption{\textbf{The instructions of the pooled cells and the prompt experiments, in full.} $N$ is the neutral mug instruction, ``Pick up the mug and place it in the bowl.''}
 \label{tabB:instr}
 \scriptsize
 \setlength{\tabcolsep}{4pt}
@@ -92,14 +94,19 @@ T3 prompt, scissors & ``Pick up the scissors and place them in the bowl with the
 \includegraphics[trim=688 25 229 288,clip,width=0.194\linewidth]{figures/fig_tabletop.png} \\[-1pt]
 {\scriptsize (a)} & {\scriptsize (b)} & {\scriptsize (c)} & {\scriptsize (d)} & {\scriptsize (e)} \\
 \end{tabular}
-\caption{\textbf{The rendered tabletop scenes.} (a)--(c) The dining table: scissors carried past the scored bystander, a hand reaching into the bowl (an exposure cell) and the adult at the near corner, beside the arm. (d) The kitchen counter, the person beside the robot. (e) The packing station under warehouse lighting. The drawer kitchen, island kitchen and office desk are not shown. Blue: the capsule body that the policies' cameras see in every scored cell.}
+\caption{\textbf{The rendered tabletop scenes.} (a)--(c) The dining table: scissors carried past the scored bystander, a hand reaching into the bowl (an exposure cell) and the adult at the near corner, beside the arm. (d) The kitchen counter, the person beside the robot. (e) The packing station under warehouse lighting. The drawer kitchen, island kitchen and office desk are not shown. Blue: the capsule body of scored cells.}
 \label{figB:tabletop}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_policy_view.jpg}
+\caption{\textbf{What the policies' cameras show.} Frames of the external camera, and of the wrist camera in (j) and (k), recorded during a scripted carry with the bystander as in scored cells. (a)--(d)~The capsule body is in the external frame at the dining table, office desk and packing station. (e), (f)~At the kitchen counter and the drawer kitchen no camera shows it; (k) is the wrist view of (e). (g)--(i)~The crossing forearm, the walker and the hot-plate marker. (j)~The wrist camera during the carry of (a). (l)~The placement of (a) with the posed human mesh.}
+\label{figB:view}
 \end{figure}
 
 \subsection{Person-blind controls and feasibility witnesses}
 \label{appB:controls}
-
-\input{tables/tab_tasks.tex}
 
 \textbf{Cartesian control.} A scripted carry moves the payload along the straight line from the pick to the place pose. It reads the scene's pick and place poses from the simulator, never the person, and runs at the placements of the policies' cells. Its set-point moves at 0.15\,m/s, 0.15\,m above the payload's start height, and damped-least-squares differential inverse kinematics turns it into the joint-position actions that the policies also output. The payload is attached: its pose is written to the simulator at every step of the carry, so this carry supplies only geometric predicates (T1--T3). Its T4 comes from a physical pinch-grasp variant: the attachment is switched off, the gripper closes on the mug and the arm follows the same line (112 attempts, 31 carried, 28 delivered). The attached carry does not always set the payload down: on the pre-registered serving cell it delivers 24/64 and holds the mug above the bowl on the other 40.
 
@@ -109,7 +116,7 @@ T3 prompt, scissors & ``Pick up the scissors and place them in the bowl with the
 
 \begin{table}[!htb]
 \centering
-\caption{\textbf{How each tabletop feasibility witness is built.} All run pick-and-place: T1 at the five work surfaces, T4 at three, the others at the dining table. Scene: the pick and place poses. Unsafe is over scored episodes; the last column counts attempts that are delivered and violate nothing.}
+\caption{\textbf{How each tabletop feasibility witness is built.} All run pick-and-place: T1 at the five work surfaces, T4 at three, the others at the dining table. Scene: the pick and place poses. Unsafe is over scored episodes; the last column counts attempts that are delivered and violate nothing (T6b: delivered with a scored encounter at which the carry slowed).}
 \label{tabB:witness}
 \scriptsize
 \setlength{\tabcolsep}{3.5pt}
@@ -131,7 +138,7 @@ T6b & the control, holding while the walker is within 0.6\,m of its remaining pa
 \subsection{Seeds, software, compute and release}
 \label{appB:seeds}
 
-\textbf{Seeds and episodes.} Pooled cells use seeds 42 and 7. Placements with few scored episodes were extended with further seeds (1, 2, 3, 11, 23, 31, 47, 53, 59 and 61): 86 of the 567 pooled cells, mostly pouring, the passer-by, serving, the pinch-grasp carry and \pizero{}'s cells. These additions were not pre-registered; \texttt{supp/cells.csv} lists every cell's seed. The other exceptions are the prompt control (7, 11), the prompt-dose experiment (13, 17), the T1 twin (13, 17, 19) and the replication (41, 43). The pre-registered T2 tests use eight seeds from 67 to 101. The joint-space control copies its matched cells' seeds: 42 and 7, and 13, 17 and 19 on three near-side cells. G1 cells use 42, 7 and 123 unless stated. A cell runs up to eight episodes: 46 of the 667 released cells stopped early, at the one-hour limit or the watchdog, and count as run. A seed labels a cell; it does not fix an episode. Arena's placement solver, the policy server's sampling and the GPU physics are not seeded together, so a rerun gives different episodes, and every interval is clustered by cell (App.~\ref{app:stats}).
+\textbf{Seeds and episodes.} Pooled cells use seeds 42 and 7. Placements with few scored episodes were extended with further seeds (1, 2, 3, 11, 23, 31, 47, 53, 59 and 61): 86 of the 567 pooled cells, mostly pouring, the passer-by, serving, the pinch-grasp carry and \pizero{}'s cells. These additions were not pre-registered; \texttt{supp/cells.csv} lists every cell's seed. The other exceptions are the prompt control (7, 11), the prompt-dose experiment (13, 17), the T1 twin (13, 17, 19), the hidden-person speed comparison (13, 17, 19, 29) and the replication (41, 43). The pre-registered T2 tests use eight seeds from 67 to 101. The joint-space control copies its matched cells' seeds: 42 and 7, and 13, 17 and 19 on three near-side cells. G1 cells use 42, 7 and 123 unless stated. A cell runs up to eight episodes, and 46 of the 667 released cells hold fewer. Twelve of \grd{}'s first cells were launched with six episodes (one of them hit the one-hour limit after five), three \pifive{} serving cells at the office desk ran eight but their payload log holds five to seven, and the other 31 stopped early, at the one-hour limit or the watchdog. All count as run. A seed labels a cell; it does not fix an episode. Arena's placement solver, the policy server's sampling and the GPU physics are not seeded together, so a rerun gives different episodes, and every interval is clustered by cell (App.~\ref{app:stats}).
 
 \textbf{Software and compute.} The tabletop scenes run in NVIDIA Isaac Sim 6.0.0.1 with Isaac Lab 3.0 (3.0.0 beta 2) \citep{ref14} and IsaacLab-Arena 0.3.0, base commit f0c866d \citep{ref15}, with PhysX contact sensors. The humanoid case study runs on IsaacLab-Arena's G1 loco-manipulation setup in Isaac Sim. Each NVIDIA RTX PRO 6000 Blackwell GPU (96\,GB) hosts three or four simulator clients and one policy server. An eight-episode cell takes a median 15.6\,min for \pifive{}, 17.4 for \pizero{}, 14.7 for \pifast{}, 42.1 for \grfull{} and 14.4 for the scripted carry. The 1,170 timed cells, those with a logged start and end, took about 340 client-hours.
 
@@ -142,7 +149,7 @@ T6b & the control, holding while the walker is within 0.6\,m of its remaining pa
 \subsection{Task library}
 \label{appB:tasks}
 
-A \emph{goal} is the instruction's goal and success condition, such as pick-and-place into the bowl or putting an object away in a drawer. A \emph{task} is a goal under one named setting of surface, bystander, placement, keep-out or mover. The tabletop library has 55 tasks. \pifive{} delivers in 42 of them, carries but rarely delivers in 7 and cannot carry the payload in 6 (Table~\ref{tabB:library}). A rate on a task the policy cannot do measures competence, not safety, so the table shows where each rate comes from. \pizero{} and \grd{} are scored on the pick-and-place goal only: \pizero{} never lifted a tool (0/32 episodes of stirring and scraping) and was not run on pouring or the drawer, and \grd{} was not run on another goal. \pifast{} never lifted the jug (0/64 pouring episodes), so its second goal is the drawer (T3 and T4). Beyond pick-and-place, \pifast{} carries the payload on at least eight episodes in 13 library tasks and on fewer in 4 more. Table~\ref{tabB:tasks} shows what every score rests on.
+A \emph{goal} is the instruction's goal and success condition, such as pick-and-place into the bowl or putting an object away in a drawer. A \emph{task} is a goal under one named setting of surface, bystander, placement, keep-out or mover. The tabletop library has 55 tasks. \pifive{} delivers in 42 of them, carries but rarely delivers in 7 and cannot carry the payload in 6 (Table~\ref{tabB:library}). A rate on a task the policy cannot do measures competence, not safety, so the table shows where each rate comes from. \pizero{} and \grd{} are scored on the pick-and-place goal only: \pizero{} never lifted a tool (0/32 episodes of stirring and scraping) and was not run on pouring or the drawer. \grd{}'s four tool-use cells were killed with one recorded episode between them (not carried), so it has no other goal. \pifast{} never lifted the jug (0/64 pouring episodes), so its second goal is the drawer (T3 and T4). Besides the canonical task, \pifast{} carries the payload on at least eight episodes in 13 library tasks, ten of them pick-and-place (the others are tool use, the handover and the drawer), and on fewer in 4 more (three pouring tasks and pushing). Table~\ref{tabB:tasks} shows what every score rests on.
 
 \begin{table}[!ht]
 \centering
@@ -172,3 +179,5 @@ All & & 42 & 7 & 6 & & 4,012 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\input{tables/tab_tasks.tex}

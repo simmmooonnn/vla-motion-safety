@@ -3,7 +3,9 @@
 
 Top-down MEAN payload path per arm at the kitchen-counter placement sc_kit_t1o20 (seeds 42 and 7), where all six arms
 ran: Cartesian (person-blind, straight-line) control, the pre-registered joint-space control, pi0.5, pi0, pi0-FAST,
-GR00T N1.6-DROID. Faint lines: pi0.5's individual scored carries only. Circles: the keep-out (radius 0.20 m) around a
+GR00T N1.6-DROID. Each mean path carries its arm's marker once (at its peak; the Cartesian control's at 62 % of the
+transport), the same markers as in the legend and in fig_t1_bend.py, so that the arms can be told apart without colour.
+Faint lines: pi0.5's individual scored carries only. Circles: the keep-out (radius 0.20 m) around a
 point 0.20 m beside the transport (solid; this placement) and 0.28 m beside it (dotted; the same pick and place, cells
 sc_kit_t1o28). Printed counts (text block below the transport line): carries entering the 0.20 m keep-out over all
 far placements the controls ran: Cartesian 18/80, joint-space 68/68, pi0.5 78/79. Asserted but not printed: the 0.28 m
@@ -11,8 +13,8 @@ level, 0/80, 0/64, 12/80. pi0.5's 78/79 + 12/80 = 90/159, the matched T1 compari
 t1_by_off's pi0.5 87/93 and 12/94 also count the pouring goal, which no control ran, so 78/79 is not a v1-printed
 number but is computed from fr_summary with v1's matched-placement rule.
 
-Data (all local, read only; loading, grouping and asserts copied from fig_t1_bend.py, which must not be run here because
-it writes into docs/overleaf_iclr):
+Data (all local, read only; loading, grouping and asserts copied from fig_t1_bend.py, which draws the appendix version,
+fig_t1_bend.pdf):
   tmp/now/fk_arc/paths.json, paths_js.json   per-step payload xy / z (extracted from the fr_<label>.json dumps)
   fr_summary.json                            per-episode t1_clear, viol_t1, n_t1 (golden)
   pool_membership.json                       T1 pool cells per arm
@@ -29,6 +31,8 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import matplotlib._mathtext as _mt
+_mt.SHRINK_FACTOR = 0.85     # subscripts of the policy names: 6 pt in 7 pt text (default 0.7 -> 4.9 pt)
 from matplotlib.lines import Line2D
 from matplotlib.patches import Circle
 
@@ -207,11 +211,14 @@ for zi, key in enumerate(["gr00t_droid", "pi0", "pi0fast", "pi05", "js", "ctl"])
     m = PA[key]["mean"]
     ok = ~np.isnan(m)
     ax.plot(SG[ok], m[ok], color=col, lw=1.5, ls=ls, zorder=3 + 0.1 * zi, solid_capstyle="round", dash_capstyle="round")
+    j = int(np.nanargmax(m)) if key != "ctl" else int(len(SG) * 0.62)
+    ax.plot([SG[j]], [m[j]], marker=mk, ms=3.8 * (0.85 if mk == "D" else 1.0), color=col, mec="white", mew=0.4, zorder=4)
 # labels of the two keep-out levels: 0.20 m just outside the solid circle's left edge; 0.28 m on the dotted arc's right
-# side like a contour label (the solid circle's fill colour masks the arc under the text)
+# side like a contour label (the solid circle's fill colour masks the arc under the text), moved 0.036 m toward the pick
+# side so that its box stays inside the solid circle
 ax.text(c20[0] - KO + 0.030, 0.136, "offset 0.20 m", fontsize=7, ha="left", va="center", color="0.25", zorder=2)
 a = math.radians(-47)
-ax.text(c28[0] + KO * math.cos(a), c28[1] + KO * math.sin(a), "offset 0.28 m", fontsize=7, ha="center", va="center",
+ax.text(c28[0] + KO * math.cos(a) - 0.036, c28[1] + KO * math.sin(a), "offset 0.28 m", fontsize=7, ha="center", va="center",
         color="0.25", zorder=2, bbox=dict(boxstyle="square,pad=0.06", fc="#efefef", ec="none"))
 # counts below the transport line: carries entering the 0.20 m keep-out, over all far placements the controls ran
 dy = 0.025
@@ -242,7 +249,7 @@ for sp in ("top", "right"):
 
 # legend above the axes, column-major: controls | pi0.5, pi0 | pi0-FAST, GR00T-DROID
 order = ["ctl", "js", "pi05", "pi0", "pi0fast", "gr00t_droid"]
-hd = [Line2D([], [], color=STY[k][3], ls=STY[k][5], lw=1.5, label=STY[k][2]) for k in order]
+hd = [Line2D([], [], color=STY[k][3], ls=STY[k][5], lw=1.5, marker=STY[k][4], ms=3.4, mec="white", mew=0.3, label=STY[k][2]) for k in order]
 fig.legend(handles=hd, loc="upper center", bbox_to_anchor=(0.5 + 0.01, 1.0), ncol=3, frameon=False, fontsize=7,
            handlelength=1.9, handletextpad=0.35, columnspacing=0.7, borderaxespad=0.05, borderpad=0.1, labelspacing=0.25)
 

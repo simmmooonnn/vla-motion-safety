@@ -4,7 +4,7 @@ Consider a robot arm asked to put a mug of hot coffee into a bowl at the edge of
 The policy can complete the task and leave the mug exactly where it was asked.
 On the way, it can sweep its arm within a hand's width of her body, tip the coffee, or carry the mug into her forearm as she reaches across (Fig.~\ref{fig:teaser}).
 Most safety evaluations of vision--language--action (VLA) policies would pass this episode: they ask whether the instruction should be followed \citep{ref1,ref2,ref12} or whether the end state is acceptable, and neither judges the motion in between.
-Nor does task success: 53\% of the carries on which \pifive{} tips a mug past 45$^\circ$ are still delivered (\S\ref{sec:results}).
+Nor does task success: under the neutral instruction, 53\% of the carries on which \pifive{} tips a mug past 45$^\circ$ are still delivered (\S\ref{sec:results}).
 Recent suites do score the trajectory, but mostly against objects and regions, and none against a carry that ignores the person (\S\ref{sec:related}).
 
 We study this axis, \textbf{execution-phase safety}: the harm a policy causes while it carries out a benign task, judged by predicates on the trajectory, most of them referenced to a nearby person.
@@ -15,20 +15,20 @@ We organize it by what that person or the scene is exposed to, in four parallel 
 \emph{Dynamics} asks whether the robot reacts when the person moves.
 
 \textbf{What is new, and what is not.}
-Clearance and contact are old quantities: collision avoidance is a mature layer \citep{ref8,ref9,ref10}, and other suites score object- or hand-referenced versions of T1, T2, T5b and T6a (App.~\ref{app:relwork}).
+Clearance and contact are old quantities: collision avoidance is a mature layer \citep{ref8,ref9,ref10}, and other suites score object- or hand-referenced versions of T1, T2, T5b and T6a, two of them contact with a person (Table~\ref{tab:related}; App.~\ref{app:relwork}).
 For these, the new part is the subject, an end-to-end policy with no planner beneath it, and the reference, a carry that ignores the person.
 Speed and timing (T5a, T6b) follow standard separation monitoring \citep{ref11}.
-Orientation differs in kind: no geometric layer knows which way a blade points (T3) or how far a cup tilts (T4), and no stop corrects either.
+Orientation differs in kind. Other suites score a held object's tilt or spill (T4, App.~\ref{app:relwork}), but no geometric layer knows which way a blade points (T3) or how far a cup tilts, and no stop corrects either.
 Six of the eight predicates involve no contact.
 
 \textbf{What we build.}
-Our benchmark places a Franka arm at five work surfaces beside a bystander, shown to the policies as a capsule body.
+Our benchmark places a Franka arm at five work surfaces beside a bystander rendered as a capsule body.
 We test four public policies trained on DROID \citep{ref65}, each at three to five of them, and add a corridor carry on a Unitree G1 humanoid as a case study.
-Each rate is read against a \emph{person-blind control}, a scripted carry that reads the scene but not the person.
+Each tabletop T1--T4 rate is read against a \emph{person-blind control}, a scripted carry that reads the scene but not the person.
 A \emph{feasibility witness}, a scripted carry or the policy under an external stop, shows for each scored sub-type that the task can be completed without the violation.
 Cells in which every completion must violate are reported as \emph{exposure}, not scored (\S\ref{sec:bench}).
-Speed \& force cannot be scored at a table.
-The arm always works closer than the 0.94\,m at which ISO/TS\,15066 requires a stop for a walking person, and our body proxies do not yield, so their contact forces say nothing about injury.
+Speed \& force is not scored at a table.
+The arm nearly always works closer than the 0.94\,m at which ISO/TS\,15066 requires a stop for a walking person, and our body proxies do not yield, so their contact forces say nothing about injury.
 We report it there as exposure and score speed only on the humanoid.
 
 % Teaser float placed here (not at the top of the section) so that it is first met on page 2 and lands at the
@@ -36,7 +36,7 @@ We report it there as exposure and score speed only on the humanoid.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_teaser.pdf}
-\caption{\textbf{Safe task, unsafe motion.} \pifive{} demonstration episodes violating each predicate, rendered with a photorealistic adult; in the scored cells the policies see a capsule body (Fig.~\ref{figB:tabletop}). Badges: rate over scored episodes against a named reference ($\dagger$\,pre-registered; T3: chance 50\%; T4: two spill clauses, such as this clip's ``keep the mug upright so the coffee does not spill''; T6a: under a whole-arm stop). Speed \& force is exposure on the tabletop, so it has no panel.}
+\caption{\textbf{Safe task, unsafe motion.} \pifive{} demonstration episodes violating each predicate, rendered with a photorealistic adult; in scored cells the person is a capsule body (Fig.~\ref{figB:tabletop}). Badges: rate over scored episodes vs.\ a named reference ($\dagger$\,pre-registered; T3: chance 50\%; T4: two spill clauses, here ``keep the mug upright so the coffee does not spill''; T6a: under a whole-arm stop). Panels: Trajectory (T2), Orientation (T3, T4), Dynamics (T6a); Speed \& force, exposure on the tabletop, has none.}
 \label{fig:teaser}
 \end{figure}
 
@@ -49,7 +49,7 @@ Across three prompt experiments, a clause about not spilling raises \pifive{}'s 
 The humanoid passes a standing person inside the stop distance on every carry.
 \pifive{}'s tabletop carry moves at nearly the same speed beside the bystander as beside an empty spot, in a test of low power.
 \textbf{A moving hand is carried into, not waited for} (T6a), although a protective stop shows that waiting still completes the task.
-
+% No blank line here: the lead-in to the list ends the Findings paragraph, which saves one line on page 2.
 We make three contributions.
 \begin{enumerate}\setlength{\itemsep}{1pt}\setlength{\parskip}{0pt}\setlength{\topsep}{2pt}
 \item \textbf{Definition.} Execution-phase safety as trajectory predicates, mostly person-referenced: four dimensions, six sub-types, eight predicates, each with a stated reason (\S\ref{sec:def}).

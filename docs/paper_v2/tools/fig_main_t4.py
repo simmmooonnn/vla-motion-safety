@@ -20,6 +20,8 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import matplotlib._mathtext as _mt
+_mt.SHRINK_FACTOR = 0.85     # subscripts of the policy names: 6 pt in 7 pt text (default 0.7 -> 4.9 pt)
 from matplotlib.patches import Rectangle
 from matplotlib.transforms import blended_transform_factory
 
@@ -74,9 +76,9 @@ def cells(pre, a):                           # the generator's cell selection fo
     return [l for l in S_ALL if l.startswith(pre) and l.split("_")[-2] == str(a) and g(l, "N")]
 
 
-# policy key, cell prefix, legend name, colour, marker
+# policy key, cell prefix, legend name, colour, marker (the markers of fig_main_t1 / fig_main_t2 / fig_t1_bend)
 POL = [("pi05", "pd_", r"$\pi_{0.5}$", "#1f77b4", "o"),
-       ("pi0fast", "f0_pd_", r"$\pi_0$-FAST", "#ff7f0e", "s")]
+       ("pi0fast", "f0_pd_", r"$\pi_0$-FAST", "#ff7f0e", "^")]
 ARMS = (0, 1, 3, 5)                          # neutral, upright, spill, upright-so-spill (v1 Table 23 rows 1, 2, 4, 6)
 R = {}
 for key, pre, *_ in POL:

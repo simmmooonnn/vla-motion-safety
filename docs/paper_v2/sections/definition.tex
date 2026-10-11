@@ -45,12 +45,12 @@ Exposure is reported, never scored.
 \textbf{Carried} episodes lift the payload at least 5\,cm and move it at least 10\,cm.
 \textbf{Delivered} episodes end with it within 10\,cm horizontally of the destination and less than 10\,cm above its start height.
 
-\textbf{Units:} a task is a goal under one named setting of surface, bystander, placement, keep-out or mover.
-A placement fixes the surface, object, bystander side and keep-out; a cell is one placement with one seed for up to 8 episodes.
+\textbf{Units:} a task is a goal under one named setting of surface, bystander, placement, keep-out or mover (a crossing hand or a walker).
+A placement fixes the surface, object, bystander side and keep-out; a cell is one placement on one seed, up to 8 episodes.
 Tabletop seeds are 42 and 7; 86 of the 567 pooled cells use others (\texttt{supp/cells.csv}).
-The pre-registered T2 test runs one serving placement on 8 fresh seeds (8 cells; ``the serving cell'').
+The pre-registered T2 test runs one serving placement on 8 fresh seeds.
 
-\textbf{Rates:} a sub-type's rate pools its cells over every task in which its predicate applies; Table~\ref{tab:main} takes T2 from the serving cell instead.
+\textbf{Rates:} a sub-type's rate pools its cells over every task in which its predicate applies; Table~\ref{tab:main} takes T2 from the pre-registered test's 8 cells instead (``the serving cell'').
 A dimension's score is the mean of its sub-type rates, formed only when each has at least 8 scored episodes (otherwise ``\textit{n}\,$<$\,8'').
 \end{tcolorbox}
 \end{figure}
@@ -68,15 +68,15 @@ Standards bound it with external monitors \citep{ref11}, but a monitor can only 
 \textbf{Dynamics} is whether the motion responds when the person moves, by waiting for a crossing hand or slowing for a passer-by.
 A proximity stop reacts only once the person is close, so anticipation is left to the policy.
 Each dimension demands a different safe move: a detour, a reorientation, a slowdown or a timely reaction.
-A policy therefore receives one score per dimension (Table~\ref{tab:main}), not a single number.
+A policy is therefore scored by dimension (Table~\ref{tab:main}), not by a single number.
 
 \subsection{Six sub-types, eight predicates}
 \label{sec:subtypes}
 
-Each dimension splits by what carries the risk, into six sub-types and eight predicates (Table~\ref{tab:taxonomy}): the payload's path past a keep-out (T1) or the arm's sweep near the body (T2); where a blade or tines point (T3) or whether a cup stays level (T4); speed before contact (T5a) or force at it (T5b); a crossing hand (T6a) or a passer-by (T6b).
+Each dimension splits by what carries the risk (Table~\ref{tab:taxonomy}): the payload's path past a keep-out (T1) or the arm's sweep near the body (T2); where a blade or tines point (T3) or whether a cup stays level (T4); speed before contact (T5a) or force at it (T5b); a crossing hand (T6a) or a passer-by (T6b).
 The reference is a nearby person for T2, T3, T5 and T6 and for T1's forearm cells.
 T1's hot-plate cells, which hold most of its carries, and T4's load are scene hazards under the same predicates.
 Where a standard fixes a threshold we adopt it, as for T5a and T5b \citep{ref11}.
 T2's 0.10\,m is our value for an uncertainty term that ISO/TS\,15066 leaves open, and the other choices are ours, with reasons in Table~\ref{tab:taxonomy} and sensitivity in App.~\ref{app:cards}.
-For \pifive{}, each scored sub-type includes a second goal, which carries only 2--28\,\% of its scored episodes.
-Pick-and-place supplies the other 72--98\,\%, and all of the pre-registered T2 cell (Table~\ref{tab:taxonomy}, last column).
+For \pifive{}, each scored sub-type includes a second goal, which carries only 2--28\,\% of its scored episodes and is rarely delivered (6--12\,\% of attempts; Table~\ref{tabD:goals}).
+Pick-and-place supplies the other 72--98\,\%, and all of T2's serving cell (Table~\ref{tab:taxonomy}).

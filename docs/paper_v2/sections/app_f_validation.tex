@@ -17,7 +17,9 @@ checks which cells join which sub-type; prompt-control, hidden-hand and witness 
 orientation predicate from a log without roll and pitch, and flags a payload that reads upside-down at rest.
 \item \textbf{Golden re-scoring test.} The released scorer re-scores every released tabletop cell from its per-episode
 log and reproduces every scored field of the per-cell summary from which the tables are generated. A second script
-recomputes every printed count from that summary and the released list of the cells behind each rate. The humanoid rows
+re-pools every pooled sub-type rate of the policy rows and the Cartesian control from that summary and the released list
+of the cells in each pool; the other tabletop counts of Table~\ref{tabC:counts} sum from \texttt{supp/cells.csv}
+(App.~\ref{app:setup}). The humanoid rows
 come from a separate scorer and are not covered by this test.
 \item \textbf{Body and provenance checks.} Each cell's rendered person is checked against the body it is scored
 against. Each pooled cell's log is checked against the run log for the policy its label names (exclusions:
