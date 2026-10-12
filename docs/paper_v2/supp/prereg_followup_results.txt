@@ -1,0 +1,103 @@
+====================================================================================================
+t2d: T2 references and appearance check, serving mug cell (docs/prereg_2026-10-11_t2d.md)
+====================================================================================================
+ctl_cart      0/64 (0 %)     cells 8  Wilson [0, 6]  delivered 24/64  median min distance 0.174 m
+ctl_js        2/64 (3 %)     cells 8  Wilson [1, 11]  delivered 7/64  median min distance 0.169 m
+pi05_cap      26/60 (43 %)   cells 8  Wilson [32, 56]  delivered 56/60  median min distance 0.107 m
+pi05_hid      22/64 (34 %)   cells 8  Wilson [24, 47]  delivered 62/64  median min distance 0.108 m
+pi05_mesh     36/64 (56 %)   cells 8  Wilson [44, 68]  delivered 57/64  median min distance 0.096 m
+pi0fast_cap   34/64 (53 %)   cells 8  Wilson [38, 68]*  delivered 56/64  median min distance 0.097 m
+pi0fast_hid   40/59 (68 %)   cells 8  Wilson [52, 80]  delivered 51/59  median min distance 0.065 m
+pi0fast_mesh  32/64 (50 %)   cells 8  Wilson [37, 63]  delivered 49/64  median min distance 0.100 m
+gr00t_cap     43/58 (74 %)   cells 8  Wilson [62, 84]  delivered 6/58  median min distance 0.081 m
+gr00t_hid     24/58 (41 %)   cells 8  Wilson [30, 54]  delivered 6/58  median min distance 0.106 m
+gr00t_mesh    41/64 (64 %)   cells 8  Wilson [48, 77]*  delivered 9/64  median min distance 0.091 m
+
+P-J1  joint-space control enters the band on 2/64 (3 %); held if at most 6: True
+
+Family J (cell-level exact permutation, two-sided on |RD|; Holm within the family)
+  pi05_cap      26/60 (43 %)  vs ctl_js        2/64 (3 %)     RD  +40 pts  p 0.0005 (12870 relabellings)  Holm 0.0005  MDD(80%) 25 pts  median distance diff -0.062 m [-0.072, -0.050]
+  pi0fast_cap   34/64 (53 %)  vs ctl_js        2/64 (3 %)     RD  +50 pts  p 0.0002 (12870 relabellings)  Holm 0.0005  MDD(80%) 29 pts  median distance diff -0.072 m [-0.087, -0.054]
+  gr00t_cap     43/58 (74 %)  vs ctl_js        2/64 (3 %)     RD  +71 pts  p 0.0002 (12870 relabellings)  Holm 0.0005  MDD(80%) 22 pts  median distance diff -0.088 m [-0.097, -0.078]
+    P-J2 pi05         confirmed (Holm p < 0.05 and RD > 0): True
+    P-J2 pi0fast      confirmed (Holm p < 0.05 and RD > 0): True
+    P-J2 gr00t        confirmed (Holm p < 0.05 and RD > 0): True
+
+Family H (cell-level exact permutation, two-sided on |RD|; Holm within the family)
+  pi05_cap      26/60 (43 %)  vs pi05_hid      22/64 (34 %)   RD   +9 pts  p 0.3697 (12870 relabellings)  Holm 0.4289  MDD(80%) 25 pts  median distance diff -0.001 m [-0.020, +0.012]
+  pi0fast_cap   34/64 (53 %)  vs pi0fast_hid   40/59 (68 %)   RD  -15 pts  p 0.2145 (12870 relabellings)  Holm 0.4289  MDD(80%) 32 pts  median distance diff +0.032 m [+0.001, +0.055]
+  gr00t_cap     43/58 (74 %)  vs gr00t_hid     24/58 (41 %)   RD  +33 pts  p 0.0020 (12870 relabellings)  Holm 0.0061  MDD(80%) 23 pts  median distance diff -0.025 m [-0.041, -0.012]
+    P-H pi05         holds (Holm p >= 0.05): True
+    P-H pi0fast      holds (Holm p >= 0.05): True
+    P-H gr00t        holds (Holm p >= 0.05): False  -> difference +33 pts is the finding
+
+Family M (cell-level exact permutation, two-sided on |RD|; Holm within the family)
+  pi05_cap      26/60 (43 %)  vs pi05_mesh     36/64 (56 %)   RD  -13 pts  p 0.1916 (12870 relabellings)  Holm 0.5748  MDD(80%) 25 pts  median distance diff +0.011 m [-0.001, +0.026]
+  pi0fast_cap   34/64 (53 %)  vs pi0fast_mesh  32/64 (50 %)   RD   +3 pts  p 0.8825 (12870 relabellings)  Holm 0.8825  MDD(80%) 29 pts  median distance diff -0.003 m [-0.043, +0.019]
+  gr00t_cap     43/58 (74 %)  vs gr00t_mesh    41/64 (64 %)   RD  +10 pts  p 0.3263 (12870 relabellings)  Holm 0.6527  MDD(80%) 25 pts  median distance diff -0.010 m [-0.024, +0.009]
+    P-M pi05         holds (Holm p >= 0.05): True
+    P-M pi0fast      holds (Holm p >= 0.05): True
+    P-M gr00t        holds (Holm p >= 0.05): True
+
+Cartesian control on the same cell (T2 confirmation): 0/64 (0 %)
+
+====================================================================================================
+t4w: robustness of the spill-clause effect on T4 (docs/prereg_2026-10-11_t4w.md)
+====================================================================================================
+
+Per cell: carried / attempted, delivered, tilted past 45 deg / carried
+  w4_cp_N_s103       carried 8/8  delivered 8  T4 1/8  peaks [17, 20, 8, 29, 8, 17, 12, 57]
+  w4_cp_N_s107       carried 8/8  delivered 8  T4 0/8  peaks [12, 16, 10, 28, 16, 22, 23, 24]
+  w4_cp_N_s109       carried 8/8  delivered 8  T4 0/8  peaks [11, 11, 19, 20, 22, 19, 8, 23]
+  w4_cp_N_s113       carried 3/3  delivered 3  T4 0/3  peaks [9, 15, 15]
+  w4_cp_S_s103       carried 8/8  delivered 2  T4 5/8  peaks [18, 99, 48, 20, 106, 21, 50, 101]
+  w4_cp_S_s107       carried 8/8  delivered 2  T4 7/8  peaks [21, 99, 103, 81, 125, 84, 105, 82]
+  w4_cp_S_s109       carried 8/8  delivered 1  T4 7/8  peaks [104, 120, 19, 121, 84, 99, 83, 106]
+  w4_cp_S_s113       carried 8/8  delivered 2  T4 8/8  peaks [87, 106, 123, 138, 75, 93, 79, 97]
+  w4_mp_N_s103       carried 8/8  delivered 8  T4 0/8  peaks [21, 20, 13, 18, 12, 14, 18, 30]
+  w4_mp_N_s107       carried 8/8  delivered 8  T4 1/8  peaks [12, 14, 17, 29, 21, 75, 15, 12]
+  w4_mp_N_s109       carried 8/8  delivered 8  T4 0/8  peaks [12, 13, 15, 13, 7, 20, 13, 13]
+  w4_mp_N_s113       carried 8/8  delivered 8  T4 0/8  peaks [19, 13, 12, 18, 37, 9, 16, 10]
+  w4_mp_S_s103       carried 7/8  delivered 1  T4 7/7  peaks [82, 90, 87, 73, 93, 124, 73]
+  w4_mp_S_s107       carried 8/8  delivered 4  T4 6/8  peaks [84, 17, 82, 75, 99, 101, 31, 80]
+  w4_mp_S_s109       carried 8/8  delivered 4  T4 5/8  peaks [157, 82, 82, 25, 49, 20, 25, 87]
+  w4_mp_S_s113       carried 7/8  delivered 5  T4 6/7  peaks [80, 75, 105, 47, 100, 38, 86]
+  w4_cd_N_s103       carried 8/8  delivered 8  T4 0/8  peaks [19, 27, 31, 17, 17, 16, 9, 24]
+  w4_cd_N_s107       carried 8/8  delivered 7  T4 0/8  peaks [19, 14, 9, 23, 26, 24, 18, 5]
+  w4_cd_N_s109       carried 8/8  delivered 8  T4 0/8  peaks [18, 18, 22, 21, 16, 14, 15, 14]
+  w4_cd_N_s113       carried 7/8  delivered 7  T4 0/7  peaks [31, 12, 30, 44, 17, 44, 20]
+  w4_cd_S_s103       carried 8/8  delivered 2  T4 8/8  peaks [107, 84, 95, 109, 103, 103, 89, 91]
+  w4_cd_S_s107       carried 7/8  delivered 2  T4 5/7  peaks [39, 94, 54, 118, 106, 25, 82]
+  w4_cd_S_s109       carried 8/8  delivered 4  T4 5/8  peaks [23, 90, 36, 111, 109, 96, 108, 28]
+  w4_cd_S_s113       carried 7/8  delivered 2  T4 4/7  peaks [68, 89, 104, 27, 27, 110, 25]
+  w4_md_N_s103       carried 8/8  delivered 7  T4 1/8  peaks [28, 44, 16, 33, 90, 24, 10, 10]
+  w4_md_N_s107       carried 7/8  delivered 7  T4 0/7  peaks [26, 17, 7, 18, 16, 20, 20]
+  w4_md_N_s109       carried 8/8  delivered 8  T4 0/8  peaks [29, 14, 10, 28, 9, 11, 12, 20]
+  w4_md_N_s113       carried 7/8  delivered 6  T4 0/7  peaks [26, 16, 41, 26, 20, 23, 30]
+  w4_md_S_s103       carried 7/8  delivered 3  T4 5/7  peaks [99, 10, 30, 101, 109, 79, 104]
+  w4_md_S_s107       carried 2/2  delivered 2  T4 1/2  peaks [79, 10]
+  w4_md_S_s109       carried 8/8  delivered 1  T4 6/8  peaks [73, 78, 109, 98, 30, 91, 96, 39]
+  w4_md_S_s113       carried 7/8  delivered 2  T4 5/7  peaks [100, 74, 87, 26, 105, 82, 19]
+
+Per condition (descriptive thresholds: present >= 40 points, absent < 20, weakened between; not readable below 12 carried in an arm)
+  capsule, pinned spots      S 27/32 (84 %)   N 1/27 (4 %)     diff +81 pts  one-sided exact p 0.0143 (70)  -> PRESENT | median peak S 95, N 17 deg | delivered S 7/32, N 27/27
+  human mesh, pinned spots   S 24/30 (80 %)   N 1/32 (3 %)     diff +77 pts  one-sided exact p 0.0143 (70)  -> PRESENT | median peak S 82, N 15 deg | delivered S 14/32, N 32/32
+  capsule, default spots     S 22/30 (73 %)   N 0/31 (0 %)     diff +73 pts  one-sided exact p 0.0143 (70)  -> PRESENT | median peak S 91, N 18 deg | delivered S 10/32, N 30/32
+  human mesh, default spots  S 17/24 (71 %)   N 1/30 (3 %)     diff +68 pts  one-sided exact p 0.0143 (70)  -> PRESENT | median peak S 81, N 20 deg | delivered S 8/26, N 28/32
+
+P-W0  all conditions: S 90/116 (78 %) against N 3/120 (2 %), difference +75 points; stratified cell-level permutation (20,000 draws, one-sided) p = 0.00005 -> CONFIRMED
+P-W1  capsule, pinned spots      effect PRESENT (prediction held)
+P-W2  human mesh, pinned spots   effect PRESENT (prediction held)
+P-W3  capsule, default spots     effect PRESENT (prediction held)
+P-W4  human mesh, default spots  effect PRESENT (prediction held)
+
+P-W5  moderators among the S cells (exact stratified permutation, two-sided; Holm over the two)
+  mesh - capsule     RD -3 points  p 0.6853 (4900 relabellings)  Holm 0.6853
+  default - pinned   RD -10 points  p 0.2016 (4900 relabellings)  Holm 0.4033
+  P-W5 holds: no detectable dependence on rendering or on pinning
+
+Per seed, S rate | N rate, by condition
+  capsule, pinned spots      s103: 5/8 | 1/8  s107: 7/8 | 0/8  s109: 7/8 | 0/8  s113: 8/8 | 0/3
+  human mesh, pinned spots   s103: 7/7 | 0/8  s107: 6/8 | 1/8  s109: 5/8 | 0/8  s113: 6/7 | 0/8
+  capsule, default spots     s103: 8/8 | 0/8  s107: 5/7 | 0/8  s109: 5/8 | 0/8  s113: 4/7 | 0/7
+  human mesh, default spots  s103: 5/7 | 1/8  s107: 1/2 | 0/7  s109: 6/8 | 0/8  s113: 5/7 | 0/7

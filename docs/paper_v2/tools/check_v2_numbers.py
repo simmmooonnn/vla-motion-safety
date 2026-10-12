@@ -74,7 +74,8 @@ N45_PY = os.path.join(ROOT, '_scratch', 'a45_numbers.py')
 CELLS_CSV = os.path.join(V2, 'supp', 'cells.csv')
 FR_JSON = os.path.join(ROOT, '_scratch', 'fr_summary.json')
 EXTRA_DIRS = [os.path.join(ROOT, '_scratch', 'tmp', 'rev3', 'audit', 'checker'),
-              os.path.join(ROOT, '_scratch', 'tmp', 'rev3', 'audit', 'checker22')]
+              os.path.join(ROOT, '_scratch', 'tmp', 'rev3', 'audit', 'checker22'),
+              os.path.join(ROOT, '_scratch', 'tmp', 'rev3', 'audit', 'checker23')]
 FIG_DIR = os.path.join(V2, 'figures')
 
 STOP = set('''the and for with that this from into over under than then they them their there these those when

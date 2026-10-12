@@ -150,7 +150,8 @@ Three analyses were frozen before any of their cells ran: the replication on 7 O
 release, not an entry in a public registry. The files are \texttt{PREREG.md} (replication), \texttt{PREREG\_T2.md},
 \texttt{PREREG\_T2B.md} and \texttt{PREREG\_T2C.md} (body sweep) and \texttt{PREREG\_A2.md} (joint-space control). The
 predicates, the pooling rules and the scored\,/\,exposure split were fixed earlier, after the first data, and are not
-pre-registered; every contrast outside the three analyses is exploratory. All three fix eight episodes per cell,
+pre-registered; every contrast outside the three analyses and the two follow-up protocols of
+App.~\ref{app:c-follow} is exploratory. All three fix eight episodes per cell,
 Wilson intervals on the cell-clustered effective size and no exclusions. The body-sweep and joint-space protocols also
 state that a cell cut short counts as run and is not rerun. The replication protocol is silent on this; we applied the
 same rule there, where two \pifast{} cells ended after three and four episodes. None of their cells enters a pooled
@@ -315,3 +316,63 @@ Holm significance. The T4 row would read 3/10 against 3/31 ($+17$ [$-22$, $+62$]
 same trajectories rather than rerunning them. On the serving cell, run at both lengths on the same seeds, it agrees with
 the 35\,s rerun: carried 12/54 against 10/58, and T2 44/54 against 43/58. The cut uses the logged per-step link
 distances; \texttt{PREREG\_T2C.md} wrongly states that the logs keep only each episode's minimum.
+
+\subsection{Follow-up protocols at the serving cell and on the spill clause}
+\label{app:c-follow}
+
+Two further protocols and their
+analysis script were frozen on 11 October 2026, before any of their cells was scored (\texttt{PREREG\_T2D.md},
+\texttt{PREREG\_T4W.md}, \texttt{prereg\_analysis.py}); the script ran once, on the complete data. Their 88 cells enter
+no rate, table or count elsewhere in this paper and are not in \texttt{cells.csv}; \texttt{prereg\_followup\_cells.csv}
+lists them. Six cells ended at the one-hour limit with two to seven episodes and count as run.
+
+The first protocol reruns the serving mug cell on the same eight seeds (67--101) with three references
+(Table~\ref{tabC:follow}a). (J)~The joint-space person-blind control enters the 0.10\,m band on 2/64 episodes, within
+the predicted bound of 6, and each policy is higher ($+40$, $+50$ and $+71$ points; Holm $p=0.0005$ for each). Unlike
+the T1 excess, the T2 excess does not depend on the Cartesian control. This control delivers on only 7/64 episodes.
+(H)~With the bystander not rendered but still scored, \pifive{} and \pifast{} do not change detectably, as predicted.
+\grd{} does: 43/58 with the bystander rendered against 24/58 hidden ($+33$ points, Holm $p=0.006$). It enters the band
+more often with the bystander in view, not less. (M)~With the capsule replaced by a human mesh no policy changes
+detectably ($-13$, $+3$ and $+10$ points; Holm $p\geq 0.57$). Arms of eight cells detect differences of 22 to 32
+points with 80\,\% power, so smaller effects of the bystander's appearance are not excluded.
+
+The second protocol asks whether the tilt raised by ``Do not spill the coffee.'' (Sec.~\ref{sec:findings}) depends on
+how the person is rendered or on pinned pick and place spots: \pifive{} at the dining table, person on the right, with
+and without the clause, capsule or human mesh, pinned or default spots, four fresh seeds (103--113). The clause raises
+the T4 rate in all four conditions (Table~\ref{tabC:follow}b): 90/116 against 3/120 pooled ($+75$ points; stratified
+cell permutation, one-sided $p=0.00005$). Neither moderator is detectable (mesh minus capsule $-3$ points, default
+minus pinned $-10$; Holm $p\geq 0.40$), and all five predictions held. With the clause the payload is delivered on
+39/122 attempts, against 117/123 without it.
+
+\begin{table}[!htb]
+\centering
+\caption{\textbf{The serving-cell excess holds against a joint-space control and with a human mesh; the spill-clause
+effect holds with a mesh and unpinned spots.} (a)~Episodes with a link within 0.10\,m of the bystander's body\,/\,all
+episodes at the pre-registered serving cell, eight cells per arm. Rendered: the capsule arms of
+Table~\ref{tabC:prereg} (\grd{}: 35\,s). Hidden: not rendered, still scored. Last columns: policy minus joint-space
+control with the capsule rendered, points; exact cell permutation $p$, Holm over the three. (b)~Carries tilted past
+$45^{\circ}$\,/\,scored carries, \pifive{}, four cells per entry; difference in points.}
+\label{tabC:follow}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}l c c c r l@{}}
+\toprule
+\multicolumn{6}{@{}l}{\textit{(a) Serving cell, T2}}\\
+Arm & Capsule rendered & Hidden & Human mesh & vs joint-space & $p$ (Holm) \\
+\midrule
+\pifive & 26/60 & 22/64 & 36/64 & $+40$ & 0.0005 (0.0005) \\
+\pifast & 34/64 & 40/59 & 32/64 & $+50$ & 0.0002 (0.0005) \\
+\grd & 43/58 & 24/58 & 41/64 & $+71$ & 0.0002 (0.0005) \\
+Cartesian control & 0/64 & & & & \\
+Joint-space control & 2/64 & & & & \\
+\midrule
+\multicolumn{6}{@{}l}{\textit{(b) Spill clause, T4}}\\
+Condition & With the clause & Without & & Difference & \\
+\midrule
+Capsule, pinned spots & 27/32 & 1/27 & & $+81$ & \\
+Human mesh, pinned spots & 24/30 & 1/32 & & $+77$ & \\
+Capsule, default spots & 22/30 & 0/31 & & $+73$ & \\
+Human mesh, default spots & 17/24 & 1/30 & & $+68$ & \\
+\bottomrule
+\end{tabular}
+\end{table}
