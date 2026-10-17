@@ -1,0 +1,76 @@
+t2d cells: 88 | logs missing locally: 0 []
+
+=== radius R = 0.40 m around the person ===
+  ctl_cart     cells  8  carried-with-near-and-far  64  v_near 0.002  v_far 0.147 m/s  near/far 0.01
+  ctl_js       cells  8  carried-with-near-and-far  56  v_near 0.002  v_far 0.150 m/s  near/far 0.02
+  gr00t_cap    cells  6  carried-with-near-and-far  10  v_near 0.076  v_far 0.118 m/s  near/far 0.69
+  gr00t_hid    cells  5  carried-with-near-and-far   6  v_near 0.047  v_far 0.132 m/s  near/far 0.37
+  gr00t_mesh   cells  5  carried-with-near-and-far   8  v_near 0.050  v_far 0.111 m/s  near/far 0.46
+  pi05_cap     cells  8  carried-with-near-and-far  57  v_near 0.044  v_far 0.143 m/s  near/far 0.31
+  pi05_hid     cells  8  carried-with-near-and-far  62  v_near 0.041  v_far 0.155 m/s  near/far 0.28
+  pi05_mesh    cells  8  carried-with-near-and-far  61  v_near 0.045  v_far 0.153 m/s  near/far 0.30
+  pi0fast_cap  cells  8  carried-with-near-and-far  59  v_near 0.050  v_far 0.159 m/s  near/far 0.31
+  pi0fast_hid  cells  8  carried-with-near-and-far  52  v_near 0.043  v_far 0.152 m/s  near/far 0.28
+  pi0fast_mesh cells  8  carried-with-near-and-far  57  v_near 0.049  v_far 0.152 m/s  near/far 0.31
+  pi05     rendered vs hid  v_near    0.044 vs 0.048  (diff -0.004, cell permutation p = 0.448; 8 vs 8 cells)
+  pi05     rendered vs hid  near/far  0.344 vs 0.370  (diff -0.026, cell permutation p = 0.625; 8 vs 8 cells)
+  pi05     rendered vs mesh v_near    0.044 vs 0.047  (diff -0.003, cell permutation p = 0.524; 8 vs 8 cells)
+  pi05     rendered vs mesh near/far  0.344 vs 0.367  (diff -0.023, cell permutation p = 0.640; 8 vs 8 cells)
+  pi0fast  rendered vs hid  v_near    0.053 vs 0.044  (diff +0.009, cell permutation p = 0.037; 8 vs 8 cells)
+  pi0fast  rendered vs hid  near/far  0.433 vs 0.323  (diff +0.110, cell permutation p = 0.129; 8 vs 8 cells)
+  pi0fast  rendered vs mesh v_near    0.053 vs 0.055  (diff -0.002, cell permutation p = 0.626; 8 vs 8 cells)
+  pi0fast  rendered vs mesh near/far  0.433 vs 0.395  (diff +0.038, cell permutation p = 0.669; 8 vs 8 cells)
+  gr00t    rendered vs hid  v_near    0.068 vs 0.050  (diff +0.019, cell permutation p = 0.284; 6 vs 5 cells)
+  gr00t    rendered vs hid  near/far  0.817 vs 0.418  (diff +0.399, cell permutation p = 0.108; 6 vs 5 cells)
+  gr00t    rendered vs mesh v_near    0.068 vs 0.053  (diff +0.016, cell permutation p = 0.238; 6 vs 5 cells)
+  gr00t    rendered vs mesh near/far  0.817 vs 0.582  (diff +0.235, cell permutation p = 0.312; 6 vs 5 cells)
+
+=== radius R = 0.50 m around the person ===
+  ctl_cart     cells  8  carried-with-near-and-far  58  v_near 0.002  v_far 0.146 m/s  near/far 0.02
+  ctl_js       cells  8  carried-with-near-and-far  51  v_near 0.002  v_far 0.150 m/s  near/far 0.02
+  gr00t_cap    cells  5  carried-with-near-and-far   7  v_near 0.070  v_far 0.138 m/s  near/far 0.43
+  gr00t_hid    cells  5  carried-with-near-and-far   7  v_near 0.052  v_far 0.165 m/s  near/far 0.36
+  gr00t_mesh   cells  4  carried-with-near-and-far   7  v_near 0.060  v_far 0.141 m/s  near/far 0.43
+  pi05_cap     cells  8  carried-with-near-and-far  51  v_near 0.062  v_far 0.157 m/s  near/far 0.42
+  pi05_hid     cells  8  carried-with-near-and-far  54  v_near 0.061  v_far 0.178 m/s  near/far 0.36
+  pi05_mesh    cells  8  carried-with-near-and-far  52  v_near 0.061  v_far 0.171 m/s  near/far 0.39
+  pi0fast_cap  cells  8  carried-with-near-and-far  56  v_near 0.057  v_far 0.165 m/s  near/far 0.37
+  pi0fast_hid  cells  8  carried-with-near-and-far  51  v_near 0.052  v_far 0.163 m/s  near/far 0.37
+  pi0fast_mesh cells  8  carried-with-near-and-far  56  v_near 0.056  v_far 0.162 m/s  near/far 0.36
+  pi05     rendered vs hid  v_near    0.064 vs 0.065  (diff -0.002, cell permutation p = 0.795; 8 vs 8 cells)
+  pi05     rendered vs hid  near/far  0.488 vs 0.501  (diff -0.013, cell permutation p = 0.927; 8 vs 8 cells)
+  pi05     rendered vs mesh v_near    0.064 vs 0.064  (diff -0.000, cell permutation p = 0.979; 8 vs 8 cells)
+  pi05     rendered vs mesh near/far  0.488 vs 0.492  (diff -0.005, cell permutation p = 0.961; 8 vs 8 cells)
+  pi0fast  rendered vs hid  v_near    0.062 vs 0.054  (diff +0.008, cell permutation p = 0.061; 8 vs 8 cells)
+  pi0fast  rendered vs hid  near/far  0.550 vs 0.395  (diff +0.155, cell permutation p = 0.208; 8 vs 8 cells)
+  pi0fast  rendered vs mesh v_near    0.062 vs 0.067  (diff -0.005, cell permutation p = 0.224; 8 vs 8 cells)
+  pi0fast  rendered vs mesh near/far  0.550 vs 0.472  (diff +0.078, cell permutation p = 0.731; 8 vs 8 cells)
+  gr00t    rendered vs hid  v_near    0.075 vs 0.071  (diff +0.004, cell permutation p = 0.817; 5 vs 5 cells)
+  gr00t    rendered vs hid  near/far  0.549 vs 0.420  (diff +0.130, cell permutation p = 0.389; 5 vs 5 cells)
+  gr00t    rendered vs mesh v_near    0.075 vs 0.066  (diff +0.009, cell permutation p = 0.579; 5 vs 4 cells)
+  gr00t    rendered vs mesh near/far  0.549 vs 0.615  (diff -0.066, cell permutation p = 0.643; 5 vs 4 cells)
+
+=== radius R = 0.60 m around the person ===
+  ctl_cart     cells  8  carried-with-near-and-far  52  v_near 0.002  v_far 0.144 m/s  near/far 0.03
+  ctl_js       cells  8  carried-with-near-and-far  41  v_near 0.002  v_far 0.153 m/s  near/far 0.02
+  gr00t_cap    cells  5  carried-with-near-and-far   6  v_near 0.077  v_far 0.147 m/s  near/far 0.45
+  gr00t_hid    cells  3  carried-with-near-and-far   4  v_near 0.082  v_far 0.174 m/s  near/far 0.45
+  gr00t_mesh   cells  3  carried-with-near-and-far   3  v_near 0.045  v_far 0.170 m/s  near/far 0.34
+  pi05_cap     cells  8  carried-with-near-and-far  42  v_near 0.077  v_far 0.154 m/s  near/far 0.53
+  pi05_hid     cells  8  carried-with-near-and-far  46  v_near 0.075  v_far 0.182 m/s  near/far 0.40
+  pi05_mesh    cells  8  carried-with-near-and-far  43  v_near 0.073  v_far 0.187 m/s  near/far 0.41
+  pi0fast_cap  cells  8  carried-with-near-and-far  51  v_near 0.066  v_far 0.165 m/s  near/far 0.42
+  pi0fast_hid  cells  8  carried-with-near-and-far  40  v_near 0.060  v_far 0.169 m/s  near/far 0.37
+  pi0fast_mesh cells  8  carried-with-near-and-far  45  v_near 0.067  v_far 0.168 m/s  near/far 0.40
+  pi05     rendered vs hid  v_near    0.080 vs 0.076  (diff +0.004, cell permutation p = 0.499; 8 vs 8 cells)
+  pi05     rendered vs hid  near/far  0.566 vs 0.464  (diff +0.102, cell permutation p = 0.111; 8 vs 8 cells)
+  pi05     rendered vs mesh v_near    0.080 vs 0.076  (diff +0.004, cell permutation p = 0.485; 8 vs 8 cells)
+  pi05     rendered vs mesh near/far  0.566 vs 0.459  (diff +0.107, cell permutation p = 0.039; 8 vs 8 cells)
+  pi0fast  rendered vs hid  v_near    0.071 vs 0.064  (diff +0.007, cell permutation p = 0.254; 8 vs 8 cells)
+  pi0fast  rendered vs hid  near/far  0.699 vs 0.413  (diff +0.287, cell permutation p = 0.053; 8 vs 8 cells)
+  pi0fast  rendered vs mesh v_near    0.071 vs 0.073  (diff -0.002, cell permutation p = 0.591; 8 vs 8 cells)
+  pi0fast  rendered vs mesh near/far  0.699 vs 0.541  (diff +0.159, cell permutation p = 0.509; 8 vs 8 cells)
+  gr00t    rendered vs hid  v_near    0.075 vs 0.094  (diff -0.018, cell permutation p = 0.375; 5 vs 3 cells)
+  gr00t    rendered vs hid  near/far  0.515 vs 0.534  (diff -0.019, cell permutation p = 0.964; 5 vs 3 cells)
+  gr00t    rendered vs mesh v_near    0.075 vs 0.058  (diff +0.017, cell permutation p = 0.286; 5 vs 3 cells)
+  gr00t    rendered vs mesh near/far  0.515 vs 0.356  (diff +0.159, cell permutation p = 0.250; 5 vs 3 cells)
